@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Hockeypicks AI — Automated NHL Predictions</title>
+  <style>
+    :root {
+      --bg-0: #060a12;
+      --bg-1: #0d1526;
+      --bg-2: #131f38;
+      --border: rgba(148, 163, 184, 0.16);
+      --text-0: #f8fafc;
+      --text-1: #cbd5e1;
+      --text-2: #94a3b8;
+      --emerald: #10b981;
+      --emerald-soft: rgba(16, 185, 129, 0.14);
+      --cyan: #38bdf8;
+      --cyan-soft: rgba(56, 189, 248, 0.14);
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --bottom-nav-height: 64px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior-x: none;
+      background: var(--bg-0);
+      color: var(--text-0);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+      scroll-behavior: smooth;
+      overscroll-behavior-x: none;
+      padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 24px);
+    }
+
+    header.app-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex-shrink: 1;
+    }
+
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--emerald), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #031510;
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      white-space: nowrap;
+    }
+
+    .pill.cyan {
+      background: var(--cyan-soft);
+      color: var(--cyan);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .pill.warn {
+      background: rgba(245, 158, 11, 0.14);
+      color: var(--amber);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .nav-tabs-desktop {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px 8px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-2);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-0);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-btn.active {
+      color: var(--emerald);
+      background: var(--emerald-soft);
+      border-color: rgba(16, 185, 129, 0.32);
+    }
+
+    main.app-main {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 16px;
+      box-sizing: border-box;
+      min-width: 0;
+      overflow-x: hidden;
+      flex: 1;
+    }
+
+    .tab-pane, .card {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
+      overflow-x: hidden;
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fde68a;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .banner.hidden { display: none; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .kpi-label {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-2);
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-0);
+    }
+
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 6px 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .card.highlight {
+      border-color: rgba(16, 185, 129, 0.42);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.07), var(--bg-1) 55%);
+    }
+
+    .pick-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .group-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--emerald);
+    }
+
+    .pick-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+
+    .pick-meta {
+      font-size: 0.82rem;
+      color: var(--text-2);
+      margin-bottom: 10px;
+    }
+
+    .pick-score-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+    }
+
+    .pick-score-cell span {
+      display: block;
+      color: var(--text-2);
+      font-size: 0.7rem;
+    }
+
+    .pick-score-cell strong {
+      font-size: 0.92rem;
+      color: var(--text-0);
+    }
+
+    .runner-list {
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.8rem;
+    }
+
+    .runner-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--text-1);
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    input.control-input, select.control-input {
+      background: var(--bg-1);
+      color: var(--text-0);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    input.control-input:focus, select.control-input:focus {
+      border-color: var(--emerald);
+    }
+
+    .table-responsive-wrapper {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      white-space: nowrap;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    th {
+      color: var(--text-2);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: rgba(255, 255, 255, 0.02);
+      user-select: none;
+    }
+
+    th.sortable {
+      cursor: pointer;
+    }
+
+    th.sortable:hover {
+      color: var(--emerald);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .prob-bar-track {
+      width: 100%;
+      height: 10px;
+      background: rgba(56, 189, 248, 0.25);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0 6px;
+      display: flex;
+    }
+
+    .prob-bar-away {
+      background: var(--cyan);
+      height: 100%;
+    }
+
+    .prob-bar-home {
+      background: var(--emerald);
+      height: 100%;
+    }
+
+    .matchup-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .streak-tag {
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .streak-pos {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+    }
+
+    .streak-neg {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--rose);
+    }
+
+    .streak-neutral {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--text-2);
+    }
+
+    .feat-bar-row {
+      margin-bottom: 10px;
+    }
+
+    .feat-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      margin-bottom: 3px;
+      color: var(--text-1);
+    }
+
+    .feat-bar-bg {
+      height: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .feat-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--emerald), var(--cyan));
+      border-radius: 999px;
+    }
+
+    pre, code, .console-dump {
+      max-width: 100%;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      overflow-x: auto;
+      background: #070b14;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--text-1);
+    }
+
+    .empty-state {
+      padding: 24px;
+      text-align: center;
+      color: var(--text-2);
+      font-size: 0.9rem;
+    }
+
+    /* Statically anchored mobile bottom navigation */
+    .mobile-nav-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: 100%;
+      height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+      background: rgba(10, 16, 28, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 1000;
+      box-sizing: border-box;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      overscroll-behavior-y: none;
+      touch-action: pan-x;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .mobile-nav-bar::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    .mobile-nav-item {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      cursor: pointer;
+      flex: 0 0 auto;
+      min-width: 72px;
+      height: 100%;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      border-radius: 6px;
+    }
+
+    .mobile-nav-item.active {
+      color: var(--emerald);
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    @media (max-width: 980px) {
+      .nav-tabs-desktop { display: none; }
+      .mobile-nav-bar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-around;
+        gap: 4px;
+        padding: 0 8px env(safe-area-inset-bottom, 0px) 8px;
+      }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-3col, .grid-2col { grid-template-columns: 1fr; }
+      .header-actions .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-badge">HP</div>
+        <div class="brand-text">
+          <h1>HOCKEYPICKS AI</h1>
+          <div class="brand-sub" id="headerSubtitle">Loading pipeline state...</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="pill" id="modePill">--</span>
+        <span class="pill cyan hide-mobile" id="updatedPill">--</span>
+      </div>
+    </div>
+    <nav class="nav-tabs-desktop" aria-label="Main sections">
+      <button class="nav-btn active" data-tab="picks" onclick="switchTab('picks', this)">Skater Picks</button>
+      <button class="nav-btn" data-tab="matchups" onclick="switchTab('matchups', this)">Game Matchups</button>
+      <button class="nav-btn" data-tab="rankings" onclick="switchTab('rankings', this)">Power Rankings</button>
+      <button class="nav-btn" data-tab="models" onclick="switchTab('models', this)">Models &amp; Drivers</button>
+      <button class="nav-btn" data-tab="logs" onclick="switchTab('logs', this)">Run Logs</button>
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <div id="statusBanner" class="banner hidden"></div>
+
+    <!-- TAB 1: SKATER PICKS -->
+    <section id="tab-picks" class="tab-pane active">
+      <div class="kpi-grid" id="picksKpiGrid"></div>
+
+      <div class="section-title">
+        <span>Tim Hortons Hockey Challenge — AI Optimal Picks</span>
+        <span class="pill cyan" id="timsStatusPill">--</span>
+      </div>
+      <div id="timsContainer" class="grid-3col"></div>
+
+      <div class="section-title">
+        <span>Active NHL Slate — Top Projected Goal Scorers</span>
+      </div>
+      <div class="controls-row">
+        <input id="skaterSearch" class="control-input" type="search" placeholder="Filter player name..." oninput="renderSlateTable()" />
+        <select id="skaterTeamFilter" class="control-input" onchange="renderSlateTable()">
+          <option value="">All Active Teams</option>
+        </select>
+      </div>
+      <div class="table-responsive-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player</th>
+              <th>Team</th>
+              <th>Opp</th>
+              <th>Pos</th>
+              <th>AI Base G/GP</th>
+              <th>Live Form</th>
+              <th>Opp D-Mult</th>
+              <th>Final Score</th>
+            </tr>
+          </thead>
+          <tbody id="slateTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: GAME MATCHUPS -->
+    <section id="tab-matchups" class="tab-pane">
+      <div id="playoffSeriesSection" class="hidden">
+        <div class="section-title"><span>Live Playoff Series Projections (Best-of-7)</span></div>
+        <div id="playoffSeriesGrid" class="grid-2col"></div>
+      </div>
+
+      <div class="section-title">
+        <span>Today &amp; Tomorrow NHL Win Probabilities</span>
+        <span class="pill cyan" id="oddsStatusPill">--</span>
+      </div>
+      <div id="matchupsGrid" class="grid-2col"></div>
+    </section>
+
+    <!-- TAB 3: POWER RANKINGS -->
+    <section id="tab-rankings" class="tab-pane">
+      <div class="section-title">
+        <span>32-Team NHL AI Power Rankings</span>
+        <span style="font-size:0.78rem;color:var(--text-2)">Click column headers to sort</span>
+      </div>
+      <div class="table-responsive-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortRankings('rank')">Rank</th>
+              <th class="sortable" onclick="sortRankings('team')">Team</th>
+              <th class="sortable" onclick="sortRankings('ai_power')">AI Power</th>
+              <th class="sortable" onclick="sortRankings('avg_win_prob')">Field Win %</th>
+              <th class="sortable" onclick="sortRankings('streak')">Streak</th>
+              <th class="sortable" onclick="sortRankings('gsax')">Goalie GSAx</th>
+              <th class="sortable" onclick="sortRankings('starter_sv_pct')">Starter SV%</th>
+              <th class="sortable" onclick="sortRankings('top3_pts')">Top-3 Pts</th>
+              <th class="sortable" onclick="sortRankings('def_multiplier')">D-Mult</th>
+              <th class="sortable" onclick="sortRankings('ga_gp')">GA/GP</th>
+              <th class="sortable" onclick="sortRankings('xga_gp')">xGA/GP</th>
+            </tr>
+          </thead>
+          <tbody id="rankingsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 4: MODELS & DRIVERS -->
+    <section id="tab-models" class="tab-pane">
+      <div class="kpi-grid" id="modelKpiGrid"></div>
+      <div class="grid-2col">
+        <div class="card">
+          <div class="section-title" style="margin-top:0"><span>Skater Goal XGBoost — Top Features</span></div>
+          <div id="skaterFeatureBars"></div>
+        </div>
+        <div class="card">
+          <div class="section-title" style="margin-top:0"><span>Pairwise Game XGBoost — Top Features</span></div>
+          <div id="pairwiseFeatureBars"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: RUN LOGS -->
+    <section id="tab-logs" class="tab-pane">
+      <div class="section-title">
+        <span>Latest Headless Pipeline Execution</span>
+        <a href="./latest_run.html" style="color:var(--emerald);font-size:0.85rem;text-decoration:none;font-weight:600">Open Full Terminal View ↗</a>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div id="syncSummaryText" style="font-size:0.86rem;color:var(--text-1);line-height:1.5"></div>
+      </div>
+      <pre id="rawLogPreview" class="console-dump">Loading latest run log...</pre>
+    </section>
+  </main>
+
+  <nav class="mobile-nav-bar" aria-label="Mobile Navigation">
+    <button class="mobile-nav-item active" data-nav="picks" onclick="handleMobileNavClick(this, 'picks')">
+      <span>🎯</span><span>Picks</span>
+    </button>
+    <button class="mobile-nav-item" data-nav="matchups" onclick="handleMobileNavClick(this, 'matchups')">
+      <span>🏒</span><span>Matchups</span>
+    </button>
+    <button class="mobile-nav-item" data-nav="rankings" onclick="handleMobileNavClick(this, 'rankings')">
+      <span>📊</span><span>Rankings</span>
+    </button>
+    <button class="mobile-nav-item" data-nav="models" onclick="handleMobileNavClick(this, 'models')">
+      <span>🧠</span><span>Models</span>
+    </button>
+    <button class="mobile-nav-item" data-nav="logs" onclick="handleMobileNavClick(this, 'logs')">
+      <span>📜</span><span>Logs</span>
+    </button>
+  </nav>
+
+  <script>
+    let APP_DATA = null;
+    let RANK_SORT_KEY = 'rank';
+    let RANK_SORT_ASC = true;
+
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str == null ? '' : String(str);
+      return div.innerHTML;
+    }
+
+    function switchTab(tabId, btnEl) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+      });
+      document.querySelectorAll('.mobile-nav-item').forEach(el => {
+        const isMatch = el.getAttribute('data-nav') === tabId;
+        el.classList.toggle('active', isMatch);
+        if (isMatch) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
+    }
+
+    function handleMobileNavClick(btn, tabId) {
+      switchTab(tabId, btn);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function streakBadge(val) {
+      const n = Number(val || 0);
+      if (n > 0) return `<span class="streak-tag streak-pos">W${n}</span>`;
+      if (n < 0) return `<span class="streak-tag streak-neg">L${Math.abs(n)}</span>`;
+      return `<span class="streak-tag streak-neutral">EVEN</span>`;
+    }
+
+    function renderKpis(meta, slateCount) {
+      const sk = (meta.models && meta.models.skater) || {};
+      const pw = (meta.models && meta.models.pairwise) || {};
+
+      document.getElementById('picksKpiGrid').innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">Season &amp; Mode</div>
+          <div class="kpi-value">${esc(meta.active_mode || '--')}</div>
+          <div class="kpi-sub">${esc(meta.nhl_season_label || '--')} (${esc(meta.today_date || '--')})</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Empirical Bayes N½</div>
+          <div class="kpi-value">${sk.n_half != null ? esc(sk.n_half) : '--'}</div>
+          <div class="kpi-sub">Live form blend prior games</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Pairwise Temp (T)</div>
+          <div class="kpi-value">${pw.optimal_T != null ? esc(pw.optimal_T) : '--'}</div>
+          <div class="kpi-sub">OOF LogLoss: ${pw.oof_log_loss_calibrated != null ? esc(pw.oof_log_loss_calibrated) : '--'}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Slate Skaters</div>
+          <div class="kpi-value">${esc(slateCount)}</div>
+          <div class="kpi-sub">Source: ${esc(meta.skater_baseline_source || '--')}</div>
+        </div>
+      `;
+
+      document.getElementById('modelKpiGrid').innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">Skater Training Rows</div>
+          <div class="kpi-value">${sk.samples != null ? esc(sk.samples) : '--'}</div>
+          <div class="kpi-sub">${sk.feature_count != null ? esc(sk.feature_count) + ' dynamic features' : '--'}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Skater CV RMSE</div>
+          <div class="kpi-value">${sk.cv_rmse != null ? esc(sk.cv_rmse) : '--'}</div>
+          <div class="kpi-sub">5-fold out-of-fold</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Game Matchups Trained</div>
+          <div class="kpi-value">${pw.games_trained != null ? esc(pw.games_trained) : '--'}</div>
+          <div class="kpi-sub">5x playoff sample weighting</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Pairwise OOF Acc</div>
+          <div class="kpi-value">${pw.oof_accuracy != null ? (Number(pw.oof_accuracy) * 100).toFixed(1) + '%' : '--'}</div>
+          <div class="kpi-sub">Raw LogLoss ${pw.oof_log_loss_raw != null ? esc(pw.oof_log_loss_raw) : '--'}</div>
+        </div>
+      `;
+    }
+
+    function renderTimsPicks(tims, status) {
+      const pill = document.getElementById('timsStatusPill');
+      pill.textContent = status === 'ok' ? 'Live Picks Loaded' : `API: ${status}`;
+      const container = document.getElementById('timsContainer');
+      const keys = Object.keys(tims || {}).sort((a, b) => Number(a) - Number(b));
+      if (!keys.length) {
+        container.innerHTML = `<div class="card empty-state" style="grid-column:1/-1">Tim Hortons Challenge picks are not currently posted by the upstream API (off-hours or no challenge window active). Check tonight's Top Projected Goal Scorers below!</div>`;
+        return;
+      }
+
+      container.innerHTML = keys.map(k => {
+        const list = tims[k] || [];
+        if (!list.length) return '';
+        const top = list[0];
+        const runners = list.slice(1, 5);
+        return `
+          <div class="card highlight">
+            <div class="pick-header">
+              <span class="group-label">Group ${esc(k)} Optimal Pick</span>
+              <span class="pill">${esc(top.final_score.toFixed(3))} xG/G</span>
+            </div>
+            <div class="pick-name">${esc(top.player)}</div>
+            <div class="pick-meta">${esc(top.team)} vs ${esc(top.opponent)} • Pos: ${esc(top.position)}</div>
+            <div class="pick-score-row">
+              <div class="pick-score-cell"><span>AI Base</span><strong>${esc(top.base_pred.toFixed(3))}</strong></div>
+              <div class="pick-score-cell"><span>Live (${esc(top.eb_live_weight_pct)}%)</span><strong>${esc(top.live_goals)}G / ${esc(top.live_gp)}GP</strong></div>
+              <div class="pick-score-cell"><span>Opp D-Mult</span><strong>${esc(top.def_multiplier.toFixed(2))}x</strong></div>
+            </div>
+            <div class="runner-list">
+              ${runners.map(r => `
+                <div class="runner-item">
+                  <span>${esc(r.player)} (${esc(r.team)})</span>
+                  <strong>${esc(r.final_score.toFixed(3))}</strong>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function populateTeamFilter(slate) {
+      const sel = document.getElementById('skaterTeamFilter');
+      const teams = Array.from(new Set((slate || []).map(x => x.team))).sort();
+      sel.innerHTML = '<option value="">All Active Teams</option>' +
+        teams.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
+    }
+
+    function renderSlateTable() {
+      const slate = (APP_DATA && APP_DATA.slate_top_scorers) || [];
+      const q = (document.getElementById('skaterSearch').value || '').trim().toLowerCase();
+      const teamF = document.getElementById('skaterTeamFilter').value;
+      const filtered = slate.filter(r =>
+        (!q || (r.player || '').toLowerCase().includes(q)) &&
+        (!teamF || r.team === teamF)
+      );
+      const tbody = document.getElementById('slateTableBody');
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No skaters match the current filter / no active slate today.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = filtered.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td><strong>${esc(r.player)}</strong></td>
+          <td>${esc(r.team)}</td>
+          <td>${esc(r.opponent)}</td>
+          <td>${esc(r.position)}</td>
+          <td>${esc(r.base_pred.toFixed(3))}</td>
+          <td>${esc(r.live_goals)}G in ${esc(r.live_gp)}GP</td>
+          <td>${esc(r.def_multiplier.toFixed(3))}x</td>
+          <td><strong style="color:var(--emerald)">${esc(r.final_score.toFixed(3))}</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderMatchups(games, playoffSeries, meta) {
+      const psSec = document.getElementById('playoffSeriesSection');
+      const psGrid = document.getElementById('playoffSeriesGrid');
+      if (playoffSeries && playoffSeries.length) {
+        psSec.classList.remove('hidden');
+        psGrid.innerHTML = playoffSeries.map(s => `
+          <div class="card highlight">
+            <div class="pick-header">
+              <span class="group-label">Round ${esc(s.round)} Series</span>
+              <span class="pill cyan">~${esc(s.expected_remaining_games)} games left</span>
+            </div>
+            <div class="matchup-teams">
+              <span>${esc(s.top_seed)} (${esc(s.top_wins)})</span>
+              <span>vs</span>
+              <span>(${esc(s.bottom_wins)}) ${esc(s.bottom_seed)}</span>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-home" style="width:${esc(s.top_series_prob)}%"></div>
+              <div class="prob-bar-away" style="width:${esc(s.bottom_series_prob)}%"></div>
+            </div>
+            <div class="runner-item" style="font-size:0.8rem">
+              <span>${esc(s.top_seed)} Series Win: <strong>${esc(s.top_series_prob)}%</strong></span>
+              <span>${esc(s.bottom_seed)} Series Win: <strong>${esc(s.bottom_series_prob)}%</strong></span>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        psSec.classList.add('hidden');
+      }
+
+      document.getElementById('oddsStatusPill').textContent = meta.odds_enabled ? 'Sharp Odds Enabled' : 'Model-Only Mode';
+      const grid = document.getElementById('matchupsGrid');
+      if (!games || !games.length) {
+        grid.innerHTML = '<div class="card empty-state" style="grid-column:1/-1">No scheduled NHL games found for today or tomorrow.</div>';
+        return;
+      }
+      grid.innerHTML = games.map(g => {
+        const edgeBlocks = [];
+        if (g.away_edge) edgeBlocks.push(`${esc(g.away)} +EV ${esc(g.away_edge.edge_pct)}% (${esc(g.away_edge.odds)}) • Bet $${esc(g.away_edge.rec_bet)}`);
+        if (g.home_edge) edgeBlocks.push(`${esc(g.home)} +EV ${esc(g.home_edge.edge_pct)}% (${esc(g.home_edge.odds)}) • Bet $${esc(g.home_edge.rec_bet)}`);
+
+        return `
+          <div class="card">
+            <div class="pick-header">
+              <span class="group-label">${g.is_today ? 'TODAY' : 'TOMORROW'} • ${esc(g.date)} • ${esc(g.start_time_et)}</span>
+              <span class="pill">${esc(g.game_state)}</span>
+            </div>
+            <div class="matchup-teams">
+              <span>${esc(g.away)} ${streakBadge(g.away_streak)}</span>
+              <span style="color:var(--text-2);font-size:0.85rem">@</span>
+              <span>${streakBadge(g.home_streak)} ${esc(g.home)}</span>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-away" style="width:${esc(g.away_prob)}%"></div>
+              <div class="prob-bar-home" style="width:${esc(g.home_prob)}%"></div>
+            </div>
+            <div class="runner-item" style="font-size:0.82rem;margin-bottom:8px">
+              <span style="color:var(--cyan)">Away Win: <strong>${esc(g.away_prob)}%</strong></span>
+              <span style="color:var(--emerald)">Home Win: <strong>${esc(g.home_prob)}%</strong></span>
+            </div>
+            <div class="pick-score-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:${edgeBlocks.length ? '8px' : '0'}">
+              <div class="pick-score-cell"><span>Goalie GSAx (A vs H)</span><strong>${esc(g.away_gsax)} vs ${esc(g.home_gsax)}</strong></div>
+              <div class="pick-score-cell"><span>Star Top-3 Pts (A vs H)</span><strong>${esc(g.away_top3_pts)} vs ${esc(g.home_top3_pts)}</strong></div>
+            </div>
+            ${edgeBlocks.length ? `<div class="pill warn" style="width:100%;justify-content:center">${edgeBlocks.join(' | ')}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function sortRankings(key) {
+      if (RANK_SORT_KEY === key) {
+        RANK_SORT_ASC = !RANK_SORT_ASC;
+      } else {
+        RANK_SORT_KEY = key;
+        RANK_SORT_ASC = (key === 'rank' || key === 'team' || key === 'def_multiplier' || key === 'ga_gp' || key === 'xga_gp');
+      }
+      renderRankings();
+    }
+
+    function renderRankings() {
+      const list = [...((APP_DATA && APP_DATA.power_rankings) || [])];
+      const tbody = document.getElementById('rankingsTableBody');
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Power rankings will populate after the first live pipeline run.</td></tr>';
+        return;
+      }
+      list.sort((a, b) => {
+        const va = a[RANK_SORT_KEY];
+        const vb = b[RANK_SORT_KEY];
+        if (typeof va === 'string') return RANK_SORT_ASC ? va.localeCompare(vb) : vb.localeCompare(va);
+        return RANK_SORT_ASC ? (va - vb) : (vb - va);
+      });
+      tbody.innerHTML = list.map(r => `
+        <tr>
+          <td><strong>#${esc(r.rank)}</strong></td>
+          <td><strong>${esc(r.team)}</strong></td>
+          <td>${esc(r.ai_power.toFixed(2))}</td>
+          <td><strong style="color:var(--emerald)">${esc(r.avg_win_prob.toFixed(1))}%</strong></td>
+          <td>${streakBadge(r.streak)}</td>
+          <td>${esc(r.gsax.toFixed(1))}</td>
+          <td>${esc(r.starter_sv_pct.toFixed(3))}</td>
+          <td>${esc(r.top3_pts)}</td>
+          <td>${esc(r.def_multiplier.toFixed(3))}x</td>
+          <td>${esc(r.ga_gp.toFixed(2))}</td>
+          <td>${esc(r.xga_gp.toFixed(2))}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderFeatureBars(containerId, items) {
+      const el = document.getElementById(containerId);
+      if (!items || !items.length) {
+        el.innerHTML = '<div class="empty-state">Feature importances populate after training.</div>';
+        return;
+      }
+      const maxVal = Math.max(...items.map(i => Number(i.importance || 0)), 1e-6);
+      el.innerHTML = items.map(item => {
+        const pct = Math.max(4, (Number(item.importance) / maxVal) * 100);
+        return `
+          <div class="feat-bar-row">
+            <div class="feat-bar-label">
+              <span>${esc(item.feature)}</span>
+              <strong>${esc(Number(item.importance).toFixed(4))}</strong>
+            </div>
+            <div class="feat-bar-bg">
+              <div class="feat-bar-fill" style="width:${pct.toFixed(1)}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadLogs() {
+      try {
+        const res = await fetch('./latest_run.html?t=' + Date.now());
+        if (!res.ok) return;
+        const htmlText = await res.text();
+        const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+        const pre = doc.querySelector('pre');
+        document.getElementById('rawLogPreview').textContent = pre ? pre.textContent : 'Run log available via link above.';
+      } catch (err) {
+        document.getElementById('rawLogPreview').textContent = 'Could not load log preview.';
+      }
+    }
+
+    async function init() {
+      try {
+        const res = await fetch('./data.json?t=' + Date.now());
+        APP_DATA = await res.json();
+        const meta = APP_DATA.meta || {};
+
+        document.getElementById('headerSubtitle').textContent = `${meta.nhl_season_label || 'NHL'} Automated XGBoost & Empirical Bayes Engine`;
+        document.getElementById('modePill').textContent = meta.active_mode || 'Pending';
+        document.getElementById('updatedPill').textContent = meta.updated_et || 'Not Run Yet';
+
+        const banner = document.getElementById('statusBanner');
+        if (meta.status === 'bootstrap') {
+          banner.classList.remove('hidden');
+          banner.innerHTML = '<strong>Bootstrap State:</strong> Enable GitHub Pages (<em>Settings → Pages → main /docs</em>) and trigger the <strong>Hockeypicks Automated AI Pipeline</strong> workflow once under the <strong>Actions</strong> tab to populate live NHL stats, matchups, and Tim Hortons picks.';
+        } else {
+          banner.classList.add('hidden');
+        }
+
+        renderKpis(meta, (APP_DATA.slate_top_scorers || []).length);
+        renderTimsPicks(APP_DATA.tims_picks, meta.tims_status);
+        populateTeamFilter(APP_DATA.slate_top_scorers);
+        renderSlateTable();
+        renderMatchups(APP_DATA.games, APP_DATA.playoff_series, meta);
+        renderRankings();
+        renderFeatureBars('skaterFeatureBars', APP_DATA.feature_importance && APP_DATA.feature_importance.skater);
+        renderFeatureBars('pairwiseFeatureBars', APP_DATA.feature_importance && APP_DATA.feature_importance.pairwise);
+
+        const mp = meta.moneypuck_sync || {};
+        const gl = meta.game_log_sync || {};
+        document.getElementById('syncSummaryText').textContent =
+          `Updated: ${meta.updated_et || '--'} | MoneyPuck Active Season: ${meta.active_mp_year || '--'} ` +
+          `(Downloaded: ${mp.downloaded ?? 0}, Cached: ${mp.cached ?? 0}) | ` +
+          `NHL Game Logs Compiled: ${gl.total_rows ?? 0} rows.`;
+      } catch (err) {
+        document.getElementById('headerSubtitle').textContent = 'Failed to load docs/data.json';
+      }
+      loadLogs();
+    }
+
+    init();
+  </script>
+</body>
+</html>
