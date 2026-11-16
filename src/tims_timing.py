@@ -53,7 +53,11 @@ def compute_tims_deferral_advice(
     and always returns the best immediately available Group 1-3 picks alongside the advice.
     """
     ordered_groups = {
-        str(k): sorted(list(v), key=lambda x: float(x.get("final_score", 0.0)), reverse=True)
+        str(k): sorted(
+            list(v),
+            key=lambda x: (not bool(x.get("injury_out")), float(x.get("final_score", 0.0))),
+            reverse=True,
+        )
         for k, v in sorted(tims_groups.items(), key=lambda kv: int(kv[0]))
         if v
     }
@@ -147,7 +151,8 @@ def compute_tims_deferral_advice(
     locked_if_defer_1 = 0
     for g_k, lst in ordered_groups.items():
         elig_grp = [p for p in lst if normalize_team_abbrev(p.get("team")) in unstarted_teams] or lst
-        best = max(elig_grp, key=lambda x: float(x.get("final_score", 0.0)))
+        healthy_grp = [p for p in elig_grp if not p.get("injury_out")] or elig_grp
+        best = max(healthy_grp, key=lambda x: float(x.get("final_score", 0.0)))
         w_idx = team_wave_idx.get(normalize_team_abbrev(best.get("team")), 0)
         if w_idx == 0:
             locked_if_defer_1 += 1
@@ -161,6 +166,7 @@ def compute_tims_deferral_advice(
             "p_goal_pct": round(p_g * 100.0, 1),
             "wave_idx": w_idx + 1,
             "wave_et": sorted_waves[w_idx]["start_time_et"] if w_idx < len(sorted_waves) else "--",
+            "injury_status": best.get("injury_status"),
         }
 
     if len(sorted_waves) == 1:
@@ -193,6 +199,8 @@ def compute_tims_deferral_advice(
     tims_entries: list[dict[str, Any]] = []
     for g_k, lst in ordered_groups.items():
         for p in lst:
+            if p.get("injury_out"):
+                continue
             t_norm = normalize_team_abbrev(p.get("team"))
             rec = {
                 "player": str(p.get("player", "")),
@@ -202,6 +210,7 @@ def compute_tims_deferral_advice(
                 "final_score": float(p.get("final_score", 0.0)),
                 "group": int(g_k),
                 "wave_idx": team_wave_idx.get(t_norm, 0),
+                "injury_dtd": bool(p.get("injury_dtd")),
             }
             tims_flat.append(rec)
             tims_entries.append(
@@ -219,6 +228,8 @@ def compute_tims_deferral_advice(
     hidden_pool: list[dict[str, Any]] = []
     seen_hidden: set[tuple[str, str]] = set()
     for s in slate_candidates or []:
+        if s.get("injury_out"):
+            continue
         t_norm = normalize_team_abbrev(s.get("team"))
         if t_norm not in unstarted_teams:
             continue
@@ -248,6 +259,8 @@ def compute_tims_deferral_advice(
                 "p_goal_pct": round(poisson_goal_prob(float(s.get("final_score", 0.0))) * 100.0, 1),
                 "wave_idx": w_idx,
                 "wave_et": sorted_waves[w_idx]["start_time_et"] if w_idx < len(sorted_waves) else "--",
+                "injury_status": s.get("injury_status"),
+                "injury_dtd": bool(s.get("injury_dtd")),
             }
         )
     hidden_pool.sort(key=lambda x: x["final_score"], reverse=True)
@@ -299,14 +312,19 @@ def compute_tims_deferral_advice(
             min_fill = min(max_fill, len(carried) + min(len(rem_hidden), max(1, round(0.55 * (max_fill - len(carried))))))
             for _ in range(mc_trials):
                 target_n = int(rng.integers(min_fill, max_fill + 1)) if max_fill > min_fill else max_fill
+                active_hidden = [h for h in rem_hidden if (not h.get("injury_dtd") or rng.random() < 0.65)]
                 need = max(0, target_n - len(carried))
                 added = sorted(
-                    rem_hidden,
+                    active_hidden,
                     key=lambda x: x["final_score"] + float(rng.normal(0.0, 0.08)),
                     reverse=True,
                 )[:need]
+                active_carried = [c for c in carried if (not c.get("injury_dtd") or rng.random() < 0.65)]
+                pool_src = active_carried + added
+                if len(pool_src) < 12:
+                    continue
                 combined = sorted(
-                    carried + added,
+                    pool_src,
                     key=lambda x: x["final_score"] + float(rng.normal(0.0, 0.08)),
                     reverse=True,
                 )
