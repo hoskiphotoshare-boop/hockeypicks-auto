@@ -25,6 +25,7 @@ except ImportError:  # pragma: no cover
     KFold = None
     HAS_SKATER_ML = False
 
+from src.availability import build_injury_matcher
 from src.data_sync import PlayerMatcher, clean_name, normalize_team_abbrev
 
 
@@ -448,9 +449,11 @@ def score_skater_candidates(
     live_skaters: dict[str, dict[str, Any]],
     defense_multipliers: dict[str, float],
     active_mode: str,
+    injury_records: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Score Tim Hortons Challenge groups AND all skaters playing on today/tomorrow's slate."""
     n_half = float(bundle["n_half"])
+    injury_matcher = build_injury_matcher(injury_records or [])
 
     # Pre-score the entire baseline skater pool cleanly in vectorized form (or reuse precomputed snapshot)
     scored_pool = df_baseline.copy()
@@ -567,6 +570,14 @@ def score_skater_candidates(
         def_mult = float(defense_multipliers.get(opp_clean, 1.0))
         final_score = max(0.0, blended * def_mult)
 
+        inj = injury_matcher.match(
+            name=name,
+            name_clean_key=name_clean_key,
+            team=team,
+            position=position,
+            allow_initial_fallback=False,
+        )
+
         item = {
             "player": name,
             "team": team,
@@ -581,12 +592,16 @@ def score_skater_candidates(
             "def_multiplier": round(def_mult, 3),
             "final_score": round(final_score, 3),
             "mode": active_mode,
+            "injury_status": str(inj["status"]) if inj else None,
+            "injury_out": bool(inj.get("is_out")) if inj else False,
+            "injury_dtd": bool(inj.get("is_dtd")) if inj else False,
+            "injury_note": str(inj.get("note") or "") if inj else "",
         }
         if group is not None:
             item["group"] = int(group)
         return item
 
-    # 1. Tim Hortons Hockey Challenge Groups 1–3
+    # 1. Tim Hortons Hockey Challenge Groups 1–3 (prioritize healthy/DTD skaters ahead of confirmed Out/IR)
     tims_groups: dict[str, list[dict[str, Any]]] = {}
     if df_tims is not None and not df_tims.empty:
         scored_tims = []
@@ -603,7 +618,9 @@ def score_skater_candidates(
                     group=int(pick.get("group", 1)),
                 )
             )
-        df_t = pd.DataFrame(scored_tims).sort_values(["group", "final_score"], ascending=[True, False])
+        df_t = pd.DataFrame(scored_tims).sort_values(
+            ["group", "injury_out", "final_score"], ascending=[True, True, False]
+        )
         for g_num, g_df in df_t.groupby("group"):
             tims_groups[str(int(g_num))] = g_df.to_dict(orient="records")
 
@@ -623,7 +640,7 @@ def score_skater_candidates(
 
         scored_pool["team"] = scored_pool.apply(_resolve_live_team, axis=1)
 
-    # 2. Full Slate Top Projected Scorers across active games
+    # 2. Full Slate Top Projected Scorers across active games (exclude confirmed Out/IR skaters)
     slate_scorers: list[dict[str, Any]] = []
     if daily_matchups:
         active_teams_set = set(daily_matchups.keys())
@@ -633,16 +650,16 @@ def score_skater_candidates(
         for _, row in df_slate.iterrows():
             p_team = str(row["team"])
             pid_val = row.get("playerId", 0)
-            slate_scorers.append(
-                _evaluate_player(
-                    name=str(row.get("name", "")),
-                    name_clean_key=str(row.get("name_clean", "")),
-                    team=p_team,
-                    position=str(row.get("position", "")),
-                    opponent=daily_matchups.get(p_team, "UNK"),
-                    player_id=int(pid_val) if pd.notna(pid_val) and pid_val else 0,
-                )
+            evaluated = _evaluate_player(
+                name=str(row.get("name", "")),
+                name_clean_key=str(row.get("name_clean", "")),
+                team=p_team,
+                position=str(row.get("position", "")),
+                opponent=daily_matchups.get(p_team, "UNK"),
+                player_id=int(pid_val) if pd.notna(pid_val) and pid_val else 0,
             )
+            if not evaluated["injury_out"]:
+                slate_scorers.append(evaluated)
         slate_scorers.sort(key=lambda x: x["final_score"], reverse=True)
 
     return {

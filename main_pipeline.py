@@ -35,16 +35,23 @@ from src.skater_model import (
     score_skater_candidates,
     train_skater_goal_model,
 )
+from src.availability import (
+    apply_live_availability_to_profiles,
+    fetch_nhl_injuries,
+    fetch_starting_goalies,
+)
 from src.team_game_model import (
     build_live_team_profiles,
     build_team_star_goalie_history,
     compute_power_rankings_and_defense,
     extract_latest_team_form,
+    load_active_goalie_lookup,
     load_pairwise_bundle,
     predict_upcoming_games,
     save_pairwise_bundle,
     train_pairwise_game_model,
 )
+
 from src.tims_timing import compute_tims_deferral_advice
 from src.tims_tracker import (
     load_tims_history,
@@ -54,7 +61,7 @@ from src.tims_tracker import (
     upsert_tims_snapshot,
 )
 
-ARTIFACT_SCHEMA_VERSION = 2
+ARTIFACT_SCHEMA_VERSION = 3
 
 
 def _determine_skater_target_years(
@@ -204,12 +211,14 @@ def run_training(
             playoff_teams_df=pd.read_csv(pt_path),
         )
 
+    active_goalies_by_team = load_active_goalie_lookup(archive_dir, active_mp_year)
     with open(paths["team_profiles"], "w", encoding="utf-8") as f:
         json.dump(
             {
                 "active_mp_year": active_mp_year,
                 "profiles_regular": profiles_regular,
                 "profiles_playoffs": profiles_playoffs,
+                "active_goalies": active_goalies_by_team,
             },
             f,
         )
@@ -302,6 +311,7 @@ def run_training(
         "skater_bundles": skater_bundles,
         "profiles_regular": profiles_regular,
         "profiles_playoffs": profiles_playoffs,
+        "active_goalies": active_goalies_by_team,
         "df_pool": df_pool,
         "baseline_label": baseline_label,
     }
@@ -339,7 +349,7 @@ def run_inference(
     print("\n=== HOCKEYPICKS AI — INFERENCE STAGE ===")
     print(f"Date (ET): {context['today_str']} | Mode: {run_mode.upper()}")
 
-    print("\n[Infer 1/4] Fetching Live NHL Schedule, Tim Hortons Picks & Active Streaks...")
+    print("\n[Infer 1/4] Fetching Live NHL Schedule, Tim Hortons Picks, Injuries & Goalies...")
     if skip_network:
         schedule_info = {
             "games": [],
@@ -349,9 +359,13 @@ def run_inference(
             "active_mode": "Regular Season",
         }
         df_tims, tims_status = pd.DataFrame(), "skipped_offline"
+        injury_records, injury_status = [], "skipped_offline"
+        starting_goalies, goalie_status = {}, "skipped_offline"
     else:
         schedule_info = fetch_nhl_schedule(context, session=session)
         df_tims, tims_status = fetch_tims_picks(session=session)
+        injury_records, injury_status = fetch_nhl_injuries(session=session, allow_network=True)
+        starting_goalies, goalie_status = fetch_starting_goalies(context["today_str"], session=session, allow_network=True)
 
     daily_matchups = dict(schedule_info["daily_matchups"])
     if df_tims is not None and not df_tims.empty:
@@ -369,6 +383,7 @@ def run_inference(
         skater_bundles = trained_state["skater_bundles"]
         profiles_regular = trained_state["profiles_regular"]
         profiles_playoffs = trained_state["profiles_playoffs"]
+        active_goalies_by_team = trained_state.get("active_goalies") or {}
         df_pool = trained_state["df_pool"].copy()
         baseline_label = trained_state["baseline_label"]
     else:
@@ -401,15 +416,31 @@ def run_inference(
             prof_blob = json.load(f)
         profiles_regular = prof_blob.get("profiles_regular") or {}
         profiles_playoffs = prof_blob.get("profiles_playoffs")
+        active_goalies_by_team = prof_blob.get("active_goalies") or load_active_goalie_lookup(
+            os.path.join(data_dir, "moneypuck"),
+            int(sync_stats.get("active_mp_year") or context["mp_year"]),
+        )
         df_pool = pd.read_csv(paths["skater_pool"])
 
     print(
         f"Mode: {schedule_info['active_mode']} (gameType={schedule_info['active_game_type']}) | "
-        f"Scheduled Games: {len(schedule_info['games'])} | Tims API: {tims_status} ({len(df_tims)} players)"
+        f"Scheduled Games: {len(schedule_info['games'])} | Tims API: {tims_status} ({len(df_tims)} players) | "
+        f"Injuries ({injury_status}): {len(injury_records)} | Starters ({goalie_status}): {len(starting_goalies)}"
     )
 
     print("\n[Infer 2/4] Scoring Team Matchups, Power Rankings & Sharp Betting Edges...")
     is_playoffs = schedule_info["active_game_type"] == 3
+    active_skater_mode = "playoffs" if is_playoffs and "playoffs" in skater_bundles else "regular"
+    if active_skater_mode not in skater_bundles:
+        active_skater_mode = next(iter(skater_bundles.keys()))
+    skater_bundle = skater_bundles[active_skater_mode]
+
+    pred_col = f"base_pred_{active_skater_mode}"
+    if pred_col in df_pool.columns:
+        df_pool["base_pred"] = df_pool[pred_col]
+    elif "base_pred_regular" in df_pool.columns:
+        df_pool["base_pred"] = df_pool["base_pred_regular"]
+
     profiles = (
         {k: dict(v) for k, v in (profiles_playoffs or profiles_regular).items()}
         if is_playoffs
@@ -426,6 +457,13 @@ def run_inference(
             if "Rolling10_GoalDiff" in ctx:
                 profiles[team]["Rolling10_GoalDiff"] = float(ctx["Rolling10_GoalDiff"])
 
+    team_availability = apply_live_availability_to_profiles(
+        profiles=profiles,
+        starting_goalies=starting_goalies,
+        injury_records=injury_records,
+        active_goalies_by_team=active_goalies_by_team,
+        skater_baseline_df=df_pool,
+    )
     power_rankings, defense_multipliers = compute_power_rankings_and_defense(profiles, pairwise_bundle)
     game_predictions, playoff_series = predict_upcoming_games(
         schedule_games=schedule_info["games"],
@@ -433,20 +471,11 @@ def run_inference(
         bundle=pairwise_bundle,
         odds_api_key=odds_key,
         session=session,
+        team_availability=team_availability,
     )
     print(f"Power Rankings computed for {len(power_rankings)} teams | Predicted {len(game_predictions)} games.")
 
     print("\n[Infer 3/4] Scoring Tim Hortons & Full Slate Skaters (Empirical Bayes + Matchup D-Mult)...")
-    active_skater_mode = "playoffs" if is_playoffs and "playoffs" in skater_bundles else "regular"
-    if active_skater_mode not in skater_bundles:
-        active_skater_mode = next(iter(skater_bundles.keys()))
-    skater_bundle = skater_bundles[active_skater_mode]
-
-    pred_col = f"base_pred_{active_skater_mode}"
-    if pred_col in df_pool.columns:
-        df_pool["base_pred"] = df_pool[pred_col]
-    elif "base_pred_regular" in df_pool.columns:
-        df_pool["base_pred"] = df_pool["base_pred_regular"]
 
     active_teams = set(daily_matchups.keys()) | set(daily_matchups.values())
     if skip_network or not active_teams:
@@ -467,6 +496,7 @@ def run_inference(
         live_skaters=live_skaters,
         defense_multipliers=defense_multipliers,
         active_mode=schedule_info["active_mode"],
+        injury_records=injury_records,
     )
 
     if skater_scores["tims_groups"]:
@@ -534,6 +564,12 @@ def run_inference(
         odds_enabled=bool(odds_key),
         tims_history=history_summary,
         tims_timing_advice=tims_timing_advice,
+        availability_summary={
+            "injury_source": injury_status,
+            "injury_count": len(injury_records),
+            "goalie_source": goalie_status,
+            "goalie_count": len(starting_goalies),
+        },
         run_mode=run_mode,
     )
     write_json_report(payload, os.path.join(docs_dir, "data.json"))
