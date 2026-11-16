@@ -350,6 +350,12 @@ def save_skater_bundle(bundle: dict[str, Any], path: str) -> None:
     joblib.dump(bundle, path)
 
 
+def load_skater_bundle(path: str) -> dict[str, Any]:
+    if not HAS_SKATER_ML:
+        raise RuntimeError("Missing ML dependencies (xgboost, scikit-learn, joblib).")
+    return joblib.load(path)
+
+
 def build_inference_baseline(archive_dir: str, active_mp_year: int) -> tuple[pd.DataFrame, str]:
     """Assemble current skater baseline combining prior season/playoffs safely when GP is small."""
     df_curr_reg = _read_optional_csv(os.path.join(archive_dir, f"{active_mp_year}_regular_skaters.csv"))
@@ -374,6 +380,19 @@ def build_inference_baseline(archive_dir: str, active_mp_year: int) -> tuple[pd.
     return df_prepped, source_label
 
 
+def compute_skater_base_predictions(df_baseline: pd.DataFrame, bundle: dict[str, Any]) -> np.ndarray:
+    """Predict clipped XGBoost goals-per-game base predictions for a prepared skater pool."""
+    if df_baseline.empty:
+        return np.array([], dtype=float)
+    X_all = (
+        df_baseline.reindex(columns=bundle["features"], fill_value=0.0)
+        .replace([np.inf, -np.inf], np.nan)
+    )
+    X_imp = bundle["imputer"].transform(X_all)
+    preds = np.asarray(bundle["model"].predict(X_imp), dtype=float).reshape(-1)
+    return np.clip(preds, 0.0, 2.0)
+
+
 def score_skater_candidates(
     bundle: dict[str, Any],
     df_baseline: pd.DataFrame,
@@ -384,19 +403,18 @@ def score_skater_candidates(
     active_mode: str,
 ) -> dict[str, Any]:
     """Score Tim Hortons Challenge groups AND all skaters playing on today/tomorrow's slate."""
-    features: list[str] = bundle["features"]
-    model = bundle["model"]
-    imputer = bundle["imputer"]
     n_half = float(bundle["n_half"])
 
-    # Pre-score the entire baseline skater pool cleanly in vectorized form
+    # Pre-score the entire baseline skater pool cleanly in vectorized form (or reuse precomputed snapshot)
     scored_pool = df_baseline.copy()
     if scored_pool.empty:
         return {"n_half_used": n_half, "tims_groups": {}, "slate_top_scorers": []}
-    X_all = scored_pool.reindex(columns=features, fill_value=0.0).replace([np.inf, -np.inf], np.nan)
-    X_imp = imputer.transform(X_all)
-    preds = np.asarray(model.predict(X_imp), dtype=float).reshape(-1)
-    scored_pool["base_pred"] = np.clip(preds, 0.0, 2.0)
+    if "base_pred" in scored_pool.columns:
+        scored_pool["base_pred"] = (
+            pd.to_numeric(scored_pool["base_pred"], errors="coerce").fillna(0.14).clip(0.0, 2.0)
+        )
+    else:
+        scored_pool["base_pred"] = compute_skater_base_predictions(scored_pool, bundle)
 
     lookup_by_name = {
         row["name_clean"]: row
