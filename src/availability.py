@@ -357,7 +357,14 @@ def apply_live_availability_to_profiles(
                             for mg in mp_goalies
                         ]
                     )
-                    matched_mp = gm.match(name=g_name, team=team, position="G", allow_initial_fallback=True)
+                    matched_mp = gm.match(
+                        name=g_name,
+                        team=team,
+                        position="G",
+                        allow_initial_fallback=True,
+                        require_same_team=True,
+                        require_compatible_pos=True,
+                    )
 
                 base_sv = float(st.get("Starter_SavePct", 0.900))
                 starter_sv = g_info.get("sv_pct")
@@ -396,7 +403,15 @@ def apply_live_availability_to_profiles(
                     x
                     for x in top_sk
                     if not (
-                        (inj := injury_matcher.match(name=x["name"], team=team, position=x["position"]))
+                        (
+                            inj := injury_matcher.match(
+                                name=x["name"],
+                                team=team,
+                                position=x["position"],
+                                require_same_team=True,
+                                require_compatible_pos=True,
+                            )
+                        )
                         and inj.get("is_out")
                     )
                 ]

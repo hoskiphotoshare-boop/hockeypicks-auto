@@ -241,6 +241,8 @@ def compute_tims_deferral_advice(
             team=t_norm,
             position=str(s.get("position", "")),
             allow_initial_fallback=True,
+            require_same_team=True,
+            require_compatible_pos=True,
         )
         if matched is not None:
             continue
