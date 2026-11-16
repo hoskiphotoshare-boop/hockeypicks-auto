@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "status": "bootstrap",
+    "updated_utc": "Awaiting first Actions run",
+    "updated_et": "Awaiting first run",
+    "today_date": "--",
+    "nhl_season": "20262027",
+    "nhl_season_label": "2026-27",
+    "active_mp_year": 2026,
+    "active_mode": "Regular Season",
+    "active_game_type": 2,
+    "skater_baseline_source": "Pending first sync",
+    "tims_status": "pending",
+    "odds_enabled": false,
+    "moneypuck_sync": {
+      "downloaded": 0,
+      "cached": 0,
+      "errors": 0
+    },
+    "game_log_sync": {
+      "total_rows": 0
+    },
+    "models": {
+      "skater": {
+        "mode": "regular",
+        "n_half": 9.23,
+        "samples": 0,
+        "feature_count": 0,
+        "cv_rmse": null
+      },
+      "pairwise": {
+        "games_trained": 0,
+        "optimal_T": 1.5,
+        "oof_log_loss_raw": null,
+        "oof_log_loss_calibrated": null,
+        "oof_accuracy": null
+      }
+    }
+  },
+  "tims_picks": {},
+  "slate_top_scorers": [],
+  "games": [],
+  "power_rankings": [],
+  "playoff_series": [],
+  "feature_importance": {
+    "skater": [],
+    "pairwise": []
+  }
+}
