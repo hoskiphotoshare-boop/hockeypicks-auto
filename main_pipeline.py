@@ -276,14 +276,15 @@ def main() -> int:
     args = parser.parse_args()
 
     buf = io.StringIO()
+    orig_stdout = sys.stdout
 
     class _Tee(io.TextIOBase):
         def write(self, s: str) -> int:
-            sys.stdout.write(s)
+            orig_stdout.write(s)
             return buf.write(s)
 
         def flush(self) -> None:
-            sys.stdout.flush()
+            orig_stdout.flush()
 
     tee = _Tee()
     with redirect_stdout(tee):

@@ -123,8 +123,10 @@ def combine_skater_frames(frames: list[pd.DataFrame]) -> pd.DataFrame:
     else:
         result = pd.merge(metadata, grouped_counts, on="playerId", how="inner")
 
-    if "season" in valid[-1].columns and not valid[-1].empty:
-        result["season"] = int(pd.to_numeric(valid[-1]["season"], errors="coerce").dropna().iloc[0])
+    if "season" in valid[-1].columns and not valid[-1].empty and not result.empty:
+        season_vals = pd.to_numeric(valid[-1]["season"], errors="coerce").dropna()
+        if not season_vals.empty:
+            result["season"] = int(season_vals.iloc[0])
 
     return result
 
