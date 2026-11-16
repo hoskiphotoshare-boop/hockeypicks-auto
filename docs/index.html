@@ -532,19 +532,72 @@
 
     .runner-list {
       border-top: 1px solid var(--border);
-      padding-top: 8px;
-      margin-top: 6px;
+      padding-top: 10px;
+      margin-top: 8px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      font-size: 0.8rem;
+      gap: 6px;
+      font-size: 0.79rem;
+    }
+
+    .runner-subhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-2);
+      margin-bottom: 2px;
     }
 
     .runner-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 8px;
       color: var(--text-1);
+    }
+
+    .runner-left {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .runner-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .runner-rank {
+      color: var(--text-2);
+      font-size: 0.72rem;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .runner-team {
+      color: var(--text-2);
+      font-size: 0.74rem;
+      flex-shrink: 0;
+    }
+
+    .runner-stats {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .runner-live {
+      color: var(--text-2);
+      font-size: 0.72rem;
     }
 
     .controls-row {
@@ -1114,14 +1167,14 @@
         const list = tims[k] || [];
         if (!list.length) return '';
         const top = list[0];
-        const runners = list.slice(1, 5);
+        const runners = list.slice(1);
         return `
           <div class="card highlight">
             <div class="pick-header">
-              <span class="group-label">Group ${esc(k)} Optimal Pick</span>
+              <span class="group-label">Group ${esc(k)} • ${esc(list.length)} Players</span>
               <span class="pill">${esc(top.final_score.toFixed(3))} xG/G</span>
             </div>
-            <div class="pick-name">${esc(top.player)}</div>
+            <div class="pick-name">#1 ${esc(top.player)}</div>
             <div class="pick-meta">${esc(top.team)} vs ${esc(top.opponent)} • Pos: ${esc(top.position)}</div>
             <div class="pick-score-row">
               <div class="pick-score-cell"><span>AI Base</span><strong>${esc(top.base_pred.toFixed(3))}</strong></div>
@@ -1129,10 +1182,21 @@
               <div class="pick-score-cell"><span>Opp D-Mult</span><strong>${esc(top.def_multiplier.toFixed(2))}x</strong></div>
             </div>
             <div class="runner-list">
-              ${runners.map(r => `
-                <div class="runner-item">
-                  <span>${esc(r.player)} (${esc(r.team)})</span>
-                  <strong>${esc(r.final_score.toFixed(3))}</strong>
+              <div class="runner-subhead">
+                <span>All Remaining (${esc(runners.length)})</span>
+                <span>Live / xG/G</span>
+              </div>
+              ${runners.map((r, idx) => `
+                <div class="runner-item" title="AI Base ${esc(r.base_pred.toFixed(3))} • D-Mult ${esc(r.def_multiplier.toFixed(2))}x">
+                  <span class="runner-left">
+                    <span class="runner-rank">#${idx + 2}</span>
+                    <span class="runner-name">${esc(r.player)}</span>
+                    <span class="runner-team">(${esc(r.team)})</span>
+                  </span>
+                  <span class="runner-stats">
+                    <span class="runner-live">${esc(r.live_goals)}/${esc(r.live_gp)}</span>
+                    <strong>${esc(r.final_score.toFixed(3))}</strong>
+                  </span>
                 </div>
               `).join('')}
             </div>
