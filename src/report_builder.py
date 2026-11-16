@@ -122,6 +122,7 @@ def build_dashboard_payload(
     game_predictions: list[dict[str, Any]],
     playoff_series: list[dict[str, Any]],
     odds_enabled: bool,
+    tims_history: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Assemble the complete JSON payload consumed by docs/index.html."""
     now_utc = datetime.now(UTC_TZ)
@@ -155,6 +156,8 @@ def build_dashboard_payload(
     return {
         "meta": meta,
         "tims_picks": skater_scores["tims_groups"],
+        "tims_history": tims_history
+        or {"total_days_logged": 0, "settled_days": 0, "pending_days": 0, "recent_days": []},
         "slate_top_scorers": skater_scores["slate_top_scorers"],
         "games": game_predictions,
         "power_rankings": power_rankings,
