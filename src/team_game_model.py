@@ -167,8 +167,8 @@ def _select_top_team_features(df_team_hist: pd.DataFrame, max_features: int = 20
         for c in df_team_hist.select_dtypes(include=[np.number]).columns
         if c not in TEAM_EXCLUDE_COLS and not df_team_hist[c].isna().all()
     ]
-    X = df_team_hist[numeric_cols].fillna(0.0)
-    y = df_team_hist["playoff_games_played"].fillna(0.0)
+    X = df_team_hist[numeric_cols].replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    y = pd.to_numeric(df_team_hist["playoff_games_played"], errors="coerce").fillna(0.0)
 
     baseline_reg = xgb.XGBRegressor(n_estimators=120, learning_rate=0.05, max_depth=4, random_state=42)
     baseline_reg.fit(X, y)

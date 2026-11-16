@@ -350,6 +350,36 @@ class TestSkaterAndTeamMath(unittest.TestCase):
             self.assertNotIn("<script>alert(1)</script>", content)
             self.assertIn("&lt;script&gt;", content)
 
+    def test_main_tee_stdout_no_recursion(self):
+        import io
+        import sys
+        from unittest.mock import patch
+        import main_pipeline
+
+        fake_stdout = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            fake_payload = {
+                "meta": {"updated_et": "test", "nhl_season_label": "2026-27", "active_mode": "Regular Season"}
+            }
+
+            def _fake_run(**kwargs):
+                print("hello from fake run_pipeline")
+                return fake_payload
+
+            with (
+                patch.object(sys, "stdout", fake_stdout),
+                patch.object(sys, "argv", ["main_pipeline.py", "--docs-dir", tmpdir, "--skip-network"]),
+                patch.object(main_pipeline, "run_pipeline", side_effect=_fake_run),
+            ):
+                rc = main_pipeline.main()
+
+            self.assertEqual(rc, 0)
+            self.assertIn("hello from fake run_pipeline", fake_stdout.getvalue())
+            log_html = os.path.join(tmpdir, "latest_run.html")
+            self.assertTrue(os.path.exists(log_html))
+            with open(log_html, "r", encoding="utf-8") as f:
+                self.assertIn("hello from fake run_pipeline", f.read())
+
     @unittest.skipUnless(HAS_SKATER_ML and HAS_GAME_ML, "xgboost/sklearn not installed in current Python runtime")
     def test_end_to_end_xgboost_training_smoke(self):
         from main_pipeline import run_pipeline
