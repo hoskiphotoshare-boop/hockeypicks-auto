@@ -664,6 +664,7 @@ def predict_upcoming_games(
                 "id": g["id"],
                 "date": g["date"],
                 "is_today": g["is_today"],
+                "start_time_utc": g.get("start_time_utc"),
                 "start_time_et": g["start_time_et"],
                 "game_state": g["game_state"],
                 "game_type": g["game_type"],
