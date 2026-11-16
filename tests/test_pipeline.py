@@ -627,14 +627,47 @@ class TestSkaterAndTeamMath(unittest.TestCase):
             df_l[df_l["Team"] == "EDM"].to_csv(os.path.join(log_dir, "EDM_20252026_gamelog.csv"), index=False)
             df_l[df_l["Team"] == "TOR"].to_csv(os.path.join(log_dir, "TOR_20252026_gamelog.csv"), index=False)
 
-            payload = run_pipeline(
+            models_dir = os.path.join(tmpdir, "models")
+            docs_dir = os.path.join(tmpdir, "docs")
+            train_res = run_pipeline(
                 data_dir=data_dir,
-                models_dir=os.path.join(tmpdir, "models"),
-                docs_dir=os.path.join(tmpdir, "docs"),
+                models_dir=models_dir,
+                docs_dir=docs_dir,
                 skip_network=True,
+                mode="train",
             )
-            self.assertEqual(payload["meta"]["status"], "live")
-            self.assertEqual(len(payload["power_rankings"]), 2)
+            self.assertEqual(train_res["meta"]["status"], "trained")
+            for fname in (
+                "pairwise_game_bundle.joblib",
+                "skater_regular_bundle.joblib",
+                "team_profiles_snapshot.json",
+                "skater_pool.csv.gz",
+                "inference_meta.json",
+            ):
+                self.assertTrue(os.path.exists(os.path.join(models_dir, fname)))
+
+            # Inference stage runs cleanly from saved models even without MoneyPuck CSVs
+            infer_payload = run_pipeline(
+                data_dir=os.path.join(tmpdir, "empty_data"),
+                models_dir=models_dir,
+                docs_dir=docs_dir,
+                skip_network=True,
+                mode="infer",
+            )
+            self.assertEqual(infer_payload["meta"]["status"], "live")
+            self.assertEqual(infer_payload["meta"]["run_mode"], "infer")
+            self.assertEqual(len(infer_payload["power_rankings"]), 2)
+
+            full_payload = run_pipeline(
+                data_dir=data_dir,
+                models_dir=models_dir,
+                docs_dir=docs_dir,
+                skip_network=True,
+                mode="full",
+            )
+            self.assertEqual(full_payload["meta"]["status"], "live")
+            self.assertEqual(full_payload["meta"]["run_mode"], "full")
+            self.assertEqual(len(full_payload["power_rankings"]), 2)
 
 
 if __name__ == "__main__":
