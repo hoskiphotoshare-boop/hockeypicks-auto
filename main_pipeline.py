@@ -39,11 +39,14 @@ from src.team_game_model import (
     build_live_team_profiles,
     build_team_star_goalie_history,
     compute_power_rankings_and_defense,
+    extract_latest_team_form,
     load_pairwise_bundle,
     predict_upcoming_games,
     save_pairwise_bundle,
     train_pairwise_game_model,
 )
+
+ARTIFACT_SCHEMA_VERSION = 2
 from src.tims_tracker import (
     load_tims_history,
     recompute_tims_summary,
@@ -98,7 +101,14 @@ def _inference_artifacts_ready(models_dir: str) -> bool:
     required = ("pairwise", "team_profiles", "skater_pool", "meta")
     has_base = all(os.path.exists(paths[k]) and os.path.getsize(paths[k]) > 0 for k in required)
     has_skater = os.path.exists(paths["skater_regular"]) or os.path.exists(paths["skater_playoffs"])
-    return has_base and has_skater
+    if not (has_base and has_skater):
+        return False
+    try:
+        with open(paths["meta"], "r", encoding="utf-8") as f:
+            meta = json.load(f)
+        return int(meta.get("artifact_schema_version", 1)) >= ARTIFACT_SCHEMA_VERSION
+    except Exception:
+        return False
 
 
 def run_training(
@@ -147,9 +157,10 @@ def run_training(
 
     print("\n[Train 2/4] Syncing Historical & Active NHL Game Logs...")
     max_age = 1e9 if skip_network else 6.0
-    df_master_logs, latest_team_context, log_stats = sync_game_logs(
+    df_master_logs, _, log_stats = sync_game_logs(
         logs_dir, context, session=session, max_active_age_hours=max_age, allow_network=not skip_network
     )
+    latest_team_context = extract_latest_team_form(df_master_logs)
     print(
         f"Game Logs -> {log_stats['total_rows']} team-games compiled "
         f"(New: {log_stats['downloaded']} | Cached: {log_stats['cached']})"
@@ -237,6 +248,7 @@ def run_training(
                 "team",
                 "position",
                 "games_played",
+                "I_F_shotsOnGoal_per_game",
                 "base_pred_regular",
                 "base_pred_playoffs",
             )
@@ -252,6 +264,7 @@ def run_training(
                 "team",
                 "position",
                 "games_played",
+                "I_F_shotsOnGoal_per_game",
                 "base_pred_regular",
                 "base_pred_playoffs",
             ]
@@ -260,6 +273,7 @@ def run_training(
 
     now_et_str = context["now_et"].strftime("%Y-%m-%d %I:%M %p ET")
     inf_meta = {
+        "artifact_schema_version": ARTIFACT_SCHEMA_VERSION,
         "trained_et": now_et_str,
         "active_mp_year": active_mp_year,
         "skater_baseline_source": baseline_label,
@@ -362,7 +376,7 @@ def run_inference(
         sync_stats = inf_meta.get("sync_stats", {"active_mp_year": inf_meta.get("active_mp_year")})
         baseline_label = str(inf_meta.get("skater_baseline_source", "Saved Snapshot"))
 
-        _, latest_team_context, current_log_stats = sync_game_logs(
+        df_curr_logs, _, current_log_stats = sync_game_logs(
             logs_dir,
             context,
             session=session,
@@ -370,6 +384,7 @@ def run_inference(
             allow_network=not skip_network,
             seasons_filter=[context["nhl_season"]],
         )
+        latest_team_context = extract_latest_team_form(df_curr_logs)
         prior_total = int(inf_meta.get("log_stats", {}).get("total_rows", 0))
         log_stats = {
             **current_log_stats,
@@ -401,8 +416,14 @@ def run_inference(
     )
     for team, ctx in latest_team_context.items():
         if team in profiles:
-            profiles[team]["Last_Game_Won"] = int(ctx.get("Last_Game_Won", 0))
-            profiles[team]["Streak"] = int(ctx.get("Current_Streak", 0))
+            profiles[team]["Last_Game_Won"] = int(ctx.get("Last_Game_Won", profiles[team].get("Last_Game_Won", 0)))
+            profiles[team]["Streak"] = int(ctx.get("Current_Streak", profiles[team].get("Streak", 0)))
+            if ctx.get("Last_Game_Date"):
+                profiles[team]["Last_Game_Date"] = str(ctx["Last_Game_Date"])
+            if "Rolling10_WinPct" in ctx:
+                profiles[team]["Rolling10_WinPct"] = float(ctx["Rolling10_WinPct"])
+            if "Rolling10_GoalDiff" in ctx:
+                profiles[team]["Rolling10_GoalDiff"] = float(ctx["Rolling10_GoalDiff"])
 
     power_rankings, defense_multipliers = compute_power_rankings_and_defense(profiles, pairwise_bundle)
     game_predictions, playoff_series = predict_upcoming_games(

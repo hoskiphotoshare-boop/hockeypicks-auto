@@ -7,6 +7,7 @@ import os
 from typing import Any
 
 from src.data_sync import (
+    PlayerMatcher,
     _fetch_with_retries,
     clean_name,
     create_http_session,
@@ -98,19 +99,48 @@ def upsert_tims_snapshot(
     return True
 
 
-def _extract_boxscore_goal_map(payload: dict[str, Any]) -> dict[str, int]:
-    """Extract {clean_name: goals} across dressed skaters from an NHL boxscore payload."""
-    goals_by_name: dict[str, int] = {}
+def _extract_boxscore_goal_entries(
+    payload: dict[str, Any],
+    *,
+    away_team: str = "",
+    home_team: str = "",
+) -> list[dict[str, Any]]:
+    """Extract normalized skater goal records (with team/position/playerId) from an NHL boxscore."""
+    entries: list[dict[str, Any]] = []
     pstats = payload.get("playerByGameStats") or {}
-    for side_key in ("awayTeam", "homeTeam"):
+    resolved_away = normalize_team_abbrev(away_team or (payload.get("awayTeam") or {}).get("abbrev"))
+    resolved_home = normalize_team_abbrev(home_team or (payload.get("homeTeam") or {}).get("abbrev"))
+    for side_key, side_team in (("awayTeam", resolved_away), ("homeTeam", resolved_home)):
         side = pstats.get(side_key) or {}
         for pos_group in ("forwards", "defense"):
             for player in side.get(pos_group, []):
                 name_obj = player.get("name") or {}
                 raw_name = name_obj.get("default", "") if isinstance(name_obj, dict) else str(name_obj)
                 key = clean_name(raw_name)
-                if key:
-                    goals_by_name[key] = max(goals_by_name.get(key, 0), int(player.get("goals", 0) or 0))
+                if not key:
+                    continue
+                goals = int(player.get("goals", 0) or 0)
+                pos_code = str(player.get("position", "") or ("D" if pos_group == "defense" else "F"))
+                entries.append(
+                    {
+                        "player_id": int(player.get("playerId", 0) or 0),
+                        "name": raw_name,
+                        "name_clean": key,
+                        "team": side_team,
+                        "position": pos_code,
+                        "payload": {"goals": goals, "team": side_team, "position": pos_code},
+                    }
+                )
+    return entries
+
+
+def _extract_boxscore_goal_map(payload: dict[str, Any]) -> dict[str, int]:
+    """Extract {clean_name: goals} across dressed skaters from an NHL boxscore payload."""
+    goals_by_name: dict[str, int] = {}
+    for entry in _extract_boxscore_goal_entries(payload):
+        key = entry["name_clean"]
+        goals = int(entry["payload"]["goals"])
+        goals_by_name[key] = max(goals_by_name.get(key, 0), goals)
     return goals_by_name
 
 
@@ -118,8 +148,8 @@ def _fetch_finished_date_goals(
     entry_date: str,
     entry_teams: set[str],
     session: Any,
-) -> dict[str, int] | None:
-    """Return {clean_name: goals} if all relevant NHL games on entry_date are finished, else None."""
+) -> PlayerMatcher | None:
+    """Return a PlayerMatcher of boxscore goals if all relevant NHL games on entry_date are finished, else None."""
     sched_url = f"https://api-web.nhle.com/v1/schedule/{entry_date}"
     res = _fetch_with_retries(session, sched_url, timeout=12, attempts=2)
     if res is None or res.status_code != 200:
@@ -133,28 +163,31 @@ def _fetch_finished_date_goals(
             away = normalize_team_abbrev(game.get("awayTeam", {}).get("abbrev"))
             home = normalize_team_abbrev(game.get("homeTeam", {}).get("abbrev"))
             if not entry_teams or away in entry_teams or home in entry_teams:
-                relevant_games.append(game)
+                relevant_games.append((game, away, home))
 
     if not relevant_games:
         return None
-    if any(g.get("gameState") in ("FUT", "PRE", "LIVE", "CRIT") for g in relevant_games):
+    if any(game.get("gameState") in ("FUT", "PRE", "LIVE", "CRIT") for game, _, _ in relevant_games):
         return None
 
-    finished_ids = [int(g.get("id", 0) or 0) for g in relevant_games if g.get("gameState") in ("FINAL", "OFF")]
-    if not finished_ids:
+    finished_games = [
+        (int(game.get("id", 0) or 0), away, home)
+        for game, away, home in relevant_games
+        if game.get("gameState") in ("FINAL", "OFF")
+    ]
+    if not finished_games:
         return None
 
-    goal_map: dict[str, int] = {}
-    for gid in finished_ids:
+    all_entries: list[dict[str, Any]] = []
+    for gid, away, home in finished_games:
         if gid <= 0:
             continue
         box_url = f"https://api-web.nhle.com/v1/gamecenter/{gid}/boxscore"
         bres = _fetch_with_retries(session, box_url, timeout=12, attempts=2)
         if bres is None or bres.status_code != 200:
             return None
-        for k, v in _extract_boxscore_goal_map(bres.json()).items():
-            goal_map[k] = max(goal_map.get(k, 0), v)
-    return goal_map
+        all_entries.extend(_extract_boxscore_goal_entries(bres.json(), away_team=away, home_team=home))
+    return PlayerMatcher(all_entries)
 
 
 def settle_pending_tims_days(
@@ -185,8 +218,8 @@ def settle_pending_tims_days(
             for cand in grp
             if cand.get("team") and cand.get("team") != "UNK"
         }
-        goal_map = _fetch_finished_date_goals(entry_date, entry_teams, http)
-        if goal_map is None:
+        goal_matcher = _fetch_finished_date_goals(entry_date, entry_teams, http)
+        if goal_matcher is None:
             continue
 
         ai_picks: dict[str, dict[str, Any]] = entry.get("ai_picks") or {}
@@ -198,7 +231,13 @@ def settle_pending_tims_days(
             grp_scored = 0
             for cand in grp:
                 p_name = str(cand.get("player", ""))
-                goals = int(goal_map.get(clean_name(p_name), 0))
+                p_team = str(cand.get("team", "") or "")
+                matched = goal_matcher.match(
+                    name=p_name,
+                    team=p_team,
+                    allow_initial_fallback=True,
+                )
+                goals = int(matched.get("goals", 0)) if matched is not None else 0
                 player_goals[p_name] = goals
                 if goals >= 1:
                     grp_scored += 1
@@ -207,7 +246,13 @@ def settle_pending_tims_days(
             pick = ai_picks.get(g_key) or (grp[0] if grp else None)
             if pick is not None:
                 p_name = str(pick.get("player", ""))
-                goals = int(goal_map.get(clean_name(p_name), 0))
+                p_team = str(pick.get("team", "") or "")
+                matched_pick = goal_matcher.match(
+                    name=p_name,
+                    team=p_team,
+                    allow_initial_fallback=True,
+                )
+                goals = int(matched_pick.get("goals", 0)) if matched_pick is not None else 0
                 group_hits[g_key] = {
                     "player": p_name,
                     "team": str(pick.get("team", "UNK")),
