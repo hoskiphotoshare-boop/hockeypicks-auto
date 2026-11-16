@@ -228,37 +228,119 @@
 
     .modal-card {
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
       background: var(--bg-1);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      border-radius: 16px;
+      padding: 22px 24px;
+      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.6);
       box-sizing: border-box;
       color: var(--text-0);
     }
 
-    .modal-card h2 {
-      margin: 0 0 8px;
-      font-size: 1.02rem;
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
     }
 
-    .modal-card p, .modal-card li {
+    .modal-card h2 {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .modal-desc {
+      margin: 0 0 14px;
+      font-size: 0.84rem;
+      color: var(--text-1);
+      line-height: 1.5;
+    }
+
+    .modal-steps {
+      background: rgba(7, 11, 20, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    .modal-steps-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--emerald);
+    }
+
+    .modal-steps ol {
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    .modal-steps li {
       font-size: 0.82rem;
       color: var(--text-1);
-      line-height: 1.48;
+      line-height: 1.55;
+      margin-bottom: 5px;
     }
 
-    .modal-card ol {
-      padding-left: 18px;
-      margin: 8px 0 12px;
+    .modal-steps li:last-child {
+      margin-bottom: 0;
+    }
+
+    .modal-field-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: 6px;
+    }
+
+    .modal-privacy-note {
+      font-size: 0.74rem;
+      color: var(--text-2);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      color: var(--text-1);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 7px 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-0);
+      border-color: rgba(148, 163, 184, 0.4);
+      background: rgba(255, 255, 255, 0.07);
     }
 
     .modal-actions {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       gap: 8px;
       justify-content: flex-end;
-      margin-top: 12px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
     }
 
     .nav-tabs-desktop {
@@ -607,7 +689,7 @@
       border-radius: 999px;
     }
 
-    pre, code, .console-dump {
+    pre, .console-dump {
       max-width: 100%;
       box-sizing: border-box;
       white-space: pre-wrap;
@@ -621,6 +703,25 @@
       font-size: 0.8rem;
       line-height: 1.45;
       color: var(--text-1);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85em;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: rgba(148, 163, 184, 0.14);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: var(--cyan);
+      word-break: break-word;
+    }
+
+    pre code {
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: inherit;
     }
 
     .empty-state {
@@ -876,20 +977,34 @@
 
   <div id="tokenModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tokenModalTitle" onclick="if (event.target === this) closeTokenModal();">
     <div class="modal-card">
-      <h2 id="tokenModalTitle">Live On-Demand Inference Setup</h2>
-      <p>Because GitHub Pages hosts static files only, pressing <strong>Run Inference</strong> triggers the fast <code>hockeypicks_infer.yml</code> GitHub Action (~20s) using the saved model bundles in this repo.</p>
-      <ol>
-        <li>Create a GitHub <strong>Fine-grained personal access token</strong> scoped only to repository <code>hoskiphotoshare-boop/hockeypicks-auto</code>.</li>
-        <li>Grant only <strong>Actions: Read and write</strong> permission.</li>
-        <li>Paste below — stored strictly in this browser's <code>localStorage</code> and never sent anywhere except <code>api.github.com</code>.</li>
-      </ol>
-      <input id="ghPatInput" class="control-input" type="password" style="width:100%;margin-bottom:8px" placeholder="github_pat_..." autocomplete="off" />
-      <div id="tokenModalError" style="font-size:0.78rem;color:var(--rose);min-height:16px"></div>
+      <div class="modal-head">
+        <h2 id="tokenModalTitle">Live On-Demand Inference Setup</h2>
+        <button class="icon-btn" type="button" aria-label="Close setup modal" onclick="closeTokenModal()">✕</button>
+      </div>
+      <p class="modal-desc">Pressing <strong>⚡ Run Inference</strong> triggers the fast <code>hockeypicks_infer.yml</code> GitHub Action (~20s) using the saved models in this repository.</p>
+
+      <div class="modal-steps">
+        <div class="modal-steps-header">
+          <span>How to get your token</span>
+          <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--cyan);text-decoration:none;font-weight:600;text-transform:none;letter-spacing:0">Create on GitHub ↗</a>
+        </div>
+        <ol>
+          <li>Open <strong>GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</strong>.</li>
+          <li>Under <strong>Repository access</strong>, choose <strong>Only select repositories</strong> → <code id="tokenRepoSlug">hoskiphotoshare-boop/hockeypicks-auto</code>.</li>
+          <li>Under <strong>Repository permissions</strong>, set <strong>Actions</strong> to <strong>Read and write</strong>, then generate and copy the token.</li>
+        </ol>
+      </div>
+
+      <label class="modal-field-label" for="ghPatInput">GitHub Fine-Grained Token</label>
+      <input id="ghPatInput" class="control-input" type="password" style="width:100%" placeholder="github_pat_..." autocomplete="off" />
+      <div class="modal-privacy-note">Stored strictly in this browser's <code>localStorage</code> and sent only to <code>api.github.com</code>.</div>
+      <div id="tokenModalError" style="font-size:0.78rem;color:var(--rose);min-height:18px;margin-top:6px"></div>
+
       <div class="modal-actions">
-        <a href="https://github.com/hoskiphotoshare-boop/hockeypicks-auto/actions/workflows/hockeypicks_infer.yml" target="_blank" rel="noopener" style="margin-right:auto;align-self:center;color:var(--cyan);font-size:0.78rem;text-decoration:none">Open in Actions ↗</a>
-        <button class="nav-btn" type="button" onclick="clearSavedToken()">Clear</button>
-        <button class="nav-btn" type="button" onclick="closeTokenModal()">Cancel</button>
-        <button class="action-btn" type="button" onclick="saveTokenAndRun()">Save &amp; Run</button>
+        <a id="openActionsLink" href="https://github.com/hoskiphotoshare-boop/hockeypicks-auto/actions/workflows/hockeypicks_infer.yml" target="_blank" rel="noopener" style="margin-right:auto;color:var(--cyan);font-size:0.8rem;text-decoration:none;font-weight:600">Open in Actions ↗</a>
+        <button class="btn-ghost" type="button" onclick="clearSavedToken()">Clear</button>
+        <button class="btn-ghost" type="button" onclick="closeTokenModal()">Cancel</button>
+        <button class="action-btn" type="button" style="padding:7px 15px;font-size:0.8rem" onclick="saveTokenAndRun()">Save &amp; Run</button>
       </div>
     </div>
   </div>
@@ -1302,6 +1417,11 @@
     }
 
     function openTokenModal(errMsg = '') {
+      const repo = detectRepoSlug();
+      const repoEl = document.getElementById('tokenRepoSlug');
+      const actionsEl = document.getElementById('openActionsLink');
+      if (repoEl) repoEl.textContent = repo;
+      if (actionsEl) actionsEl.href = `https://github.com/${repo}/actions/workflows/hockeypicks_infer.yml`;
       const saved = localStorage.getItem(PAT_STORAGE_KEY) || '';
       document.getElementById('ghPatInput').value = saved;
       document.getElementById('tokenModalError').textContent = errMsg;
