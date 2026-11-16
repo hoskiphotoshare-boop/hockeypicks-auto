@@ -64,22 +64,22 @@
   <div class="wrap">
     <div class="bar">
       <a href="./index.html">← Back to Dashboard</a>
-      <span class="meta">Season: 2026-27 | Mode: Regular Season | Updated: 2026-11-16 09:44 AM ET</span>
+      <span class="meta">Season: 2026-27 | Mode: Regular Season | Updated: 2026-11-16 06:45 PM ET</span>
     </div>
     <pre>=== HOCKEYPICKS AI — TRAINING STAGE ===
 Date (ET): 2026-11-16 | Season: 2026-27 (20262027)
 
 [Train 1/4] Syncing MoneyPuck Historical &amp; Active CSVs...
-MoneyPuck Sync -&gt; Downloaded: 0 | Cached: 33 | Optional N/A: 3 | Errors: 0 | Active Year: 2026
+MoneyPuck Sync -&gt; Downloaded: 3 | Cached: 30 | Optional N/A: 3 | Errors: 0 | Active Year: 2026
 
 [Train 2/4] Syncing Historical &amp; Active NHL Game Logs...
-Game Logs -&gt; 14646 team-games compiled (New: 0 | Cached: 192)
+Game Logs -&gt; 14646 team-games compiled (New: 32 | Cached: 160)
 
 [Train 3/4] Training Pairwise Team Matchup Model &amp; Calibrating Temperature T...
-Pairwise XGBoost -&gt; 7323 games | Optimal T=1.0 | OOF LogLoss: 0.6497 -&gt; 0.6497 (cal) | Acc=61.8%
+Pairwise XGBoost -&gt; 7323 games | Optimal T=1.0 | OOF LogLoss: 0.6653 -&gt; 0.6653 (cal) | Acc=59.4%
 
 [Train 4/4] Training Skater Goal Models &amp; Saving Compact Inference Snapshots...
-Skater XGBoost (regular) -&gt; 2902 rows × 143 features | Optimal N_half=30.6 | CV RMSE=0.0757
+Skater XGBoost (regular) -&gt; 2903 rows × 143 features | Optimal N_half=30.57 | CV RMSE=0.0757
 Skater XGBoost (playoffs) -&gt; 1155 rows × 143 features | Optimal N_half=16.0 | CV RMSE=0.1346
 Training artifacts saved cleanly under ./models.
 
@@ -87,16 +87,16 @@ Training artifacts saved cleanly under ./models.
 Date (ET): 2026-11-16 | Mode: FULL
 
 [Infer 1/4] Fetching Live NHL Schedule, Tim Hortons Picks, Injuries &amp; Goalies...
-Mode: Regular Season (gameType=2) | Scheduled Games: 13 | Tims API: ok (36 players) | Injuries (espn): 117 | Starters (dailyfaceoff): 4
+Mode: Regular Season (gameType=2) | Scheduled Games: 13 | Tims API: ok (36 players) | Injuries (espn): 115 | Starters (dailyfaceoff): 4
 
 [Infer 2/4] Scoring Team Matchups, Power Rankings &amp; Sharp Betting Edges...
 Power Rankings computed for 32 teams | Predicted 13 games.
 
 [Infer 3/4] Scoring Tim Hortons &amp; Full Slate Skaters (Empirical Bayes + Matchup D-Mult)...
-  Tims Group 1: Cole Caufield (MTL vs NYR) -&gt; Score 0.469 (AI 0.413, Live 12G/20GP)
-  Tims Group 2: Jake DeBrusk (VAN vs UTA) -&gt; Score 0.332 (AI 0.390, Live 5G/20GP)
-  Tims Group 3: Linus Karlsson (VAN vs UTA) -&gt; Score 0.239 (AI 0.224, Live 6G/22GP)
-  Tims Timing Advisor [SELECT_NOW]: Select Current Best Now (Before 7:30 PM ET) (V_now=0.870 vs V_defer=0.796)
+  Tims Group 1: Cole Caufield (MTL vs NYR) -&gt; Score 0.472 (AI 0.411, Live 12G/20GP)
+  Tims Group 2: Jake DeBrusk (VAN vs UTA) -&gt; Score 0.335 (AI 0.396, Live 5G/20GP)
+  Tims Group 3: Linus Karlsson (VAN vs UTA) -&gt; Score 0.257 (AI 0.260, Live 6G/22GP)
+  Tims Timing Advisor [SELECT_NOW]: Select Current Best Now (Before 7:30 PM ET) (V_now=0.887 vs V_defer=0.790)
 
 [Infer 4/4] Settling Forward Tracker &amp; Exporting JSON to docs/...
 Tims History Tracker -&gt; Days: 1 | Settled: 0 (Newly settled: 0, Snapshot saved: True) | AI Hit Rate: 0.0% vs Random: 0.0%
