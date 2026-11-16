@@ -123,6 +123,7 @@ def build_dashboard_payload(
     playoff_series: list[dict[str, Any]],
     odds_enabled: bool,
     tims_history: dict[str, Any] | None = None,
+    run_mode: str = "full",
 ) -> dict[str, Any]:
     """Assemble the complete JSON payload consumed by docs/index.html."""
     now_utc = datetime.now(UTC_TZ)
@@ -130,7 +131,8 @@ def build_dashboard_payload(
 
     meta = {
         "status": "live",
-        "updated_utc": now_utc.strftime("%Y-%m-%d %H:%M UTC"),
+        "run_mode": run_mode,
+        "updated_utc": now_utc.strftime("%Y-%m-%d %H:%M:%S UTC"),
         "updated_et": now_et.strftime("%Y-%m-%d %I:%M %p ET"),
         "today_date": context["today_str"],
         "nhl_season": context["nhl_season"],
