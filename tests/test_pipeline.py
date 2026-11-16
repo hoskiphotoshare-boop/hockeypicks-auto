@@ -123,6 +123,56 @@ class TestDataSyncAndContext(unittest.TestCase):
         self.assertEqual(sched["daily_matchups"], {"EDM": "TOR", "TOR": "EDM"})
         self.assertEqual(len(sched["games"]), 1)
 
+    def test_fetch_nhl_schedule_rolls_slate_to_tomorrow_when_today_finished(self):
+        ctx = get_nhl_season_context(datetime(2026, 11, 15, 23, 43))
+        session = _DummySession(
+            {
+                "https://api-web.nhle.com/v1/schedule/2026-11-15": (
+                    200,
+                    {
+                        "gameWeek": [
+                            {
+                                "date": "2026-11-15",
+                                "games": [
+                                    {
+                                        "id": 1001,
+                                        "gameType": 2,
+                                        "gameState": "OFF",
+                                        "startTimeUTC": "2026-11-16T00:00:00Z",
+                                        "awayTeam": {"abbrev": "EDM", "score": 4},
+                                        "homeTeam": {"abbrev": "TOR", "score": 2},
+                                    }
+                                ],
+                            }
+                        ]
+                    },
+                ),
+                "https://api-web.nhle.com/v1/schedule/2026-11-16": (
+                    200,
+                    {
+                        "gameWeek": [
+                            {
+                                "date": "2026-11-16",
+                                "games": [
+                                    {
+                                        "id": 1002,
+                                        "gameType": 2,
+                                        "gameState": "FUT",
+                                        "startTimeUTC": "2026-11-17T00:00:00Z",
+                                        "awayTeam": {"abbrev": "COL"},
+                                        "homeTeam": {"abbrev": "DAL"},
+                                    }
+                                ],
+                            }
+                        ]
+                    },
+                ),
+            }
+        )
+        sched = fetch_nhl_schedule(ctx, session=session)
+        self.assertEqual(sched["daily_matchups"], {"COL": "DAL", "DAL": "COL"})
+        self.assertEqual(len(sched["games"]), 2)
+
     def test_fetch_tims_picks_parses_groups(self):
         session = _DummySession(
             {
