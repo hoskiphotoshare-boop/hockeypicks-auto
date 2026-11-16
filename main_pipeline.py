@@ -61,7 +61,7 @@ from src.tims_tracker import (
     upsert_tims_snapshot,
 )
 
-ARTIFACT_SCHEMA_VERSION = 3
+ARTIFACT_SCHEMA_VERSION = 4
 
 
 def _determine_skater_target_years(
@@ -452,10 +452,13 @@ def run_inference(
             profiles[team]["Streak"] = int(ctx.get("Current_Streak", profiles[team].get("Streak", 0)))
             if ctx.get("Last_Game_Date"):
                 profiles[team]["Last_Game_Date"] = str(ctx["Last_Game_Date"])
-            if "Rolling10_WinPct" in ctx:
-                profiles[team]["Rolling10_WinPct"] = float(ctx["Rolling10_WinPct"])
-            if "Rolling10_GoalDiff" in ctx:
-                profiles[team]["Rolling10_GoalDiff"] = float(ctx["Rolling10_GoalDiff"])
+            if ctx.get("Recent_Game_Dates"):
+                profiles[team]["Recent_Game_Dates"] = list(ctx["Recent_Game_Dates"])
+            for k in ("Rolling10_WinPct", "Rolling10_GoalDiff", "EWMA_WinPct", "EWMA_GD", "Causal_Elo"):
+                if k in ctx:
+                    profiles[team][k] = float(ctx[k])
+            if "Causal_Elo" in ctx:
+                profiles[team]["Elo"] = float(ctx["Causal_Elo"])
 
     team_availability = apply_live_availability_to_profiles(
         profiles=profiles,
