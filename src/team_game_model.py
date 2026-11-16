@@ -469,7 +469,7 @@ def compute_power_rankings_and_defense(
     profiles: dict[str, dict[str, Any]],
     bundle: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], dict[str, float]]:
-    """Compute AI Power Ratings across all teams and Cell 29's 70/30 Defense Multiplier."""
+    """Compute AI Power Ratings across all teams and centered/damped 70/30 Defense Multiplier."""
     teams = sorted(profiles.keys())
     if not teams:
         return [], {}
@@ -505,14 +505,32 @@ def compute_power_rankings_and_defense(
     league_xga = max(1e-6, float(np.mean(xga_list)))
     league_hdxga = max(1e-6, float(np.mean(hdxga_list)))
 
+    raw_base_mults: dict[str, float] = {}
+    raw_ai_factors: dict[str, float] = {}
+    for team in teams:
+        ga_gp, xga_gp, hdxga_gp = per_team_rates[team]
+        raw_base_mults[team] = (
+            (0.2 * (ga_gp / league_ga))
+            + (0.4 * (xga_gp / league_xga))
+            + (0.4 * (hdxga_gp / league_hdxga))
+        )
+        raw_ai_factors[team] = 1.0 / max(3.0, min(15.0, ai_power_dict[team]))
+
+    mean_base = max(1e-6, float(np.mean(list(raw_base_mults.values()))))
+    mean_ai = max(1e-6, float(np.mean(list(raw_ai_factors.values()))))
+    raw_combined = {
+        t: (0.7 * (raw_base_mults[t] / mean_base)) + (0.3 * (raw_ai_factors[t] / mean_ai))
+        for t in teams
+    }
+    mean_combined = max(1e-6, float(np.mean(list(raw_combined.values()))))
+
     defense_multipliers: dict[str, float] = {}
     rankings: list[dict[str, Any]] = []
 
     for team in teams:
         ga_gp, xga_gp, hdxga_gp = per_team_rates[team]
-        base_mult = (0.2 * (ga_gp / league_ga)) + (0.4 * (xga_gp / league_xga)) + (0.4 * (hdxga_gp / league_hdxga))
-        ai_factor = 7.0 / max(3.0, min(15.0, ai_power_dict[team]))
-        def_mult = float((0.7 * base_mult) + (0.3 * ai_factor))
+        centered_def = raw_combined[team] / mean_combined
+        def_mult = float(np.clip(1.0 + 0.35 * (centered_def - 1.0), 0.85, 1.15))
         defense_multipliers[team] = def_mult
 
         st = profiles[team]
