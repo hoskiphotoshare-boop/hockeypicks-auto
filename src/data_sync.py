@@ -469,8 +469,12 @@ def fetch_nhl_schedule(
                 )
 
     today_games = [g for g in games_out if g["is_today"]]
+    tomorrow_games = [g for g in games_out if not g["is_today"]]
+    upcoming_today = [g for g in today_games if g.get("game_state") in ("FUT", "PRE")]
+    slate_games = today_games if upcoming_today else (tomorrow_games or today_games or games_out)
+
     daily_matchups: dict[str, str] = {}
-    for g in today_games or games_out:
+    for g in slate_games:
         daily_matchups[g["away"]] = g["home"]
         daily_matchups[g["home"]] = g["away"]
 
