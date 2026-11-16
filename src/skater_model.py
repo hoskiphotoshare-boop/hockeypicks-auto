@@ -178,13 +178,24 @@ def prep_dynamic_features(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     return out, feature_cols
 
 
-def compute_empirical_bayes_n_half(prior_rates: np.ndarray | list[float], fallback: float = 9.23) -> float:
-    """Estimate Gamma-Poisson prior half-life N_half = mean(rate) / var(rate)."""
+def compute_empirical_bayes_n_half(
+    prior_rates: np.ndarray | list[float],
+    fallback: float = 9.23,
+    residual_mse: float | None = None,
+) -> float:
+    """Estimate Gamma-Poisson prior half-life N_half = mean(rate) / var_eff.
+
+    Uses conditional out-of-fold residual MSE when available so shrinkage
+    reflects uncertainty around the XGBoost player prior rather than global
+    cross-position variance.
+    """
     arr = np.asarray(prior_rates, dtype=float)
     arr = arr[np.isfinite(arr)]
     if len(arr) < 20:
         return fallback
     mean_rate = float(np.mean(arr))
+    if residual_mse is not None and residual_mse > 1e-8 and mean_rate > 0.0:
+        return round(float(np.clip(mean_rate / residual_mse, 9.0, 25.0)), 2)
     var_rate = float(np.var(arr))
     if var_rate <= 1e-8 or mean_rate <= 0.0:
         return fallback
@@ -310,7 +321,12 @@ def train_skater_goal_model(
         for _, row in top_feats.iterrows()
     ]
 
-    n_half = compute_empirical_bayes_n_half(prior_rates_for_eb, fallback=9.23 if mode == "playoffs" else 14.0)
+    residual_mse = (cv_rmse ** 2) if cv_rmse > 0.0 else None
+    n_half = compute_empirical_bayes_n_half(
+        prior_rates_for_eb,
+        fallback=9.23 if mode == "playoffs" else 25.0,
+        residual_mse=residual_mse,
+    )
 
     return {
         "mode": mode,
