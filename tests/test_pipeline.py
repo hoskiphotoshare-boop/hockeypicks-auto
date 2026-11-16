@@ -11,6 +11,12 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
+from src.availability import (
+    apply_live_availability_to_profiles,
+    classify_injury_status,
+    fetch_nhl_injuries,
+    fetch_starting_goalies,
+)
 from src.data_sync import (
     PlayerMatcher,
     _compute_team_streaks,
@@ -38,10 +44,12 @@ from src.team_game_model import (
     _pairwise_win_prob,
     add_causal_game_log_features,
     apply_temperature,
+    build_team_star_goalie_history,
     compute_power_rankings_and_defense,
     evaluate_kelly_edge,
     expected_remaining_series_games,
     extract_latest_team_form,
+    load_active_goalie_lookup,
     normalize_team_frame_per_game,
     single_game_to_best_of_7_prob,
 )
@@ -53,12 +61,13 @@ from src.tims_tracker import (
 
 
 class _DummyResponse:
-    def __init__(self, status_code: int, payload: dict):
+    def __init__(self, status_code: int, payload: dict | str):
         self.status_code = status_code
         self._payload = payload
+        self.text = payload if isinstance(payload, str) else json.dumps(payload)
 
     def json(self) -> dict:
-        return self._payload
+        return self._payload if isinstance(self._payload, dict) else json.loads(self._payload)
 
 
 class _DummySession:
@@ -1033,6 +1042,201 @@ class TestSkaterAndTeamMath(unittest.TestCase):
         self.assertEqual(res_now["decision"], "SELECT_NOW")
         self.assertLess(res_now["ev_delta"], 0.0)
         self.assertEqual(res_now["current_best"]["1"]["player"], "Auston Matthews")
+
+    def test_injuries_goalies_and_moneypuck_goalie_metrics(self):
+        # 1. ESPN short team abbrev normalization ("LA", "NJ", "SJ", "TB", "UTAH")
+        self.assertEqual(normalize_team_abbrev("LA"), "LAK")
+        self.assertEqual(normalize_team_abbrev("NJ"), "NJD")
+        self.assertEqual(normalize_team_abbrev("SJ"), "SJS")
+        self.assertEqual(normalize_team_abbrev("TB"), "TBL")
+        self.assertEqual(normalize_team_abbrev("UTAH"), "UTA")
+
+        self.assertEqual(classify_injury_status("Injured Reserve", "IR"), ("IR", True, False))
+        self.assertEqual(classify_injury_status("Out", "O"), ("Out", True, False))
+        self.assertEqual(classify_injury_status("Day-To-Day", "DD"), ("DTD", False, True))
+
+        # 2. ESPN JSON parsing (uses block displayName when athlete.team lags)
+        espn_payload = {
+            "injuries": [
+                {
+                    "displayName": "Los Angeles Kings",
+                    "injuries": [
+                        {
+                            "status": "Out",
+                            "type": {"abbreviation": "O", "description": "out"},
+                            "shortComment": "Upper body",
+                            "athlete": {
+                                "displayName": "Adrian Kempe",
+                                "position": {"abbreviation": "RW"},
+                                "team": {"abbreviation": "LA"},
+                            },
+                        }
+                    ],
+                },
+                {
+                    "displayName": "Utah Mammoth",
+                    "injuries": [
+                        {
+                            "status": "Injured Reserve",
+                            "type": {"abbreviation": "IR"},
+                            "shortComment": "Lower body",
+                            "athlete": {
+                                "displayName": "Dylan Guenther",
+                                "position": {"abbreviation": "RW"},
+                                "team": {"abbreviation": "UTA"},
+                            },
+                        },
+                        {
+                            "status": "Day-To-Day",
+                            "type": {"abbreviation": "DD"},
+                            "shortComment": "Game-time decision",
+                            "athlete": {
+                                "displayName": "Logan Cooley",
+                                "position": {"abbreviation": "C"},
+                                "team": {"abbreviation": "UTA"},
+                            },
+                        },
+                    ],
+                },
+            ]
+        }
+        sess_espn = _DummySession(
+            {"https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/injuries": (200, espn_payload)}
+        )
+        inj, src = fetch_nhl_injuries(session=sess_espn, allow_network=True)
+        self.assertEqual(src, "espn")
+        self.assertEqual(len(inj), 3)
+        self.assertEqual(inj[0]["team"], "LAK")
+        self.assertTrue(inj[1]["is_out"])
+        self.assertTrue(inj[2]["is_dtd"])
+
+        # 3. CBS HTML fallback when ESPN returns 500
+        cbs_html = """
+        <div class="TableBaseWrapper">
+          <span class="TeamLogoNameLockup-name">Utah</span>
+          <table><tbody>
+            <tr>
+              <td><span class="CellPlayerName--long">Nick Schmaltz</span></td>
+              <td>C</td><td>Mon, Nov 16</td><td>Upper Body</td><td>Out for Monday</td>
+            </tr>
+          </tbody></table>
+        </div>
+        """
+        sess_cbs = _DummySession(
+            {
+                "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/injuries": (500, {}),
+                "https://www.cbssports.com/nhl/injuries/": (200, cbs_html),
+            }
+        )
+        cbs_inj, cbs_src = fetch_nhl_injuries(session=sess_cbs, allow_network=True)
+        self.assertEqual(cbs_src, "cbssports")
+        self.assertEqual(len(cbs_inj), 1)
+        self.assertEqual(cbs_inj[0]["team"], "UTA")
+        self.assertEqual(cbs_inj[0]["player"], "Nick Schmaltz")
+        self.assertTrue(cbs_inj[0]["is_out"])
+
+        # 4. Daily Faceoff starting goalies __NEXT_DATA__ parsing
+        next_blob = {
+            "props": {
+                "pageProps": {
+                    "date": "2026-11-16",
+                    "data": [
+                        {
+                            "date": "2026-11-16",
+                            "awayTeamAbbreviation": "MTL",
+                            "awayGoalieName": "Jacob Fowler",
+                            "awayNewsStrengthName": "Confirmed",
+                            "awayGoalieSavePercentage": 0.924,
+                            "awayGoalieGoalsAgainstAvg": 2.31,
+                            "homeTeamAbbreviation": "NYR",
+                            "homeGoalieName": "Joonas Korpisalo",
+                            "homeNewsStrengthName": "Confirmed",
+                            "homeGoalieSavePercentage": 0.931,
+                            "homeGoalieGoalsAgainstAvg": 2.10,
+                        }
+                    ],
+                }
+            }
+        }
+        dfo_html = f'<html><script id="__NEXT_DATA__" type="application/json">{json.dumps(next_blob)}</script></html>'
+        sess_dfo = _DummySession({"https://www.dailyfaceoff.com/starting-goalies": (200, dfo_html)})
+        starters, g_src = fetch_starting_goalies("2026-11-16", session=sess_dfo, allow_network=True)
+        self.assertEqual(g_src, "dailyfaceoff")
+        self.assertEqual(starters["NYR"]["goalie_name"], "Joonas Korpisalo")
+        self.assertAlmostEqual(starters["NYR"]["sv_pct"], 0.931)
+
+        # 5. MoneyPuck goalies CSV real columns (xGoals, goals, ongoal) & live availability adjustments
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pd.DataFrame(
+                [
+                    {"team": "NYR", "season": 2026, "situation": "all", "games_played": 20, "xGoals": 50, "goalsAgainst": 45, "xGoalsAgainst": 52, "highDangerxGoalsAgainst": 16}
+                ]
+            ).to_csv(os.path.join(tmpdir, "2026_regular_teams.csv"), index=False)
+            pd.DataFrame(
+                [
+                    {"playerId": 10, "name": "Igor Shesterkin", "team": "NYR", "season": 2026, "situation": "all", "games_played": 15, "xGoals": 40.0, "goals": 30.0, "ongoal": 400.0},
+                    {"playerId": 11, "name": "Joonas Korpisalo", "team": "NYR", "season": 2026, "situation": "all", "games_played": 5, "xGoals": 15.0, "goals": 16.0, "ongoal": 150.0},
+                ]
+            ).to_csv(os.path.join(tmpdir, "2026_regular_goalies.csv"), index=False)
+            _, _, df_go = build_team_star_goalie_history(tmpdir, [2026])
+            self.assertAlmostEqual(float(df_go.iloc[0]["Team_GSAx"]), 9.0)
+            self.assertAlmostEqual(float(df_go.iloc[0]["Starter_SavePct"]), 0.925, places=3)
+            active_goalies = load_active_goalie_lookup(tmpdir, 2026)
+
+            profiles = {
+                "NYR": {"Team_GSAx_per_game": 0.45, "Starter_SavePct": 0.925, "Top3_Points_per_game": 3.0, "Top3_xGoals_per_game": 1.2}
+            }
+            avail = apply_live_availability_to_profiles(
+                profiles=profiles,
+                starting_goalies=starters,
+                injury_records=[],
+                active_goalies_by_team=active_goalies,
+            )
+            # Backup Korpisalo (0.8933 in MoneyPuck vs 0.925 starter) pulls Starter_SavePct down cleanly
+            self.assertLess(profiles["NYR"]["Starter_SavePct"], 0.925)
+            self.assertEqual(avail["NYR"]["goalie"]["name"], "Joonas Korpisalo")
+
+        # 6. score_skater_candidates excludes Out/IR skaters from slate & deprioritizes them in Tims
+        class _RegConst:
+            def predict(self, X):
+                return np.array([0.45, 0.35, 0.30])[: len(X)]
+
+        class _ImpPass:
+            def transform(self, X):
+                return X.to_numpy(dtype=float)
+
+        sk_bundle = {"model": _RegConst(), "imputer": _ImpPass(), "features": ["I_F_shotsOnGoal_per_game"], "n_half": 20.0}
+        base_df = pd.DataFrame(
+            [
+                {"playerId": 1, "name": "Dylan Guenther", "name_clean": "dylan guenther", "team": "UTA", "position": "R", "games_played": 20, "I_F_shotsOnGoal_per_game": 3.5},
+                {"playerId": 2, "name": "Logan Cooley", "name_clean": "logan cooley", "team": "UTA", "position": "C", "games_played": 20, "I_F_shotsOnGoal_per_game": 3.0},
+                {"playerId": 3, "name": "Clayton Keller", "name_clean": "clayton keller", "team": "UTA", "position": "L", "games_played": 20, "I_F_shotsOnGoal_per_game": 2.8},
+            ]
+        )
+        tims_inj_df = pd.DataFrame(
+            [
+                {"group": 1, "player_name": "Dylan Guenther", "name_clean": "dylan guenther", "team": "UTA", "opponentTeam": "VAN", "position": "R"},
+                {"group": 1, "player_name": "Clayton Keller", "name_clean": "clayton keller", "team": "UTA", "opponentTeam": "VAN", "position": "L"},
+            ]
+        )
+        scored = score_skater_candidates(
+            bundle=sk_bundle,
+            df_baseline=base_df,
+            df_tims=tims_inj_df,
+            daily_matchups={"UTA": "VAN", "VAN": "UTA"},
+            live_skaters={},
+            defense_multipliers={"VAN": 1.0, "UTA": 1.0},
+            active_mode="Regular Season",
+            injury_records=inj,
+        )
+        # Healthy Clayton Keller must sort ahead of Out/IR Dylan Guenther in Tims Group 1
+        self.assertEqual(scored["tims_groups"]["1"][0]["player"], "Clayton Keller")
+        self.assertTrue(scored["tims_groups"]["1"][1]["injury_out"])
+        # Out/IR Dylan Guenther must NOT appear in active slate_top_scorers, while DTD Logan Cooley stays flagged
+        slate_names = {s["player"]: s for s in scored["slate_top_scorers"]}
+        self.assertNotIn("Dylan Guenther", slate_names)
+        self.assertIn("Logan Cooley", slate_names)
+        self.assertEqual(slate_names["Logan Cooley"]["injury_status"], "DTD")
 
 
 if __name__ == "__main__":
