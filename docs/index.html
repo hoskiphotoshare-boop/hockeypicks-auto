@@ -882,6 +882,15 @@
       return `<span class="streak-tag streak-neutral">EVEN</span>`;
     }
 
+    function injBadge(status) {
+      if (!status) return '';
+      const s = String(status).toUpperCase();
+      if (s === 'DTD' || s === 'GTD') {
+        return `<span class="pill warn" style="font-size:0.64rem;padding:1px 6px;margin-left:4px">${esc(s)}</span>`;
+      }
+      return `<span class="streak-tag streak-neg" style="font-size:0.64rem;padding:1px 6px;margin-left:4px">${esc(s)}</span>`;
+    }
+
     function renderKpis(meta, slateCount) {
       const sk = (meta.models && meta.models.skater) || {};
       const pw = (meta.models && meta.models.pairwise) || {};
@@ -954,7 +963,7 @@
               <span class="group-label">Group ${esc(k)} • ${esc(list.length)} Players</span>
               <span class="pill">${esc(top.final_score.toFixed(3))} xG/G</span>
             </div>
-            <div class="pick-name">#1 ${esc(top.player)}</div>
+            <div class="pick-name">#1 ${esc(top.player)}${injBadge(top.injury_status)}</div>
             <div class="pick-meta">${esc(top.team)} vs ${esc(top.opponent)} • Pos: ${esc(top.position)}</div>
             <div class="pick-score-row">
               <div class="pick-score-cell"><span>AI Base</span><strong>${esc(top.base_pred.toFixed(3))}</strong></div>
@@ -967,10 +976,10 @@
                 <span>Live / xG/G</span>
               </div>
               ${runners.map((r, idx) => `
-                <div class="runner-item" title="AI Base ${esc(r.base_pred.toFixed(3))} • D-Mult ${esc(r.def_multiplier.toFixed(2))}x">
+                <div class="runner-item" title="${r.injury_note ? esc(r.injury_note) + ' • ' : ''}AI Base ${esc(r.base_pred.toFixed(3))} • D-Mult ${esc(r.def_multiplier.toFixed(2))}x">
                   <span class="runner-left">
                     <span class="runner-rank">#${idx + 2}</span>
-                    <span class="runner-name">${esc(r.player)}</span>
+                    <span class="runner-name">${esc(r.player)}${injBadge(r.injury_status)}</span>
                     <span class="runner-team">(${esc(r.team)})</span>
                   </span>
                   <span class="runner-stats">
@@ -1014,7 +1023,7 @@
         .sort((a, b) => Number(a) - Number(b))
         .map(g => {
           const p = t.current_best[g];
-          return `<span class="runner-name" style="font-size:0.8rem"><strong>G${esc(g)}:</strong> ${esc(p.player)} (${esc(p.team)}, ${esc(p.wave_et || '--')}) • <strong>${esc(Number(p.final_score).toFixed(3))}</strong></span>`;
+          return `<span class="runner-name" style="font-size:0.8rem"><strong>G${esc(g)}:</strong> ${esc(p.player)} (${esc(p.team)}, ${esc(p.wave_et || '--')})${injBadge(p.injury_status)} • <strong>${esc(Number(p.final_score).toFixed(3))}</strong></span>`;
         }).join('<span style="color:var(--text-2)"> | </span>');
 
       const wavesHtml = waves.length ? `
@@ -1038,8 +1047,8 @@
           <strong style="color:var(--cyan)">Unlisted Later-Wave Scorers (Missing Now):</strong>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">
             ${hidden.map(h => `
-              <span class="pill cyan" style="font-size:0.72rem;padding:2px 8px">
-                ${esc(h.player)} (${esc(h.team)} • ${esc(h.wave_et)}) • ${esc(Number(h.final_score).toFixed(3))} xG/G
+              <span class="pill ${h.injury_status ? 'warn' : 'cyan'}" style="font-size:0.72rem;padding:2px 8px">
+                ${esc(h.player)} (${esc(h.team)} • ${esc(h.wave_et)}${h.injury_status ? ' • ' + esc(h.injury_status) : ''}) • ${esc(Number(h.final_score).toFixed(3))} xG/G
               </span>
             `).join('')}
           </div>
@@ -1121,7 +1130,7 @@
       tbody.innerHTML = filtered.map((r, i) => `
         <tr>
           <td>${i + 1}</td>
-          <td><strong>${esc(r.player)}</strong></td>
+          <td><strong>${esc(r.player)}</strong>${injBadge(r.injury_status)}</td>
           <td>${esc(r.team)}</td>
           <td>${esc(r.opponent)}</td>
           <td>${esc(r.position)}</td>
@@ -1184,6 +1193,11 @@
         const edgeBlocks = [];
         if (g.away_edge) edgeBlocks.push(`${esc(g.away)} +EV ${esc(g.away_edge.edge_pct)}% (${esc(g.away_edge.odds)}) • Bet $${esc(g.away_edge.rec_bet)}`);
         if (g.home_edge) edgeBlocks.push(`${esc(g.home)} +EV ${esc(g.home_edge.edge_pct)}% (${esc(g.home_edge.odds)}) • Bet $${esc(g.home_edge.rec_bet)}`);
+        const formatGoalie = (gl) => gl && gl.name ? `${esc(gl.name)} (${gl.sv_pct != null ? esc(Number(gl.sv_pct).toFixed(3)) : '--'} • ${esc(gl.confirmation || 'Expected')})` : 'TBD';
+        const hasGoalies = (g.away_goalie && g.away_goalie.name) || (g.home_goalie && g.home_goalie.name);
+        const injParts = [];
+        if (g.away_injuries && g.away_injuries.length) injParts.push(`${esc(g.away)} Out: ${g.away_injuries.map(esc).join(', ')}`);
+        if (g.home_injuries && g.home_injuries.length) injParts.push(`${esc(g.home)} Out: ${g.home_injuries.map(esc).join(', ')}`);
 
         return `
           <div class="card">
@@ -1204,10 +1218,12 @@
               <span style="color:var(--cyan)">Away Win: <strong>${esc(g.away_prob)}%</strong></span>
               <span style="color:var(--emerald)">Home Win: <strong>${esc(g.home_prob)}%</strong></span>
             </div>
-            <div class="pick-score-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:${edgeBlocks.length ? '8px' : '0'}">
+            <div class="pick-score-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:${(hasGoalies || injParts.length || edgeBlocks.length) ? '8px' : '0'}">
               <div class="pick-score-cell"><span>Goalie GSAx (A vs H)</span><strong>${esc(g.away_gsax)} vs ${esc(g.home_gsax)}</strong></div>
               <div class="pick-score-cell"><span>Star Top-3 Pts (A vs H)</span><strong>${esc(g.away_top3_pts)} vs ${esc(g.home_top3_pts)}</strong></div>
             </div>
+            ${hasGoalies ? `<div style="font-size:0.75rem;color:var(--text-2);margin-bottom:${(injParts.length || edgeBlocks.length) ? '6px' : '0'}">🥅 <strong>Starters:</strong> ${esc(g.away)}: ${formatGoalie(g.away_goalie)} &nbsp;|&nbsp; ${esc(g.home)}: ${formatGoalie(g.home_goalie)}</div>` : ''}
+            ${injParts.length ? `<div style="font-size:0.74rem;color:#fda4af;margin-bottom:${edgeBlocks.length ? '6px' : '0'}">🏥 ${injParts.join(' &nbsp;|&nbsp; ')}</div>` : ''}
             ${edgeBlocks.length ? `<div class="pill warn" style="width:100%;justify-content:center">${edgeBlocks.join(' | ')}</div>` : ''}
           </div>
         `;
