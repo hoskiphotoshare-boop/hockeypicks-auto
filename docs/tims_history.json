@@ -1,0 +1,21 @@
+{
+  "days": [],
+  "summary": {
+    "total_days_logged": 0,
+    "settled_days": 0,
+    "pending_days": 0,
+    "ai_hits": 0,
+    "ai_possible": 0,
+    "ai_hit_rate_pct": 0.0,
+    "random_expected_pct": 0.0,
+    "hit_1plus_days": 0,
+    "hit_2plus_days": 0,
+    "sweep_3_days": 0,
+    "group_hit_rates": {
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0
+    },
+    "recent_days": []
+  }
+}
