@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-16 12:03 AM ET",
+      "captured_et": "2026-11-16 12:12 AM ET",
       "model_n_half": 25.0,
       "groups": {
         "1": [
@@ -17,8 +17,8 @@
             "base_pred": 0.357,
             "live_gp": 20,
             "live_goals": 12,
-            "def_multiplier": 0.971,
-            "final_score": 0.451
+            "def_multiplier": 0.972,
+            "final_score": 0.452
           },
           {
             "player": "Pavel Dorofeyev",
@@ -39,8 +39,8 @@
             "base_pred": 0.371,
             "live_gp": 21,
             "live_goals": 5,
-            "def_multiplier": 1.087,
-            "final_score": 0.337
+            "def_multiplier": 1.091,
+            "final_score": 0.338
           },
           {
             "player": "Alexis Lafreni\u00e8re",
@@ -72,7 +72,7 @@
             "base_pred": 0.212,
             "live_gp": 12,
             "live_goals": 3,
-            "def_multiplier": 1.087,
+            "def_multiplier": 1.091,
             "final_score": 0.244
           },
           {
@@ -83,8 +83,8 @@
             "base_pred": 0.273,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.087,
-            "final_score": 0.232
+            "def_multiplier": 1.091,
+            "final_score": 0.233
           },
           {
             "player": "Vincent Trocheck",
@@ -94,8 +94,8 @@
             "base_pred": 0.26,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.087,
-            "final_score": 0.224
+            "def_multiplier": 1.091,
+            "final_score": 0.225
           },
           {
             "player": "Barrett Hayton",
@@ -105,8 +105,8 @@
             "base_pred": 0.258,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.087,
-            "final_score": 0.223
+            "def_multiplier": 1.091,
+            "final_score": 0.224
           },
           {
             "player": "Nicholas Suzuki",
@@ -116,7 +116,7 @@
             "base_pred": 0.14,
             "live_gp": 0,
             "live_goals": 0,
-            "def_multiplier": 0.971,
+            "def_multiplier": 0.972,
             "final_score": 0.136
           }
         ],
@@ -149,10 +149,10 @@
             "opponent": "UTA",
             "position": "F",
             "base_pred": 0.344,
-            "live_gp": 19,
+            "live_gp": 20,
             "live_goals": 5,
             "def_multiplier": 0.973,
-            "final_score": 0.301
+            "final_score": 0.294
           },
           {
             "player": "J.T. Miller",
@@ -171,10 +171,10 @@
             "opponent": "UTA",
             "position": "F",
             "base_pred": 0.256,
-            "live_gp": 21,
+            "live_gp": 22,
             "live_goals": 7,
             "def_multiplier": 0.973,
-            "final_score": 0.284
+            "final_score": 0.278
           },
           {
             "player": "Oliver Bjorkstrand",
@@ -195,8 +195,8 @@
             "base_pred": 0.2,
             "live_gp": 21,
             "live_goals": 6,
-            "def_multiplier": 1.087,
-            "final_score": 0.26
+            "def_multiplier": 1.091,
+            "final_score": 0.261
           },
           {
             "player": "Alex Newhook",
@@ -206,7 +206,7 @@
             "base_pred": 0.235,
             "live_gp": 20,
             "live_goals": 5,
-            "def_multiplier": 0.971,
+            "def_multiplier": 0.972,
             "final_score": 0.235
           },
           {
@@ -226,10 +226,10 @@
             "opponent": "UTA",
             "position": "F",
             "base_pred": 0.14,
-            "live_gp": 21,
+            "live_gp": 22,
             "live_goals": 7,
             "def_multiplier": 0.973,
-            "final_score": 0.222
+            "final_score": 0.217
           },
           {
             "player": "Juraj Slafkovsky",
@@ -239,32 +239,32 @@
             "base_pred": 0.14,
             "live_gp": 20,
             "live_goals": 2,
-            "def_multiplier": 0.971,
+            "def_multiplier": 0.972,
             "final_score": 0.119
           }
         ],
         "3": [
-          {
-            "player": "Liam Ohgren",
-            "team": "VAN",
-            "opponent": "UTA",
-            "position": "F",
-            "base_pred": 0.221,
-            "live_gp": 20,
-            "live_goals": 6,
-            "def_multiplier": 0.973,
-            "final_score": 0.249
-          },
           {
             "player": "Linus Karlsson",
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
             "base_pred": 0.25,
-            "live_gp": 21,
-            "live_goals": 4,
+            "live_gp": 22,
+            "live_goals": 6,
             "def_multiplier": 0.973,
-            "final_score": 0.217
+            "final_score": 0.254
+          },
+          {
+            "player": "Liam Ohgren",
+            "team": "VAN",
+            "opponent": "UTA",
+            "position": "F",
+            "base_pred": 0.221,
+            "live_gp": 21,
+            "live_goals": 6,
+            "def_multiplier": 0.973,
+            "final_score": 0.244
           },
           {
             "player": "Eeli Tolvanen",
@@ -278,15 +278,26 @@
             "final_score": 0.196
           },
           {
+            "player": "Filip Chytil",
+            "team": "VAN",
+            "opponent": "UTA",
+            "position": "F",
+            "base_pred": 0.17,
+            "live_gp": 9,
+            "live_goals": 2,
+            "def_multiplier": 0.973,
+            "final_score": 0.179
+          },
+          {
             "player": "Marco Rossi",
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
             "base_pred": 0.199,
-            "live_gp": 19,
+            "live_gp": 20,
             "live_goals": 3,
             "def_multiplier": 0.973,
-            "final_score": 0.176
+            "final_score": 0.172
           },
           {
             "player": "Paul Cotter",
@@ -294,10 +305,10 @@
             "opponent": "UTA",
             "position": "F",
             "base_pred": 0.157,
-            "live_gp": 20,
+            "live_gp": 21,
             "live_goals": 4,
             "def_multiplier": 0.973,
-            "final_score": 0.171
+            "final_score": 0.167
           },
           {
             "player": "Jack McBain",
@@ -307,7 +318,7 @@
             "base_pred": 0.149,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.087,
+            "def_multiplier": 1.091,
             "final_score": 0.159
           },
           {
@@ -318,7 +329,7 @@
             "base_pred": 0.165,
             "live_gp": 20,
             "live_goals": 3,
-            "def_multiplier": 0.971,
+            "def_multiplier": 0.972,
             "final_score": 0.154
           },
           {
@@ -340,19 +351,8 @@
             "base_pred": 0.194,
             "live_gp": 13,
             "live_goals": 1,
-            "def_multiplier": 0.971,
+            "def_multiplier": 0.972,
             "final_score": 0.149
-          },
-          {
-            "player": "Filip Chytil",
-            "team": "VAN",
-            "opponent": "UTA",
-            "position": "F",
-            "base_pred": 0.17,
-            "live_gp": 8,
-            "live_goals": 0,
-            "def_multiplier": 0.973,
-            "final_score": 0.125
           },
           {
             "player": "Kirby Dach",
@@ -362,7 +362,7 @@
             "base_pred": 0.132,
             "live_gp": 18,
             "live_goals": 2,
-            "def_multiplier": 0.971,
+            "def_multiplier": 0.972,
             "final_score": 0.12
           },
           {
@@ -373,7 +373,7 @@
             "base_pred": 0.136,
             "live_gp": 20,
             "live_goals": 2,
-            "def_multiplier": 0.971,
+            "def_multiplier": 0.972,
             "final_score": 0.116
           },
           {
@@ -384,7 +384,7 @@
             "base_pred": 0.113,
             "live_gp": 21,
             "live_goals": 2,
-            "def_multiplier": 1.087,
+            "def_multiplier": 1.091,
             "final_score": 0.114
           },
           {
@@ -395,7 +395,7 @@
             "base_pred": 0.09,
             "live_gp": 21,
             "live_goals": 1,
-            "def_multiplier": 1.087,
+            "def_multiplier": 1.091,
             "final_score": 0.077
           },
           {
@@ -406,7 +406,7 @@
             "base_pred": 0.083,
             "live_gp": 8,
             "live_goals": 0,
-            "def_multiplier": 1.087,
+            "def_multiplier": 1.091,
             "final_score": 0.068
           }
         ]
@@ -420,8 +420,8 @@
           "base_pred": 0.357,
           "live_gp": 20,
           "live_goals": 12,
-          "def_multiplier": 0.971,
-          "final_score": 0.451
+          "def_multiplier": 0.972,
+          "final_score": 0.452
         },
         "2": {
           "player": "Gabe Perreault",
@@ -435,15 +435,15 @@
           "final_score": 0.324
         },
         "3": {
-          "player": "Liam Ohgren",
+          "player": "Linus Karlsson",
           "team": "VAN",
           "opponent": "UTA",
           "position": "F",
-          "base_pred": 0.221,
-          "live_gp": 20,
+          "base_pred": 0.25,
+          "live_gp": 22,
           "live_goals": 6,
           "def_multiplier": 0.973,
-          "final_score": 0.249
+          "final_score": 0.254
         }
       },
       "settled": false,
@@ -476,7 +476,7 @@
           "1": {
             "player": "Cole Caufield",
             "team": "MTL",
-            "score": 0.451,
+            "score": 0.452,
             "scored": null
           },
           "2": {
@@ -486,9 +486,9 @@
             "scored": null
           },
           "3": {
-            "player": "Liam Ohgren",
+            "player": "Linus Karlsson",
             "team": "VAN",
-            "score": 0.249,
+            "score": 0.254,
             "scored": null
           }
         }
