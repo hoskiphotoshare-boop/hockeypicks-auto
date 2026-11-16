@@ -40,6 +40,13 @@ from src.team_game_model import (
     save_pairwise_bundle,
     train_pairwise_game_model,
 )
+from src.tims_tracker import (
+    load_tims_history,
+    recompute_tims_summary,
+    save_tims_history,
+    settle_pending_tims_days,
+    upsert_tims_snapshot,
+)
 
 
 def _determine_skater_target_years(
@@ -247,6 +254,33 @@ def run_pipeline(
         print("  Tims Groups unavailable right now; generated full slate top projected scorers.")
 
     print("\n[6/6] Exporting Structured JSON & Terminal Run Log to docs/...")
+    tims_history_path = os.path.join(docs_dir, "tims_history.json")
+    tims_history = load_tims_history(tims_history_path)
+    now_et_str = context["now_et"].strftime("%Y-%m-%d %I:%M %p ET")
+    settled_now = settle_pending_tims_days(
+        tims_history,
+        today_str=context["today_str"],
+        settled_et=now_et_str,
+        session=session,
+        allow_network=not skip_network,
+    )
+    logged_now = upsert_tims_snapshot(
+        tims_history,
+        date_str=context["today_str"],
+        context=context,
+        schedule_info=schedule_info,
+        skater_bundle=skater_bundle,
+        tims_groups=skater_scores["tims_groups"],
+        captured_et=now_et_str,
+    )
+    history_summary = recompute_tims_summary(tims_history)
+    save_tims_history(tims_history, tims_history_path)
+    print(
+        f"Tims History Tracker -> Days: {history_summary['total_days_logged']} | "
+        f"Settled: {history_summary['settled_days']} (Newly settled: {settled_now}, Snapshot saved: {logged_now}) | "
+        f"AI Hit Rate: {history_summary['ai_hit_rate_pct']}% vs Random: {history_summary['random_expected_pct']}%"
+    )
+
     payload = build_dashboard_payload(
         context=context,
         sync_stats=sync_stats,
@@ -261,6 +295,7 @@ def run_pipeline(
         game_predictions=game_predictions,
         playoff_series=playoff_series,
         odds_enabled=bool(odds_key),
+        tims_history=history_summary,
     )
     write_json_report(payload, os.path.join(docs_dir, "data.json"))
     print("Pipeline complete.")
