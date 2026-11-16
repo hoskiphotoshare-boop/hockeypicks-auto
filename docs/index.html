@@ -1194,6 +1194,9 @@
         if (g.away_edge) edgeBlocks.push(`${esc(g.away)} +EV ${esc(g.away_edge.edge_pct)}% (${esc(g.away_edge.odds)}) • Bet $${esc(g.away_edge.rec_bet)}`);
         if (g.home_edge) edgeBlocks.push(`${esc(g.home)} +EV ${esc(g.home_edge.edge_pct)}% (${esc(g.home_edge.odds)}) • Bet $${esc(g.home_edge.rec_bet)}`);
         const formatGoalie = (gl) => gl && gl.name ? `${esc(gl.name)} (${gl.sv_pct != null ? esc(Number(gl.sv_pct).toFixed(3)) : '--'} • ${esc(gl.confirmation || 'Expected')})` : 'TBD';
+        const b2bTag = (isB2B, is3in4) => isB2B
+          ? `<span class="pill warn" style="font-size:0.64rem;padding:1px 6px;margin-left:4px">B2B</span>`
+          : (is3in4 ? `<span class="pill cyan" style="font-size:0.64rem;padding:1px 6px;margin-left:4px">3-in-4</span>` : '');
         const hasGoalies = (g.away_goalie && g.away_goalie.name) || (g.home_goalie && g.home_goalie.name);
         const injParts = [];
         if (g.away_injuries && g.away_injuries.length) injParts.push(`${esc(g.away)} Out: ${g.away_injuries.map(esc).join(', ')}`);
@@ -1206,9 +1209,9 @@
               <span class="pill">${esc(g.game_state)}</span>
             </div>
             <div class="matchup-teams">
-              <span>${esc(g.away)} ${streakBadge(g.away_streak)}</span>
+              <span>${esc(g.away)} ${streakBadge(g.away_streak)}${b2bTag(g.away_b2b, g.away_3in4)}</span>
               <span style="color:var(--text-2);font-size:0.85rem">@</span>
-              <span>${streakBadge(g.home_streak)} ${esc(g.home)}</span>
+              <span>${b2bTag(g.home_b2b, g.home_3in4)}${streakBadge(g.home_streak)} ${esc(g.home)}</span>
             </div>
             <div class="prob-bar-track">
               <div class="prob-bar-away" style="width:${esc(g.away_prob)}%"></div>
