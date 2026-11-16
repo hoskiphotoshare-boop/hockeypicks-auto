@@ -210,6 +210,33 @@ class TestSkaterAndTeamMath(unittest.TestCase):
         self.assertGreaterEqual(n_half, 2.0)
         self.assertLessEqual(n_half, 35.0)
 
+    def test_prep_dynamic_features_no_target_duplicate_or_leak(self):
+        df = pd.DataFrame(
+            [
+                {
+                    "playerId": 1,
+                    "season": 2025,
+                    "name": "Player A",
+                    "team": "EDM",
+                    "position": "C",
+                    "situation": "all",
+                    "games_played": 20,
+                    "I_F_goals": 10,
+                    "I_F_shotsOnGoal": 80,
+                    "target_gp": 40,
+                    "target_goals": 16,
+                    "target_goals_per_game": 0.40,
+                }
+            ]
+        )
+        prepped, feats = prep_dynamic_features(df)
+        self.assertEqual(list(prepped.columns).count("target_goals_per_game"), 1)
+        self.assertEqual(prepped["target_goals_per_game"].ndim, 1)
+        self.assertAlmostEqual(float(prepped["target_goals_per_game"].iloc[0]), 0.40)
+        for forbidden in ("target_gp", "target_goals", "target_gp_per_game", "target_goals_per_game"):
+            self.assertNotIn(forbidden, feats)
+        self.assertIn("I_F_shotsOnGoal_per_game", feats)
+
     def test_temperature_markov_series_and_kelly(self):
         p_cal = apply_temperature(0.90, T=3.0)
         self.assertGreater(p_cal, 0.5)
@@ -437,7 +464,7 @@ class TestSkaterAndTeamMath(unittest.TestCase):
 
             logs = []
             for idx in range(60):
-                d = f"2025-11-{(idx % 28) + 1:02d}"
+                d = f"2025-{(idx // 28) + 10:02d}-{(idx % 28) + 1:02d}"
                 w = 1 if idx % 2 == 0 else 0
                 logs.append({"Season": "20252026", "Team": "EDM", "Date": d, "GameType": 2, "Opponent": "TOR", "Is_Home": 1, "Team_Score": 4, "Opp_Score": 2, "Won": w, "Last_Game_Won": 1, "Current_Streak": 1})
                 logs.append({"Season": "20252026", "Team": "TOR", "Date": d, "GameType": 2, "Opponent": "EDM", "Is_Home": 0, "Team_Score": 2, "Opp_Score": 4, "Won": 1 - w, "Last_Game_Won": 0, "Current_Streak": -1})

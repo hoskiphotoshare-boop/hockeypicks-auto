@@ -51,6 +51,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run Unit & End-to-End Smoke Tests
+        if: steps.tz_check.outputs.should_run == 'true'
+        run: python -m unittest discover -s tests -v
+
       - name: Restore Cached MoneyPuck & NHL Game Logs
         if: steps.tz_check.outputs.should_run == 'true'
         uses: actions/cache@v4
