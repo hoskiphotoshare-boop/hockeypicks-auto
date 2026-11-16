@@ -524,6 +524,7 @@ def score_skater_candidates(
                 team=team,
                 position=position,
                 player_id=player_id,
+                require_compatible_pos=True,
             )
             or {}
         )
@@ -539,6 +540,7 @@ def score_skater_candidates(
             team=team,
             position=position,
             player_id=resolved_pid,
+            require_compatible_pos=True,
         )
         prior_sog_gp = 0.0
         if baseline_row is not None:
@@ -576,6 +578,8 @@ def score_skater_candidates(
             team=team,
             position=position,
             allow_initial_fallback=False,
+            require_same_team=True,
+            require_compatible_pos=True,
         )
 
         item = {
@@ -635,6 +639,7 @@ def score_skater_candidates(
                 team=str(r.get("team", "UNK") or "UNK"),
                 position=str(r.get("position", "") or ""),
                 player_id=pid_int,
+                require_compatible_pos=True,
             )
             return str(matched_live.get("team", r["team"])) if matched_live else str(r["team"])
 

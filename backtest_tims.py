@@ -18,6 +18,7 @@ from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 
 from src.data_sync import (
     NHL_TEAMS,
+    PlayerMatcher,
     _fetch_with_retries,
     clean_name,
     create_http_session,
@@ -219,11 +220,11 @@ def _build_prior_skater_lookup(
     archive_dir: str,
     baseline_frames: list[pd.DataFrame],
     skater_bundle: dict[str, Any],
-) -> tuple[dict[int, dict[str, float]], dict[str, dict[str, float]]]:
-    """Pre-score strictly pre-period baseline skaters into fast id/name lookups."""
+) -> PlayerMatcher:
+    """Pre-score strictly pre-period baseline skaters into a PlayerMatcher lookup."""
     valid_frames = [f for f in baseline_frames if not f.empty]
     if not valid_frames:
-        return {}, {}
+        return PlayerMatcher([])
     df_comb = combine_skater_frames(valid_frames)
     df_prepped, _ = prep_dynamic_features(df_comb)
     df_prepped["name_clean"] = df_prepped["name"].apply(clean_name)
@@ -234,12 +235,12 @@ def _build_prior_skater_lookup(
     preds = np.asarray(skater_bundle["model"].predict(X_imp), dtype=float).reshape(-1)
     df_prepped["base_pred"] = np.clip(preds, 0.0, 2.0)
 
-    by_id: dict[int, dict[str, float]] = {}
-    by_name: dict[str, dict[str, float]] = {}
+    entries: list[dict[str, Any]] = []
     for _, row in df_prepped.sort_values("games_played", ascending=False).iterrows():
         gp = float(row.get("games_played", 0.0) or 0.0)
         goals = float(row.get("I_F_goals", 0.0) or 0.0)
         shots = float(row.get("I_F_shotsOnGoal", 0.0) or 0.0)
+        pid = int(row.get("playerId", 0) or 0)
         rec = {
             "base_pred": float(row["base_pred"]),
             "prior_gp": gp,
@@ -247,13 +248,17 @@ def _build_prior_skater_lookup(
             "prior_sog_gp": (shots / gp) if gp > 0 else 0.0,
             "prior_rate": (goals / gp) if gp > 0 else 0.14,
         }
-        pid = int(row.get("playerId", 0) or 0)
-        if pid > 0 and pid not in by_id:
-            by_id[pid] = rec
-        nc = str(row.get("name_clean", ""))
-        if nc and nc not in by_name:
-            by_name[nc] = rec
-    return by_id, by_name
+        entries.append(
+            {
+                "player_id": pid,
+                "name": str(row.get("name", "") or ""),
+                "name_clean": str(row.get("name_clean", "") or ""),
+                "team": str(row.get("team", "UNK") or "UNK"),
+                "position": str(row.get("position", "") or ""),
+                "payload": rec,
+            }
+        )
+    return PlayerMatcher(entries)
 
 
 def _build_causal_prior_defense(
@@ -337,7 +342,7 @@ def evaluate_walk_forward_backtest(
     baseline_frames = [
         _read_optional_csv(os.path.join(archive_dir, fname)) for fname in baseline_files
     ]
-    prior_by_id, prior_by_name = _build_prior_skater_lookup(archive_dir, baseline_frames, skater_bundle)
+    prior_matcher = _build_prior_skater_lookup(archive_dir, baseline_frames, skater_bundle)
     ai_factors, prior_base_mults, prior_lg_ga = _build_causal_prior_defense(
         archive_dir=archive_dir,
         df_master_logs=df_master_logs,
@@ -377,7 +382,15 @@ def evaluate_walk_forward_backtest(
         for row in day_df.itertuples(index=False):
             pid = int(row.player_id)
             nc = str(row.name_clean)
-            prior = prior_by_id.get(pid) or prior_by_name.get(nc)
+            prior = prior_matcher.match(
+                name=str(getattr(row, "name", nc) or nc),
+                name_clean_key=nc,
+                team=str(row.team),
+                position=str(getattr(row, "position", "") or ""),
+                player_id=pid,
+                allow_initial_fallback=True,
+                require_compatible_pos=True,
+            )
             base_pred = prior["base_pred"] if prior else 0.14
             prior_gp = prior["prior_gp"] if prior else 0.0
             prior_goals = prior["prior_goals"] if prior else 0.0

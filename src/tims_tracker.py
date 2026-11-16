@@ -232,10 +232,14 @@ def settle_pending_tims_days(
             for cand in grp:
                 p_name = str(cand.get("player", ""))
                 p_team = str(cand.get("team", "") or "")
+                p_pos = str(cand.get("position", "") or "")
                 matched = goal_matcher.match(
                     name=p_name,
                     team=p_team,
+                    position=p_pos,
                     allow_initial_fallback=True,
+                    require_same_team=True,
+                    require_compatible_pos=True,
                 )
                 goals = int(matched.get("goals", 0)) if matched is not None else 0
                 player_goals[p_name] = goals
@@ -247,10 +251,14 @@ def settle_pending_tims_days(
             if pick is not None:
                 p_name = str(pick.get("player", ""))
                 p_team = str(pick.get("team", "") or "")
+                p_pos = str(pick.get("position", "") or "")
                 matched_pick = goal_matcher.match(
                     name=p_name,
                     team=p_team,
+                    position=p_pos,
                     allow_initial_fallback=True,
+                    require_same_team=True,
+                    require_compatible_pos=True,
                 )
                 goals = int(matched_pick.get("goals", 0)) if matched_pick is not None else 0
                 group_hits[g_key] = {
