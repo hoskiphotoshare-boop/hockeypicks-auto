@@ -5,8 +5,8 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-16 09:44 AM ET",
-      "model_n_half": 30.6,
+      "captured_et": "2026-11-16 06:45 PM ET",
+      "model_n_half": 30.57,
       "groups": {
         "1": [
           {
@@ -14,88 +14,88 @@
             "team": "MTL",
             "opponent": "NYR",
             "position": "F",
-            "base_pred": 0.413,
+            "base_pred": 0.411,
             "live_gp": 20,
             "live_goals": 12,
-            "def_multiplier": 0.961,
-            "final_score": 0.469
+            "def_multiplier": 0.97,
+            "final_score": 0.472
           },
           {
             "player": "Nicholas Suzuki",
             "team": "MTL",
             "opponent": "NYR",
             "position": "F",
-            "base_pred": 0.446,
+            "base_pred": 0.444,
             "live_gp": 14,
             "live_goals": 8,
-            "def_multiplier": 0.961,
-            "final_score": 0.466
+            "def_multiplier": 0.97,
+            "final_score": 0.469
           },
           {
             "player": "Alexis Lafreni\u00e8re",
             "team": "NYR",
             "opponent": "MTL",
             "position": "F",
-            "base_pred": 0.434,
+            "base_pred": 0.431,
             "live_gp": 21,
             "live_goals": 10,
-            "def_multiplier": 1.033,
-            "final_score": 0.464
+            "def_multiplier": 1.035,
+            "final_score": 0.462
           },
           {
             "player": "Pavel Dorofeyev",
             "team": "NYR",
             "opponent": "MTL",
             "position": "F",
-            "base_pred": 0.395,
+            "base_pred": 0.387,
             "live_gp": 21,
             "live_goals": 6,
-            "def_multiplier": 1.033,
-            "final_score": 0.369
+            "def_multiplier": 1.035,
+            "final_score": 0.364
           },
           {
             "player": "Clayton Keller",
             "team": "UTA",
             "opponent": "VAN",
             "position": "F",
-            "base_pred": 0.375,
+            "base_pred": 0.376,
             "live_gp": 21,
             "live_goals": 5,
-            "def_multiplier": 1.125,
-            "final_score": 0.363
+            "def_multiplier": 1.108,
+            "final_score": 0.358
           },
           {
             "player": "Mika Zibanejad",
             "team": "NYR",
             "opponent": "MTL",
             "position": "F",
-            "base_pred": 0.321,
+            "base_pred": 0.317,
             "live_gp": 21,
             "live_goals": 5,
-            "def_multiplier": 1.033,
-            "final_score": 0.302
+            "def_multiplier": 1.035,
+            "final_score": 0.3
           },
           {
             "player": "Anders Lee",
             "team": "UTA",
             "opponent": "VAN",
             "position": "F",
-            "base_pred": 0.297,
+            "base_pred": 0.298,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.125,
-            "final_score": 0.274
+            "def_multiplier": 1.108,
+            "final_score": 0.271
           },
           {
             "player": "Kailer Yamamoto",
             "team": "UTA",
             "opponent": "VAN",
             "position": "F",
-            "base_pred": 0.223,
+            "base_pred": 0.225,
             "live_gp": 12,
             "live_goals": 3,
-            "def_multiplier": 1.125,
-            "final_score": 0.265
+            "def_multiplier": 1.108,
+            "final_score": 0.263
           },
           {
             "player": "Vincent Trocheck",
@@ -105,19 +105,19 @@
             "base_pred": 0.265,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.125,
-            "final_score": 0.251
+            "def_multiplier": 1.108,
+            "final_score": 0.247
           },
           {
             "player": "Barrett Hayton",
             "team": "UTA",
             "opponent": "VAN",
             "position": "F",
-            "base_pred": 0.233,
+            "base_pred": 0.236,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.125,
-            "final_score": 0.227
+            "def_multiplier": 1.108,
+            "final_score": 0.226
           }
         ],
         "2": [
@@ -126,66 +126,55 @@
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
-            "base_pred": 0.39,
+            "base_pred": 0.396,
             "live_gp": 20,
             "live_goals": 5,
-            "def_multiplier": 0.974,
-            "final_score": 0.332
+            "def_multiplier": 0.971,
+            "final_score": 0.335
           },
           {
             "player": "J.T. Miller",
             "team": "NYR",
             "opponent": "MTL",
             "position": "F",
-            "base_pred": 0.385,
+            "base_pred": 0.383,
             "live_gp": 21,
             "live_goals": 4,
-            "def_multiplier": 1.033,
-            "final_score": 0.328
-          },
-          {
-            "player": "Tye Kartye",
-            "team": "NYR",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.276,
-            "live_gp": 21,
-            "live_goals": 7,
-            "def_multiplier": 1.033,
-            "final_score": 0.306
+            "def_multiplier": 1.035,
+            "final_score": 0.327
           },
           {
             "player": "Gabe Perreault",
             "team": "NYR",
             "opponent": "MTL",
             "position": "F",
-            "base_pred": 0.276,
+            "base_pred": 0.283,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 1.033,
-            "final_score": 0.306
+            "def_multiplier": 1.035,
+            "final_score": 0.311
+          },
+          {
+            "player": "Tye Kartye",
+            "team": "NYR",
+            "opponent": "MTL",
+            "position": "F",
+            "base_pred": 0.269,
+            "live_gp": 21,
+            "live_goals": 7,
+            "def_multiplier": 1.035,
+            "final_score": 0.301
           },
           {
             "player": "Brock Boeser",
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
-            "base_pred": 0.246,
+            "base_pred": 0.252,
             "live_gp": 22,
             "live_goals": 7,
-            "def_multiplier": 0.974,
-            "final_score": 0.263
-          },
-          {
-            "player": "Juraj Slafkovsky",
-            "team": "MTL",
-            "opponent": "NYR",
-            "position": "F",
-            "base_pred": 0.355,
-            "live_gp": 20,
-            "live_goals": 2,
-            "def_multiplier": 0.961,
-            "final_score": 0.254
+            "def_multiplier": 0.971,
+            "final_score": 0.267
           },
           {
             "player": "Oliver Bjorkstrand",
@@ -195,7 +184,7 @@
             "base_pred": 0.2,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 1.033,
+            "def_multiplier": 1.035,
             "final_score": 0.253
           },
           {
@@ -203,44 +192,55 @@
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
-            "base_pred": 0.227,
+            "base_pred": 0.223,
             "live_gp": 22,
             "live_goals": 7,
-            "def_multiplier": 0.974,
-            "final_score": 0.252
+            "def_multiplier": 0.971,
+            "final_score": 0.249
           },
           {
-            "player": "Mikhail Sergachev",
-            "team": "UTA",
-            "opponent": "VAN",
-            "position": "D",
-            "base_pred": 0.157,
-            "live_gp": 21,
-            "live_goals": 6,
-            "def_multiplier": 1.125,
-            "final_score": 0.231
+            "player": "Juraj Slafkovsky",
+            "team": "MTL",
+            "opponent": "NYR",
+            "position": "F",
+            "base_pred": 0.331,
+            "live_gp": 20,
+            "live_goals": 2,
+            "def_multiplier": 0.97,
+            "final_score": 0.242
           },
           {
             "player": "Will Cuylle",
             "team": "NYR",
             "opponent": "MTL",
             "position": "F",
-            "base_pred": 0.24,
+            "base_pred": 0.239,
             "live_gp": 21,
             "live_goals": 4,
-            "def_multiplier": 1.033,
-            "final_score": 0.23
+            "def_multiplier": 1.035,
+            "final_score": 0.229
+          },
+          {
+            "player": "Mikhail Sergachev",
+            "team": "UTA",
+            "opponent": "VAN",
+            "position": "D",
+            "base_pred": 0.152,
+            "live_gp": 21,
+            "live_goals": 6,
+            "def_multiplier": 1.108,
+            "final_score": 0.224
           },
           {
             "player": "Alex Newhook",
             "team": "MTL",
             "opponent": "NYR",
             "position": "F",
-            "base_pred": 0.217,
+            "base_pred": 0.215,
             "live_gp": 20,
             "live_goals": 5,
-            "def_multiplier": 0.961,
-            "final_score": 0.213
+            "def_multiplier": 0.97,
+            "final_score": 0.214
           }
         ],
         "3": [
@@ -249,54 +249,54 @@
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
-            "base_pred": 0.224,
+            "base_pred": 0.26,
             "live_gp": 22,
             "live_goals": 6,
-            "def_multiplier": 0.974,
-            "final_score": 0.239
-          },
-          {
-            "player": "Liam Ohgren",
-            "team": "VAN",
-            "opponent": "UTA",
-            "position": "F",
-            "base_pred": 0.194,
-            "live_gp": 21,
-            "live_goals": 6,
-            "def_multiplier": 0.974,
-            "final_score": 0.218
+            "def_multiplier": 0.971,
+            "final_score": 0.257
           },
           {
             "player": "Filip Chytil",
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
-            "base_pred": 0.182,
+            "base_pred": 0.228,
             "live_gp": 9,
             "live_goals": 2,
-            "def_multiplier": 0.974,
-            "final_score": 0.188
+            "def_multiplier": 0.971,
+            "final_score": 0.22
+          },
+          {
+            "player": "Liam Ohgren",
+            "team": "VAN",
+            "opponent": "UTA",
+            "position": "F",
+            "base_pred": 0.178,
+            "live_gp": 21,
+            "live_goals": 6,
+            "def_multiplier": 0.971,
+            "final_score": 0.208
           },
           {
             "player": "Adam Fox",
             "team": "NYR",
             "opponent": "MTL",
             "position": "D",
-            "base_pred": 0.206,
+            "base_pred": 0.201,
             "live_gp": 21,
             "live_goals": 2,
-            "def_multiplier": 1.033,
-            "final_score": 0.174
+            "def_multiplier": 1.035,
+            "final_score": 0.171
           },
           {
             "player": "Eeli Tolvanen",
             "team": "NYR",
             "opponent": "MTL",
             "position": "F",
-            "base_pred": 0.151,
+            "base_pred": 0.15,
             "live_gp": 21,
             "live_goals": 4,
-            "def_multiplier": 1.033,
+            "def_multiplier": 1.035,
             "final_score": 0.169
           },
           {
@@ -304,110 +304,110 @@
             "team": "UTA",
             "opponent": "VAN",
             "position": "F",
-            "base_pred": 0.148,
+            "base_pred": 0.14,
             "live_gp": 21,
             "live_goals": 3,
-            "def_multiplier": 1.125,
-            "final_score": 0.166
+            "def_multiplier": 1.108,
+            "final_score": 0.157
           },
           {
             "player": "Marco Rossi",
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
-            "base_pred": 0.172,
+            "base_pred": 0.164,
             "live_gp": 20,
             "live_goals": 3,
-            "def_multiplier": 0.974,
-            "final_score": 0.159
+            "def_multiplier": 0.971,
+            "final_score": 0.154
           },
           {
             "player": "Lane Hutson",
             "team": "MTL",
             "opponent": "NYR",
             "position": "D",
-            "base_pred": 0.155,
+            "base_pred": 0.157,
             "live_gp": 20,
             "live_goals": 3,
-            "def_multiplier": 0.961,
-            "final_score": 0.149
+            "def_multiplier": 0.97,
+            "final_score": 0.152
           },
           {
             "player": "Oliver Kapanen",
             "team": "MTL",
             "opponent": "NYR",
             "position": "F",
-            "base_pred": 0.169,
+            "base_pred": 0.173,
             "live_gp": 13,
             "live_goals": 1,
-            "def_multiplier": 0.961,
-            "final_score": 0.146
+            "def_multiplier": 0.97,
+            "final_score": 0.15
           },
           {
             "player": "Paul Cotter",
             "team": "VAN",
             "opponent": "UTA",
             "position": "F",
-            "base_pred": 0.128,
+            "base_pred": 0.131,
             "live_gp": 21,
             "live_goals": 4,
-            "def_multiplier": 0.974,
-            "final_score": 0.142
+            "def_multiplier": 0.971,
+            "final_score": 0.145
           },
           {
             "player": "Phillip Danault",
             "team": "MTL",
             "opponent": "NYR",
             "position": "F",
-            "base_pred": 0.139,
+            "base_pred": 0.135,
             "live_gp": 20,
             "live_goals": 2,
-            "def_multiplier": 0.961,
-            "final_score": 0.125
+            "def_multiplier": 0.97,
+            "final_score": 0.124
           },
           {
             "player": "Kirby Dach",
             "team": "MTL",
             "opponent": "NYR",
             "position": "F",
-            "base_pred": 0.13,
+            "base_pred": 0.131,
             "live_gp": 18,
             "live_goals": 2,
-            "def_multiplier": 0.961,
-            "final_score": 0.119
+            "def_multiplier": 0.97,
+            "final_score": 0.121
           },
           {
             "player": "MacKenzie Weegar",
             "team": "UTA",
             "opponent": "VAN",
             "position": "D",
-            "base_pred": 0.098,
+            "base_pred": 0.095,
             "live_gp": 21,
             "live_goals": 2,
-            "def_multiplier": 1.125,
-            "final_score": 0.11
+            "def_multiplier": 1.108,
+            "final_score": 0.106
           },
           {
             "player": "Kevin Stenlund",
             "team": "UTA",
             "opponent": "VAN",
             "position": "F",
-            "base_pred": 0.095,
+            "base_pred": 0.093,
             "live_gp": 21,
             "live_goals": 1,
-            "def_multiplier": 1.125,
-            "final_score": 0.088
+            "def_multiplier": 1.108,
+            "final_score": 0.086
           },
           {
             "player": "Liam O'Brien",
             "team": "UTA",
             "opponent": "VAN",
             "position": "F",
-            "base_pred": 0.076,
+            "base_pred": 0.08,
             "live_gp": 8,
             "live_goals": 0,
-            "def_multiplier": 1.125,
-            "final_score": 0.076
+            "def_multiplier": 1.108,
+            "final_score": 0.078
           }
         ]
       },
@@ -417,33 +417,33 @@
           "team": "MTL",
           "opponent": "NYR",
           "position": "F",
-          "base_pred": 0.413,
+          "base_pred": 0.411,
           "live_gp": 20,
           "live_goals": 12,
-          "def_multiplier": 0.961,
-          "final_score": 0.469
+          "def_multiplier": 0.97,
+          "final_score": 0.472
         },
         "2": {
           "player": "Jake DeBrusk",
           "team": "VAN",
           "opponent": "UTA",
           "position": "F",
-          "base_pred": 0.39,
+          "base_pred": 0.396,
           "live_gp": 20,
           "live_goals": 5,
-          "def_multiplier": 0.974,
-          "final_score": 0.332
+          "def_multiplier": 0.971,
+          "final_score": 0.335
         },
         "3": {
           "player": "Linus Karlsson",
           "team": "VAN",
           "opponent": "UTA",
           "position": "F",
-          "base_pred": 0.224,
+          "base_pred": 0.26,
           "live_gp": 22,
           "live_goals": 6,
-          "def_multiplier": 0.974,
-          "final_score": 0.239
+          "def_multiplier": 0.971,
+          "final_score": 0.257
         }
       },
       "settled": false,
@@ -476,19 +476,19 @@
           "1": {
             "player": "Cole Caufield",
             "team": "MTL",
-            "score": 0.469,
+            "score": 0.472,
             "scored": null
           },
           "2": {
             "player": "Jake DeBrusk",
             "team": "VAN",
-            "score": 0.332,
+            "score": 0.335,
             "scored": null
           },
           "3": {
             "player": "Linus Karlsson",
             "team": "VAN",
-            "score": 0.239,
+            "score": 0.257,
             "scored": null
           }
         }
