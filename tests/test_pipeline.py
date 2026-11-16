@@ -37,6 +37,11 @@ from src.team_game_model import (
     expected_remaining_series_games,
     single_game_to_best_of_7_prob,
 )
+from src.tims_tracker import (
+    recompute_tims_summary,
+    settle_pending_tims_days,
+    upsert_tims_snapshot,
+)
 
 
 class _DummyResponse:
@@ -259,6 +264,8 @@ class TestSkaterAndTeamMath(unittest.TestCase):
         n_half = compute_empirical_bayes_n_half(np.linspace(0.05, 0.55, 60))
         self.assertGreaterEqual(n_half, 2.0)
         self.assertLessEqual(n_half, 35.0)
+        self.assertEqual(compute_empirical_bayes_n_half(np.full(30, 0.16), residual_mse=0.072**2), 25.0)
+        self.assertEqual(compute_empirical_bayes_n_half(np.full(30, 0.16), residual_mse=0.16**2), 9.0)
 
     def test_prep_dynamic_features_no_target_duplicate_or_leak(self):
         df = pd.DataFrame(
@@ -366,6 +373,9 @@ class TestSkaterAndTeamMath(unittest.TestCase):
         rankings, def_mults = compute_power_rankings_and_defense(profiles, game_bundle)
         self.assertEqual(rankings[0]["team"], "EDM")
         self.assertGreater(def_mults["SJS"], def_mults["EDM"])
+        self.assertGreaterEqual(min(def_mults.values()), 0.85)
+        self.assertLessEqual(max(def_mults.values()), 1.15)
+        self.assertAlmostEqual(float(np.mean(list(def_mults.values()))), 1.0, places=3)
 
         skater_bundle = {
             "model": _FakeReg(),
@@ -426,6 +436,101 @@ class TestSkaterAndTeamMath(unittest.TestCase):
                 content = f.read()
             self.assertNotIn("<script>alert(1)</script>", content)
             self.assertIn("&lt;script&gt;", content)
+
+    def test_tims_history_snapshot_and_settlement(self):
+        history = {"days": [], "summary": {}}
+        tims_groups = {
+            "1": [
+                {"player": "Connor McDavid", "team": "EDM", "opponent": "TOR", "final_score": 0.48, "base_pred": 0.45, "live_gp": 10, "live_goals": 6, "def_multiplier": 1.03},
+                {"player": "Auston Matthews", "team": "TOR", "opponent": "EDM", "final_score": 0.44, "base_pred": 0.43, "live_gp": 10, "live_goals": 4, "def_multiplier": 1.01},
+            ],
+            "2": [
+                {"player": "Zach Hyman", "team": "EDM", "opponent": "TOR", "final_score": 0.35, "base_pred": 0.33, "live_gp": 10, "live_goals": 4, "def_multiplier": 1.03},
+            ],
+            "3": [
+                {"player": "Matthew Knies", "team": "TOR", "opponent": "EDM", "final_score": 0.24, "base_pred": 0.22, "live_gp": 10, "live_goals": 3, "def_multiplier": 1.01},
+            ],
+        }
+        saved = upsert_tims_snapshot(
+            history,
+            date_str="2026-11-15",
+            context={"nhl_season": "20262027"},
+            schedule_info={"active_game_type": 2, "active_mode": "Regular Season"},
+            skater_bundle={"n_half": 25.0},
+            tims_groups=tims_groups,
+            captured_et="2026-11-15 10:17 AM ET",
+        )
+        self.assertTrue(saved)
+        # Empty off-hours call must not erase existing day snapshot
+        self.assertFalse(
+            upsert_tims_snapshot(
+                history,
+                date_str="2026-11-15",
+                context={"nhl_season": "20262027"},
+                schedule_info={"active_game_type": 2, "active_mode": "Regular Season"},
+                skater_bundle={"n_half": 25.0},
+                tims_groups={},
+                captured_et="2026-11-15 11:43 PM ET",
+            )
+        )
+
+        session = _DummySession(
+            {
+                "https://api-web.nhle.com/v1/schedule/2026-11-15": (
+                    200,
+                    {
+                        "gameWeek": [
+                            {
+                                "date": "2026-11-15",
+                                "games": [
+                                    {
+                                        "id": 9001,
+                                        "gameState": "OFF",
+                                        "awayTeam": {"abbrev": "EDM"},
+                                        "homeTeam": {"abbrev": "TOR"},
+                                    }
+                                ],
+                            }
+                        ]
+                    },
+                ),
+                "https://api-web.nhle.com/v1/gamecenter/9001/boxscore": (
+                    200,
+                    {
+                        "playerByGameStats": {
+                            "awayTeam": {
+                                "forwards": [
+                                    {"name": {"default": "Connor McDavid"}, "goals": 1},
+                                    {"name": {"default": "Zach Hyman"}, "goals": 0},
+                                ],
+                                "defense": [],
+                            },
+                            "homeTeam": {
+                                "forwards": [
+                                    {"name": {"default": "Auston Matthews"}, "goals": 0},
+                                    {"name": {"default": "Matthew Knies"}, "goals": 2},
+                                ],
+                                "defense": [],
+                            },
+                        }
+                    },
+                ),
+            }
+        )
+        settled_cnt = settle_pending_tims_days(
+            history,
+            today_str="2026-11-16",
+            settled_et="2026-11-16 10:17 AM ET",
+            session=session,
+            allow_network=True,
+        )
+        self.assertEqual(settled_cnt, 1)
+        summary = recompute_tims_summary(history)
+        self.assertEqual(summary["settled_days"], 1)
+        self.assertEqual(summary["ai_hits"], 2)
+        self.assertEqual(summary["ai_possible"], 3)
+        self.assertAlmostEqual(summary["ai_hit_rate_pct"], 66.7, places=1)
+        self.assertAlmostEqual(summary["random_expected_pct"], 50.0, places=1)
 
     def test_main_tee_stdout_no_recursion(self):
         import io
