@@ -219,7 +219,8 @@
       line-height: 1.5;
     }
 
-    .banner.hidden { display: none; }
+    .hidden,
+    .banner.hidden { display: none !important; }
 
     .kpi-grid {
       display: grid;
@@ -692,6 +693,7 @@
     <nav class="nav-tabs-desktop" aria-label="Main sections">
       <button class="nav-btn active" data-tab="picks" onclick="switchTab('picks', this)">Skater Picks</button>
       <button class="nav-btn" data-tab="matchups" onclick="switchTab('matchups', this)">Game Matchups</button>
+      <button class="nav-btn" data-tab="playoffs" onclick="switchTab('playoffs', this)">Playoff Series</button>
       <button class="nav-btn" data-tab="rankings" onclick="switchTab('rankings', this)">Power Rankings</button>
       <button class="nav-btn" data-tab="models" onclick="switchTab('models', this)">Models &amp; Drivers</button>
       <button class="nav-btn" data-tab="logs" onclick="switchTab('logs', this)">Run Logs</button>
@@ -741,18 +743,25 @@
       </div>
     </section>
 
-    <!-- TAB 2: GAME MATCHUPS -->
+    <!-- TAB 2: SINGLE-GAME MATCHUPS -->
     <section id="tab-matchups" class="tab-pane">
-      <div id="playoffSeriesSection" class="hidden">
-        <div class="section-title"><span>Live Playoff Series Projections (Best-of-7)</span></div>
-        <div id="playoffSeriesGrid" class="grid-2col"></div>
-      </div>
-
       <div class="section-title">
-        <span>Today &amp; Tomorrow NHL Win Probabilities</span>
-        <span class="pill cyan" id="oddsStatusPill">--</span>
+        <span id="matchupsSectionTitle">Single-Game Matchups — Today &amp; Tomorrow</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="pill" id="matchupSeasonPill">Regular Season</span>
+          <span class="pill cyan" id="oddsStatusPill">--</span>
+        </div>
       </div>
       <div id="matchupsGrid" class="grid-2col"></div>
+    </section>
+
+    <!-- TAB 3: PLAYOFF SERIES (BEST-OF-7) -->
+    <section id="tab-playoffs" class="tab-pane">
+      <div class="section-title">
+        <span>Stanley Cup Playoff Series Projections (Best-of-7)</span>
+        <span class="pill cyan" id="playoffSeriesStatusPill">--</span>
+      </div>
+      <div id="playoffSeriesGrid" class="grid-2col"></div>
     </section>
 
     <!-- TAB 3: POWER RANKINGS -->
@@ -817,6 +826,9 @@
     </button>
     <button class="mobile-nav-item" data-nav="matchups" onclick="handleMobileNavClick(this, 'matchups')">
       <span>🏒</span><span>Matchups</span>
+    </button>
+    <button class="mobile-nav-item" data-nav="playoffs" onclick="handleMobileNavClick(this, 'playoffs')">
+      <span>🏆</span><span>Playoffs</span>
     </button>
     <button class="mobile-nav-item" data-nav="rankings" onclick="handleMobileNavClick(this, 'rankings')">
       <span>📊</span><span>Rankings</span>
@@ -910,7 +922,7 @@
         <div class="kpi-card">
           <div class="kpi-label">Game Matchups Trained</div>
           <div class="kpi-value">${pw.games_trained != null ? esc(pw.games_trained) : '--'}</div>
-          <div class="kpi-sub">5x playoff sample weighting</div>
+          <div class="kpi-sub">Per-game rates, rest &amp; form</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Pairwise OOF Acc</div>
@@ -1037,11 +1049,12 @@
       `).join('');
     }
 
-    function renderMatchups(games, playoffSeries, meta) {
-      const psSec = document.getElementById('playoffSeriesSection');
+    function renderPlayoffSeries(playoffSeries, meta) {
+      const statusPill = document.getElementById('playoffSeriesStatusPill');
       const psGrid = document.getElementById('playoffSeriesGrid');
+      const isPlayoffs = meta && meta.active_mode === 'Playoffs';
       if (playoffSeries && playoffSeries.length) {
-        psSec.classList.remove('hidden');
+        statusPill.textContent = `Active Series (${playoffSeries.length})`;
         psGrid.innerHTML = playoffSeries.map(s => `
           <div class="card highlight">
             <div class="pick-header">
@@ -1064,9 +1077,19 @@
           </div>
         `).join('');
       } else {
-        psSec.classList.add('hidden');
+        statusPill.textContent = isPlayoffs ? 'No Active Series Data' : 'Regular Season Active';
+        psGrid.innerHTML = `
+          <div class="card empty-state" style="grid-column:1/-1">
+            <strong>Stanley Cup Playoffs Not Currently Active</strong><br />
+            Currently in <strong>${esc((meta && meta.active_mode) || 'Regular Season')}</strong> (${esc((meta && meta.nhl_season_label) || 'NHL')}).
+            Best-of-7 Markov series win projections will appear here automatically once NHL playoff series games are scheduled.
+          </div>
+        `;
       }
+    }
 
+    function renderMatchups(games, meta) {
+      document.getElementById('matchupSeasonPill').textContent = (meta && meta.active_mode) || 'Regular Season';
       document.getElementById('oddsStatusPill').textContent = meta.odds_enabled ? 'Sharp Odds Enabled' : 'Model-Only Mode';
       const grid = document.getElementById('matchupsGrid');
       if (!games || !games.length) {
@@ -1207,7 +1230,8 @@
         renderTimsHistory(APP_DATA.tims_history);
         populateTeamFilter(APP_DATA.slate_top_scorers);
         renderSlateTable();
-        renderMatchups(APP_DATA.games, APP_DATA.playoff_series, meta);
+        renderMatchups(APP_DATA.games, meta);
+        renderPlayoffSeries(APP_DATA.playoff_series, meta);
         renderRankings();
         renderFeatureBars('skaterFeatureBars', APP_DATA.feature_importance && APP_DATA.feature_importance.skater);
         renderFeatureBars('pairwiseFeatureBars', APP_DATA.feature_importance && APP_DATA.feature_importance.pairwise);
