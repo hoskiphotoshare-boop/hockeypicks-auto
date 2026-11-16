@@ -572,23 +572,31 @@ def _normalize_pos_group(position: Any) -> str:
     return ""
 
 
-def parse_player_name_parts(name: Any) -> tuple[str, str, str]:
-    """Return (canonical_first, collapsed_last_alpha, canonical_full_key)."""
+def _split_name_parts_with_last(name: Any) -> tuple[str, str, str, list[str]]:
+    """Return (canonical_first, collapsed_last_alpha, canonical_full_key, raw_tokens)."""
     cleaned = clean_name(name)
     if not cleaned:
-        return "", "", ""
-    alpha_spaced = re.sub(r"[.\u2019'\-]", " ", cleaned)
+        return "", "", "", []
+    # Collapse apostrophe prefixes (e.g. O'Connor -> oconnor, D'Astous -> dastous, L'Heureux -> lheureux, K'Andre -> kandre)
+    cleaned_no_apo = re.sub(r"\b([a-z])['\u2019]([a-z])", r"\1\2", cleaned)
+    alpha_spaced = re.sub(r"[.\u2019'\-]", " ", cleaned_no_apo)
     alpha_spaced = re.sub(r"[^a-z0-9 ]", "", alpha_spaced)
     tokens = re.sub(r"\s+", " ", alpha_spaced).strip().split()
     if not tokens:
-        return "", "", ""
+        return "", "", "", []
     if len(tokens) >= 2 and len(tokens[0]) == 1 and len(tokens[1]) == 1:
         tokens = [tokens[0] + tokens[1]] + tokens[2:]
     if len(tokens) >= 3 and f"{tokens[0]} {tokens[1]}" in _MULTI_WORD_FIRST_PREFIXES:
         tokens = [_MULTI_WORD_FIRST_PREFIXES[f"{tokens[0]} {tokens[1]}"]] + tokens[2:]
     first = _FIRST_NAME_CANONICAL.get(tokens[0], tokens[0])
     last = "".join(tokens[1:]) if len(tokens) > 1 else tokens[0]
-    return first, last, f"{first} {last}".strip()
+    return first, last, f"{first} {last}".strip(), tokens
+
+
+def parse_player_name_parts(name: Any) -> tuple[str, str, str]:
+    """Return (canonical_first, collapsed_last_alpha, canonical_full_key)."""
+    first, last, canon, _ = _split_name_parts_with_last(name)
+    return first, last, canon
 
 
 def _consonant_skeleton(text: str) -> str:
@@ -633,6 +641,9 @@ def accent_drop_match(
     return _consonant_skeleton(sl) == _consonant_skeleton(ll) or SequenceMatcher(None, sl, ll).ratio() >= 0.80
 
 
+_SURNAME_PARTICLES = {"st", "ste", "van", "von", "de", "del", "la", "le", "di", "mc", "mac", "saint"}
+
+
 class PlayerMatcher:
     """Fast layered player lookup: playerId -> exact ASCII -> nickname/initial -> dropped-accent fuzzy."""
 
@@ -649,7 +660,7 @@ class PlayerMatcher:
             name_clean = clean_name(raw.get("name_clean") or name)
             team = normalize_team_abbrev(raw.get("team"))
             pos_grp = _normalize_pos_group(raw.get("position"))
-            first, last, canon = parse_player_name_parts(name or name_clean)
+            first, last, canon, tokens = _split_name_parts_with_last(name or name_clean)
             rec = {
                 "order": idx,
                 "player_id": pid,
@@ -670,10 +681,31 @@ class PlayerMatcher:
                 self._by_canon.setdefault(canon, []).append(rec)
             if first and last:
                 self._by_initial_last.setdefault((first[0], last), []).append(rec)
+                # Handle two-part/hyphenated first names abbreviated to first initial + final token (e.g. Jean-Gabriel Pageau -> J. Pageau)
+                if len(tokens) >= 3 and tokens[-2] not in _SURNAME_PARTICLES and tokens[-1] != last:
+                    self._by_initial_last.setdefault((tokens[0][0], tokens[-1]), []).append(rec)
                 # Also index raw clean first initial in case canonical alias shifted initial (e.g., Yegor vs Egor)
                 raw_tok = name_clean.split()[0] if name_clean else ""
                 if raw_tok and raw_tok[0] != first[0]:
                     self._by_initial_last.setdefault((raw_tok[0], last), []).append(rec)
+                    if len(tokens) >= 3 and tokens[-2] not in _SURNAME_PARTICLES and tokens[-1] != last:
+                        self._by_initial_last.setdefault((raw_tok[0], tokens[-1]), []).append(rec)
+
+    @staticmethod
+    def _filter_scope(
+        candidates: list[dict[str, Any]],
+        *,
+        team_norm: str,
+        pos_grp: str,
+        require_same_team: bool,
+        require_compatible_pos: bool,
+    ) -> list[dict[str, Any]]:
+        out = candidates
+        if require_same_team and team_norm not in ("", "UNK"):
+            out = [r for r in out if r["team"] in (team_norm, "UNK")]
+        if require_compatible_pos and pos_grp:
+            out = [r for r in out if not r["pos_grp"] or r["pos_grp"] == pos_grp]
+        return out
 
     @staticmethod
     def _pick_best(
@@ -704,18 +736,37 @@ class PlayerMatcher:
         position: str = "",
         player_id: int = 0,
         allow_initial_fallback: bool = False,
+        require_same_team: bool = False,
+        require_compatible_pos: bool = False,
     ) -> Any | None:
         if player_id > 0 and player_id in self._by_id:
             return self._by_id[player_id]
 
+        team_norm = normalize_team_abbrev(team) if team else "UNK"
         pos_grp = _normalize_pos_group(position)
         exact_key = clean_name(name_clean_key or name)
         if exact_key and exact_key in self._by_exact:
-            return self._pick_best(self._by_exact[exact_key], team=team, pos_grp=pos_grp)
+            hits = self._filter_scope(
+                self._by_exact[exact_key],
+                team_norm=team_norm,
+                pos_grp=pos_grp,
+                require_same_team=require_same_team,
+                require_compatible_pos=require_compatible_pos,
+            )
+            if hits:
+                return self._pick_best(hits, team=team, pos_grp=pos_grp)
 
-        q_first, q_last, q_canon = parse_player_name_parts(name or exact_key)
+        q_first, q_last, q_canon, q_tokens = _split_name_parts_with_last(name or exact_key)
         if q_canon and q_canon in self._by_canon:
-            return self._pick_best(self._by_canon[q_canon], team=team, pos_grp=pos_grp)
+            hits = self._filter_scope(
+                self._by_canon[q_canon],
+                team_norm=team_norm,
+                pos_grp=pos_grp,
+                require_same_team=require_same_team,
+                require_compatible_pos=require_compatible_pos,
+            )
+            if hits:
+                return self._pick_best(hits, team=team, pos_grp=pos_grp)
 
         if q_first and q_last:
             fuzzy_hits = [
@@ -723,6 +774,13 @@ class PlayerMatcher:
                 for rec in self._entries
                 if accent_drop_match(q_first, q_last, rec["first"], rec["last"])
             ]
+            fuzzy_hits = self._filter_scope(
+                fuzzy_hits,
+                team_norm=team_norm,
+                pos_grp=pos_grp,
+                require_same_team=require_same_team,
+                require_compatible_pos=require_compatible_pos,
+            )
             if fuzzy_hits:
                 return self._pick_best(fuzzy_hits, team=team, pos_grp=pos_grp)
 
@@ -731,13 +789,17 @@ class PlayerMatcher:
                 initials = {q_first[0]}
                 if raw_tokens:
                     initials.add(raw_tokens[0][0])
+                last_keys = [q_last]
+                if len(q_tokens) >= 3 and q_tokens[-2] not in _SURNAME_PARTICLES and q_tokens[-1] != q_last:
+                    last_keys.append(q_tokens[-1])
                 init_hits: list[dict[str, Any]] = []
                 seen_orders: set[int] = set()
                 for init_ch in initials:
-                    for rec in self._by_initial_last.get((init_ch, q_last), []):
-                        if rec["order"] not in seen_orders and (len(rec["first"]) == 1 or len(q_first) == 1):
-                            seen_orders.add(rec["order"])
-                            init_hits.append(rec)
+                    for lk in last_keys:
+                        for rec in self._by_initial_last.get((init_ch, lk), []):
+                            if rec["order"] not in seen_orders and (len(rec["first"]) == 1 or len(q_first) == 1):
+                                seen_orders.add(rec["order"])
+                                init_hits.append(rec)
                 if not init_hits:
                     # Also handle initial + dropped-accent last name (e.g. "A. Rty" / "F. Unger Srum")
                     for rec in self._entries:
@@ -750,13 +812,21 @@ class PlayerMatcher:
                         ):
                             seen_orders.add(rec["order"])
                             init_hits.append(rec)
+                init_hits = self._filter_scope(
+                    init_hits,
+                    team_norm=team_norm,
+                    pos_grp=pos_grp,
+                    require_same_team=require_same_team,
+                    require_compatible_pos=require_compatible_pos,
+                )
                 if init_hits:
-                    # Prefer same-team matches when resolving abbreviated boxscore names like "C. McDavid"
-                    team_norm = normalize_team_abbrev(team) if team else "UNK"
                     if team_norm != "UNK":
                         team_hits = [r for r in init_hits if r["team"] in (team_norm, "UNK")]
                         if team_hits:
                             return self._pick_best(team_hits, team=team_norm, pos_grp=pos_grp)
+                        # Trade fallback when same-team matching isn't strictly required and candidate is unique
+                        if not require_same_team and len({r["order"] for r in init_hits}) == 1:
+                            return init_hits[0]["payload"]
                     elif len({r["order"] for r in init_hits}) == 1:
                         return init_hits[0]["payload"]
 
