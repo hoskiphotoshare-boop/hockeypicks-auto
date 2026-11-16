@@ -5,7 +5,9 @@ from __future__ import annotations
 import os
 import re
 import time
+import unicodedata
 from datetime import datetime, timedelta
+from difflib import SequenceMatcher
 from typing import Any
 
 import pandas as pd
@@ -495,12 +497,265 @@ def fetch_nhl_schedule(
 
 def clean_name(name: Any) -> str:
     """Normalize accented/unicode player names to lowercase ASCII for matching."""
-    import unicodedata
-
     if not isinstance(name, str):
         return ""
     cleaned = unicodedata.normalize("NFKD", name).encode("ASCII", "ignore").decode("utf-8")
     return re.sub(r"\s+", " ", cleaned).strip().lower()
+
+
+_FIRST_NAME_CANONICAL: dict[str, str] = {
+    "nicholas": "nick",
+    "nicolas": "nick",
+    "nic": "nick",
+    "mitchell": "mitch",
+    "alexander": "alex",
+    "alexei": "alexey",
+    "matthew": "matt",
+    "mathew": "matt",
+    "joshua": "josh",
+    "zachary": "zach",
+    "zack": "zach",
+    "zackary": "zach",
+    "jacob": "jake",
+    "joseph": "joe",
+    "thomas": "tom",
+    "tommy": "tom",
+    "samuel": "sam",
+    "sammy": "sam",
+    "maxime": "max",
+    "maxim": "max",
+    "maxwell": "max",
+    "christopher": "chris",
+    "patrick": "pat",
+    "yegor": "egor",
+    "evgenii": "evgeny",
+    "evgeni": "evgeny",
+    "artyom": "artem",
+    "matvey": "matvei",
+    "jonathan": "jon",
+    "jonny": "jon",
+    "michael": "mike",
+    "mikey": "mike",
+    "daniel": "dan",
+    "danny": "dan",
+    "benjamin": "ben",
+    "william": "will",
+    "anthony": "tony",
+    "cameron": "cam",
+    "timothy": "tim",
+    "timmy": "tim",
+    "philip": "phil",
+    "phillip": "phil",
+    "philippe": "phil",
+}
+
+_MULTI_WORD_FIRST_PREFIXES: dict[str, str] = {
+    "benoit olivier": "bo",
+    "pierre olivier": "po",
+    "john jason": "jj",
+}
+
+
+def _normalize_pos_group(position: Any) -> str:
+    pos = str(position or "").strip().upper()
+    if pos in ("D", "DEF", "DEFENSE"):
+        return "D"
+    if pos in ("G", "GOALIE"):
+        return "G"
+    if pos in ("F", "C", "L", "R", "LW", "RW", "W", "FOR", "FORWARD", "FORWARDS"):
+        return "F"
+    return ""
+
+
+def parse_player_name_parts(name: Any) -> tuple[str, str, str]:
+    """Return (canonical_first, collapsed_last_alpha, canonical_full_key)."""
+    cleaned = clean_name(name)
+    if not cleaned:
+        return "", "", ""
+    alpha_spaced = re.sub(r"[.\u2019'\-]", " ", cleaned)
+    alpha_spaced = re.sub(r"[^a-z0-9 ]", "", alpha_spaced)
+    tokens = re.sub(r"\s+", " ", alpha_spaced).strip().split()
+    if not tokens:
+        return "", "", ""
+    if len(tokens) >= 2 and len(tokens[0]) == 1 and len(tokens[1]) == 1:
+        tokens = [tokens[0] + tokens[1]] + tokens[2:]
+    if len(tokens) >= 3 and f"{tokens[0]} {tokens[1]}" in _MULTI_WORD_FIRST_PREFIXES:
+        tokens = [_MULTI_WORD_FIRST_PREFIXES[f"{tokens[0]} {tokens[1]}"]] + tokens[2:]
+    first = _FIRST_NAME_CANONICAL.get(tokens[0], tokens[0])
+    last = "".join(tokens[1:]) if len(tokens) > 1 else tokens[0]
+    return first, last, f"{first} {last}".strip()
+
+
+def _consonant_skeleton(text: str) -> str:
+    return re.sub(r"[aeiouy]", "", text)
+
+
+def _is_subsequence(short: str, long: str) -> bool:
+    it = iter(long)
+    return all(ch in it for ch in short)
+
+
+def accent_drop_match(
+    q_first: str,
+    q_last: str,
+    c_first: str,
+    c_last: str,
+) -> bool:
+    """Detect MoneyPuck dropped-accent spellings (e.g. Lafrenire vs Lafreniere, Slafkovsk vs Slafkovsky)."""
+    if not q_first or not c_first or not q_last or not c_last:
+        return False
+
+    if q_first == c_first:
+        first_ok = True
+    else:
+        sf, lf = (q_first, c_first) if len(q_first) <= len(c_first) else (c_first, q_first)
+        first_ok = (
+            len(sf) >= 2
+            and (len(lf) - len(sf)) <= 2
+            and _is_subsequence(sf, lf)
+            and _consonant_skeleton(sf) == _consonant_skeleton(lf)
+        )
+    if not first_ok:
+        return False
+
+    if q_last == c_last:
+        return True
+    sl, ll = (q_last, c_last) if len(q_last) <= len(c_last) else (c_last, q_last)
+    if len(sl) < 2 or (len(ll) - len(sl)) > 3:
+        return False
+    if not _is_subsequence(sl, ll):
+        return False
+    return _consonant_skeleton(sl) == _consonant_skeleton(ll) or SequenceMatcher(None, sl, ll).ratio() >= 0.80
+
+
+class PlayerMatcher:
+    """Fast layered player lookup: playerId -> exact ASCII -> nickname/initial -> dropped-accent fuzzy."""
+
+    def __init__(self, entries: list[dict[str, Any]]) -> None:
+        self._by_id: dict[int, Any] = {}
+        self._by_exact: dict[str, list[dict[str, Any]]] = {}
+        self._by_canon: dict[str, list[dict[str, Any]]] = {}
+        self._by_initial_last: dict[tuple[str, str], list[dict[str, Any]]] = {}
+        self._entries: list[dict[str, Any]] = []
+
+        for idx, raw in enumerate(entries):
+            pid = int(raw.get("player_id", 0) or 0)
+            name = str(raw.get("name", "") or "")
+            name_clean = clean_name(raw.get("name_clean") or name)
+            team = normalize_team_abbrev(raw.get("team"))
+            pos_grp = _normalize_pos_group(raw.get("position"))
+            first, last, canon = parse_player_name_parts(name or name_clean)
+            rec = {
+                "order": idx,
+                "player_id": pid,
+                "name_clean": name_clean,
+                "team": team,
+                "pos_grp": pos_grp,
+                "first": first,
+                "last": last,
+                "canon": canon,
+                "payload": raw.get("payload", raw),
+            }
+            self._entries.append(rec)
+            if pid > 0 and pid not in self._by_id:
+                self._by_id[pid] = rec["payload"]
+            if name_clean:
+                self._by_exact.setdefault(name_clean, []).append(rec)
+            if canon:
+                self._by_canon.setdefault(canon, []).append(rec)
+            if first and last:
+                self._by_initial_last.setdefault((first[0], last), []).append(rec)
+                # Also index raw clean first initial in case canonical alias shifted initial (e.g., Yegor vs Egor)
+                raw_tok = name_clean.split()[0] if name_clean else ""
+                if raw_tok and raw_tok[0] != first[0]:
+                    self._by_initial_last.setdefault((raw_tok[0], last), []).append(rec)
+
+    @staticmethod
+    def _pick_best(
+        candidates: list[dict[str, Any]],
+        *,
+        team: str = "",
+        pos_grp: str = "",
+    ) -> Any:
+        if len(candidates) == 1:
+            return candidates[0]["payload"]
+        team_norm = normalize_team_abbrev(team) if team else "UNK"
+        best = min(
+            candidates,
+            key=lambda r: (
+                0 if (team_norm != "UNK" and r["team"] == team_norm) else 1,
+                0 if (pos_grp and r["pos_grp"] == pos_grp) else 1,
+                r["order"],
+            ),
+        )
+        return best["payload"]
+
+    def match(
+        self,
+        name: str = "",
+        *,
+        name_clean_key: str = "",
+        team: str = "",
+        position: str = "",
+        player_id: int = 0,
+        allow_initial_fallback: bool = False,
+    ) -> Any | None:
+        if player_id > 0 and player_id in self._by_id:
+            return self._by_id[player_id]
+
+        pos_grp = _normalize_pos_group(position)
+        exact_key = clean_name(name_clean_key or name)
+        if exact_key and exact_key in self._by_exact:
+            return self._pick_best(self._by_exact[exact_key], team=team, pos_grp=pos_grp)
+
+        q_first, q_last, q_canon = parse_player_name_parts(name or exact_key)
+        if q_canon and q_canon in self._by_canon:
+            return self._pick_best(self._by_canon[q_canon], team=team, pos_grp=pos_grp)
+
+        if q_first and q_last:
+            fuzzy_hits = [
+                rec
+                for rec in self._entries
+                if accent_drop_match(q_first, q_last, rec["first"], rec["last"])
+            ]
+            if fuzzy_hits:
+                return self._pick_best(fuzzy_hits, team=team, pos_grp=pos_grp)
+
+            if allow_initial_fallback:
+                raw_tokens = exact_key.split()
+                initials = {q_first[0]}
+                if raw_tokens:
+                    initials.add(raw_tokens[0][0])
+                init_hits: list[dict[str, Any]] = []
+                seen_orders: set[int] = set()
+                for init_ch in initials:
+                    for rec in self._by_initial_last.get((init_ch, q_last), []):
+                        if rec["order"] not in seen_orders and (len(rec["first"]) == 1 or len(q_first) == 1):
+                            seen_orders.add(rec["order"])
+                            init_hits.append(rec)
+                if not init_hits:
+                    # Also handle initial + dropped-accent last name (e.g. "A. Rty" / "F. Unger Srum")
+                    for rec in self._entries:
+                        if (
+                            rec["order"] not in seen_orders
+                            and rec["first"]
+                            and rec["first"][0] in initials
+                            and (len(rec["first"]) == 1 or len(q_first) == 1)
+                            and accent_drop_match("xx", q_last, "xx", rec["last"])
+                        ):
+                            seen_orders.add(rec["order"])
+                            init_hits.append(rec)
+                if init_hits:
+                    # Prefer same-team matches when resolving abbreviated boxscore names like "C. McDavid"
+                    team_norm = normalize_team_abbrev(team) if team else "UNK"
+                    if team_norm != "UNK":
+                        team_hits = [r for r in init_hits if r["team"] in (team_norm, "UNK")]
+                        if team_hits:
+                            return self._pick_best(team_hits, team=team_norm, pos_grp=pos_grp)
+                    elif len({r["order"] for r in init_hits}) == 1:
+                        return init_hits[0]["payload"]
+
+        return None
 
 
 def fetch_live_club_skaters(
@@ -525,11 +780,14 @@ def fetch_live_club_skaters(
             key = clean_name(full_name)
             if key:
                 live_stats[key] = {
+                    "player_id": int(sk.get("playerId", 0) or 0),
+                    "name": full_name,
                     "live_gp": int(sk.get("gamesPlayed", 0) or 0),
                     "live_goals": int(sk.get("goals", 0) or 0),
                     "live_points": int(sk.get("points", 0) or 0),
                     "live_shots": int(sk.get("shots", 0) or 0),
                     "team": team,
+                    "position": str(sk.get("positionCode", "") or ""),
                 }
     return live_stats
 
