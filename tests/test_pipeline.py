@@ -20,6 +20,7 @@ from src.data_sync import (
     get_nhl_season_context,
     normalize_team_abbrev,
 )
+from src.infer_gate import evaluate_gate, find_due_games, parse_game_start_utc
 from src.report_builder import write_json_report, write_terminal_log_html
 from src.skater_model import (
     HAS_SKATER_ML,
@@ -668,6 +669,85 @@ class TestSkaterAndTeamMath(unittest.TestCase):
             self.assertEqual(full_payload["meta"]["status"], "live")
             self.assertEqual(full_payload["meta"]["run_mode"], "full")
             self.assertEqual(len(full_payload["power_rankings"]), 2)
+
+    def test_infer_gate_post_start_window(self):
+        from datetime import timezone
+
+        payload = {
+            "meta": {
+                "status": "live",
+                "updated_utc": "2026-11-16 21:18:00 UTC",
+            },
+            "games": [
+                {
+                    "away": "MTL",
+                    "home": "NYR",
+                    "date": "2026-11-16",
+                    "start_time_et": "7:30 PM ET",
+                    "start_time_utc": "2026-11-17T00:30:00Z",
+                    "game_state": "FUT",
+                },
+                {
+                    "away": "VAN",
+                    "home": "UTA",
+                    "date": "2026-11-16",
+                    "start_time_et": "9:30 PM ET",
+                    "game_state": "FUT",
+                },
+            ],
+        }
+        # Fallback parsing from date + start_time_et resolves 9:30 PM EST -> 02:30 UTC
+        fallback_dt = parse_game_start_utc(payload["games"][1])
+        self.assertEqual(fallback_dt, datetime(2026, 11, 17, 2, 30, tzinfo=timezone.utc))
+
+        # Before 00:33 UTC (+3 min), nothing is due
+        self.assertEqual(
+            find_due_games(payload, now_utc=datetime(2026, 11, 17, 0, 32, tzinfo=timezone.utc)),
+            [],
+        )
+        # At 00:33 UTC (+3 min), MTL@NYR is due
+        due = find_due_games(payload, now_utc=datetime(2026, 11, 17, 0, 33, tzinfo=timezone.utc))
+        self.assertEqual(len(due), 1)
+        self.assertEqual(due[0]["away"], "MTL")
+
+        # Once updated_utc >= 00:33:00 UTC, MTL@NYR does not re-trigger
+        payload["meta"]["updated_utc"] = "2026-11-17 00:34:10 UTC"
+        self.assertEqual(
+            find_due_games(payload, now_utc=datetime(2026, 11, 17, 0, 48, tzinfo=timezone.utc)),
+            [],
+        )
+        # At 02:33 UTC (+3 min for fallback VAN@UTA), VAN@UTA becomes due
+        due2 = find_due_games(payload, now_utc=datetime(2026, 11, 17, 2, 33, tzinfo=timezone.utc))
+        self.assertEqual(len(due2), 1)
+        self.assertEqual(due2[0]["away"], "VAN")
+
+        # After stale max lag (>50 min past trigger), does not re-trigger
+        self.assertEqual(
+            find_due_games(payload, now_utc=datetime(2026, 11, 17, 3, 25, tzinfo=timezone.utc)),
+            [],
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            json_path = os.path.join(tmpdir, "data.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+            ok, reason = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                now_utc=datetime(2026, 11, 17, 2, 35, tzinfo=timezone.utc),
+            )
+            self.assertTrue(ok)
+            self.assertIn("VAN@UTA", reason)
+
+            skip, _ = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                now_utc=datetime(2026, 11, 17, 0, 48, tzinfo=timezone.utc),
+            )
+            self.assertFalse(skip)
+
+            manual_ok, _ = evaluate_gate(json_path, event_name="workflow_dispatch")
+            self.assertTrue(manual_ok)
 
 
 if __name__ == "__main__":
