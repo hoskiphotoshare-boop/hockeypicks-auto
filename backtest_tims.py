@@ -28,6 +28,7 @@ from src.data_sync import (
 )
 from src.skater_model import (
     _read_optional_csv,
+    blend_skater_goal_rate,
     combine_skater_frames,
     normalize_skater_frame,
     prep_dynamic_features,
@@ -238,10 +239,12 @@ def _build_prior_skater_lookup(
     for _, row in df_prepped.sort_values("games_played", ascending=False).iterrows():
         gp = float(row.get("games_played", 0.0) or 0.0)
         goals = float(row.get("I_F_goals", 0.0) or 0.0)
+        shots = float(row.get("I_F_shotsOnGoal", 0.0) or 0.0)
         rec = {
             "base_pred": float(row["base_pred"]),
             "prior_gp": gp,
             "prior_goals": goals,
+            "prior_sog_gp": (shots / gp) if gp > 0 else 0.0,
             "prior_rate": (goals / gp) if gp > 0 else 0.14,
         }
         pid = int(row.get("playerId", 0) or 0)
@@ -378,15 +381,23 @@ def evaluate_walk_forward_backtest(
             base_pred = prior["base_pred"] if prior else 0.14
             prior_gp = prior["prior_gp"] if prior else 0.0
             prior_goals = prior["prior_goals"] if prior else 0.0
+            prior_sog_gp = prior["prior_sog_gp"] if prior else 0.0
             prior_rate = prior["prior_rate"] if prior else 0.14
 
-            st = live_player_state.get(pid, {"gp": 0.0, "goals": 0.0, "toi_sum": 0.0})
+            st = live_player_state.get(pid, {"gp": 0.0, "goals": 0.0, "shots": 0.0, "toi_sum": 0.0})
             live_gp = st["gp"]
             live_goals = st["goals"]
+            live_shots = st["shots"]
             live_rate = (live_goals / live_gp) if live_gp > 0 else prior_rate
 
-            w_live = live_gp / (live_gp + n_half) if (live_gp + n_half) > 0 else 0.0
-            blended = (base_pred * (1.0 - w_live)) + (live_rate * w_live)
+            blended, _ = blend_skater_goal_rate(
+                base_pred=base_pred,
+                live_gp=live_gp,
+                live_goals=live_goals,
+                n_half=n_half,
+                prior_sog_gp=prior_sog_gp,
+                live_shots=live_shots if live_gp > 0 else None,
+            )
 
             opp = str(row.opponent)
             p_base_m = prior_base_mults.get(opp, 1.0)
@@ -484,9 +495,10 @@ def evaluate_walk_forward_backtest(
         seen_teams: set[tuple[str, int]] = set()
         for row in day_df.itertuples(index=False):
             pid = int(row.player_id)
-            st = live_player_state.setdefault(pid, {"gp": 0.0, "goals": 0.0, "toi_sum": 0.0})
+            st = live_player_state.setdefault(pid, {"gp": 0.0, "goals": 0.0, "shots": 0.0, "toi_sum": 0.0})
             st["gp"] += 1.0
             st["goals"] += float(row.goals)
+            st["shots"] += float(getattr(row, "shots", 0.0) or 0.0)
             st["toi_sum"] += float(row.toi_sec)
 
             team = str(row.team)
