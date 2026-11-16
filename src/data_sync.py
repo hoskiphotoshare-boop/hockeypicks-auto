@@ -316,12 +316,13 @@ def sync_game_logs(
     session: Any | None = None,
     max_active_age_hours: float = 6.0,
     allow_network: bool = True,
+    seasons_filter: list[str] | None = None,
 ) -> tuple[pd.DataFrame, dict[str, dict[str, int]], dict[str, int]]:
     """Download/cache NHL API season schedules & compute leak-free team streaks."""
     os.makedirs(logs_dir, exist_ok=True)
     http = (session or create_http_session()) if allow_network else None
     current_season = context["nhl_season"]
-    seasons = context["historical_nhl_seasons"]
+    seasons = seasons_filter if seasons_filter is not None else context["historical_nhl_seasons"]
 
     teams_with_ari = sorted(set(NHL_TEAMS) | {"ARI"})
     all_logs: list[pd.DataFrame] = []
