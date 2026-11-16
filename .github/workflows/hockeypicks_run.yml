@@ -3,13 +3,13 @@ name: Hockeypicks Automated AI Pipeline
 on:
   workflow_dispatch:
   schedule:
-    # Thrice-daily ET runs (10:17 AM ET morning, 4:17 PM ET pre-puck drop, 11:43 PM ET pre-midnight Tims prep)
+    # Thrice-daily ET runs (12:01 AM ET post-midnight Tims release, 10:17 AM ET morning, 4:17 PM ET pre-puck drop)
+    - cron: '1 4 * * *'   # 12:01 AM EDT (UTC-4)
+    - cron: '1 5 * * *'   # 12:01 AM EST (UTC-5)
     - cron: '17 14 * * *' # 10:17 AM EDT (UTC-4)
     - cron: '17 15 * * *' # 10:17 AM EST (UTC-5)
     - cron: '17 20 * * *' # 4:17 PM EDT (UTC-4)
     - cron: '17 21 * * *' # 4:17 PM EST (UTC-5)
-    - cron: '43 3 * * *'  # 11:43 PM EDT (UTC-4)
-    - cron: '43 4 * * *'  # 11:43 PM EST (UTC-5)
 
 permissions:
   contents: write
@@ -27,7 +27,7 @@ jobs:
             SCHED="${{ github.event.schedule }}"
             if [ "$OFFSET" = "-0400" ]; then
               case "$SCHED" in
-                '17 14 * * *'|'17 20 * * *'|'43 3 * * *') ;;
+                '1 4 * * *'|'17 14 * * *'|'17 20 * * *') ;;
                 *)
                   echo "Skipping non-EDT cron ($SCHED) during EDT (-0400)."
                   echo "should_run=false" >> "$GITHUB_OUTPUT"
@@ -36,7 +36,7 @@ jobs:
               esac
             elif [ "$OFFSET" = "-0500" ]; then
               case "$SCHED" in
-                '17 15 * * *'|'17 21 * * *'|'43 4 * * *') ;;
+                '1 5 * * *'|'17 15 * * *'|'17 21 * * *') ;;
                 *)
                   echo "Skipping non-EST cron ($SCHED) during EST (-0500)."
                   echo "should_run=false" >> "$GITHUB_OUTPUT"
