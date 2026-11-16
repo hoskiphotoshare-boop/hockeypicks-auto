@@ -137,6 +137,48 @@ class TestDataSyncAndContext(unittest.TestCase):
         full_only = PlayerMatcher([{"name": "Chris Brown", "team": "NJD", "payload": {"goals": 1}}])
         self.assertIsNone(full_only.match("Connor Brown", team="NJD", allow_initial_fallback=True))
 
+        # Apostrophe prefixes, multi-part/hyphenated first names, trade fallback, and team/pos locks
+        edge_matcher = PlayerMatcher(
+            [
+                {"name": "Drew O'Connor", "team": "VAN", "position": "L", "payload": {"tag": "doc"}},
+                {"name": "Ryan O'Reilly", "team": "NSH", "position": "C", "payload": {"tag": "ror"}},
+                {"name": "Zachary L'Heureux", "team": "COL", "position": "L", "payload": {"tag": "zlh"}},
+                {"name": "Charle-Edouard D'Astous", "team": "TBL", "position": "D", "payload": {"tag": "dast"}},
+                {"name": "Jean-Gabriel Pageau", "team": "NYI", "position": "C", "payload": {"tag": "jgp"}},
+                {"name": "K'Andre Miller", "team": "CAR", "position": "D", "payload": {"tag": "kam"}},
+                {"name": "Charles Alexis Legault", "team": "CAR", "position": "D", "payload": {"tag": "cal"}},
+                {"name": "Dawson Mercer", "team": "WPG", "position": "C", "payload": {"tag": "mercer"}},
+                {"name": "Sebastian Aho", "team": "NYI", "position": "D", "payload": {"tag": "aho_d"}},
+                {"name": "Elias Pettersson", "team": "VAN", "position": "D", "payload": {"tag": "ep_d"}},
+            ]
+        )
+        self.assertEqual(edge_matcher.match("D. O'Connor", team="VAN", allow_initial_fallback=True)["tag"], "doc")
+        self.assertEqual(edge_matcher.match("R. O'Reilly", team="NSH", allow_initial_fallback=True)["tag"], "ror")
+        self.assertEqual(edge_matcher.match("Z. L'Heureux", team="COL", allow_initial_fallback=True)["tag"], "zlh")
+        self.assertEqual(edge_matcher.match("C. D'Astous", team="TBL", allow_initial_fallback=True)["tag"], "dast")
+        self.assertEqual(edge_matcher.match("J. Pageau", team="NYI", allow_initial_fallback=True)["tag"], "jgp")
+        self.assertEqual(edge_matcher.match("K. Miller", team="CAR", allow_initial_fallback=True)["tag"], "kam")
+        self.assertEqual(edge_matcher.match("C. Legault", team="CAR", allow_initial_fallback=True)["tag"], "cal")
+        # Trade fallback works when require_same_team=False, blocked when require_same_team=True
+        self.assertEqual(
+            edge_matcher.match("D. Mercer", team="NJD", position="C", allow_initial_fallback=True, require_compatible_pos=True)["tag"],
+            "mercer",
+        )
+        self.assertIsNone(
+            edge_matcher.match("D. Mercer", team="NJD", position="C", allow_initial_fallback=True, require_same_team=True)
+        )
+        # Same-team and compatible-pos locks prevent cross-team/cross-role false collisions
+        self.assertIsNone(
+            edge_matcher.match("Sebastian Aho", team="CAR", position="C", require_same_team=True, require_compatible_pos=True)
+        )
+        self.assertIsNone(
+            edge_matcher.match("Elias Pettersson", team="VAN", position="C", require_same_team=True, require_compatible_pos=True)
+        )
+        self.assertEqual(
+            edge_matcher.match("Elias Pettersson", team="VAN", position="D", require_same_team=True, require_compatible_pos=True)["tag"],
+            "ep_d",
+        )
+
     def test_compute_streaks_leak_free(self):
         df = pd.DataFrame(
             [
