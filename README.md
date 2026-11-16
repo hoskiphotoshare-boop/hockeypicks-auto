@@ -12,7 +12,7 @@ Automated CPU-based NHL machine learning pipeline and static GitHub Pages web ap
 ## Setup (One-Time on GitHub)
 1. Enable **GitHub Pages**: go to **Settings → Pages → Build and deployment → Source: Deploy from a branch**, select **`main`** and folder **`/docs`**, and click **Save**.
 2. *(Optional)* Enable live sharp odds & Quarter-Kelly calculations: go to **Settings → Secrets and variables → Actions → New repository secret**, add **`ODDS_API_KEY`**.
-3. Go to **Actions → Hockeypicks Automated AI Pipeline → Run workflow** to trigger your first full training + inference run immediately (scheduled training runs execute daily at **10:17 AM ET**, **4:17 PM ET**, and **11:43 PM ET** year-round with EDT/EST DST validation).
+3. Go to **Actions → Hockeypicks Automated AI Pipeline → Run workflow** to trigger your first full training + inference run immediately (scheduled training runs execute daily at **12:01 AM ET**, **10:17 AM ET**, and **4:17 PM ET** year-round with EDT/EST DST validation).
 4. *(Optional)* To run **⚡ Run Inference** (`hockeypicks_infer.yml`) directly from the web app, click **⚙️** in the dashboard header and save a GitHub Fine-Grained PAT scoped strictly to **Repository: `hockeypicks-auto` → Actions: Read and write** (stored only in your browser's `localStorage`).
 
 ## Local Usage
