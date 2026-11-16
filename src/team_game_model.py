@@ -239,11 +239,27 @@ def build_team_star_goalie_history(
             for team, grp in df_g.groupby("team"):
                 t_str = str(team)
                 t_gp = team_gp_map.get(t_str, max(1.0, float(grp["games_played"].sum() if "games_played" in grp.columns else 1.0)))
-                gsax = float(grp["goalsSavedAboveExpected"].sum()) if "goalsSavedAboveExpected" in grp.columns else 0.0
-                if "games_played" in grp.columns and "savePercentage" in grp.columns and not grp.empty:
-                    starter_sv = float(grp.sort_values("games_played", ascending=False).iloc[0]["savePercentage"])
+                if "goalsSavedAboveExpected" in grp.columns:
+                    gsax = float(pd.to_numeric(grp["goalsSavedAboveExpected"], errors="coerce").fillna(0.0).sum())
+                elif "xGoals" in grp.columns and "goals" in grp.columns:
+                    xg = pd.to_numeric(grp["xGoals"], errors="coerce").fillna(0.0)
+                    gl = pd.to_numeric(grp["goals"], errors="coerce").fillna(0.0)
+                    gsax = float((xg - gl).sum())
                 else:
-                    starter_sv = 0.900
+                    gsax = 0.0
+
+                starter_sv = 0.900
+                if not grp.empty:
+                    sort_col = "games_played" if "games_played" in grp.columns else ("icetime" if "icetime" in grp.columns else None)
+                    top_g = grp.sort_values(sort_col, ascending=False).iloc[0] if sort_col else grp.iloc[0]
+                    if "savePercentage" in grp.columns and pd.notna(top_g.get("savePercentage")):
+                        starter_sv = float(top_g["savePercentage"])
+                    elif "ongoal" in grp.columns and "goals" in grp.columns:
+                        og = float(pd.to_numeric(top_g.get("ongoal"), errors="coerce") or 0.0)
+                        gl = float(pd.to_numeric(top_g.get("goals"), errors="coerce") or 0.0)
+                        if og > 0.0:
+                            starter_sv = (og - gl) / og
+
                 goalies_rows.append(
                     {
                         "season": year,
@@ -258,6 +274,47 @@ def build_team_star_goalie_history(
     df_stars = pd.DataFrame(stars_rows)
     df_goalies = pd.DataFrame(goalies_rows)
     return df_team_hist, df_stars, df_goalies
+
+
+def load_active_goalie_lookup(
+    archive_dir: str,
+    active_mp_year: int,
+) -> dict[str, list[dict[str, Any]]]:
+    """Load per-team individual goalie GSAx & SV% stats from active-season MoneyPuck CSV."""
+    for yr in (active_mp_year, active_mp_year - 1):
+        df_g = _read_optional_csv(os.path.join(archive_dir, f"{yr}_regular_goalies.csv"))
+        if df_g.empty:
+            continue
+        if "situation" in df_g.columns:
+            df_g = df_g[df_g["situation"] == "all"].copy()
+        if df_g.empty:
+            continue
+        df_g["team"] = df_g["team"].apply(normalize_team_abbrev)
+        by_team: dict[str, list[dict[str, Any]]] = {}
+        for _, r in df_g.iterrows():
+            team = str(r.get("team", "UNK"))
+            name = str(r.get("name", "") or "").strip()
+            if team == "UNK" or not name:
+                continue
+            gp = float(pd.to_numeric(r.get("games_played"), errors="coerce") or 0.0)
+            og = float(pd.to_numeric(r.get("ongoal"), errors="coerce") or 0.0)
+            gl = float(pd.to_numeric(r.get("goals"), errors="coerce") or 0.0)
+            xg = float(pd.to_numeric(r.get("xGoals"), errors="coerce") or 0.0)
+            gsax = float(r["goalsSavedAboveExpected"]) if "goalsSavedAboveExpected" in r and pd.notna(r.get("goalsSavedAboveExpected")) else (xg - gl)
+            sv = float(r["savePercentage"]) if "savePercentage" in r and pd.notna(r.get("savePercentage")) else ((og - gl) / og if og > 0.0 else 0.900)
+            by_team.setdefault(team, []).append(
+                {
+                    "player_id": int(pd.to_numeric(r.get("playerId"), errors="coerce") or 0),
+                    "name": name,
+                    "games_played": gp,
+                    "ongoal": og,
+                    "gsax": gsax,
+                    "save_pct": sv,
+                }
+            )
+        if by_team:
+            return by_team
+    return {}
 
 
 def _select_top_team_features(df_team_hist: pd.DataFrame, max_features: int = 20) -> list[str]:
@@ -856,6 +913,7 @@ def predict_upcoming_games(
     bundle: dict[str, Any],
     odds_api_key: str = "",
     session: Any | None = None,
+    team_availability: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Generate single-game win probabilities and optional active playoff series projections."""
     odds_map = _fetch_nhl_odds_lookup(odds_api_key, session) if (odds_api_key and session) else {}
@@ -875,6 +933,8 @@ def predict_upcoming_games(
         game_odds = odds_map.get((away, home), {})
         home_edge = evaluate_kelly_edge(home_prob, game_odds.get(home), min_edge_pct=2.0)
         away_edge = evaluate_kelly_edge(away_prob, game_odds.get(away), min_edge_pct=2.0)
+        avail_a = (team_availability or {}).get(away, {})
+        avail_h = (team_availability or {}).get(home, {})
 
         predictions.append(
             {
@@ -899,6 +959,10 @@ def predict_upcoming_games(
                 "home_gsax": round(float(st_h.get("Team_GSAx", 0.0)), 1),
                 "away_top3_pts": int(round(float(st_a.get("Top3_Points", 0.0)))),
                 "home_top3_pts": int(round(float(st_h.get("Top3_Points", 0.0)))),
+                "away_goalie": avail_a.get("goalie"),
+                "home_goalie": avail_h.get("goalie"),
+                "away_injuries": [r["player"] + f" ({r['status']})" for r in (avail_a.get("out_skaters") or [])[:4]],
+                "home_injuries": [r["player"] + f" ({r['status']})" for r in (avail_h.get("out_skaters") or [])[:4]],
                 "bookie": game_odds.get("bookie"),
                 "away_edge": away_edge,
                 "home_edge": home_edge,
