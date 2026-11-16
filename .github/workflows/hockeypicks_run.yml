@@ -77,11 +77,11 @@ jobs:
           restore-keys: |
             hockeypicks-data-
 
-      - name: Execute Hockeypicks AI Pipeline
+      - name: Execute Hockeypicks AI Training & Inference Pipeline
         if: steps.tz_check.outputs.should_run == 'true'
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: python main_pipeline.py
+        run: python main_pipeline.py --mode full
 
       - name: Commit and Push Predictions & Model Bundles
         if: steps.tz_check.outputs.should_run == 'true'
