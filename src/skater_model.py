@@ -25,7 +25,7 @@ except ImportError:  # pragma: no cover
     KFold = None
     HAS_SKATER_ML = False
 
-from src.data_sync import clean_name, normalize_team_abbrev
+from src.data_sync import PlayerMatcher, clean_name, normalize_team_abbrev
 
 
 SKATER_EXCLUDE_COLS = {
@@ -182,6 +182,8 @@ def compute_empirical_bayes_n_half(
     prior_rates: np.ndarray | list[float],
     fallback: float = 9.23,
     residual_mse: float | None = None,
+    min_n_half: float = 9.0,
+    max_n_half: float = 25.0,
 ) -> float:
     """Estimate Gamma-Poisson prior half-life N_half = mean(rate) / var_eff.
 
@@ -195,12 +197,12 @@ def compute_empirical_bayes_n_half(
         return fallback
     mean_rate = float(np.mean(arr))
     if residual_mse is not None and residual_mse > 1e-8 and mean_rate > 0.0:
-        return round(float(np.clip(mean_rate / residual_mse, 9.0, 25.0)), 2)
+        return round(float(np.clip(mean_rate / residual_mse, min_n_half, max_n_half)), 2)
     var_rate = float(np.var(arr))
     if var_rate <= 1e-8 or mean_rate <= 0.0:
         return fallback
     n_half = mean_rate / var_rate
-    return round(float(np.clip(n_half, 2.0, 35.0)), 2)
+    return round(float(np.clip(n_half, 2.0, max(35.0, max_n_half))), 2)
 
 
 def _read_optional_csv(path: str) -> pd.DataFrame:
@@ -276,38 +278,48 @@ def train_skater_goal_model(
     X_df = df_prepped.loc[valid_mask, valid_features].replace([np.inf, -np.inf], np.nan)
     imputer = SimpleImputer(strategy="constant", fill_value=0.0)
     X = imputer.fit_transform(X_df)
-    y = y_all[valid_mask]
+    y = np.clip(y_all[valid_mask], 0.0, 2.0)
+    sample_weights = (
+        pd.to_numeric(df_prepped.loc[valid_mask, "target_gp"], errors="coerce")
+        .fillna(1.0)
+        .clip(lower=1.0)
+        .to_numpy(dtype=float)
+    )
+    mcw = min(40, max(1, len(y) // 15))
+    xgb_kwargs = {
+        "objective": "count:poisson",
+        "n_estimators": 200,
+        "learning_rate": 0.04,
+        "max_depth": 3,
+        "subsample": 0.8,
+        "colsample_bytree": 0.7,
+        "min_child_weight": mcw,
+        "reg_lambda": 10.0,
+        "random_state": 42,
+    }
 
-    # 5-fold cross-validation diagnostics
+    # 5-fold GP-weighted cross-validation diagnostics
     cv_rmse = 0.0
     cv_mae = 0.0
     if len(y) >= 25:
         kf = KFold(n_splits=5, shuffle=True, random_state=42)
         oof = np.zeros(len(y), dtype=float)
         for tr_idx, va_idx in kf.split(X):
-            fold_model = xgb.XGBRegressor(
-                n_estimators=150,
-                learning_rate=0.05,
-                max_depth=4,
-                subsample=0.8,
-                colsample_bytree=0.8,
-                random_state=42,
-            )
-            fold_model.fit(X[tr_idx], y[tr_idx])
+            fold_model = xgb.XGBRegressor(**xgb_kwargs)
+            fold_model.fit(X[tr_idx], y[tr_idx], sample_weight=sample_weights[tr_idx])
             fold_preds = np.asarray(fold_model.predict(X[va_idx]), dtype=float).reshape(-1)
             oof[va_idx] = np.clip(fold_preds, 0.0, 2.0)
-        cv_rmse = float(np.sqrt(mean_squared_error(y, oof)))
-        cv_mae = float(mean_absolute_error(y, oof))
+        w_sum = float(np.sum(sample_weights))
+        if w_sum > 0.0:
+            cv_mse_w = float(np.average((y - oof) ** 2, weights=sample_weights))
+            cv_rmse = float(np.sqrt(cv_mse_w))
+            cv_mae = float(np.average(np.abs(y - oof), weights=sample_weights))
+        else:
+            cv_rmse = float(np.sqrt(mean_squared_error(y, oof)))
+            cv_mae = float(mean_absolute_error(y, oof))
 
-    model = xgb.XGBRegressor(
-        n_estimators=150,
-        learning_rate=0.05,
-        max_depth=4,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        random_state=42,
-    )
-    model.fit(X, y)
+    model = xgb.XGBRegressor(**xgb_kwargs)
+    model.fit(X, y, sample_weight=sample_weights)
 
     # Feature importance summary
     importances = model.feature_importances_
@@ -324,8 +336,10 @@ def train_skater_goal_model(
     residual_mse = (cv_rmse ** 2) if cv_rmse > 0.0 else None
     n_half = compute_empirical_bayes_n_half(
         prior_rates_for_eb,
-        fallback=9.23 if mode == "playoffs" else 25.0,
+        fallback=16.0 if mode == "playoffs" else 32.0,
         residual_mse=residual_mse,
+        min_n_half=16.0,
+        max_n_half=40.0,
     )
 
     return {
@@ -393,6 +407,39 @@ def compute_skater_base_predictions(df_baseline: pd.DataFrame, bundle: dict[str,
     return np.clip(preds, 0.0, 2.0)
 
 
+def blend_skater_goal_rate(
+    base_pred: float,
+    live_gp: float | int,
+    live_goals: float | int,
+    n_half: float,
+    *,
+    prior_sog_gp: float = 0.0,
+    live_shots: float | int | None = None,
+) -> tuple[float, float]:
+    """Empirical Bayes blend of XGBoost goal rate with live goals and shrunk live shot pace.
+
+    Returns (blended_goals_per_game, live_goal_weight).
+    """
+    gp_val = float(live_gp or 0.0)
+    goals_val = float(live_goals or 0.0)
+    live_g_gp = (goals_val / gp_val) if gp_val > 0.0 else 0.0
+    weight_live = gp_val / (gp_val + n_half) if (gp_val + n_half) > 0.0 else 0.0
+    goals_eb = (base_pred * (1.0 - weight_live)) + (live_g_gp * weight_live)
+
+    if gp_val > 0.0 and live_shots is not None and prior_sog_gp > 0.0:
+        shots_val = float(live_shots or 0.0)
+        live_sog_gp = shots_val / gp_val
+        w_shots = gp_val / (gp_val + 14.0)
+        sog_eb = (prior_sog_gp * (1.0 - w_shots)) + (live_sog_gp * w_shots)
+        prior_sh_pct = float(np.clip(base_pred / max(0.35, prior_sog_gp), 0.03, 0.22))
+        sh_pct_eb = (goals_val + (150.0 * prior_sh_pct)) / (shots_val + 150.0)
+        shot_rate_pred = sog_eb * sh_pct_eb
+        blended = (0.70 * goals_eb) + (0.30 * shot_rate_pred)
+    else:
+        blended = goals_eb
+    return float(blended), float(weight_live)
+
+
 def score_skater_candidates(
     bundle: dict[str, Any],
     df_baseline: pd.DataFrame,
@@ -416,13 +463,47 @@ def score_skater_candidates(
     else:
         scored_pool["base_pred"] = compute_skater_base_predictions(scored_pool, bundle)
 
-    lookup_by_name = {
-        row["name_clean"]: row
-        for _, row in scored_pool.sort_values("games_played", ascending=False)
-        .drop_duplicates("name_clean", keep="first")
+    dedup_subset = ["playerId", "name_clean"] if "playerId" in scored_pool.columns else ["name_clean"]
+    pool_entries = []
+    for _, row in (
+        scored_pool.sort_values("games_played", ascending=False)
+        .drop_duplicates(dedup_subset, keep="first")
         .iterrows()
-        if row["name_clean"]
-    }
+    ):
+        nc = str(row.get("name_clean", "") or "")
+        nm = str(row.get("name", "") or nc)
+        if not nc and not nm:
+            continue
+        pid_raw = row.get("playerId", 0)
+        pool_entries.append(
+            {
+                "player_id": int(pid_raw) if pd.notna(pid_raw) and pid_raw else 0,
+                "name": nm,
+                "name_clean": nc,
+                "team": row.get("team", "UNK"),
+                "position": row.get("position", ""),
+                "payload": row,
+            }
+        )
+    pool_matcher = PlayerMatcher(pool_entries)
+
+    live_entries = []
+    for lkey, lval in sorted(
+        (live_skaters or {}).items(),
+        key=lambda kv: int(kv[1].get("live_gp", 0) or 0),
+        reverse=True,
+    ):
+        live_entries.append(
+            {
+                "player_id": int(lval.get("player_id", 0) or 0),
+                "name": str(lval.get("name") or lkey),
+                "name_clean": str(lkey),
+                "team": lval.get("team", "UNK"),
+                "position": lval.get("position", ""),
+                "payload": lval,
+            }
+        )
+    live_matcher = PlayerMatcher(live_entries)
 
     def _evaluate_player(
         name: str,
@@ -431,23 +512,56 @@ def score_skater_candidates(
         position: str,
         opponent: str,
         group: int | None = None,
+        player_id: int = 0,
     ) -> dict[str, Any]:
-        baseline_row = lookup_by_name.get(name_clean_key)
+        live = (
+            live_matcher.match(
+                name=name,
+                name_clean_key=name_clean_key,
+                team=team,
+                position=position,
+                player_id=player_id,
+            )
+            or {}
+        )
+        live_gp = int(live.get("live_gp", 0))
+        live_goals = int(live.get("live_goals", 0))
+        live_shots = int(live.get("live_shots", 0) or 0)
+        live_g_gp = (live_goals / live_gp) if live_gp > 0 else 0.0
+        resolved_pid = player_id or int(live.get("player_id", 0) or 0)
+
+        baseline_row = pool_matcher.match(
+            name=name,
+            name_clean_key=name_clean_key,
+            team=team,
+            position=position,
+            player_id=resolved_pid,
+        )
+        prior_sog_gp = 0.0
         if baseline_row is not None:
             base_pred = float(baseline_row["base_pred"])
             position = position or str(baseline_row.get("position", ""))
             mp_team = str(baseline_row.get("team", team))
             team = team if team and team != "UNK" else mp_team
+            sog_val = baseline_row.get("I_F_shotsOnGoal_per_game")
+            if sog_val is not None and pd.notna(sog_val):
+                prior_sog_gp = float(sog_val)
+            else:
+                raw_sog = baseline_row.get("I_F_shotsOnGoal")
+                raw_gp = baseline_row.get("games_played")
+                if raw_sog is not None and pd.notna(raw_sog) and raw_gp and float(raw_gp) > 0.0:
+                    prior_sog_gp = float(raw_sog) / float(raw_gp)
         else:
             base_pred = 0.14
 
-        live = live_skaters.get(name_clean_key, {})
-        live_gp = int(live.get("live_gp", 0))
-        live_goals = int(live.get("live_goals", 0))
-        live_g_gp = (live_goals / live_gp) if live_gp > 0 else 0.0
-
-        weight_live = live_gp / (live_gp + n_half) if (live_gp + n_half) > 0 else 0.0
-        blended = (base_pred * (1.0 - weight_live)) + (live_g_gp * weight_live)
+        blended, weight_live = blend_skater_goal_rate(
+            base_pred=base_pred,
+            live_gp=live_gp,
+            live_goals=live_goals,
+            n_half=n_half,
+            prior_sog_gp=prior_sog_gp,
+            live_shots=live_shots if "live_shots" in live else None,
+        )
 
         opp_clean = normalize_team_abbrev(opponent)
         def_mult = float(defense_multipliers.get(opp_clean, 1.0))
@@ -461,6 +575,7 @@ def score_skater_candidates(
             "base_pred": round(base_pred, 3),
             "live_gp": live_gp,
             "live_goals": live_goals,
+            "live_shots": live_shots,
             "live_g_gp": round(live_g_gp, 3),
             "eb_live_weight_pct": round(weight_live * 100.0, 1),
             "def_multiplier": round(def_mult, 3),
@@ -494,10 +609,19 @@ def score_skater_candidates(
 
     # Update current team from live NHL roster stats when available (handles mid-season trades)
     if live_skaters:
-        scored_pool["team"] = scored_pool.apply(
-            lambda r: live_skaters.get(r["name_clean"], {}).get("team", r["team"]),
-            axis=1,
-        )
+        def _resolve_live_team(r: pd.Series) -> str:
+            pid_val = r.get("playerId", 0)
+            pid_int = int(pid_val) if pd.notna(pid_val) and pid_val else 0
+            matched_live = live_matcher.match(
+                name=str(r.get("name", "") or ""),
+                name_clean_key=str(r.get("name_clean", "") or ""),
+                team=str(r.get("team", "UNK") or "UNK"),
+                position=str(r.get("position", "") or ""),
+                player_id=pid_int,
+            )
+            return str(matched_live.get("team", r["team"])) if matched_live else str(r["team"])
+
+        scored_pool["team"] = scored_pool.apply(_resolve_live_team, axis=1)
 
     # 2. Full Slate Top Projected Scorers across active games
     slate_scorers: list[dict[str, Any]] = []
@@ -508,6 +632,7 @@ def score_skater_candidates(
         df_slate = df_slate[df_slate["games_played"] >= 5] if len(df_slate[df_slate["games_played"] >= 5]) >= 10 else df_slate
         for _, row in df_slate.iterrows():
             p_team = str(row["team"])
+            pid_val = row.get("playerId", 0)
             slate_scorers.append(
                 _evaluate_player(
                     name=str(row.get("name", "")),
@@ -515,6 +640,7 @@ def score_skater_candidates(
                     team=p_team,
                     position=str(row.get("position", "")),
                     opponent=daily_matchups.get(p_team, "UNK"),
+                    player_id=int(pid_val) if pd.notna(pid_val) and pid_val else 0,
                 )
             )
         slate_scorers.sort(key=lambda x: x["final_score"], reverse=True)
