@@ -378,6 +378,12 @@ def save_pairwise_bundle(bundle: dict[str, Any], path: str) -> None:
     joblib.dump(bundle, path)
 
 
+def load_pairwise_bundle(path: str) -> dict[str, Any]:
+    if not HAS_GAME_ML:
+        raise RuntimeError("Missing ML dependencies (xgboost, scikit-learn, joblib).")
+    return joblib.load(path)
+
+
 def build_live_team_profiles(
     df_team_hist: pd.DataFrame,
     df_stars: pd.DataFrame,
@@ -469,7 +475,7 @@ def compute_power_rankings_and_defense(
     profiles: dict[str, dict[str, Any]],
     bundle: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], dict[str, float]]:
-    """Compute AI Power Ratings across all teams and centered/damped 70/30 Defense Multiplier."""
+    """Compute AI Power Ratings across all teams and Cell 29's 70/30 Defense Multiplier."""
     teams = sorted(profiles.keys())
     if not teams:
         return [], {}
