@@ -155,6 +155,112 @@
       border-color: rgba(245, 158, 11, 0.35);
     }
 
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(56, 189, 248, 0.18));
+      color: var(--text-0);
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover:not(:disabled) {
+      border-color: var(--emerald);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.34), rgba(56, 189, 248, 0.26));
+    }
+
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+      color: var(--text-1);
+      font-size: 0.82rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--cyan);
+    }
+
+    .banner.info {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #bae6fd;
+    }
+
+    .banner.success {
+      background: rgba(16, 185, 129, 0.14);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #a7f3d0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1500;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.hidden { display: none; }
+
+    .modal-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-sizing: border-box;
+      color: var(--text-0);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+    }
+
+    .modal-card p, .modal-card li {
+      font-size: 0.82rem;
+      color: var(--text-1);
+      line-height: 1.48;
+    }
+
+    .modal-card ol {
+      padding-left: 18px;
+      margin: 8px 0 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
     .nav-tabs-desktop {
       max-width: 1200px;
       margin: 0 auto;
@@ -600,6 +706,14 @@
       .grid-3col, .grid-2col { grid-template-columns: 1fr; }
       .header-actions .hide-mobile { display: none; }
     }
+
+    @media (max-width: 520px) {
+      .header-inner { padding: 10px 12px; gap: 8px; }
+      .brand-badge { width: 30px; height: 30px; font-size: 0.85rem; }
+      .brand-text h1 { font-size: 0.92rem; }
+      .brand-sub { font-size: 0.68rem; }
+      .action-btn { padding: 5px 9px; font-size: 0.72rem; }
+    }
   </style>
 </head>
 <body>
@@ -613,7 +727,9 @@
         </div>
       </div>
       <div class="header-actions">
-        <span class="pill" id="modePill">--</span>
+        <button id="runInferBtn" class="action-btn" onclick="triggerLiveInference()">⚡ Run Inference</button>
+        <button class="icon-btn" title="Configure GitHub Inference Token" aria-label="Configure GitHub Inference Token" onclick="openTokenModal()">⚙️</button>
+        <span class="pill hide-mobile" id="modePill">--</span>
         <span class="pill cyan hide-mobile" id="updatedPill">--</span>
       </div>
     </div>
@@ -627,6 +743,7 @@
   </header>
 
   <main class="app-main">
+    <div id="inferProgressBanner" class="banner info hidden"></div>
     <div id="statusBanner" class="banner hidden"></div>
 
     <!-- TAB 1: SKATER PICKS -->
@@ -756,6 +873,26 @@
       <span>📜</span><span>Logs</span>
     </button>
   </nav>
+
+  <div id="tokenModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tokenModalTitle" onclick="if (event.target === this) closeTokenModal();">
+    <div class="modal-card">
+      <h2 id="tokenModalTitle">Live On-Demand Inference Setup</h2>
+      <p>Because GitHub Pages hosts static files only, pressing <strong>Run Inference</strong> triggers the fast <code>hockeypicks_infer.yml</code> GitHub Action (~20s) using the saved model bundles in this repo.</p>
+      <ol>
+        <li>Create a GitHub <strong>Fine-grained personal access token</strong> scoped only to repository <code>hoskiphotoshare-boop/hockeypicks-auto</code>.</li>
+        <li>Grant only <strong>Actions: Read and write</strong> permission.</li>
+        <li>Paste below — stored strictly in this browser's <code>localStorage</code> and never sent anywhere except <code>api.github.com</code>.</li>
+      </ol>
+      <input id="ghPatInput" class="control-input" type="password" style="width:100%;margin-bottom:8px" placeholder="github_pat_..." autocomplete="off" />
+      <div id="tokenModalError" style="font-size:0.78rem;color:var(--rose);min-height:16px"></div>
+      <div class="modal-actions">
+        <a href="https://github.com/hoskiphotoshare-boop/hockeypicks-auto/actions/workflows/hockeypicks_infer.yml" target="_blank" rel="noopener" style="margin-right:auto;align-self:center;color:var(--cyan);font-size:0.78rem;text-decoration:none">Open in Actions ↗</a>
+        <button class="nav-btn" type="button" onclick="clearSavedToken()">Clear</button>
+        <button class="nav-btn" type="button" onclick="closeTokenModal()">Cancel</button>
+        <button class="action-btn" type="button" onclick="saveTokenAndRun()">Save &amp; Run</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     let APP_DATA = null;
@@ -1108,7 +1245,8 @@
 
         document.getElementById('headerSubtitle').textContent = `${meta.nhl_season_label || 'NHL'} Automated XGBoost & Empirical Bayes Engine`;
         document.getElementById('modePill').textContent = meta.active_mode || 'Pending';
-        document.getElementById('updatedPill').textContent = meta.updated_et || 'Not Run Yet';
+        const modeTag = meta.run_mode ? ` • ${meta.run_mode}` : '';
+        document.getElementById('updatedPill').textContent = (meta.updated_et || 'Not Run Yet') + modeTag;
 
         const banner = document.getElementById('statusBanner');
         if (meta.status === 'bootstrap') {
@@ -1131,13 +1269,166 @@
         const mp = meta.moneypuck_sync || {};
         const gl = meta.game_log_sync || {};
         document.getElementById('syncSummaryText').textContent =
-          `Updated: ${meta.updated_et || '--'} | MoneyPuck Active Season: ${meta.active_mp_year || '--'} ` +
+          `Updated: ${meta.updated_et || '--'} (${meta.run_mode || 'full'}) | MoneyPuck Active Season: ${meta.active_mp_year || '--'} ` +
           `(Downloaded: ${mp.downloaded ?? 0}, Cached: ${mp.cached ?? 0}) | ` +
           `NHL Game Logs Compiled: ${gl.total_rows ?? 0} rows.`;
       } catch (err) {
         document.getElementById('headerSubtitle').textContent = 'Failed to load docs/data.json';
       }
       loadLogs();
+    }
+
+    const PAT_STORAGE_KEY = 'hp_infer_gh_pat';
+    let INFER_RUNNING = false;
+
+    function detectRepoSlug() {
+      const host = window.location.hostname || '';
+      const parts = (window.location.pathname || '').split('/').filter(Boolean);
+      if (host.endsWith('.github.io') && parts.length >= 1) {
+        return `${host.replace('.github.io', '')}/${parts[0]}`;
+      }
+      return 'hoskiphotoshare-boop/hockeypicks-auto';
+    }
+
+    function setInferBanner(htmlMsg, variant = 'info') {
+      const el = document.getElementById('inferProgressBanner');
+      if (!htmlMsg) {
+        el.classList.add('hidden');
+        el.innerHTML = '';
+        return;
+      }
+      el.className = `banner ${variant}`;
+      el.innerHTML = htmlMsg;
+    }
+
+    function openTokenModal(errMsg = '') {
+      const saved = localStorage.getItem(PAT_STORAGE_KEY) || '';
+      document.getElementById('ghPatInput').value = saved;
+      document.getElementById('tokenModalError').textContent = errMsg;
+      document.getElementById('tokenModal').classList.remove('hidden');
+    }
+
+    function closeTokenModal() {
+      document.getElementById('tokenModal').classList.add('hidden');
+      document.getElementById('tokenModalError').textContent = '';
+    }
+
+    function clearSavedToken() {
+      localStorage.removeItem(PAT_STORAGE_KEY);
+      document.getElementById('ghPatInput').value = '';
+      document.getElementById('tokenModalError').textContent = 'Token cleared from this browser.';
+    }
+
+    function saveTokenAndRun() {
+      const tok = (document.getElementById('ghPatInput').value || '').trim();
+      if (!tok) {
+        document.getElementById('tokenModalError').textContent = 'Paste a fine-grained GitHub token with Actions write permission.';
+        return;
+      }
+      localStorage.setItem(PAT_STORAGE_KEY, tok);
+      closeTokenModal();
+      triggerLiveInference();
+    }
+
+    async function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function triggerLiveInference() {
+      if (INFER_RUNNING) return;
+      const pat = (localStorage.getItem(PAT_STORAGE_KEY) || '').trim();
+      if (!pat) {
+        openTokenModal();
+        return;
+      }
+
+      const repo = detectRepoSlug();
+      const btn = document.getElementById('runInferBtn');
+      const prevUpdatedUtc = APP_DATA && APP_DATA.meta ? APP_DATA.meta.updated_utc : null;
+      const dispatchStartedMs = Date.now();
+
+      INFER_RUNNING = true;
+      btn.disabled = true;
+      btn.textContent = '⏳ Dispatching...';
+      setInferBanner('<strong>Dispatching live inference:</strong> Queuing <code>hockeypicks_infer.yml</code> on GitHub Actions...');
+
+      try {
+        const resp = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/hockeypicks_infer.yml/dispatches`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization': `Bearer ${pat}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ ref: 'main' })
+        });
+
+        if (resp.status === 401 || resp.status === 403) {
+          openTokenModal('GitHub rejected the token (401/403). Check Actions Read & write permission.');
+          setInferBanner('');
+          return;
+        }
+        if (!resp.ok) {
+          throw new Error(`Dispatch failed (HTTP ${resp.status})`);
+        }
+
+        // Poll workflow run status
+        let matchedRun = null;
+        for (let attempt = 0; attempt < 45; attempt++) {
+          await sleep(4000);
+          const runsResp = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/hockeypicks_infer.yml/runs?per_page=5`, {
+            headers: {
+              'Accept': 'application/vnd.github+json',
+              'Authorization': `Bearer ${pat}`
+            }
+          });
+          if (!runsResp.ok) continue;
+          const runsData = await runsResp.json();
+          const candidate = (runsData.workflow_runs || []).find(r => new Date(r.created_at).getTime() >= (dispatchStartedMs - 20000));
+          if (candidate) {
+            matchedRun = candidate;
+            if (candidate.status === 'completed') {
+              if (candidate.conclusion === 'success') {
+                break;
+              }
+              throw new Error(`Workflow finished with status "${candidate.conclusion}". See run: ${candidate.html_url}`);
+            }
+            btn.textContent = `⚙️ ${candidate.status}...`;
+            setInferBanner(`<strong>Live inference running:</strong> GitHub Action status <code>${esc(candidate.status)}</code> (<a href="${esc(candidate.html_url)}" target="_blank" rel="noopener" style="color:var(--cyan)">view run ↗</a>). Waiting for fresh predictions...`);
+          }
+        }
+
+        if (!matchedRun || matchedRun.status !== 'completed') {
+          setInferBanner('<strong>Timed out waiting for GitHub Actions:</strong> Refresh in a moment or check the Actions tab.', 'warn');
+          return;
+        }
+
+        // Wait briefly for GitHub Pages to publish the committed docs/data.json
+        btn.textContent = '🚀 Updating UI...';
+        setInferBanner('<strong>Inference finished!</strong> Waiting for GitHub Pages to publish updated <code>docs/data.json</code>...');
+        for (let p = 0; p < 24; p++) {
+          await sleep(4000);
+          try {
+            const dResp = await fetch('./data.json?t=' + Date.now());
+            if (!dResp.ok) continue;
+            const candidateData = await dResp.json();
+            const newUtc = candidateData && candidateData.meta ? candidateData.meta.updated_utc : null;
+            if (newUtc && newUtc !== prevUpdatedUtc) {
+              await init();
+              setInferBanner(`<strong>✅ Live Inference Complete!</strong> Dashboard refreshed (${esc(newUtc)}).`, 'success');
+              return;
+            }
+          } catch (_) {}
+        }
+        await init();
+        setInferBanner('<strong>Inference completed on Actions.</strong> If GitHub Pages CDN has not finished updating yet, reload in ~15 seconds.', 'info');
+      } catch (err) {
+        setInferBanner(`<strong>Inference error:</strong> ${esc(err && err.message ? err.message : String(err))}`, '');
+      } finally {
+        INFER_RUNNING = false;
+        btn.disabled = false;
+        btn.textContent = '⚡ Run Inference';
+      }
     }
 
     init();
