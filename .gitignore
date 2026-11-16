@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+.DS_Store
+
+# Cached raw MoneyPuck CSVs and NHL game logs (stored via Actions cache, not Git)
+data/
+*.csv
+*.zip
+!tests/fixtures/*.csv
