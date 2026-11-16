@@ -3,11 +3,13 @@ name: Hockeypicks Automated AI Pipeline
 on:
   workflow_dispatch:
   schedule:
-    # Twice-daily ET runs (10:17 AM ET morning release + 4:17 PM ET pre-puck drop)
+    # Thrice-daily ET runs (10:17 AM ET morning, 4:17 PM ET pre-puck drop, 11:43 PM ET pre-midnight Tims prep)
     - cron: '17 14 * * *' # 10:17 AM EDT (UTC-4)
     - cron: '17 15 * * *' # 10:17 AM EST (UTC-5)
     - cron: '17 20 * * *' # 4:17 PM EDT (UTC-4)
     - cron: '17 21 * * *' # 4:17 PM EST (UTC-5)
+    - cron: '43 3 * * *'  # 11:43 PM EDT (UTC-4)
+    - cron: '43 4 * * *'  # 11:43 PM EST (UTC-5)
 
 permissions:
   contents: write
@@ -22,14 +24,25 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             OFFSET=$(TZ="America/New_York" date +%z)
-            if [ "$OFFSET" = "-0400" ] && [ "${{ github.event.schedule }}" != "17 14 * * *" ] && [ "${{ github.event.schedule }}" != "17 20 * * *" ]; then
-              echo "Skipping EST cron (${{ github.event.schedule }}) during EDT (-0400)."
-              echo "should_run=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            elif [ "$OFFSET" = "-0500" ] && [ "${{ github.event.schedule }}" != "17 15 * * *" ] && [ "${{ github.event.schedule }}" != "17 21 * * *" ]; then
-              echo "Skipping EDT cron (${{ github.event.schedule }}) during EST (-0500)."
-              echo "should_run=false" >> "$GITHUB_OUTPUT"
-              exit 0
+            SCHED="${{ github.event.schedule }}"
+            if [ "$OFFSET" = "-0400" ]; then
+              case "$SCHED" in
+                '17 14 * * *'|'17 20 * * *'|'43 3 * * *') ;;
+                *)
+                  echo "Skipping non-EDT cron ($SCHED) during EDT (-0400)."
+                  echo "should_run=false" >> "$GITHUB_OUTPUT"
+                  exit 0
+                  ;;
+              esac
+            elif [ "$OFFSET" = "-0500" ]; then
+              case "$SCHED" in
+                '17 15 * * *'|'17 21 * * *'|'43 4 * * *') ;;
+                *)
+                  echo "Skipping non-EST cron ($SCHED) during EST (-0500)."
+                  echo "should_run=false" >> "$GITHUB_OUTPUT"
+                  exit 0
+                  ;;
+              esac
             fi
           fi
           echo "should_run=true" >> "$GITHUB_OUTPUT"
