@@ -43,6 +43,8 @@ SKATER_EXCLUDE_COLS = {
     "playoff_points",
     "playoff_games_played",
     "playoff_P_GP",
+    "target_gp",
+    "target_goals",
     "target_goals_per_game",
     "playoff_goals",
     "playoff_gp",
@@ -94,11 +96,13 @@ def combine_skater_frames(frames: list[pd.DataFrame]) -> pd.DataFrame:
     )
 
     combined = pd.concat(valid, ignore_index=True)
-    numeric_cols = [
-        c
-        for c in combined.select_dtypes(include=[np.number]).columns
-        if c not in ("playerId", "season", "season_year")
-    ]
+    numeric_cols = list(
+        dict.fromkeys(
+            c
+            for c in combined.select_dtypes(include=[np.number]).columns
+            if c not in ("playerId", "season", "season_year") and c not in meta_cols
+        )
+    )
     rate_cols = [c for c in numeric_cols if _is_rate_column(c)]
     count_cols = [c for c in numeric_cols if c not in rate_cols]
 
@@ -133,29 +137,43 @@ def combine_skater_frames(frames: list[pd.DataFrame]) -> pd.DataFrame:
 
 def prep_dynamic_features(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     """Convert cumulative counting stats to per-game rates cleanly without fragmentation."""
-    out = df.copy()
+    out = df.loc[:, ~df.columns.duplicated()].copy()
     gp = pd.to_numeric(out["games_played"], errors="coerce").fillna(0.0).replace(0.0, 1.0)
     numeric_cols = out.select_dtypes(include=[np.number]).columns
-    raw_feature_cols = [c for c in numeric_cols if c not in SKATER_EXCLUDE_COLS]
+    raw_feature_cols = [
+        c
+        for c in numeric_cols
+        if c not in SKATER_EXCLUDE_COLS and not c.startswith("target_")
+    ]
 
     new_cols: dict[str, pd.Series] = {}
     for col in raw_feature_cols:
-        if not _is_rate_column(col) and not col.endswith("_per_game"):
-            new_cols[f"{col}_per_game"] = pd.to_numeric(out[col], errors="coerce").fillna(0.0) / gp
+        per_game_col = f"{col}_per_game"
+        if (
+            not _is_rate_column(col)
+            and not col.endswith("_per_game")
+            and per_game_col not in out.columns
+            and per_game_col not in SKATER_EXCLUDE_COLS
+            and not per_game_col.startswith("target_")
+        ):
+            new_cols[per_game_col] = pd.to_numeric(out[col], errors="coerce").fillna(0.0) / gp
 
     if new_cols:
         out = pd.concat([out, pd.DataFrame(new_cols, index=out.index)], axis=1)
 
     if "onIce_xGoalsPercentage" in out.columns:
-        out["onIce_xGoalsPercentage"] = out["onIce_xGoalsPercentage"].fillna(0.0)
+        out["onIce_xGoalsPercentage"] = pd.to_numeric(
+            out["onIce_xGoalsPercentage"], errors="coerce"
+        ).fillna(0.0)
 
     feature_cols = sorted(
-        [
+        {
             c
             for c in out.select_dtypes(include=[np.number]).columns
             if c not in SKATER_EXCLUDE_COLS
+            and not c.startswith("target_")
             and ("_per_game" in c or _is_rate_column(c))
-        ]
+        }
     )
     return out, feature_cols
 
@@ -236,16 +254,25 @@ def train_skater_goal_model(
 
     # Filter out columns absent/empty across most rows
     valid_features = [c for c in candidate_features if c in df_prepped.columns]
+    y_raw = df_prepped["target_goals_per_game"]
+    if isinstance(y_raw, pd.DataFrame):
+        y_raw = y_raw.iloc[:, 0]
+    y_all = pd.to_numeric(y_raw, errors="coerce").to_numpy(dtype=float).reshape(-1)
+    valid_mask = np.isfinite(y_all)
+    if not np.any(valid_mask):
+        raise RuntimeError(f"No finite training targets found for skater {mode} model in {archive_dir}.")
+
+    X_df = df_prepped.loc[valid_mask, valid_features].replace([np.inf, -np.inf], np.nan)
     imputer = SimpleImputer(strategy="constant", fill_value=0.0)
-    X = imputer.fit_transform(df_prepped[valid_features])
-    y = df_prepped["target_goals_per_game"].to_numpy(dtype=float)
+    X = imputer.fit_transform(X_df)
+    y = y_all[valid_mask]
 
     # 5-fold cross-validation diagnostics
     cv_rmse = 0.0
     cv_mae = 0.0
     if len(y) >= 25:
         kf = KFold(n_splits=5, shuffle=True, random_state=42)
-        oof = np.zeros(len(y))
+        oof = np.zeros(len(y), dtype=float)
         for tr_idx, va_idx in kf.split(X):
             fold_model = xgb.XGBRegressor(
                 n_estimators=150,
@@ -256,7 +283,8 @@ def train_skater_goal_model(
                 random_state=42,
             )
             fold_model.fit(X[tr_idx], y[tr_idx])
-            oof[va_idx] = np.clip(fold_model.predict(X[va_idx]), 0.0, 2.0)
+            fold_preds = np.asarray(fold_model.predict(X[va_idx]), dtype=float).reshape(-1)
+            oof[va_idx] = np.clip(fold_preds, 0.0, 2.0)
         cv_rmse = float(np.sqrt(mean_squared_error(y, oof)))
         cv_mae = float(mean_absolute_error(y, oof))
 
@@ -323,6 +351,8 @@ def build_inference_baseline(archive_dir: str, active_mp_year: int) -> tuple[pd.
         source_label = f"{active_mp_year - 1} Reg/Playoffs + {active_mp_year} Regular"
 
     df_combined = combine_skater_frames(frames)
+    if df_combined.empty:
+        return pd.DataFrame(), source_label
     df_prepped, _ = prep_dynamic_features(df_combined)
     df_prepped["name_clean"] = df_prepped["name"].apply(clean_name)
     return df_prepped, source_label
@@ -345,9 +375,12 @@ def score_skater_candidates(
 
     # Pre-score the entire baseline skater pool cleanly in vectorized form
     scored_pool = df_baseline.copy()
-    X_all = scored_pool.reindex(columns=features, fill_value=0.0)
+    if scored_pool.empty:
+        return {"n_half_used": n_half, "tims_groups": {}, "slate_top_scorers": []}
+    X_all = scored_pool.reindex(columns=features, fill_value=0.0).replace([np.inf, -np.inf], np.nan)
     X_imp = imputer.transform(X_all)
-    scored_pool["base_pred"] = np.clip(model.predict(X_imp), 0.0, 2.0)
+    preds = np.asarray(model.predict(X_imp), dtype=float).reshape(-1)
+    scored_pool["base_pred"] = np.clip(preds, 0.0, 2.0)
 
     lookup_by_name = {
         row["name_clean"]: row
