@@ -45,12 +45,14 @@ from src.team_game_model import (
     add_causal_game_log_features,
     apply_temperature,
     build_team_star_goalie_history,
+    compute_causal_elo_history,
     compute_power_rankings_and_defense,
     evaluate_kelly_edge,
     expected_remaining_series_games,
     extract_latest_team_form,
     load_active_goalie_lookup,
     normalize_team_frame_per_game,
+    predict_upcoming_games,
     single_game_to_best_of_7_prob,
 )
 from src.tims_tracker import (
@@ -1279,6 +1281,54 @@ class TestSkaterAndTeamMath(unittest.TestCase):
         self.assertNotIn("Dylan Guenther", slate_names)
         self.assertIn("Logan Cooley", slate_names)
         self.assertEqual(slate_names["Logan Cooley"]["injury_status"], "DTD")
+
+    def test_causal_elo_neutral_power_rankings_and_tomorrow_b2b(self):
+        # 1. Causal Elo carries ARI -> UTA across seasons and stays symmetric
+        df_logs = pd.DataFrame(
+            [
+                {"Season": "20232024", "Team": "ARI", "Date": "2024-04-10", "GameType": 2, "Opponent": "EDM", "Is_Home": 1, "Team_Score": 4, "Opp_Score": 1, "Won": 1, "Current_Streak": 0},
+                {"Season": "20232024", "Team": "EDM", "Date": "2024-04-10", "GameType": 2, "Opponent": "ARI", "Is_Home": 0, "Team_Score": 1, "Opp_Score": 4, "Won": 0, "Current_Streak": 0},
+                {"Season": "20242025", "Team": "UTA", "Date": "2024-10-12", "GameType": 2, "Opponent": "EDM", "Is_Home": 1, "Team_Score": 3, "Opp_Score": 2, "Won": 1, "Current_Streak": 0},
+                {"Season": "20242025", "Team": "EDM", "Date": "2024-10-12", "GameType": 2, "Opponent": "UTA", "Is_Home": 0, "Team_Score": 2, "Opp_Score": 3, "Won": 0, "Current_Streak": 0},
+            ]
+        )
+        pre_map, latest_elo = compute_causal_elo_history(df_logs)
+        uta_pre, _ = pre_map[("2024-10-12", "UTA")]
+        self.assertGreater(uta_pre, 1500.0)
+        self.assertGreater(latest_elo["UTA"], 1500.0)
+
+        # 2. Power Rankings use neutral (avg of home & away) win probability across pairs
+        class _HomeBiasClf:
+            def predict_proba(self, X):
+                # Gives Team A +0.10 bias + 0.05 * feature diff
+                p = np.clip(0.60 + 0.05 * X["Elo_diff"].to_numpy(), 0.05, 0.95)
+                return np.column_stack([1.0 - p, p])
+
+        profs = {
+            "EDM": {"Elo": 1520.0, "Causal_Elo": 1520.0, "Last_Game_Date": "2026-11-12", "games_played": 10, "goalsAgainst": 25.0, "xGoalsAgainst": 25.0, "highDangerxGoalsAgainst": 10.0},
+            "TOR": {"Elo": 1520.0, "Causal_Elo": 1520.0, "Last_Game_Date": "2026-11-12", "games_played": 10, "goalsAgainst": 25.0, "xGoalsAgainst": 25.0, "highDangerxGoalsAgainst": 10.0},
+        }
+        bnd = {"model": _HomeBiasClf(), "feature_names": ["Elo_diff", "Is_B2B_Home", "Is_B2B_Away"], "optimal_T": 1.0}
+        ranks, _ = compute_power_rankings_and_defense(profs, bnd)
+        # Equal Elo on neutral ice => 50.0% field win probability despite +10% home bias
+        self.assertAlmostEqual(ranks[0]["avg_win_prob"], 50.0, places=1)
+        self.assertAlmostEqual(ranks[1]["avg_win_prob"], 50.0, places=1)
+
+        # 3. Scheduled today game marks tomorrow's game as Back-to-Back even before tonight's game finishes
+        class _B2BSplitClf:
+            def predict_proba(self, X):
+                p = np.clip(0.54 + 0.08 * X["Is_B2B_Away"].to_numpy() - 0.08 * X["Is_B2B_Home"].to_numpy(), 0.1, 0.9)
+                return np.column_stack([1.0 - p, p])
+
+        bnd2 = {"model": _B2BSplitClf(), "feature_names": ["Elo_diff", "Is_B2B_Home", "Is_B2B_Away"], "optimal_T": 1.0}
+        sched = [
+            {"id": 1, "date": "2026-11-16", "is_today": True, "away": "EDM", "home": "TOR", "game_type": 2, "game_state": "FUT", "start_time_et": "7:00 PM ET"},
+            {"id": 2, "date": "2026-11-17", "is_today": False, "away": "EDM", "home": "TOR", "game_type": 2, "game_state": "FUT", "start_time_et": "7:00 PM ET"},
+        ]
+        preds, _ = predict_upcoming_games(sched, profs, bnd2)
+        self.assertFalse(preds[0]["away_b2b"])
+        self.assertTrue(preds[1]["away_b2b"])
+        self.assertTrue(preds[1]["home_b2b"])
 
 
 if __name__ == "__main__":
