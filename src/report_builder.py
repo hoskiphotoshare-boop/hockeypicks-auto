@@ -124,6 +124,7 @@ def build_dashboard_payload(
     odds_enabled: bool,
     tims_history: dict[str, Any] | None = None,
     tims_timing_advice: dict[str, Any] | None = None,
+    availability_summary: dict[str, Any] | None = None,
     run_mode: str = "full",
 ) -> dict[str, Any]:
     """Assemble the complete JSON payload consumed by docs/index.html."""
@@ -144,6 +145,7 @@ def build_dashboard_payload(
         "skater_baseline_source": skater_baseline_label,
         "tims_status": tims_status,
         "odds_enabled": odds_enabled,
+        "availability": availability_summary or {},
         "moneypuck_sync": sync_stats,
         "game_log_sync": log_stats,
         "models": {

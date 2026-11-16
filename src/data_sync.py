@@ -38,11 +38,16 @@ CHROME_HEADERS = {
 
 TEAM_ABBREV_MAP = {
     "S.J": "SJS",
+    "SJ": "SJS",
     "L.A": "LAK",
+    "LA": "LAK",
     "N.J": "NJD",
+    "NJ": "NJD",
     "T.B": "TBL",
+    "TB": "TBL",
     "ANH": "ANA",
     "PHX": "ARI",
+    "UTAH": "UTA",
 }
 
 NHL_TEAMS = [
