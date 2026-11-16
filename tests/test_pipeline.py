@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from src.data_sync import (
+    PlayerMatcher,
     _compute_team_streaks,
     _extract_post_game_streak_state,
     clean_name,
@@ -24,6 +25,7 @@ from src.infer_gate import evaluate_gate, find_due_games, parse_game_start_utc
 from src.report_builder import write_json_report, write_terminal_log_html
 from src.skater_model import (
     HAS_SKATER_ML,
+    blend_skater_goal_rate,
     combine_skater_frames,
     compute_empirical_bayes_n_half,
     prep_dynamic_features,
@@ -32,10 +34,14 @@ from src.skater_model import (
 from src.team_game_model import (
     HAS_GAME_ML,
     _merge_side_metrics,
+    _pairwise_win_prob,
+    add_causal_game_log_features,
     apply_temperature,
     compute_power_rankings_and_defense,
     evaluate_kelly_edge,
     expected_remaining_series_games,
+    extract_latest_team_form,
+    normalize_team_frame_per_game,
     single_game_to_best_of_7_prob,
 )
 from src.tims_tracker import (
@@ -82,6 +88,44 @@ class TestDataSyncAndContext(unittest.TestCase):
         self.assertEqual(normalize_team_abbrev("l.a"), "LAK")
         self.assertEqual(clean_name("Tim Stützle"), "tim stutzle")
         self.assertEqual(clean_name("Alexis Lafrenière"), "alexis lafreniere")
+
+    def test_player_matcher_accents_nicknames_and_boxscore_initials(self):
+        matcher = PlayerMatcher(
+            [
+                {"player_id": 8482109, "name": "Alexis Lafrenire", "team": "NYR", "position": "L", "payload": {"tag": "laf"}},
+                {"player_id": 8483515, "name": "Juraj Slafkovsk", "team": "MTL", "position": "L", "payload": {"tag": "slaf"}},
+                {"player_id": 8480018, "name": "Nick Suzuki", "team": "MTL", "position": "C", "payload": {"tag": "suzuki"}},
+                {"player_id": 8482175, "name": "JJ Peterka", "team": "BOS", "position": "L", "payload": {"tag": "jj"}},
+                {"player_id": 8480012, "name": "Elias Pettersson", "team": "VAN", "position": "C", "payload": {"tag": "petey_f"}},
+                {"player_id": 8483678, "name": "Elias Pettersson", "team": "VAN", "position": "D", "payload": {"tag": "petey_d"}},
+            ]
+        )
+        self.assertEqual(matcher.match("Alexis Lafrenière", team="NYR")["tag"], "laf")
+        self.assertEqual(matcher.match("Juraj Slafkovsky", team="MTL")["tag"], "slaf")
+        self.assertEqual(matcher.match("Nicholas Suzuki", team="MTL")["tag"], "suzuki")
+        self.assertEqual(matcher.match("J.J. Peterka", team="BOS")["tag"], "jj")
+        self.assertEqual(matcher.match("Elias Pettersson", team="VAN", position="F")["tag"], "petey_f")
+        self.assertEqual(matcher.match("Elias Pettersson", team="VAN", position="D")["tag"], "petey_d")
+
+        # NHL boxscore abbreviated names + team disambiguation
+        box_matcher = PlayerMatcher(
+            [
+                {"name": "C. McDavid", "team": "EDM", "position": "F", "payload": {"goals": 2}},
+                {"name": "N. Suzuki", "team": "MTL", "position": "F", "payload": {"goals": 1}},
+                {"name": "A. Lafreniere", "team": "NYR", "position": "F", "payload": {"goals": 1}},
+                {"name": "S. Aho", "team": "CAR", "position": "F", "payload": {"goals": 1}},
+                {"name": "S. Aho", "team": "NYI", "position": "D", "payload": {"goals": 0}},
+                {"name": "C. Brown", "team": "NJD", "position": "F", "payload": {"goals": 1}},
+            ]
+        )
+        self.assertEqual(box_matcher.match("Connor McDavid", team="EDM", allow_initial_fallback=True)["goals"], 2)
+        self.assertEqual(box_matcher.match("Nicholas Suzuki", team="MTL", allow_initial_fallback=True)["goals"], 1)
+        self.assertEqual(box_matcher.match("Alexis Lafrenière", team="NYR", allow_initial_fallback=True)["goals"], 1)
+        self.assertEqual(box_matcher.match("Sebastian Aho", team="CAR", allow_initial_fallback=True)["goals"], 1)
+        self.assertEqual(box_matcher.match("Sebastian Aho", team="NYI", allow_initial_fallback=True)["goals"], 0)
+        # Full name query against full name entry without initial does not match different first name
+        full_only = PlayerMatcher([{"name": "Chris Brown", "team": "NJD", "payload": {"goals": 1}}])
+        self.assertIsNone(full_only.match("Connor Brown", team="NJD", allow_initial_fallback=True))
 
     def test_compute_streaks_leak_free(self):
         df = pd.DataFrame(
@@ -532,6 +576,126 @@ class TestSkaterAndTeamMath(unittest.TestCase):
         self.assertEqual(summary["ai_possible"], 3)
         self.assertAlmostEqual(summary["ai_hit_rate_pct"], 66.7, places=1)
         self.assertAlmostEqual(summary["random_expected_pct"], 50.0, places=1)
+
+        # Also verify real NHL abbreviated boxscore names ("C. McDavid", "N. Suzuki", "A. Lafreniere")
+        abbr_history = {"days": [], "summary": {}}
+        upsert_tims_snapshot(
+            abbr_history,
+            date_str="2026-11-16",
+            context={"nhl_season": "20262027"},
+            schedule_info={"active_game_type": 2, "active_mode": "Regular Season"},
+            skater_bundle={"n_half": 30.0},
+            tims_groups={
+                "1": [
+                    {"player": "Nicholas Suzuki", "team": "MTL", "opponent": "NYR", "final_score": 0.44, "base_pred": 0.39, "live_gp": 14, "live_goals": 8, "def_multiplier": 1.02},
+                ],
+                "2": [
+                    {"player": "Alexis Lafrenière", "team": "NYR", "opponent": "MTL", "final_score": 0.38, "base_pred": 0.36, "live_gp": 20, "live_goals": 9, "def_multiplier": 0.99},
+                ],
+            },
+            captured_et="2026-11-16 12:03 AM ET",
+        )
+        abbr_sess = _DummySession(
+            {
+                "https://api-web.nhle.com/v1/schedule/2026-11-16": (
+                    200,
+                    {
+                        "gameWeek": [
+                            {
+                                "date": "2026-11-16",
+                                "games": [
+                                    {
+                                        "id": 9002,
+                                        "gameState": "FINAL",
+                                        "awayTeam": {"abbrev": "MTL"},
+                                        "homeTeam": {"abbrev": "NYR"},
+                                    }
+                                ],
+                            }
+                        ]
+                    },
+                ),
+                "https://api-web.nhle.com/v1/gamecenter/9002/boxscore": (
+                    200,
+                    {
+                        "playerByGameStats": {
+                            "awayTeam": {"forwards": [{"name": {"default": "N. Suzuki"}, "goals": 1}], "defense": []},
+                            "homeTeam": {"forwards": [{"name": {"default": "A. Lafreniere"}, "goals": 2}], "defense": []},
+                        }
+                    },
+                ),
+            }
+        )
+        self.assertEqual(
+            settle_pending_tims_days(abbr_history, today_str="2026-11-17", settled_et="now", session=abbr_sess, allow_network=True),
+            1,
+        )
+        self.assertEqual(abbr_history["days"][0]["results"]["hits_of_3"], 2)
+
+    def test_per_game_team_rates_causal_rest_shot_blend_and_schema_gate(self):
+        import main_pipeline
+
+        df_t = normalize_team_frame_per_game(
+            pd.DataFrame(
+                [
+                    {"team": "EDM", "season": 2026, "games_played": 20, "goalsFor": 70.0, "xGoalsPercentage": 0.55},
+                    {"team": "SJS", "season": 2025, "games_played": 82, "goalsFor": 205.0, "xGoalsPercentage": 0.45},
+                ]
+            )
+        )
+        self.assertAlmostEqual(float(df_t.loc[0, "goalsFor_per_game"]), 3.5)
+        self.assertAlmostEqual(float(df_t.loc[1, "goalsFor_per_game"]), 2.5)
+        self.assertNotIn("xGoalsPercentage_per_game", df_t.columns)
+
+        df_logs = pd.DataFrame(
+            [
+                {"Season": "20262027", "Team": "EDM", "Date": "2026-11-10", "Won": 1, "Team_Score": 4, "Opp_Score": 2, "Current_Streak": 0},
+                {"Season": "20262027", "Team": "EDM", "Date": "2026-11-11", "Won": 0, "Team_Score": 2, "Opp_Score": 3, "Current_Streak": 1},
+            ]
+        )
+        enriched = add_causal_game_log_features(df_logs)
+        self.assertEqual(enriched["Is_B2B"].tolist(), [0.0, 1.0])
+        self.assertEqual(enriched["Rest_Days"].tolist(), [3.0, 0.0])
+        latest = extract_latest_team_form(df_logs)
+        self.assertEqual(latest["EDM"]["Last_Game_Date"], "2026-11-11")
+        self.assertEqual(latest["EDM"]["Current_Streak"], -1)
+
+        # Verify _pairwise_win_prob applies B2B edge when game_date is tomorrow vs neutral when omitted
+        class _B2BClf:
+            def predict_proba(self, X):
+                val = 0.5 - 0.15 * float(X["Is_B2B_diff"].iloc[0])
+                return np.array([[1.0 - val, val]])
+
+        profiles = {
+            "EDM": {"Last_Game_Date": "2026-11-15"},
+            "TOR": {"Last_Game_Date": "2026-11-12"},
+        }
+        bnd = {"model": _B2BClf(), "feature_names": ["Is_B2B_diff"], "optimal_T": 1.0}
+        self.assertAlmostEqual(_pairwise_win_prob("EDM", "TOR", profiles, bnd), 0.5)
+        self.assertAlmostEqual(_pairwise_win_prob("EDM", "TOR", profiles, bnd, game_date="2026-11-16"), 0.35)
+
+        # Verify shot-pace shrinkage dampens high-shooting% hot streaks cleanly
+        no_shot_b, w_g = blend_skater_goal_rate(0.35, live_gp=10, live_goals=8, n_half=30.0)
+        with_shot_b, _ = blend_skater_goal_rate(0.35, live_gp=10, live_goals=8, n_half=30.0, prior_sog_gp=3.2, live_shots=32)
+        self.assertAlmostEqual(w_g, 0.25)
+        self.assertLess(with_shot_b, no_shot_b)
+
+        # Old schema v1 metadata triggers retrain readiness=False cleanly
+        with tempfile.TemporaryDirectory() as tmpdir:
+            for fname in (
+                "pairwise_game_bundle.joblib",
+                "skater_regular_bundle.joblib",
+                "team_profiles_snapshot.json",
+                "skater_pool.csv.gz",
+            ):
+                with open(os.path.join(tmpdir, fname), "w", encoding="utf-8") as f:
+                    f.write("placeholder")
+            with open(os.path.join(tmpdir, "inference_meta.json"), "w", encoding="utf-8") as f:
+                json.dump({"artifact_schema_version": 1}, f)
+            self.assertFalse(main_pipeline._inference_artifacts_ready(tmpdir))
+            with open(os.path.join(tmpdir, "inference_meta.json"), "w", encoding="utf-8") as f:
+                json.dump({"artifact_schema_version": main_pipeline.ARTIFACT_SCHEMA_VERSION}, f)
+            self.assertTrue(main_pipeline._inference_artifacts_ready(tmpdir))
 
     def test_main_tee_stdout_no_recursion(self):
         import io
