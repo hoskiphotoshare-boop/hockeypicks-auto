@@ -638,6 +638,7 @@
         <span class="pill cyan" id="timsStatusPill">--</span>
       </div>
       <div id="timsContainer" class="grid-3col"></div>
+      <div id="timsHistoryCard" class="card" style="margin-top:12px"></div>
 
       <div class="section-title">
         <span>Active NHL Slate — Top Projected Goal Scorers</span>
@@ -888,6 +889,36 @@
       }).join('');
     }
 
+    function renderTimsHistory(hist) {
+      const el = document.getElementById('timsHistoryCard');
+      if (!el) return;
+      const h = hist || {};
+      const settled = Number(h.settled_days || 0);
+      const pending = Number(h.pending_days || 0);
+      if (!settled && !pending) {
+        el.innerHTML = `<div style="font-size:0.84rem;color:var(--text-2)">Official Tim Hortons Forward Tracker: awaiting first live Tims Challenge capture (auto-logged daily and graded from NHL boxscores).</div>`;
+        return;
+      }
+      const recent = (h.recent_days || []).map(d => {
+        const picksHtml = Object.keys(d.picks || {}).map(g => {
+          const p = d.picks[g];
+          const badge = p.scored === true ? '✅' : (p.scored === false ? '—' : '⏳');
+          return `G${esc(g)}: <strong>${esc(p.player)}</strong> ${badge}`;
+        }).join(' • ');
+        const scorePill = d.settled ? `<span class="pill">${esc(d.hits_of_3)}/3 Hit</span>` : `<span class="pill cyan">Pending</span>`;
+        return `<div class="runner-item" style="flex-wrap:wrap;gap:6px"><span>${esc(d.date)} • ${picksHtml}</span>${scorePill}</div>`;
+      }).join('');
+
+      el.innerHTML = `
+        <div class="pick-header" style="margin-bottom:8px">
+          <span class="group-label">Official Tim Hortons Forward Tracker</span>
+          <span class="pill">${settled ? `${esc(h.ai_hits)}/${esc(h.ai_possible)} (${esc(h.ai_hit_rate_pct)}%) vs ${esc(h.random_expected_pct)}% Random` : `${esc(pending)} Day(s) Pending Settlement`}</span>
+        </div>
+        ${settled ? `<div style="font-size:0.82rem;color:var(--text-1);margin-bottom:8px">Settled Nights: <strong>${esc(settled)}</strong> • &ge;1 Hit: <strong>${esc(h.hit_1plus_days)}/${esc(settled)}</strong> • 3/3 Sweeps: <strong>${esc(h.sweep_3_days)}</strong></div>` : ''}
+        <div class="runner-list" style="margin-top:0;padding-top:4px">${recent}</div>
+      `;
+    }
+
     function populateTeamFilter(slate) {
       const sel = document.getElementById('skaterTeamFilter');
       const teams = Array.from(new Set((slate || []).map(x => x.team))).sort();
@@ -1089,6 +1120,7 @@
 
         renderKpis(meta, (APP_DATA.slate_top_scorers || []).length);
         renderTimsPicks(APP_DATA.tims_picks, meta.tims_status);
+        renderTimsHistory(APP_DATA.tims_history);
         populateTeamFilter(APP_DATA.slate_top_scorers);
         renderSlateTable();
         renderMatchups(APP_DATA.games, APP_DATA.playoff_series, meta);
