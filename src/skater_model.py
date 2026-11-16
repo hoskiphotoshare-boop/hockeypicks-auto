@@ -644,10 +644,10 @@ def score_skater_candidates(
                 )
             )
         slate_scorers.sort(key=lambda x: x["final_score"], reverse=True)
-        slate_scorers = slate_scorers[:40]
 
     return {
         "n_half_used": n_half,
         "tims_groups": tims_groups,
-        "slate_top_scorers": slate_scorers,
+        "slate_top_scorers": slate_scorers[:40],
+        "all_slate_scorers": slate_scorers,
     }

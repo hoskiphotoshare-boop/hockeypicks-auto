@@ -45,8 +45,7 @@ from src.team_game_model import (
     save_pairwise_bundle,
     train_pairwise_game_model,
 )
-
-ARTIFACT_SCHEMA_VERSION = 2
+from src.tims_timing import compute_tims_deferral_advice
 from src.tims_tracker import (
     load_tims_history,
     recompute_tims_summary,
@@ -54,6 +53,8 @@ from src.tims_tracker import (
     settle_pending_tims_days,
     upsert_tims_snapshot,
 )
+
+ARTIFACT_SCHEMA_VERSION = 2
 
 
 def _determine_skater_target_years(
@@ -478,6 +479,17 @@ def run_inference(
     else:
         print("  Tims Groups unavailable right now; generated full slate top projected scorers.")
 
+    tims_timing_advice = compute_tims_deferral_advice(
+        tims_groups=skater_scores["tims_groups"],
+        slate_candidates=skater_scores.get("all_slate_scorers", skater_scores["slate_top_scorers"]),
+        schedule_games=schedule_info.get("games", []),
+    )
+    print(
+        f"  Tims Timing Advisor [{tims_timing_advice.get('decision', 'N/A')}]: "
+        f"{tims_timing_advice.get('headline', '--')} "
+        f"(V_now={tims_timing_advice.get('v_now', 0.0):.3f} vs V_defer={tims_timing_advice.get('v_defer_best', 0.0):.3f})"
+    )
+
     print("\n[Infer 4/4] Settling Forward Tracker & Exporting JSON to docs/...")
     tims_history_path = os.path.join(docs_dir, "tims_history.json")
     tims_history = load_tims_history(tims_history_path)
@@ -521,6 +533,7 @@ def run_inference(
         playoff_series=playoff_series,
         odds_enabled=bool(odds_key),
         tims_history=history_summary,
+        tims_timing_advice=tims_timing_advice,
         run_mode=run_mode,
     )
     write_json_report(payload, os.path.join(docs_dir, "data.json"))

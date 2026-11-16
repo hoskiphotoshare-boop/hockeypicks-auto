@@ -31,6 +31,7 @@ from src.skater_model import (
     prep_dynamic_features,
     score_skater_candidates,
 )
+from src.tims_timing import compute_tims_deferral_advice
 from src.team_game_model import (
     HAS_GAME_ML,
     _merge_side_metrics,
@@ -912,6 +913,126 @@ class TestSkaterAndTeamMath(unittest.TestCase):
 
             manual_ok, _ = evaluate_gate(json_path, event_name="workflow_dispatch")
             self.assertTrue(manual_ok)
+
+    def test_tims_timing_advisor_select_now_and_selective_defer(self):
+        # 1. Single wave -> always SELECT_NOW while preserving current_best
+        schedule_single = [
+            {
+                "away": "MTL",
+                "home": "NYR",
+                "is_today": True,
+                "game_state": "FUT",
+                "start_time_utc": "2026-11-17T00:00:00Z",
+                "start_time_et": "7:00 PM ET",
+            }
+        ]
+        groups_single = {
+            "1": [{"player": "Cole Caufield", "team": "MTL", "opponent": "NYR", "final_score": 0.45}],
+            "2": [{"player": "J.T. Miller", "team": "NYR", "opponent": "MTL", "final_score": 0.30}],
+            "3": [{"player": "Adam Fox", "team": "NYR", "opponent": "MTL", "final_score": 0.20}],
+        }
+        res_single = compute_tims_deferral_advice(
+            tims_groups=groups_single,
+            slate_candidates=[],
+            schedule_games=schedule_single,
+        )
+        self.assertEqual(res_single["decision"], "SELECT_NOW")
+        self.assertEqual(res_single["current_best"]["1"]["player"], "Cole Caufield")
+        self.assertGreater(res_single["v_now"], 0.7)
+
+        # 2. Multi-wave where high-scoring late skaters are missing now -> SELECT_DEFER
+        #    while STILL returning current_best for all 3 groups!
+        schedule_multi = [
+            {
+                "away": "MTL",
+                "home": "NYR",
+                "is_today": True,
+                "game_state": "FUT",
+                "start_time_utc": "2026-11-17T00:00:00Z",
+                "start_time_et": "7:00 PM ET",
+            },
+            {
+                "away": "VAN",
+                "home": "UTA",
+                "is_today": True,
+                "game_state": "FUT",
+                "start_time_utc": "2026-11-17T02:30:00Z",
+                "start_time_et": "9:30 PM ET",
+            },
+        ]
+        # Weak early G1 best + weak late visible players, while 3 huge UTA/VAN stars sit hidden
+        groups_weak_now = {
+            "1": [
+                {"player": f"Early G1-{i}", "team": "NYR", "opponent": "MTL", "final_score": 0.25}
+                for i in range(6)
+            ]
+            + [
+                {"player": "Jonathan Lekkerimäki", "team": "VAN", "opponent": "UTA", "final_score": 0.24},
+                {"player": "Barrett Hayton", "team": "UTA", "opponent": "VAN", "final_score": 0.22},
+            ],
+            "2": [
+                {"player": f"Early G2-{i}", "team": "MTL", "opponent": "NYR", "final_score": 0.20}
+                for i in range(6)
+            ]
+            + [
+                {"player": f"Late G2-{i}", "team": "VAN", "opponent": "UTA", "final_score": 0.21}
+                for i in range(6)
+            ],
+            "3": [
+                {"player": f"Early G3-{i}", "team": "NYR", "opponent": "MTL", "final_score": 0.14}
+                for i in range(6)
+            ]
+            + [
+                {"player": f"Late G3-{i}", "team": "UTA", "opponent": "VAN", "final_score": 0.16}
+                for i in range(6)
+            ],
+        }
+        slate_candidates = [
+            {"player": "Logan Cooley", "team": "UTA", "opponent": "VAN", "position": "C", "final_score": 0.55},
+            {"player": "Dylan Guenther", "team": "UTA", "opponent": "VAN", "position": "R", "final_score": 0.50},
+            {"player": "Nick Schmaltz", "team": "UTA", "opponent": "VAN", "position": "C", "final_score": 0.48},
+            {"player": "Clayton Keller", "team": "UTA", "opponent": "VAN", "position": "L", "final_score": 0.44},
+            # Accent-dropped duplicate of Jonathan Lekkerimäki must NOT be counted as hidden
+            {"player": "Jonathan Lekkerimaki", "team": "VAN", "opponent": "UTA", "position": "R", "final_score": 0.24},
+        ] + [
+            {"player": f"Late Depth-{i}", "team": "VAN", "opponent": "UTA", "position": "F", "final_score": 0.18}
+            for i in range(10)
+        ]
+        res_defer = compute_tims_deferral_advice(
+            tims_groups=groups_weak_now,
+            slate_candidates=slate_candidates,
+            schedule_games=schedule_multi,
+        )
+        self.assertEqual(res_defer["decision"], "SELECT_DEFER")
+        self.assertGreater(res_defer["ev_delta"], 0.02)
+        self.assertEqual(res_defer["recommended_wave_et"], "9:30 PM ET")
+        self.assertEqual(res_defer["current_best"]["1"]["player"], "Early G1-0")
+        self.assertEqual(res_defer["current_best"]["2"]["player"], "Late G2-0")
+        hidden_names = {h["player"] for h in res_defer["hidden_upside_players"]}
+        self.assertIn("Logan Cooley", hidden_names)
+        self.assertNotIn("Jonathan Lekkerimaki", hidden_names)
+
+        # 3. Multi-wave where early stars are elite and late hidden pool is weak -> SELECT_NOW
+        groups_strong_now = {
+            "1": [{"player": "Auston Matthews", "team": "NYR", "opponent": "MTL", "final_score": 0.65}]
+            + [{"player": f"Late G1-{i}", "team": "UTA", "opponent": "VAN", "final_score": 0.25} for i in range(5)],
+            "2": [{"player": "Artemi Panarin", "team": "NYR", "opponent": "MTL", "final_score": 0.45}]
+            + [{"player": f"Late G2-{i}", "team": "VAN", "opponent": "UTA", "final_score": 0.19} for i in range(6)],
+            "3": [{"player": "Chris Kreider", "team": "NYR", "opponent": "MTL", "final_score": 0.35}]
+            + [{"player": f"Late G3-{i}", "team": "UTA", "opponent": "VAN", "final_score": 0.14} for i in range(6)],
+        }
+        weak_hidden = [
+            {"player": f"Late Weak-{i}", "team": "VAN", "opponent": "UTA", "position": "F", "final_score": 0.12}
+            for i in range(12)
+        ]
+        res_now = compute_tims_deferral_advice(
+            tims_groups=groups_strong_now,
+            slate_candidates=weak_hidden,
+            schedule_games=schedule_multi,
+        )
+        self.assertEqual(res_now["decision"], "SELECT_NOW")
+        self.assertLess(res_now["ev_delta"], 0.0)
+        self.assertEqual(res_now["current_best"]["1"]["player"], "Auston Matthews")
 
 
 if __name__ == "__main__":
