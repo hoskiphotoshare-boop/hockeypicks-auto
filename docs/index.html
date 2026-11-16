@@ -712,6 +712,7 @@
         <span class="pill cyan" id="timsStatusPill">--</span>
       </div>
       <div id="timsContainer" class="grid-3col"></div>
+      <div id="timsTimingCard" class="card" style="margin-top:12px"></div>
       <div id="timsHistoryCard" class="card" style="margin-top:12px"></div>
 
       <div class="section-title">
@@ -984,6 +985,89 @@
       }).join('');
     }
 
+    function renderTimsTiming(timing) {
+      const el = document.getElementById('timsTimingCard');
+      if (!el) return;
+      const t = timing || {};
+      if (!t.status || t.status === 'no_tims_pool') {
+        el.innerHTML = `<div style="font-size:0.84rem;color:var(--text-2)">Timing &amp; Deferral Advisor: awaiting today's Tim Hortons groups and NHL wave schedule.</div>`;
+        return;
+      }
+
+      const dec = String(t.decision || 'SELECT_NOW');
+      let pillClass = 'pill';
+      let badgeLabel = 'SELECT NOW';
+      if (dec === 'SELECT_DEFER') {
+        pillClass = 'pill warn';
+        badgeLabel = 'SELECTIVE DEFER';
+      } else if (dec === 'BORDERLINE_WATCH') {
+        pillClass = 'pill cyan';
+        badgeLabel = 'BORDERLINE WATCH';
+      }
+
+      const deltaVal = Number(t.ev_delta || 0);
+      const deltaStr = `${deltaVal >= 0 ? '+' : ''}${deltaVal.toFixed(3)} xG`;
+      const waves = t.waves || [];
+      const hidden = t.hidden_upside_players || [];
+
+      const curBestChips = Object.keys(t.current_best || {})
+        .sort((a, b) => Number(a) - Number(b))
+        .map(g => {
+          const p = t.current_best[g];
+          return `<span class="runner-name" style="font-size:0.8rem"><strong>G${esc(g)}:</strong> ${esc(p.player)} (${esc(p.team)}, ${esc(p.wave_et || '--')}) • <strong>${esc(Number(p.final_score).toFixed(3))}</strong></span>`;
+        }).join('<span style="color:var(--text-2)"> | </span>');
+
+      const wavesHtml = waves.length ? `
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          ${waves.map(w => `
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:0.78rem;min-width:170px;flex:1 1 180px">
+              <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:3px">
+                <strong style="color:var(--text-0)">Wave ${esc(w.wave)} • ${esc(w.start_time_et)}</strong>
+                <span style="color:${Number(w.ev_delta) > 0.02 ? 'var(--amber)' : (w.is_current ? 'var(--emerald)' : 'var(--text-2)')}">
+                  ${w.is_current ? 'Now' : `${Number(w.ev_delta) >= 0 ? '+' : ''}${Number(w.ev_delta).toFixed(3)} xG (${esc(w.beat_now_pct)}%)`}
+                </span>
+              </div>
+              <div style="color:var(--text-2);font-size:0.74rem">${esc((w.matchups || []).join(', '))}</div>
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+
+      const hiddenHtml = hidden.length ? `
+        <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);font-size:0.78rem;color:var(--text-2)">
+          <strong style="color:var(--cyan)">Unlisted Later-Wave Scorers (Missing Now):</strong>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">
+            ${hidden.map(h => `
+              <span class="pill cyan" style="font-size:0.72rem;padding:2px 8px">
+                ${esc(h.player)} (${esc(h.team)} • ${esc(h.wave_et)}) • ${esc(Number(h.final_score).toFixed(3))} xG/G
+              </span>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+
+      el.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+          <div>
+            <span class="group-label">Timing &amp; Deferral Advisor (Optimal Stopping)</span>
+            <div style="font-size:0.95rem;font-weight:700;color:var(--text-0);margin-top:2px">${esc(t.headline || '--')}</div>
+          </div>
+          <span class="${pillClass}">${badgeLabel}</span>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text-2);margin-bottom:10px">${esc(t.detail || '')}</div>
+        <div class="pick-score-row" style="margin-bottom:8px">
+          <div class="pick-score-cell"><span>Best Now EV</span><strong>${esc(Number(t.v_now || 0).toFixed(3))} xG</strong></div>
+          <div class="pick-score-cell"><span>Best Defer EV</span><strong>${esc(Number(t.v_defer_best || 0).toFixed(3))} xG (${esc(deltaStr)})</strong></div>
+          <div class="pick-score-cell"><span>Wave 1 Risk</span><strong>${esc(t.locked_picks_if_defer_1 ?? 0)} / 3 locks</strong></div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--text-1);margin-bottom:4px">
+          <strong>Current Best Ticket:</strong> ${curBestChips || '--'}
+        </div>
+        ${wavesHtml}
+        ${hiddenHtml}
+      `;
+    }
+
     function renderTimsHistory(hist) {
       const el = document.getElementById('timsHistoryCard');
       if (!el) return;
@@ -1227,6 +1311,7 @@
 
         renderKpis(meta, (APP_DATA.slate_top_scorers || []).length);
         renderTimsPicks(APP_DATA.tims_picks, meta.tims_status);
+        renderTimsTiming(APP_DATA.tims_timing);
         renderTimsHistory(APP_DATA.tims_history);
         populateTeamFilter(APP_DATA.slate_top_scorers);
         renderSlateTable();

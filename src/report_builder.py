@@ -123,6 +123,7 @@ def build_dashboard_payload(
     playoff_series: list[dict[str, Any]],
     odds_enabled: bool,
     tims_history: dict[str, Any] | None = None,
+    tims_timing_advice: dict[str, Any] | None = None,
     run_mode: str = "full",
 ) -> dict[str, Any]:
     """Assemble the complete JSON payload consumed by docs/index.html."""
@@ -158,6 +159,7 @@ def build_dashboard_payload(
     return {
         "meta": meta,
         "tims_picks": skater_scores["tims_groups"],
+        "tims_timing": tims_timing_advice or {},
         "tims_history": tims_history
         or {"total_days_logged": 0, "settled_days": 0, "pending_days": 0, "recent_days": []},
         "slate_top_scorers": skater_scores["slate_top_scorers"],
