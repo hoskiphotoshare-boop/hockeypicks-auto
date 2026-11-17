@@ -3,7 +3,16 @@ name: Hockeypicks Live Inference Only
 on:
   workflow_dispatch:
   schedule:
-    # Check 3 min past every quarter-hour across NHL game hours (~10 AM ET - 12:48 AM ET)
+    # 10:00 PM EPT (day before) — Daily opening odds release & next-day line movements
+    - cron: '0 2 * * *'    # EDT (UTC-4)
+    - cron: '0 3 * * *'    # EST (UTC-5)
+    # 11:00 AM EPT — Weekend & holiday early matinee odds release & line movements
+    - cron: '0 15 * * *'   # EDT (UTC-4)
+    - cron: '0 16 * * *'   # EST (UTC-5)
+    # 4:30 PM EPT — Daily pre-game line movements & starting goalie confirmations
+    - cron: '30 20 * * *'  # EDT (UTC-4)
+    - cron: '30 21 * * *'  # EST (UTC-5)
+    # Post-puck-drop reactive ticks (+3 min after quarter-hour NHL game starts)
     - cron: '3,18,33,48 15-23,0-4 * * *'
 
 permissions:
@@ -21,9 +30,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Check Post-Start Inference Gate
+      - name: Check Inference Gate (Odds Windows & Post-Start)
         id: gate
-        run: python3 -m src.infer_gate --data-json docs/data.json --event-name "${{ github.event_name }}"
+        run: python3 -m src.infer_gate --data-json docs/data.json --event-name "${{ github.event_name }}" --cron "${{ github.event.schedule }}"
 
       - name: Set up Python 3.11
         if: steps.gate.outputs.should_run == 'true'
