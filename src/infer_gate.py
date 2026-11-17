@@ -29,6 +29,11 @@ ODDS_CRONS_11AM_ET: dict[str, str] = {
     "0 16 * * *": "-0500",  # EST: 11:00 EST = 16:00 UTC
 }
 
+ODDS_CRONS_12PM_ET: dict[str, str] = {
+    "0 16 * * *": "-0400",  # EDT: 12:00 EDT = 16:00 UTC
+    "0 17 * * *": "-0500",  # EST: 12:00 EST = 17:00 UTC
+}
+
 
 def _nth_weekday(year: int, month: int, weekday: int, n: int) -> date:
     """Return the n-th occurrence (1-based) of weekday (0=Mon, 6=Sun) in year/month."""
@@ -291,16 +296,12 @@ def evaluate_gate(
             )
         return True, f"4:30 PM EPT pre-game odds & line movements window (offset {active_offset})."
 
-    # 3) 11:00 AM EPT: Weekend & holiday early matinee odds release & line movements
-    if cron_clean in ODDS_CRONS_11AM_ET:
-        expected_offset = ODDS_CRONS_11AM_ET[cron_clean]
-        if active_offset != expected_offset:
-            return (
-                False,
-                f"Seasonal offset mismatch for 11:00 AM EPT cron '{cron_clean}' "
-                f"(active ET offset is {active_offset}, expected {expected_offset}).",
-            )
+    # 3) 12:00 PM EPT: Daily noon odds release & mid-day line movements
+    if cron_clean in ODDS_CRONS_12PM_ET and active_offset == ODDS_CRONS_12PM_ET[cron_clean]:
+        return True, f"12:00 PM EPT daily noon odds & line movements window (offset {active_offset})."
 
+    # 4) 11:00 AM EPT: Weekend & holiday early matinee odds release & line movements
+    if cron_clean in ODDS_CRONS_11AM_ET and active_offset == ODDS_CRONS_11AM_ET[cron_clean]:
         # Check weekend (5 = Saturday, 6 = Sunday)
         weekday = now_et.weekday()
         if weekday == 5:
@@ -324,7 +325,20 @@ def evaluate_gate(
             f"11:00 AM EPT matinee window skipped: regular weekday ({day_name}) with no early games scheduled before 4:00 PM ET.",
         )
 
-    # 4) Post-puck-drop reactive schedule (+3 min after game start)
+    # 5) Handle seasonal offset mismatch for 11:00 AM or 12:00 PM crons that did not match active offset
+    if cron_clean in ODDS_CRONS_12PM_ET or cron_clean in ODDS_CRONS_11AM_ET:
+        target_label = (
+            "12:00 PM EPT"
+            if cron_clean == "0 17 * * *"
+            else ("11:00 AM EPT" if cron_clean == "0 15 * * *" else "11:00 AM / 12:00 PM EPT")
+        )
+        return (
+            False,
+            f"Seasonal offset mismatch for {target_label} cron '{cron_clean}' "
+            f"(active ET offset is {active_offset}).",
+        )
+
+    # 6) Post-puck-drop reactive schedule (+3 min after game start)
     due = find_due_games(
         payload,
         now_utc=now,

@@ -10,6 +10,7 @@ Automated CPU-based NHL machine learning pipeline and static GitHub Pages web ap
 - **`src/infer_gate.py`** — Lightweight gate run by `hockeypicks_infer.yml` supporting dual-cron Eastern Prevailing Time (EPT) seasonal gating for:
   - **10:00 PM EPT (day before)**: Daily opening betting odds release & next-day line movements.
   - **11:00 AM EPT**: Weekend & holiday early matinee odds release & line movements (evaluated dynamically on Saturdays, Sundays, US/Canadian holidays, or any weekday with games scheduled before 4:00 PM ET; skips idle weekdays in ~0.5s).
+  - **12:00 PM EPT**: Daily noon betting odds release & mid-day line movements.
   - **4:30 PM EPT**: Daily pre-game odds movements & starting goalie confirmations.
   - **Post-Puck-Drop Reactive Ticks**: `:03/:18/:33/:48` past the hour across NHL game hours (~10:00 AM ET - 12:48 AM ET), executing fast live inference ~3+ minutes after each scheduled game starts without re-running empty windows.
 - **`docs/index.html`** — Zero-bounce mobile-hardened GitHub Pages dashboard (Skater Picks + Forward Tracker, Game Matchups, 32-Team Power Rankings, Model Calibration/Feature Drivers, and Run Logs).
