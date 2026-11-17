@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-17 09:05 AM ET",
+      "captured_et": "2026-11-17 01:38 PM ET",
       "model_n_half": 30.46,
       "groups": {
         "1": [
@@ -39,7 +39,7 @@
             "base_pred": 0.494,
             "live_gp": 21,
             "live_goals": 17,
-            "def_multiplier": 0.97,
+            "def_multiplier": 0.969,
             "final_score": 0.6
           },
           {
@@ -51,7 +51,7 @@
             "live_gp": 22,
             "live_goals": 17,
             "def_multiplier": 0.971,
-            "final_score": 0.591
+            "final_score": 0.592
           },
           {
             "player": "Auston Matthews",
@@ -61,7 +61,7 @@
             "base_pred": 0.464,
             "live_gp": 22,
             "live_goals": 12,
-            "def_multiplier": 1.063,
+            "def_multiplier": 1.064,
             "final_score": 0.527
           },
           {
@@ -76,6 +76,17 @@
             "final_score": 0.523
           },
           {
+            "player": "William Nylander",
+            "team": "TOR",
+            "opponent": "CHI",
+            "position": "F",
+            "base_pred": 0.456,
+            "live_gp": 22,
+            "live_goals": 11,
+            "def_multiplier": 1.064,
+            "final_score": 0.503
+          },
+          {
             "player": "Connor McDavid",
             "team": "EDM",
             "opponent": "FLA",
@@ -87,17 +98,6 @@
             "final_score": 0.503
           },
           {
-            "player": "William Nylander",
-            "team": "TOR",
-            "opponent": "CHI",
-            "position": "F",
-            "base_pred": 0.456,
-            "live_gp": 22,
-            "live_goals": 11,
-            "def_multiplier": 1.063,
-            "final_score": 0.502
-          },
-          {
             "player": "Macklin Celebrini",
             "team": "SJS",
             "opponent": "CGY",
@@ -105,7 +105,7 @@
             "base_pred": 0.499,
             "live_gp": 21,
             "live_goals": 9,
-            "def_multiplier": 1.027,
+            "def_multiplier": 1.028,
             "final_score": 0.484
           },
           {
@@ -149,7 +149,7 @@
             "base_pred": 0.364,
             "live_gp": 20,
             "live_goals": 9,
-            "def_multiplier": 0.962,
+            "def_multiplier": 0.961,
             "final_score": 0.376
           },
           {
@@ -173,7 +173,7 @@
             "base_pred": 0.456,
             "live_gp": 20,
             "live_goals": 13,
-            "def_multiplier": 1.037,
+            "def_multiplier": 1.036,
             "final_score": 0.552
           },
           {
@@ -184,7 +184,7 @@
             "base_pred": 0.48,
             "live_gp": 20,
             "live_goals": 10,
-            "def_multiplier": 0.962,
+            "def_multiplier": 0.961,
             "final_score": 0.465
           },
           {
@@ -195,7 +195,7 @@
             "base_pred": 0.466,
             "live_gp": 20,
             "live_goals": 8,
-            "def_multiplier": 1.037,
+            "def_multiplier": 1.036,
             "final_score": 0.454
           },
           {
@@ -228,7 +228,7 @@
             "base_pred": 0.34,
             "live_gp": 18,
             "live_goals": 8,
-            "def_multiplier": 1.029,
+            "def_multiplier": 1.03,
             "final_score": 0.384
           },
           {
@@ -239,7 +239,7 @@
             "base_pred": 0.35,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 1.044,
+            "def_multiplier": 1.045,
             "final_score": 0.359
           },
           {
@@ -250,7 +250,7 @@
             "base_pred": 0.392,
             "live_gp": 18,
             "live_goals": 3,
-            "def_multiplier": 0.966,
+            "def_multiplier": 0.965,
             "final_score": 0.303
           },
           {
@@ -283,7 +283,7 @@
             "base_pred": 0.185,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 1.007,
+            "def_multiplier": 1.006,
             "final_score": 0.237
           },
           {
@@ -294,7 +294,7 @@
             "base_pred": 0.245,
             "live_gp": 22,
             "live_goals": 4,
-            "def_multiplier": 1.024,
+            "def_multiplier": 1.023,
             "final_score": 0.23
           },
           {
@@ -305,7 +305,7 @@
             "base_pred": 0.225,
             "live_gp": 17,
             "live_goals": 2,
-            "def_multiplier": 1.024,
+            "def_multiplier": 1.023,
             "final_score": 0.199
           },
           {
@@ -316,8 +316,8 @@
             "base_pred": 0.181,
             "live_gp": 13,
             "live_goals": 1,
-            "def_multiplier": 1.007,
-            "final_score": 0.157
+            "def_multiplier": 1.006,
+            "final_score": 0.156
           },
           {
             "player": "Zemgus Girgensons",
@@ -327,7 +327,7 @@
             "base_pred": 0.107,
             "live_gp": 17,
             "live_goals": 1,
-            "def_multiplier": 1.037,
+            "def_multiplier": 1.036,
             "final_score": 0.101
           }
         ],
@@ -340,7 +340,7 @@
             "base_pred": 0.191,
             "live_gp": 18,
             "live_goals": 4,
-            "def_multiplier": 1.032,
+            "def_multiplier": 1.033,
             "final_score": 0.208
           },
           {
@@ -362,7 +362,7 @@
             "base_pred": 0.143,
             "live_gp": 18,
             "live_goals": 4,
-            "def_multiplier": 1.032,
+            "def_multiplier": 1.033,
             "final_score": 0.173
           },
           {
@@ -395,7 +395,7 @@
             "base_pred": 0.125,
             "live_gp": 18,
             "live_goals": 4,
-            "def_multiplier": 0.966,
+            "def_multiplier": 0.965,
             "final_score": 0.151
           },
           {
@@ -406,7 +406,7 @@
             "base_pred": 0.159,
             "live_gp": 7,
             "live_goals": 0,
-            "def_multiplier": 1.063,
+            "def_multiplier": 1.064,
             "final_score": 0.145
           },
           {
@@ -417,7 +417,7 @@
             "base_pred": 0.155,
             "live_gp": 7,
             "live_goals": 0,
-            "def_multiplier": 0.97,
+            "def_multiplier": 0.969,
             "final_score": 0.126
           },
           {
@@ -450,7 +450,7 @@
             "base_pred": 0.105,
             "live_gp": 23,
             "live_goals": 2,
-            "def_multiplier": 1.027,
+            "def_multiplier": 1.028,
             "final_score": 0.1
           },
           {
@@ -461,7 +461,7 @@
             "base_pred": 0.106,
             "live_gp": 11,
             "live_goals": 0,
-            "def_multiplier": 0.97,
+            "def_multiplier": 0.969,
             "final_score": 0.081
           },
           {
@@ -472,7 +472,7 @@
             "base_pred": 0.075,
             "live_gp": 17,
             "live_goals": 1,
-            "def_multiplier": 0.966,
+            "def_multiplier": 0.965,
             "final_score": 0.07
           },
           {
@@ -483,7 +483,7 @@
             "base_pred": 0.055,
             "live_gp": 9,
             "live_goals": 0,
-            "def_multiplier": 1.032,
+            "def_multiplier": 1.033,
             "final_score": 0.041
           },
           {
@@ -494,7 +494,7 @@
             "base_pred": 0.054,
             "live_gp": 20,
             "live_goals": 0,
-            "def_multiplier": 0.962,
+            "def_multiplier": 0.961,
             "final_score": 0.036
           }
         ]
@@ -519,7 +519,7 @@
           "base_pred": 0.456,
           "live_gp": 20,
           "live_goals": 13,
-          "def_multiplier": 1.037,
+          "def_multiplier": 1.036,
           "final_score": 0.552
         },
         "3": {
@@ -530,7 +530,7 @@
           "base_pred": 0.191,
           "live_gp": 18,
           "live_goals": 4,
-          "def_multiplier": 1.032,
+          "def_multiplier": 1.033,
           "final_score": 0.208
         }
       },
