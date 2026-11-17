@@ -64,14 +64,30 @@
   <div class="wrap">
     <div class="bar">
       <a href="./index.html">← Back to Dashboard</a>
-      <span class="meta">Season: 2026-27 | Mode: Regular Season | Updated: 2026-11-17 01:39 PM ET</span>
+      <span class="meta">Season: 2026-27 | Mode: Regular Season | Updated: 2026-11-17 05:52 PM ET</span>
     </div>
-    <pre>
+    <pre>=== HOCKEYPICKS AI — TRAINING STAGE ===
+Date (ET): 2026-11-17 | Season: 2026-27 (20262027)
+
+[Train 1/4] Syncing MoneyPuck Historical &amp; Active CSVs...
+MoneyPuck Sync -&gt; Downloaded: 3 | Cached: 30 | Optional N/A: 3 | Errors: 0 | Active Year: 2026
+
+[Train 2/4] Syncing Historical &amp; Active NHL Game Logs...
+Game Logs -&gt; 14650 team-games compiled (New: 32 | Cached: 160)
+
+[Train 3/4] Training Pairwise Team Matchup Model &amp; Calibrating Temperature T...
+Pairwise XGBoost -&gt; 7325 games | Optimal T=1.0 | OOF LogLoss: 0.6655 -&gt; 0.6655 (cal) | Acc=59.2%
+
+[Train 4/4] Training Skater Goal Models &amp; Saving Compact Inference Snapshots...
+Skater XGBoost (regular) -&gt; 2904 rows × 143 features | Optimal N_half=30.46 | CV RMSE=0.0759
+Skater XGBoost (playoffs) -&gt; 1155 rows × 143 features | Optimal N_half=16.0 | CV RMSE=0.1346
+Training artifacts saved cleanly under ./models.
+
 === HOCKEYPICKS AI — INFERENCE STAGE ===
-Date (ET): 2026-11-17 | Mode: INFER
+Date (ET): 2026-11-17 | Mode: FULL
 
 [Infer 1/4] Fetching Live NHL Schedule, Tim Hortons Picks, Injuries &amp; Goalies...
-Mode: Regular Season (gameType=2) | Scheduled Games: 14 | Tims API: ok (44 players) | Injuries (espn): 111 | Starters (dailyfaceoff): 22
+Mode: Regular Season (gameType=2) | Scheduled Games: 14 | Tims API: ok (44 players) | Injuries (espn): 110 | Starters (dailyfaceoff): 22
 
 [Infer 2/4] Scoring Team Matchups, Power Rankings &amp; Sharp Betting Edges...
 Power Rankings computed for 32 teams | Predicted 14 games.
@@ -80,7 +96,7 @@ Power Rankings computed for 32 teams | Predicted 14 games.
   Tims Group 1: Leon Draisaitl (EDM vs FLA) -&gt; Score 0.660 (AI 0.495, Live 20G/22GP)
   Tims Group 2: Brandon Hagel (TBL vs WSH) -&gt; Score 0.552 (AI 0.456, Live 13G/20GP)
   Tims Group 3: Cole Sillinger (CBJ vs NYI) -&gt; Score 0.208 (AI 0.191, Live 4G/18GP)
-  Tims Timing Advisor [SELECT_DEFER]: Selective Defer — Wait Until Before 7:30 PM ET (V_now=1.095 vs V_defer=1.215)
+  Tims Timing Advisor [SELECT_DEFER]: Selective Defer — Wait Until Before 7:30 PM ET (V_now=1.095 vs V_defer=1.217)
 
 [Infer 4/4] Settling Forward Tracker &amp; Exporting JSON to docs/...
 Tims History Tracker -&gt; Days: 2 | Settled: 1 (Newly settled: 0, Snapshot saved: True) | AI Hit Rate: 33.3% vs Random: 33.3%
