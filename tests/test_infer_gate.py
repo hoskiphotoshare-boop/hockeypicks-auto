@@ -145,6 +145,36 @@ class TestInferGate(unittest.TestCase):
             )
             self.assertFalse(skip_430_edt)
 
+            # --- 12:00 PM EPT Daily Noon Odds & Line Movements ---
+            # EST (Nov 18, 2026): 17:00 UTC should match (-0500)
+            ok_12, reason_12 = evaluate_gate(
+                evening_path,
+                cron="0 17 * * *",
+                now_utc=datetime(2026, 11, 18, 17, 0, tzinfo=timezone.utc),
+            )
+            self.assertTrue(ok_12)
+            self.assertIn("12:00 PM EPT", reason_12)
+            self.assertIn("-0500", reason_12)
+
+            # EDT (June 15, 2026): 16:00 UTC should match (-0400)
+            ok_12_edt, reason_12_edt = evaluate_gate(
+                evening_path,
+                cron="0 16 * * *",
+                now_utc=datetime(2026, 6, 15, 16, 0, tzinfo=timezone.utc),
+            )
+            self.assertTrue(ok_12_edt)
+            self.assertIn("12:00 PM EPT", reason_12_edt)
+            self.assertIn("-0400", reason_12_edt)
+
+            # Seasonal mismatch for 12:00 PM (0 17 * * * during summer EDT)
+            skip_12_mismatch, reason_12_mismatch = evaluate_gate(
+                evening_path,
+                cron="0 17 * * *",
+                now_utc=datetime(2026, 6, 15, 17, 0, tzinfo=timezone.utc),
+            )
+            self.assertFalse(skip_12_mismatch)
+            self.assertIn("Seasonal offset mismatch", reason_12_mismatch)
+
             # --- 11:00 AM EPT Weekend & Holiday / Early Matinee Windows ---
             # Weekend (Saturday 2026-11-21 in EST, 16:00 UTC)
             ok_sat, reason_sat = evaluate_gate(
