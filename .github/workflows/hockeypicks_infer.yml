@@ -9,6 +9,9 @@ on:
     # 11:00 AM EPT — Weekend & holiday early matinee odds release & line movements
     - cron: '0 15 * * *'   # EDT (UTC-4)
     - cron: '0 16 * * *'   # EST (UTC-5)
+    # 12:00 PM EPT — Daily noon odds release & mid-day line movements
+    # (Note: In EDT, 12:00 PM EDT runs at 16:00 UTC matching '0 16 * * *' above; in EST, 12:00 PM EST runs at 17:00 UTC)
+    - cron: '0 17 * * *'   # EST (UTC-5)
     # 4:30 PM EPT — Daily pre-game line movements & starting goalie confirmations
     - cron: '30 20 * * *'  # EDT (UTC-4)
     - cron: '30 21 * * *'  # EST (UTC-5)
