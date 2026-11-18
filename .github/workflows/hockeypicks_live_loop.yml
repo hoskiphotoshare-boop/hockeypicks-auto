@@ -11,22 +11,10 @@ on:
         description: "Evaluate the gate without running inference or committing"
         type: boolean
         default: false
-  schedule:
-    # Each entry is only a wake-up call. The job decides whether it is inside a
-    # live window (12:15-4:15 / 6:40-9:45 / 10:15-11:40 PM ET) and exits otherwise.
-    # The gaps leave the shared repo-write lock free for the fixed noon, 4:30 PM
-    # and 10 PM odds runs. Redundant starts compensate for dropped triggers.
-    - cron: '15 16 * * *'   # 12:15 PM EDT / 11:15 AM EST (exits)
-    - cron: '15 17 * * *'   # 12:15 PM EST / 1:15 PM EDT
-    - cron: '15 18 * * *'   # 1:15 PM EST / 2:15 PM EDT
-    - cron: '15 19 * * *'   # 2:15 PM EST / 3:15 PM EDT
-    - cron: '40 22 * * *'   # 6:40 PM EDT / 5:40 PM EST (exits)
-    - cron: '40 23 * * *'   # 6:40 PM EST / 7:40 PM EDT
-    - cron: '40 0 * * *'    # 7:40 PM EST / 8:40 PM EDT
-    - cron: '40 1 * * *'    # 8:40 PM EST / 9:40 PM EDT
-    - cron: '15 2 * * *'    # 10:15 PM EDT / 9:15 PM EST (exits)
-    - cron: '15 3 * * *'    # 10:15 PM EST / 11:15 PM EDT
-    - cron: '15 4 * * *'    # 11:15 PM EST / 12:15 AM EDT (exits)
+  # Daily live window wake-ups (12:15 PM, 6:40 PM, 10:15 PM ET, plus backup
+  # wake-ups at 1:15 PM, 2:15 PM, 7:40 PM, 8:40 PM, 11:15 PM ET) are dispatched
+  # externally by Google Apps Script (scripts/gas_hockeypicks_dispatcher.gs) via
+  # workflow_dispatch on exact America/New_York wall-clock times.
 
 permissions:
   contents: write

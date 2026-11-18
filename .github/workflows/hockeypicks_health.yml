@@ -2,9 +2,8 @@ name: Hockeypicks Data Health Check
 
 on:
   workflow_dispatch:
-  schedule:
-    # Hourly at :17 so the check itself avoids the top-of-hour scheduler peak.
-    - cron: '17 * * * *'
+  # Hourly :17 health check is dispatched externally by Google Apps Script
+  # (scripts/gas_hockeypicks_dispatcher.gs) via workflow_dispatch.
 
 permissions:
   contents: read

@@ -2,16 +2,10 @@ name: Hockeypicks Automated AI Pipeline
 
 on:
   workflow_dispatch:
-  schedule:
-    # Thrice-daily ET runs (12:01 AM ET post-midnight Tims release, 10:17 AM ET
-    # morning, 4:17 PM ET pre-puck drop). GitHub applies EDT/EST via `timezone`,
-    # so each slot is a single entry instead of a dual-cron pair.
-    - cron: '1 0 * * *'
-      timezone: 'America/New_York'
-    - cron: '17 10 * * *'
-      timezone: 'America/New_York'
-    - cron: '17 16 * * *'
-      timezone: 'America/New_York'
+  # Thrice-daily ET runs (12:01 AM ET post-midnight Tims release, 10:17 AM ET
+  # morning, 4:17 PM ET pre-puck drop) are dispatched externally by Google Apps Script
+  # (scripts/gas_hockeypicks_dispatcher.gs) via workflow_dispatch on exact
+  # America/New_York wall-clock times.
 
 permissions:
   contents: write

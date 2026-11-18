@@ -174,6 +174,50 @@ class TestInferGate(unittest.TestCase):
             )
             self.assertTrue(ok_edt_mat)
 
+            # External workflow_dispatch with explicit cron enforces 11:00 AM ET matinee gate
+            wd_skip, wd_skip_reason = evaluate_gate(
+                evening_path,
+                event_name="workflow_dispatch",
+                cron="0 11 * * *",
+                now_utc=datetime(2026, 11, 17, 16, 0, tzinfo=timezone.utc),
+            )
+            self.assertFalse(wd_skip)
+            self.assertIn("regular weekday (Tuesday) with no early games", wd_skip_reason)
+
+            wd_sat_ok, _ = evaluate_gate(
+                evening_path,
+                event_name="workflow_dispatch",
+                cron="0 11 * * *",
+                now_utc=datetime(2026, 11, 21, 16, 0, tzinfo=timezone.utc),
+            )
+            self.assertTrue(wd_sat_ok)
+
+            wd_hol_ok, _ = evaluate_gate(
+                evening_path,
+                event_name="workflow_dispatch",
+                cron="0 11 * * *",
+                now_utc=datetime(2026, 11, 26, 16, 0, tzinfo=timezone.utc),
+            )
+            self.assertTrue(wd_hol_ok)
+
+            wd_mat_ok, _ = evaluate_gate(
+                matinee_path,
+                event_name="workflow_dispatch",
+                cron="0 11 * * *",
+                now_utc=datetime(2026, 11, 17, 16, 0, tzinfo=timezone.utc),
+            )
+            self.assertTrue(wd_mat_ok)
+
+            # Manual workflow_dispatch without cron always runs unconditionally
+            wd_manual_ok, wd_manual_reason = evaluate_gate(
+                evening_path,
+                event_name="workflow_dispatch",
+                cron="",
+                now_utc=datetime(2026, 11, 17, 16, 0, tzinfo=timezone.utc),
+            )
+            self.assertTrue(wd_manual_ok)
+            self.assertIn("Manual workflow_dispatch trigger", wd_manual_reason)
+
     def test_infer_gate_post_start_window(self):
         payload = {
             "meta": {
