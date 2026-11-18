@@ -504,7 +504,15 @@ class TestSkaterAndTeamMath(unittest.TestCase):
                     "team": "EDM",
                     "opponentTeam": "SJS",
                     "position": "C",
-                }
+                },
+                {
+                    "group": 1,
+                    "player_name": "Leon Draisaitl",
+                    "name_clean": "leon draisaitl",
+                    "team": "EDM",
+                    "opponentTeam": "SJS",
+                    "position": "C",
+                },
             ]
         )
         scores = score_skater_candidates(
@@ -515,11 +523,26 @@ class TestSkaterAndTeamMath(unittest.TestCase):
             live_skaters={"connor mcdavid": {"live_gp": 10, "live_goals": 8}},
             defense_multipliers=def_mults,
             active_mode="Regular Season",
+            injury_records=[
+                {
+                    "player": "Leon Draisaitl",
+                    "team": "EDM",
+                    "position": "C",
+                    "status": "DTD",
+                    "is_out": False,
+                    "is_dtd": True,
+                    "note": "",
+                }
+            ],
         )
         top_pick = scores["tims_groups"]["1"][0]
         # Base=0.40, Live=0.80, weight=10/20=0.5 -> blended=0.60, times SJS weak-D mult > 1.0
         self.assertGreater(top_pick["final_score"], 0.60)
         self.assertEqual(len(scores["slate_top_scorers"]), 1)
+        status_by_player = {p["player"]: p["injury_status"] for p in scores["tims_groups"]["1"]}
+        self.assertIsNone(status_by_player["Connor McDavid"])
+        self.assertEqual(status_by_player["Leon Draisaitl"], "DTD")
+        json.dumps(scores["tims_groups"], allow_nan=False)
 
     def test_report_builders(self):
         with tempfile.TemporaryDirectory() as tmpdir:
