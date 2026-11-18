@@ -746,8 +746,6 @@
 
     <!-- TAB 1: SKATER PICKS -->
     <section id="tab-picks" class="tab-pane active">
-      <div class="kpi-grid" id="picksKpiGrid"></div>
-
       <div class="section-title">
         <span>Tim Hortons Hockey Challenge — AI Optimal Picks</span>
         <span class="pill cyan" id="timsStatusPill">--</span>
@@ -757,13 +755,13 @@
       <div id="timsHistoryCard" class="card" style="margin-top:12px"></div>
 
       <div class="section-title">
-        <span>Active NHL Slate — Top Projected Goal Scorers</span>
-        <span style="font-size:0.78rem;color:var(--text-2)">Click column headers to sort</span>
+        <span>Active NHL Slate — Player &amp; Team Lookup</span>
+        <span style="font-size:0.78rem;color:var(--text-2)">Search a player or pick a team</span>
       </div>
       <div class="controls-row">
-        <input id="skaterSearch" class="control-input" type="search" placeholder="Filter player name..." oninput="renderSlateTable()" />
+        <input id="skaterSearch" class="control-input" type="search" placeholder="Search player name..." autocomplete="off" oninput="renderSlateTable()" />
         <select id="skaterTeamFilter" class="control-input" onchange="renderSlateTable()">
-          <option value="">All Active Teams</option>
+          <option value="">Select a team…</option>
         </select>
       </div>
       <div class="table-responsive-wrapper">
@@ -937,7 +935,8 @@
       const sk = (meta.models && meta.models.skater) || {};
       const pw = (meta.models && meta.models.pairwise) || {};
 
-      document.getElementById('picksKpiGrid').innerHTML = `
+      // Season/model overview cards moved here from the Picks tab.
+      document.getElementById('modelKpiGrid').innerHTML = `
         <div class="kpi-card">
           <div class="kpi-label">Season &amp; Mode</div>
           <div class="kpi-value">${esc(meta.active_mode || '--')}</div>
@@ -958,9 +957,6 @@
           <div class="kpi-value">${esc(slateCount)}</div>
           <div class="kpi-sub">Source: ${esc(meta.skater_baseline_source || '--')}</div>
         </div>
-      `;
-
-      document.getElementById('modelKpiGrid').innerHTML = `
         <div class="kpi-card">
           <div class="kpi-label">Skater Training Rows</div>
           <div class="kpi-value">${sk.samples != null ? esc(sk.samples) : '--'}</div>
@@ -990,7 +986,7 @@
       const container = document.getElementById('timsContainer');
       const keys = Object.keys(tims || {}).sort((a, b) => Number(a) - Number(b));
       if (!keys.length) {
-        container.innerHTML = `<div class="card empty-state" style="grid-column:1/-1">Tim Hortons Challenge picks are not currently posted by the upstream API (off-hours or no challenge window active). Check tonight's Top Projected Goal Scorers below!</div>`;
+        container.innerHTML = `<div class="card empty-state" style="grid-column:1/-1">Tim Hortons Challenge picks are not currently posted by the upstream API (off-hours or no challenge window active). Search for a player or pick a team below.</div>`;
         return;
       }
 
@@ -1171,7 +1167,7 @@
     function populateTeamFilter(slate) {
       const sel = document.getElementById('skaterTeamFilter');
       const teams = Array.from(new Set((slate || []).map(x => x.team))).sort();
-      sel.innerHTML = '<option value="">All Active Teams</option>' +
+      sel.innerHTML = '<option value="">Select a team…</option>' +
         teams.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
     }
 
@@ -1179,6 +1175,22 @@
       const slate = (APP_DATA && APP_DATA.slate_top_scorers) || [];
       const q = (document.getElementById('skaterSearch').value || '').trim().toLowerCase();
       const teamF = document.getElementById('skaterTeamFilter').value;
+      const table = document.querySelector('#tab-picks table');
+      const tbody = document.getElementById('slateTableBody');
+
+      // Default view stays empty so the picks tab is not a wall of 40 names.
+      // A player search or an explicit team choice is required to load rows.
+      if (!slate.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No active slate today.</td></tr>';
+        paintSortHeaders(table, SLATE_SORT);
+        return;
+      }
+      if (!q && !teamF) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Choose an active team or search for a player to load the slate.</td></tr>';
+        paintSortHeaders(table, SLATE_SORT);
+        return;
+      }
+
       const filtered = slate
         .map((r, i) => Object.assign({}, r, { __idx: i }))
         .filter(r =>
@@ -1200,10 +1212,9 @@
           return compareRows(a, b, SLATE_SORT, (r) => r[SLATE_SORT.key]);
         });
       }
-      const tbody = document.getElementById('slateTableBody');
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No skaters match the current filter / no active slate today.</td></tr>';
-        paintSortHeaders(document.querySelector('#tab-picks table'), SLATE_SORT);
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No skaters match the current filter.</td></tr>';
+        paintSortHeaders(table, SLATE_SORT);
         return;
       }
       tbody.innerHTML = filtered.map((r, i) => `
@@ -1219,7 +1230,7 @@
           <td><strong style="color:var(--emerald)">${esc(r.final_score.toFixed(3))}</strong></td>
         </tr>
       `).join('');
-      paintSortHeaders(document.querySelector('#tab-picks table'), SLATE_SORT);
+      paintSortHeaders(table, SLATE_SORT);
     }
 
     function renderPlayoffSeries(playoffSeries, meta) {
