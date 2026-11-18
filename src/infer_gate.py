@@ -34,6 +34,11 @@ ODDS_CRONS_12PM_ET: dict[str, str] = {
     "0 17 * * *": "-0500",  # EST: 12:00 EST = 17:00 UTC
 }
 
+# A full NHL game runs about 2.5 hours. Keep the post-start window open for that
+# long so a trigger that arrives hours late still produces a useful in-game update
+# instead of being discarded for missing a 50-minute slot.
+DEFAULT_MAX_LAG_MINUTES = 180
+
 
 def _nth_weekday(year: int, month: int, weekday: int, n: int) -> date:
     """Return the n-th occurrence (1-based) of weekday (0=Mon, 6=Sun) in year/month."""
@@ -207,7 +212,7 @@ def find_due_games(
     *,
     now_utc: datetime | None = None,
     delay_minutes: int = 3,
-    max_lag_minutes: int = 50,
+    max_lag_minutes: int = DEFAULT_MAX_LAG_MINUTES,
 ) -> list[dict[str, Any]]:
     """Return scheduled games whose (start_time + delay_minutes) passed after the last run."""
     now = now_utc or datetime.now(timezone.utc)
@@ -246,7 +251,7 @@ def evaluate_gate(
     cron: str | None = None,
     now_utc: datetime | None = None,
     delay_minutes: int = 3,
-    max_lag_minutes: int = 50,
+    max_lag_minutes: int = DEFAULT_MAX_LAG_MINUTES,
 ) -> tuple[bool, str]:
     """Evaluate whether scheduled odds release or post-puck-drop inference should proceed."""
     if event_name == "workflow_dispatch":
@@ -360,7 +365,7 @@ def main() -> int:
     parser.add_argument("--cron", default=os.environ.get("GITHUB_SCHEDULE", ""), help="Triggering cron schedule string.")
     parser.add_argument("--github-output", default=os.environ.get("GITHUB_OUTPUT", ""))
     parser.add_argument("--delay-minutes", type=int, default=3)
-    parser.add_argument("--max-lag-minutes", type=int, default=50)
+    parser.add_argument("--max-lag-minutes", type=int, default=DEFAULT_MAX_LAG_MINUTES)
     args = parser.parse_args()
 
     should_run, reason = evaluate_gate(

@@ -1,0 +1,67 @@
+name: Hockeypicks Live Game Loop
+
+on:
+  workflow_dispatch:
+    inputs:
+      once:
+        description: "Run a single gate/inference iteration and exit"
+        type: boolean
+        default: true
+      dry_run:
+        description: "Evaluate the gate without running inference or committing"
+        type: boolean
+        default: false
+  schedule:
+    # Each entry is only a wake-up call. The job decides whether it is inside a
+    # live window (12:15-4:15 / 6:40-9:45 / 10:15-11:40 PM ET) and exits otherwise.
+    # The gaps leave the shared repo-write lock free for the fixed noon, 4:30 PM
+    # and 10 PM odds runs. Redundant starts compensate for dropped triggers.
+    - cron: '15 16 * * *'   # 12:15 PM EDT / 11:15 AM EST (exits)
+    - cron: '15 17 * * *'   # 12:15 PM EST / 1:15 PM EDT
+    - cron: '15 18 * * *'   # 1:15 PM EST / 2:15 PM EDT
+    - cron: '15 19 * * *'   # 2:15 PM EST / 3:15 PM EDT
+    - cron: '40 22 * * *'   # 6:40 PM EDT / 5:40 PM EST (exits)
+    - cron: '40 23 * * *'   # 6:40 PM EST / 7:40 PM EDT
+    - cron: '40 0 * * *'    # 7:40 PM EST / 8:40 PM EDT
+    - cron: '40 1 * * *'    # 8:40 PM EST / 9:40 PM EDT
+    - cron: '15 2 * * *'    # 10:15 PM EDT / 9:15 PM EST (exits)
+    - cron: '15 3 * * *'    # 10:15 PM EST / 11:15 PM EDT
+    - cron: '15 4 * * *'    # 11:15 PM EST / 12:15 AM EDT (exits)
+
+permissions:
+  contents: write
+
+# Serialize with the full pipeline and the single-shot inference workflow so the
+# loop cannot race them on docs/data.json.
+concurrency:
+  group: hockeypicks-repo-write
+  cancel-in-progress: false
+
+jobs:
+  live-loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Live Window Loop
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.once }}" = "true" ]; then ARGS="$ARGS --once"; fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python -m src.live_loop --interval-seconds 300 $ARGS

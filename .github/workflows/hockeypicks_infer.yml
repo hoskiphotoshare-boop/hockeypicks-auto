@@ -15,8 +15,9 @@ on:
     # 4:30 PM EPT — Daily pre-game line movements & starting goalie confirmations
     - cron: '30 20 * * *'  # EDT (UTC-4)
     - cron: '30 21 * * *'  # EST (UTC-5)
-    # Post-puck-drop reactive ticks (+3 min after quarter-hour NHL game starts)
-    - cron: '3,18,33,48 15-23,0-4 * * *'
+    # Post-puck-drop inference now runs in the Hockeypicks Live Game Loop workflow,
+    # which ticks every 5 minutes inside the game windows instead of relying on 56
+    # one-shot scheduler triggers per day.
 
 permissions:
   contents: write

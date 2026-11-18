@@ -284,8 +284,14 @@ class TestInferGate(unittest.TestCase):
         self.assertEqual(len(due2), 1)
         self.assertEqual(due2[0]["away"], "VAN")
 
+        # A late trigger still catches the game while it is in progress (180m window)
+        due_late = find_due_games(payload, now_utc=datetime(2026, 11, 17, 3, 25, tzinfo=timezone.utc))
+        self.assertEqual(len(due_late), 1)
+        self.assertEqual(due_late[0]["away"], "VAN")
+
+        # After the full-game window, it stops re-triggering
         self.assertEqual(
-            find_due_games(payload, now_utc=datetime(2026, 11, 17, 3, 25, tzinfo=timezone.utc)),
+            find_due_games(payload, now_utc=datetime(2026, 11, 17, 5, 34, tzinfo=timezone.utc)),
             [],
         )
 
