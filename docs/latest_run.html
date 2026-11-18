@@ -64,30 +64,14 @@
   <div class="wrap">
     <div class="bar">
       <a href="./index.html">← Back to Dashboard</a>
-      <span class="meta">Season: 2026-27 | Mode: Regular Season | Updated: 2026-11-18 05:37 PM ET</span>
+      <span class="meta">Season: 2026-27 | Mode: Regular Season | Updated: 2026-11-18 06:12 PM ET</span>
     </div>
-    <pre>=== HOCKEYPICKS AI — TRAINING STAGE ===
-Date (ET): 2026-11-18 | Season: 2026-27 (20262027)
-
-[Train 1/4] Syncing MoneyPuck Historical &amp; Active CSVs...
-MoneyPuck Sync -&gt; Downloaded: 3 | Cached: 30 | Optional N/A: 3 | Errors: 0 | Active Year: 2026
-
-[Train 2/4] Syncing Historical &amp; Active NHL Game Logs...
-Game Logs -&gt; 14672 team-games compiled (New: 32 | Cached: 160)
-
-[Train 3/4] Training Pairwise Team Matchup Model &amp; Calibrating Temperature T...
-Pairwise XGBoost -&gt; 7336 games | Optimal T=1.0 | OOF LogLoss: 0.6655 -&gt; 0.6655 (cal) | Acc=59.3%
-
-[Train 4/4] Training Skater Goal Models &amp; Saving Compact Inference Snapshots...
-Skater XGBoost (regular) -&gt; 2911 rows × 143 features | Optimal N_half=30.63 | CV RMSE=0.0756
-Skater XGBoost (playoffs) -&gt; 1155 rows × 143 features | Optimal N_half=16.0 | CV RMSE=0.1346
-Training artifacts saved cleanly under ./models.
-
+    <pre>
 === HOCKEYPICKS AI — INFERENCE STAGE ===
-Date (ET): 2026-11-18 | Mode: FULL
+Date (ET): 2026-11-18 | Mode: INFER
 
 [Infer 1/4] Fetching Live NHL Schedule, Tim Hortons Picks, Injuries &amp; Goalies...
-Mode: Regular Season (gameType=2) | Scheduled Games: 15 | Tims API: ok (39 players) | Injuries (espn): 112 | Starters (dailyfaceoff): 6
+Mode: Regular Season (gameType=2) | Scheduled Games: 15 | Tims API: ok (39 players) | Injuries (espn): 111 | Starters (dailyfaceoff): 6
 
 [Infer 2/4] Scoring Team Matchups, Power Rankings &amp; Sharp Betting Edges...
 Power Rankings computed for 32 teams | Predicted 15 games.
