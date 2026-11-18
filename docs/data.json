@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "full",
-    "updated_utc": "2026-11-18 02:32:00 UTC",
-    "updated_et": "2026-11-17 09:32 PM ET",
+    "updated_utc": "2026-11-18 02:58:00 UTC",
+    "updated_et": "2026-11-17 09:58 PM ET",
     "today_date": "2026-11-17",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -15,7 +15,7 @@
     "odds_enabled": true,
     "availability": {
       "injury_source": "espn",
-      "injury_count": 109,
+      "injury_count": 111,
       "goalie_source": "dailyfaceoff",
       "goalie_count": 22
     },
@@ -468,7 +468,7 @@
       "live_shots": 87,
       "live_g_gp": 0.9,
       "eb_live_weight_pct": 39.6,
-      "def_multiplier": 1.022,
+      "def_multiplier": 1.023,
       "final_score": 0.64,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1206,11 +1206,11 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "LAK",
       "home": "BOS",
-      "away_score": 2,
+      "away_score": 3,
       "home_score": 0,
       "away_prob": 36.8,
       "home_prob": 63.2,
@@ -1233,12 +1233,12 @@
       "away_goalie": {
         "name": "Darcy Kuemper",
         "confirmation": "Confirmed",
-        "sv_pct": 0.876
+        "sv_pct": 0.88
       },
       "home_goalie": {
         "name": "Michael DiPietro",
         "confirmation": "Confirmed",
-        "sv_pct": 0.924
+        "sv_pct": 0.92
       },
       "away_injuries": [
         "Artemi Panarin (Out)",
@@ -1247,14 +1247,9 @@
       "home_injuries": [
         "James Hagens (IR)"
       ],
-      "bookie": "Pinnacle",
+      "bookie": null,
       "away_edge": null,
-      "home_edge": {
-        "odds": 10.55,
-        "edge_pct": 566.5,
-        "quarter_kelly_pct": 5.0,
-        "rec_bet": 50.0
-      }
+      "home_edge": null
     },
     {
       "id": 2026020335,
@@ -1262,11 +1257,11 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "CRIT",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "EDM",
       "home": "FLA",
-      "away_score": 4,
+      "away_score": 5,
       "home_score": 2,
       "away_prob": 57.6,
       "home_prob": 42.4,
@@ -1289,12 +1284,12 @@
       "away_goalie": {
         "name": "Devon Levi",
         "confirmation": "Confirmed",
-        "sv_pct": 0.909
+        "sv_pct": 0.911
       },
       "home_goalie": {
         "name": "Jacob Markstrom",
         "confirmation": "Confirmed",
-        "sv_pct": 0.901
+        "sv_pct": 0.898
       },
       "away_injuries": [
         "Ryan Nugent-Hopkins (Out)",
@@ -1307,14 +1302,9 @@
         "Aleksander Barkov (IR)",
         "Jonah Gadjovich (IR)"
       ],
-      "bookie": "Unibet (UK)",
+      "bookie": null,
       "away_edge": null,
-      "home_edge": {
-        "odds": 251.0,
-        "edge_pct": 10546.72,
-        "quarter_kelly_pct": 5.0,
-        "rec_bet": 50.0
-      }
+      "home_edge": null
     },
     {
       "id": 2026020336,
@@ -1322,7 +1312,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "CRIT",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "CBJ",
       "home": "NYI",
@@ -1349,12 +1339,12 @@
       "away_goalie": {
         "name": "Cam Talbot",
         "confirmation": "Confirmed",
-        "sv_pct": 0.907
+        "sv_pct": 0.908
       },
       "home_goalie": {
         "name": "Ilya Sorokin",
         "confirmation": "Confirmed",
-        "sv_pct": 0.918
+        "sv_pct": 0.917
       },
       "away_injuries": [
         "Sean Monahan (Out)"
@@ -1365,13 +1355,8 @@
         "Calum Ritchie (IR)",
         "Alexander Romanov (IR)"
       ],
-      "bookie": "Pinnacle",
-      "away_edge": {
-        "odds": 4.21,
-        "edge_pct": 78.09,
-        "quarter_kelly_pct": 5.0,
-        "rec_bet": 50.0
-      },
+      "bookie": null,
+      "away_edge": null,
       "home_edge": null
     },
     {
@@ -1380,16 +1365,16 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "CRIT",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "BUF",
       "home": "PHI",
       "away_score": 3,
       "home_score": 4,
-      "away_prob": 54.7,
-      "home_prob": 45.3,
+      "away_prob": 55.2,
+      "home_prob": 44.8,
       "favored": "BUF",
-      "fav_prob": 54.7,
+      "fav_prob": 55.2,
       "away_streak": -4,
       "home_streak": -1,
       "away_b2b": false,
@@ -1407,12 +1392,12 @@
       "away_goalie": {
         "name": "Alex Lyon",
         "confirmation": "Confirmed",
-        "sv_pct": 0.918
+        "sv_pct": 0.889
       },
       "home_goalie": {
         "name": "Joseph Woll",
         "confirmation": "Confirmed",
-        "sv_pct": 0.901
+        "sv_pct": 0.898
       },
       "away_injuries": [
         "Konsta Helenius (IR)",
@@ -1422,13 +1407,8 @@
       "home_injuries": [
         "Nikita Grebenkin (IR)"
       ],
-      "bookie": "Pinnacle",
-      "away_edge": {
-        "odds": 5.76,
-        "edge_pct": 214.94,
-        "quarter_kelly_pct": 5.0,
-        "rec_bet": 50.0
-      },
+      "bookie": null,
+      "away_edge": null,
       "home_edge": null
     },
     {
@@ -1437,7 +1417,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "CRIT",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "OTT",
       "home": "WPG",
@@ -1464,12 +1444,12 @@
       "away_goalie": {
         "name": "Linus Ullmark",
         "confirmation": "Confirmed",
-        "sv_pct": 0.94
+        "sv_pct": 0.938
       },
       "home_goalie": {
         "name": "Stuart Skinner",
         "confirmation": "Confirmed",
-        "sv_pct": 0.878
+        "sv_pct": 0.881
       },
       "away_injuries": [
         "Hayden Hodgson (Out)",
@@ -1483,14 +1463,9 @@
         "Elias Salomonsson (IR)",
         "Vladislav Namestnikov (IR)"
       ],
-      "bookie": "Pinnacle",
+      "bookie": null,
       "away_edge": null,
-      "home_edge": {
-        "odds": 5.33,
-        "edge_pct": 141.26,
-        "quarter_kelly_pct": 5.0,
-        "rec_bet": 50.0
-      }
+      "home_edge": null
     },
     {
       "id": 2026020334,
@@ -1498,11 +1473,11 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:30:00Z",
       "start_time_et": "7:30 PM ET",
-      "game_state": "LIVE",
+      "game_state": "CRIT",
       "game_type": 2,
       "away": "WSH",
       "home": "TBL",
-      "away_score": 1,
+      "away_score": 2,
       "home_score": 4,
       "away_prob": 37.7,
       "home_prob": 62.3,
@@ -1525,7 +1500,7 @@
       "away_goalie": {
         "name": "Logan Thompson",
         "confirmation": "Confirmed",
-        "sv_pct": 0.882
+        "sv_pct": 0.884
       },
       "home_goalie": {
         "name": "Andrei Vasilevskiy",
@@ -1540,10 +1515,10 @@
         "Brandon Hagel (Out)",
         "Conor Geekie (IR)"
       ],
-      "bookie": "DraftKings",
+      "bookie": "Pinnacle",
       "away_edge": {
-        "odds": 23.0,
-        "edge_pct": 766.25,
+        "odds": 13.97,
+        "edge_pct": 426.15,
         "quarter_kelly_pct": 5.0,
         "rec_bet": 50.0
       },
@@ -1559,8 +1534,8 @@
       "game_type": 2,
       "away": "TOR",
       "home": "CHI",
-      "away_score": 2,
-      "home_score": 3,
+      "away_score": 3,
+      "home_score": 6,
       "away_prob": 58.2,
       "home_prob": 41.8,
       "favored": "TOR",
@@ -1582,12 +1557,12 @@
       "away_goalie": {
         "name": "Sergei Bobrovsky",
         "confirmation": "Confirmed",
-        "sv_pct": 0.882
+        "sv_pct": 0.878
       },
       "home_goalie": {
         "name": "Spencer Knight",
         "confirmation": "Confirmed",
-        "sv_pct": 0.882
+        "sv_pct": 0.885
       },
       "away_injuries": [
         "Colton Sissons (IR)",
@@ -1617,8 +1592,8 @@
       "game_type": 2,
       "away": "ANA",
       "home": "STL",
-      "away_score": 2,
-      "home_score": 3,
+      "away_score": 3,
+      "home_score": 4,
       "away_prob": 53.6,
       "home_prob": 46.4,
       "favored": "ANA",
@@ -1640,12 +1615,12 @@
       "away_goalie": {
         "name": "Ville Husso",
         "confirmation": "Confirmed",
-        "sv_pct": 0.881
+        "sv_pct": 0.878
       },
       "home_goalie": {
         "name": "Jordan Binnington",
         "confirmation": "Confirmed",
-        "sv_pct": 0.851
+        "sv_pct": 0.849
       },
       "away_injuries": [
         "Beckett Sennecke (Out)",
@@ -1672,8 +1647,8 @@
       "game_type": 2,
       "away": "NSH",
       "home": "MIN",
-      "away_score": 2,
-      "home_score": 6,
+      "away_score": 3,
+      "home_score": 7,
       "away_prob": 34.8,
       "home_prob": 65.2,
       "favored": "MIN",
@@ -1695,19 +1670,24 @@
       "away_goalie": {
         "name": "Justus Annunen",
         "confirmation": "Confirmed",
-        "sv_pct": 0.887
+        "sv_pct": 0.863
       },
       "home_goalie": {
         "name": "Jesper Wallstedt",
         "confirmation": "Confirmed",
-        "sv_pct": 0.926
+        "sv_pct": 0.925
       },
       "away_injuries": [],
       "home_injuries": [
         "Olli Maatta (IR)"
       ],
-      "bookie": null,
-      "away_edge": null,
+      "bookie": "Unibet (UK)",
+      "away_edge": {
+        "odds": 111.0,
+        "edge_pct": 3759.81,
+        "quarter_kelly_pct": 5.0,
+        "rec_bet": 50.0
+      },
       "home_edge": null
     },
     {
@@ -1855,7 +1835,7 @@
       "away_goalie": {
         "name": "Michael DiPietro",
         "confirmation": "Confirmed",
-        "sv_pct": 0.924
+        "sv_pct": 0.92
       },
       "home_goalie": null,
       "away_injuries": [
@@ -1866,9 +1846,14 @@
         "Dylan Larkin (IR)",
         "Simon Edvinsson (IR)"
       ],
-      "bookie": "DraftKings",
+      "bookie": "Pinnacle",
       "away_edge": null,
-      "home_edge": null
+      "home_edge": {
+        "odds": 1.94,
+        "edge_pct": 3.15,
+        "quarter_kelly_pct": 0.84,
+        "rec_bet": 8.38
+      }
     },
     {
       "id": 2026020345,
@@ -1976,7 +1961,7 @@
       "team": "CAR",
       "ai_power": 11.01,
       "elo": 1597.7,
-      "avg_win_prob": 66.8,
+      "avg_win_prob": 66.7,
       "gp": 21,
       "streak": 4,
       "last_won": 1,
@@ -1991,7 +1976,7 @@
     },
     {
       "team": "COL",
-      "ai_power": 10.39,
+      "ai_power": 10.38,
       "elo": 1571.4,
       "avg_win_prob": 61.5,
       "gp": 21,
@@ -2010,7 +1995,7 @@
       "team": "EDM",
       "ai_power": 10.35,
       "elo": 1543.3,
-      "avg_win_prob": 61.3,
+      "avg_win_prob": 61.2,
       "gp": 22,
       "streak": 5,
       "last_won": 1,
@@ -2044,7 +2029,7 @@
       "team": "TBL",
       "ai_power": 10.17,
       "elo": 1557.0,
-      "avg_win_prob": 59.8,
+      "avg_win_prob": 59.7,
       "gp": 20,
       "streak": -1,
       "last_won": 0,
@@ -2056,23 +2041,6 @@
       "xga_gp": 2.93,
       "def_multiplier": 0.964,
       "rank": 5
-    },
-    {
-      "team": "BOS",
-      "ai_power": 9.75,
-      "elo": 1526.1,
-      "avg_win_prob": 56.3,
-      "gp": 20,
-      "streak": -2,
-      "last_won": 0,
-      "gsax": 10.6,
-      "starter_sv_pct": 0.913,
-      "top3_pts": 58,
-      "top3_xgoals": 18.3,
-      "ga_gp": 2.6,
-      "xga_gp": 3.15,
-      "def_multiplier": 0.965,
-      "rank": 6
     },
     {
       "team": "VGK",
@@ -2089,11 +2057,28 @@
       "ga_gp": 2.77,
       "xga_gp": 2.83,
       "def_multiplier": 0.962,
+      "rank": 6
+    },
+    {
+      "team": "BOS",
+      "ai_power": 9.75,
+      "elo": 1526.1,
+      "avg_win_prob": 56.2,
+      "gp": 20,
+      "streak": -2,
+      "last_won": 0,
+      "gsax": 10.6,
+      "starter_sv_pct": 0.913,
+      "top3_pts": 58,
+      "top3_xgoals": 18.3,
+      "ga_gp": 2.6,
+      "xga_gp": 3.15,
+      "def_multiplier": 0.965,
       "rank": 7
     },
     {
       "team": "NJD",
-      "ai_power": 9.74,
+      "ai_power": 9.73,
       "elo": 1522.2,
       "avg_win_prob": 56.1,
       "gp": 21,
@@ -2127,7 +2112,7 @@
     },
     {
       "team": "OTT",
-      "ai_power": 9.56,
+      "ai_power": 9.55,
       "elo": 1527.0,
       "avg_win_prob": 54.6,
       "gp": 21,
@@ -2146,7 +2131,7 @@
       "team": "UTA",
       "ai_power": 9.28,
       "elo": 1495.2,
-      "avg_win_prob": 52.4,
+      "avg_win_prob": 52.3,
       "gp": 22,
       "streak": -6,
       "last_won": 0,
@@ -2163,7 +2148,7 @@
       "team": "MTL",
       "ai_power": 9.21,
       "elo": 1528.4,
-      "avg_win_prob": 51.8,
+      "avg_win_prob": 51.7,
       "gp": 21,
       "streak": -2,
       "last_won": 0,
@@ -2197,7 +2182,7 @@
       "team": "FLA",
       "ai_power": 9.13,
       "elo": 1514.5,
-      "avg_win_prob": 51.1,
+      "avg_win_prob": 51.0,
       "gp": 22,
       "streak": -1,
       "last_won": 0,
@@ -2212,7 +2197,7 @@
     },
     {
       "team": "NYR",
-      "ai_power": 9.08,
+      "ai_power": 9.07,
       "elo": 1504.0,
       "avg_win_prob": 50.6,
       "gp": 22,
@@ -2282,7 +2267,7 @@
       "team": "DET",
       "ai_power": 8.85,
       "elo": 1478.5,
-      "avg_win_prob": 48.8,
+      "avg_win_prob": 48.7,
       "gp": 21,
       "streak": 1,
       "last_won": 1,
@@ -2313,10 +2298,27 @@
       "rank": 20
     },
     {
+      "team": "BUF",
+      "ai_power": 8.74,
+      "elo": 1510.1,
+      "avg_win_prob": 47.8,
+      "gp": 20,
+      "streak": -4,
+      "last_won": 0,
+      "gsax": -2.8,
+      "starter_sv_pct": 0.899,
+      "top3_pts": 55,
+      "top3_xgoals": 24.3,
+      "ga_gp": 3.45,
+      "xga_gp": 3.29,
+      "def_multiplier": 1.023,
+      "rank": 21
+    },
+    {
       "team": "WPG",
-      "ai_power": 8.71,
+      "ai_power": 8.7,
       "elo": 1491.9,
-      "avg_win_prob": 47.6,
+      "avg_win_prob": 47.5,
       "gp": 21,
       "streak": 6,
       "last_won": 1,
@@ -2327,23 +2329,6 @@
       "ga_gp": 3.43,
       "xga_gp": 3.3,
       "def_multiplier": 1.006,
-      "rank": 21
-    },
-    {
-      "team": "BUF",
-      "ai_power": 8.67,
-      "elo": 1510.1,
-      "avg_win_prob": 47.3,
-      "gp": 20,
-      "streak": -4,
-      "last_won": 0,
-      "gsax": -2.8,
-      "starter_sv_pct": 0.906,
-      "top3_pts": 55,
-      "top3_xgoals": 24.3,
-      "ga_gp": 3.45,
-      "xga_gp": 3.29,
-      "def_multiplier": 1.024,
       "rank": 22
     },
     {
@@ -2382,7 +2367,7 @@
     },
     {
       "team": "TOR",
-      "ai_power": 8.35,
+      "ai_power": 8.34,
       "elo": 1464.3,
       "avg_win_prob": 44.5,
       "gp": 22,
@@ -2401,7 +2386,7 @@
       "team": "SJS",
       "ai_power": 8.24,
       "elo": 1440.2,
-      "avg_win_prob": 43.7,
+      "avg_win_prob": 43.6,
       "gp": 23,
       "streak": 2,
       "last_won": 1,
@@ -2428,12 +2413,12 @@
       "top3_xgoals": 16.2,
       "ga_gp": 2.95,
       "xga_gp": 3.13,
-      "def_multiplier": 1.022,
+      "def_multiplier": 1.023,
       "rank": 27
     },
     {
       "team": "SEA",
-      "ai_power": 8.02,
+      "ai_power": 8.01,
       "elo": 1465.6,
       "avg_win_prob": 41.8,
       "gp": 18,
