@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-18 05:36 PM ET",
+      "captured_et": "2026-11-18 06:12 PM ET",
       "model_n_half": 30.63,
       "groups": {
         "1": [
@@ -17,7 +17,7 @@
             "base_pred": 0.456,
             "live_gp": 21,
             "live_goals": 10,
-            "def_multiplier": 1.031,
+            "def_multiplier": 1.03,
             "final_score": 0.478
           },
           {
@@ -61,7 +61,7 @@
             "base_pred": 0.446,
             "live_gp": 21,
             "live_goals": 8,
-            "def_multiplier": 0.972,
+            "def_multiplier": 0.971,
             "final_score": 0.41
           },
           {
@@ -72,7 +72,7 @@
             "base_pred": 0.458,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 0.972,
+            "def_multiplier": 0.971,
             "final_score": 0.399
           },
           {
@@ -83,8 +83,8 @@
             "base_pred": 0.361,
             "live_gp": 21,
             "live_goals": 9,
-            "def_multiplier": 1.031,
-            "final_score": 0.397
+            "def_multiplier": 1.03,
+            "final_score": 0.396
           },
           {
             "player": "Martin Necas",
@@ -129,7 +129,7 @@
             "base_pred": 0.384,
             "live_gp": 21,
             "live_goals": 8,
-            "def_multiplier": 0.972,
+            "def_multiplier": 0.971,
             "final_score": 0.372
           },
           {
@@ -173,7 +173,7 @@
             "base_pred": 0.344,
             "live_gp": 21,
             "live_goals": 4,
-            "def_multiplier": 1.031,
+            "def_multiplier": 1.03,
             "final_score": 0.293
           },
           {
@@ -184,7 +184,7 @@
             "base_pred": 0.334,
             "live_gp": 21,
             "live_goals": 4,
-            "def_multiplier": 1.031,
+            "def_multiplier": 1.03,
             "final_score": 0.291
           },
           {
@@ -229,7 +229,7 @@
             "live_gp": 22,
             "live_goals": 4,
             "def_multiplier": 0.939,
-            "final_score": 0.219
+            "final_score": 0.218
           },
           {
             "player": "Alex Newhook",
@@ -251,7 +251,7 @@
             "live_gp": 22,
             "live_goals": 6,
             "def_multiplier": 0.939,
-            "final_score": 0.193
+            "final_score": 0.192
           },
           {
             "player": "Stefan Noesen",
@@ -261,8 +261,8 @@
             "base_pred": 0.13,
             "live_gp": 7,
             "live_goals": 2,
-            "def_multiplier": 1.031,
-            "final_score": 0.158
+            "def_multiplier": 1.03,
+            "final_score": 0.157
           },
           {
             "player": "Marat Khusnutdinov",
@@ -285,7 +285,7 @@
             "base_pred": 0.175,
             "live_gp": 19,
             "live_goals": 6,
-            "def_multiplier": 1.031,
+            "def_multiplier": 1.03,
             "final_score": 0.226
           },
           {
@@ -296,7 +296,7 @@
             "base_pred": 0.184,
             "live_gp": 21,
             "live_goals": 2,
-            "def_multiplier": 1.031,
+            "def_multiplier": 1.03,
             "final_score": 0.156
           },
           {
@@ -329,7 +329,7 @@
             "base_pred": 0.16,
             "live_gp": 20,
             "live_goals": 1,
-            "def_multiplier": 0.972,
+            "def_multiplier": 0.971,
             "final_score": 0.121
           },
           {
@@ -340,7 +340,7 @@
             "base_pred": 0.125,
             "live_gp": 21,
             "live_goals": 2,
-            "def_multiplier": 1.031,
+            "def_multiplier": 1.03,
             "final_score": 0.118
           },
           {
@@ -373,7 +373,7 @@
             "base_pred": 0.118,
             "live_gp": 14,
             "live_goals": 1,
-            "def_multiplier": 0.972,
+            "def_multiplier": 0.971,
             "final_score": 0.103
           },
           {
@@ -453,7 +453,7 @@
           "base_pred": 0.456,
           "live_gp": 21,
           "live_goals": 10,
-          "def_multiplier": 1.031,
+          "def_multiplier": 1.03,
           "final_score": 0.478
         },
         "2": {
@@ -475,7 +475,7 @@
           "base_pred": 0.175,
           "live_gp": 19,
           "live_goals": 6,
-          "def_multiplier": 1.031,
+          "def_multiplier": 1.03,
           "final_score": 0.226
         }
       },
