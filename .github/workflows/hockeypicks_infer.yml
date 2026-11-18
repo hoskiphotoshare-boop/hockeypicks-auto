@@ -2,24 +2,16 @@ name: Hockeypicks Live Inference Only
 
 on:
   workflow_dispatch:
-  schedule:
-    # All entries are ET wall-clock time. GitHub converts each one to UTC and
-    # follows daylight saving, so one entry covers both EDT and EST.
-    # 10:00 PM ET (day before) — Daily opening odds release & next-day line movements
-    - cron: '0 22 * * *'
-      timezone: 'America/New_York'
-    # 11:00 AM ET — Weekend & holiday early matinee odds release & line movements
-    - cron: '0 11 * * *'
-      timezone: 'America/New_York'
-    # 12:00 PM ET — Daily noon odds release & mid-day line movements
-    - cron: '0 12 * * *'
-      timezone: 'America/New_York'
-    # 4:30 PM ET — Daily pre-game line movements & starting goalie confirmations
-    - cron: '30 16 * * *'
-      timezone: 'America/New_York'
-    # Post-puck-drop inference now runs in the Hockeypicks Live Game Loop workflow,
-    # which ticks every 5 minutes inside the game windows instead of relying on 56
-    # one-shot scheduler triggers per day.
+    inputs:
+      cron:
+        description: "Optional scheduled slot cron (e.g. '0 11 * * *') evaluated by infer_gate"
+        required: false
+        default: ""
+        type: string
+  # Scheduled triggers are dispatched externally by Google Apps Script
+  # (scripts/gas_hockeypicks_dispatcher.gs) via workflow_dispatch on exact
+  # America/New_York wall-clock times (11:00 AM, 12:00 PM, 4:30 PM, 10:00 PM ET)
+  # to bypass GitHub Actions' best-effort shared cron queue delays/drops.
 
 permissions:
   contents: write
@@ -38,7 +30,7 @@ jobs:
 
       - name: Check Inference Gate (Odds Windows & Post-Start)
         id: gate
-        run: python3 -m src.infer_gate --data-json docs/data.json --event-name "${{ github.event_name }}" --cron "${{ github.event.schedule }}"
+        run: python3 -m src.infer_gate --data-json docs/data.json --event-name "${{ github.event_name }}" --cron "${{ inputs.cron || github.event.schedule }}"
 
       - name: Set up Python 3.11
         if: steps.gate.outputs.should_run == 'true'

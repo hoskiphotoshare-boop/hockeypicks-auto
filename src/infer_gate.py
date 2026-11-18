@@ -240,7 +240,8 @@ def evaluate_gate(
     max_lag_minutes: int = DEFAULT_MAX_LAG_MINUTES,
 ) -> tuple[bool, str]:
     """Evaluate whether scheduled odds release or post-puck-drop inference should proceed."""
-    if event_name == "workflow_dispatch":
+    cron_clean = str(cron or "").strip()
+    if event_name == "workflow_dispatch" and not cron_clean:
         return True, "Manual workflow_dispatch trigger."
 
     if not os.path.exists(data_json_path) or os.path.getsize(data_json_path) == 0:
@@ -261,8 +262,6 @@ def evaluate_gate(
     else:
         now = now.astimezone(timezone.utc)
     now_et = now.astimezone(ET_ZONE)
-
-    cron_clean = str(cron or "").strip()
 
     # 1) 10:00 PM ET: Daily opening odds release & next-day line movements
     if cron_clean == ODDS_CRON_10PM:
@@ -304,7 +303,7 @@ def evaluate_gate(
     # 5) Any other non-empty scheduled cron belongs to hockeypicks_infer.yml, which
     # now only holds fixed odds slots. Run rather than silently skip the release if
     # GitHub reports the schedule in an unexpected form.
-    if event_name == "schedule" and cron_clean:
+    if event_name in ("schedule", "workflow_dispatch") and cron_clean:
         return True, f"Scheduled odds window (cron '{cron_clean}')."
 
     # 6) Post-puck-drop / live-window schedule: the live loop calls this every few
