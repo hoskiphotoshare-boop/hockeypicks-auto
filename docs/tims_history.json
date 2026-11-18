@@ -5,98 +5,10 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-17 05:52 PM ET",
+      "captured_et": "2026-11-17 09:08 PM ET",
       "model_n_half": 30.46,
       "groups": {
         "1": [
-          {
-            "player": "Leon Draisaitl",
-            "team": "EDM",
-            "opponent": "FLA",
-            "position": "F",
-            "base_pred": 0.495,
-            "live_gp": 22,
-            "live_goals": 20,
-            "def_multiplier": 0.995,
-            "final_score": 0.66
-          },
-          {
-            "player": "Cutter Gauthier",
-            "team": "ANA",
-            "opponent": "STL",
-            "position": "F",
-            "base_pred": 0.45,
-            "live_gp": 20,
-            "live_goals": 18,
-            "def_multiplier": 1.022,
-            "final_score": 0.64
-          },
-          {
-            "player": "Kyle Connor",
-            "team": "WPG",
-            "opponent": "OTT",
-            "position": "F",
-            "base_pred": 0.494,
-            "live_gp": 21,
-            "live_goals": 17,
-            "def_multiplier": 0.97,
-            "final_score": 0.601
-          },
-          {
-            "player": "Kirill Kaprizov",
-            "team": "MIN",
-            "opponent": "NSH",
-            "position": "F",
-            "base_pred": 0.499,
-            "live_gp": 22,
-            "live_goals": 17,
-            "def_multiplier": 0.971,
-            "final_score": 0.591
-          },
-          {
-            "player": "Auston Matthews",
-            "team": "TOR",
-            "opponent": "CHI",
-            "position": "F",
-            "base_pred": 0.464,
-            "live_gp": 22,
-            "live_goals": 12,
-            "def_multiplier": 1.063,
-            "final_score": 0.527
-          },
-          {
-            "player": "Tage Thompson",
-            "team": "BUF",
-            "opponent": "PHI",
-            "position": "F",
-            "base_pred": 0.443,
-            "live_gp": 20,
-            "live_goals": 12,
-            "def_multiplier": 1.037,
-            "final_score": 0.523
-          },
-          {
-            "player": "Connor McDavid",
-            "team": "EDM",
-            "opponent": "FLA",
-            "position": "F",
-            "base_pred": 0.483,
-            "live_gp": 22,
-            "live_goals": 12,
-            "def_multiplier": 0.995,
-            "final_score": 0.503
-          },
-          {
-            "player": "William Nylander",
-            "team": "TOR",
-            "opponent": "CHI",
-            "position": "F",
-            "base_pred": 0.456,
-            "live_gp": 22,
-            "live_goals": 11,
-            "def_multiplier": 1.063,
-            "final_score": 0.502
-          },
           {
             "player": "Macklin Celebrini",
             "team": "SJS",
@@ -109,39 +21,6 @@
             "final_score": 0.484
           },
           {
-            "player": "Bo Horvat",
-            "team": "NYI",
-            "opponent": "CBJ",
-            "position": "F",
-            "base_pred": 0.436,
-            "live_gp": 19,
-            "live_goals": 9,
-            "def_multiplier": 1.042,
-            "final_score": 0.469
-          },
-          {
-            "player": "David Pastrnak",
-            "team": "BOS",
-            "opponent": "LAK",
-            "position": "F",
-            "base_pred": 0.472,
-            "live_gp": 20,
-            "live_goals": 9,
-            "def_multiplier": 1.005,
-            "final_score": 0.466
-          },
-          {
-            "player": "Matt Boldy",
-            "team": "MIN",
-            "opponent": "NSH",
-            "position": "F",
-            "base_pred": 0.485,
-            "live_gp": 22,
-            "live_goals": 10,
-            "def_multiplier": 0.971,
-            "final_score": 0.458
-          },
-          {
             "player": "Mikko Rantanen",
             "team": "DAL",
             "opponent": "VGK",
@@ -149,7 +28,7 @@
             "base_pred": 0.364,
             "live_gp": 20,
             "live_goals": 9,
-            "def_multiplier": 0.962,
+            "def_multiplier": 0.961,
             "final_score": 0.376
           },
           {
@@ -166,17 +45,6 @@
         ],
         "2": [
           {
-            "player": "Brandon Hagel",
-            "team": "TBL",
-            "opponent": "WSH",
-            "position": "F",
-            "base_pred": 0.456,
-            "live_gp": 20,
-            "live_goals": 13,
-            "def_multiplier": 1.037,
-            "final_score": 0.552
-          },
-          {
             "player": "Jason Robertson",
             "team": "DAL",
             "opponent": "VGK",
@@ -184,52 +52,8 @@
             "base_pred": 0.48,
             "live_gp": 20,
             "live_goals": 10,
-            "def_multiplier": 0.962,
+            "def_multiplier": 0.961,
             "final_score": 0.465
-          },
-          {
-            "player": "Nikita Kucherov",
-            "team": "TBL",
-            "opponent": "WSH",
-            "position": "F",
-            "base_pred": 0.466,
-            "live_gp": 20,
-            "live_goals": 8,
-            "def_multiplier": 1.037,
-            "final_score": 0.454
-          },
-          {
-            "player": "Sam Reinhart",
-            "team": "FLA",
-            "opponent": "EDM",
-            "position": "F",
-            "base_pred": 0.408,
-            "live_gp": 22,
-            "live_goals": 12,
-            "def_multiplier": 0.953,
-            "final_score": 0.44
-          },
-          {
-            "player": "Jimmy Snuggerud",
-            "team": "STL",
-            "opponent": "ANA",
-            "position": "F",
-            "base_pred": 0.354,
-            "live_gp": 20,
-            "live_goals": 10,
-            "def_multiplier": 1.02,
-            "final_score": 0.412
-          },
-          {
-            "player": "Frank Nazar",
-            "team": "CHI",
-            "opponent": "TOR",
-            "position": "F",
-            "base_pred": 0.34,
-            "live_gp": 18,
-            "live_goals": 8,
-            "def_multiplier": 1.029,
-            "final_score": 0.384
           },
           {
             "player": "Joel Farabee",
@@ -239,30 +63,8 @@
             "base_pred": 0.35,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 1.044,
+            "def_multiplier": 1.045,
             "final_score": 0.359
-          },
-          {
-            "player": "Alex Laferriere",
-            "team": "LAK",
-            "opponent": "BOS",
-            "position": "F",
-            "base_pred": 0.392,
-            "live_gp": 18,
-            "live_goals": 3,
-            "def_multiplier": 0.965,
-            "final_score": 0.303
-          },
-          {
-            "player": "Dylan Holloway",
-            "team": "STL",
-            "opponent": "ANA",
-            "position": "F",
-            "base_pred": 0.323,
-            "live_gp": 20,
-            "live_goals": 4,
-            "def_multiplier": 1.02,
-            "final_score": 0.286
           },
           {
             "player": "Brett Howden",
@@ -276,171 +78,50 @@
             "final_score": 0.261
           },
           {
-            "player": "Michael Amadio",
-            "team": "OTT",
-            "opponent": "WPG",
+            "player": "Michael Misa",
+            "team": "SJS",
+            "opponent": "CGY",
             "position": "F",
-            "base_pred": 0.185,
-            "live_gp": 21,
-            "live_goals": 7,
-            "def_multiplier": 1.006,
-            "final_score": 0.237
-          },
-          {
-            "player": "Tyson Foerster",
-            "team": "PHI",
-            "opponent": "BUF",
-            "position": "F",
-            "base_pred": 0.245,
-            "live_gp": 22,
+            "base_pred": 0.205,
+            "live_gp": 23,
             "live_goals": 4,
-            "def_multiplier": 1.024,
-            "final_score": 0.23
+            "def_multiplier": 1.028,
+            "final_score": 0.2
           },
           {
-            "player": "Owen Tippett",
-            "team": "PHI",
-            "opponent": "BUF",
+            "player": "Collin Graf",
+            "team": "SJS",
+            "opponent": "CGY",
             "position": "F",
-            "base_pred": 0.225,
-            "live_gp": 17,
+            "base_pred": 0.127,
+            "live_gp": 23,
+            "live_goals": 3,
+            "def_multiplier": 1.028,
+            "final_score": 0.132
+          },
+          {
+            "player": "Kiefer Sherwood",
+            "team": "SJS",
+            "opponent": "CGY",
+            "position": "F",
+            "base_pred": 0.176,
+            "live_gp": 23,
             "live_goals": 2,
-            "def_multiplier": 1.024,
-            "final_score": 0.199
-          },
-          {
-            "player": "Jake Sanderson",
-            "team": "OTT",
-            "opponent": "WPG",
-            "position": "D",
-            "base_pred": 0.181,
-            "live_gp": 13,
-            "live_goals": 1,
-            "def_multiplier": 1.006,
-            "final_score": 0.156
-          },
-          {
-            "player": "Zemgus Girgensons",
-            "team": "TBL",
-            "opponent": "WSH",
-            "position": "F",
-            "base_pred": 0.107,
-            "live_gp": 17,
-            "live_goals": 1,
-            "def_multiplier": 1.037,
-            "final_score": 0.101
+            "def_multiplier": 1.028,
+            "final_score": 0.147
           }
         ],
         "3": [
           {
-            "player": "Cole Sillinger",
-            "team": "CBJ",
-            "opponent": "NYI",
-            "position": "F",
-            "base_pred": 0.191,
-            "live_gp": 18,
-            "live_goals": 4,
-            "def_multiplier": 1.032,
-            "final_score": 0.208
-          },
-          {
-            "player": "Nikita Nesterenko",
-            "team": "ANA",
-            "opponent": "STL",
-            "position": "F",
-            "base_pred": 0.171,
-            "live_gp": 19,
-            "live_goals": 4,
-            "def_multiplier": 1.022,
-            "final_score": 0.187
-          },
-          {
-            "player": "Denton Mateychuk",
-            "team": "CBJ",
-            "opponent": "NYI",
+            "player": "Thomas Harley",
+            "team": "DAL",
+            "opponent": "VGK",
             "position": "D",
-            "base_pred": 0.143,
-            "live_gp": 18,
-            "live_goals": 4,
-            "def_multiplier": 1.032,
-            "final_score": 0.173
-          },
-          {
-            "player": "Sandis Vilmanis",
-            "team": "FLA",
-            "opponent": "EDM",
-            "position": "F",
-            "base_pred": 0.178,
-            "live_gp": 19,
-            "live_goals": 3,
-            "def_multiplier": 0.953,
-            "final_score": 0.164
-          },
-          {
-            "player": "Olen Zellweger",
-            "team": "BUF",
-            "opponent": "PHI",
-            "position": "D",
-            "base_pred": 0.147,
-            "live_gp": 19,
-            "live_goals": 3,
-            "def_multiplier": 1.037,
-            "final_score": 0.157
-          },
-          {
-            "player": "Joel Armia",
-            "team": "LAK",
-            "opponent": "BOS",
-            "position": "F",
-            "base_pred": 0.125,
-            "live_gp": 18,
-            "live_goals": 4,
-            "def_multiplier": 0.965,
-            "final_score": 0.151
-          },
-          {
-            "player": "Dakota Joshua",
-            "team": "TOR",
-            "opponent": "CHI",
-            "position": "F",
-            "base_pred": 0.159,
-            "live_gp": 7,
-            "live_goals": 0,
-            "def_multiplier": 1.063,
-            "final_score": 0.145
-          },
-          {
-            "player": "Josh Morrissey",
-            "team": "WPG",
-            "opponent": "OTT",
-            "position": "D",
-            "base_pred": 0.155,
-            "live_gp": 7,
-            "live_goals": 0,
-            "def_multiplier": 0.97,
-            "final_score": 0.126
-          },
-          {
-            "player": "Mason Lohrei",
-            "team": "BOS",
-            "opponent": "LAK",
-            "position": "D",
-            "base_pred": 0.102,
-            "live_gp": 19,
-            "live_goals": 3,
-            "def_multiplier": 1.005,
-            "final_score": 0.121
-          },
-          {
-            "player": "Anthony Beauvillier",
-            "team": "WSH",
-            "opponent": "TBL",
-            "position": "F",
-            "base_pred": 0.122,
-            "live_gp": 18,
+            "base_pred": 0.156,
+            "live_gp": 20,
             "live_goals": 2,
-            "def_multiplier": 0.963,
-            "final_score": 0.115
+            "def_multiplier": 0.961,
+            "final_score": 0.13
           },
           {
             "player": "Jacob Trouba",
@@ -454,39 +135,6 @@
             "final_score": 0.1
           },
           {
-            "player": "Nino Niederreiter",
-            "team": "WPG",
-            "opponent": "OTT",
-            "position": "F",
-            "base_pred": 0.106,
-            "live_gp": 11,
-            "live_goals": 0,
-            "def_multiplier": 0.97,
-            "final_score": 0.081
-          },
-          {
-            "player": "Drew Doughty",
-            "team": "LAK",
-            "opponent": "BOS",
-            "position": "D",
-            "base_pred": 0.075,
-            "live_gp": 17,
-            "live_goals": 1,
-            "def_multiplier": 0.965,
-            "final_score": 0.07
-          },
-          {
-            "player": "Luca Del Bel Belluz",
-            "team": "CBJ",
-            "opponent": "NYI",
-            "position": "F",
-            "base_pred": 0.055,
-            "live_gp": 9,
-            "live_goals": 0,
-            "def_multiplier": 1.032,
-            "final_score": 0.041
-          },
-          {
             "player": "Nils Lundkvist",
             "team": "DAL",
             "opponent": "VGK",
@@ -494,44 +142,44 @@
             "base_pred": 0.054,
             "live_gp": 20,
             "live_goals": 0,
-            "def_multiplier": 0.962,
+            "def_multiplier": 0.961,
             "final_score": 0.036
           }
         ]
       },
       "ai_picks": {
         "1": {
-          "player": "Leon Draisaitl",
-          "team": "EDM",
-          "opponent": "FLA",
+          "player": "Macklin Celebrini",
+          "team": "SJS",
+          "opponent": "CGY",
           "position": "F",
-          "base_pred": 0.495,
-          "live_gp": 22,
-          "live_goals": 20,
-          "def_multiplier": 0.995,
-          "final_score": 0.66
+          "base_pred": 0.499,
+          "live_gp": 21,
+          "live_goals": 9,
+          "def_multiplier": 1.028,
+          "final_score": 0.484
         },
         "2": {
-          "player": "Brandon Hagel",
-          "team": "TBL",
-          "opponent": "WSH",
+          "player": "Jason Robertson",
+          "team": "DAL",
+          "opponent": "VGK",
           "position": "F",
-          "base_pred": 0.456,
+          "base_pred": 0.48,
           "live_gp": 20,
-          "live_goals": 13,
-          "def_multiplier": 1.037,
-          "final_score": 0.552
+          "live_goals": 10,
+          "def_multiplier": 0.961,
+          "final_score": 0.465
         },
         "3": {
-          "player": "Cole Sillinger",
-          "team": "CBJ",
-          "opponent": "NYI",
-          "position": "F",
-          "base_pred": 0.191,
-          "live_gp": 18,
-          "live_goals": 4,
-          "def_multiplier": 1.032,
-          "final_score": 0.208
+          "player": "Thomas Harley",
+          "team": "DAL",
+          "opponent": "VGK",
+          "position": "D",
+          "base_pred": 0.156,
+          "live_gp": 20,
+          "live_goals": 2,
+          "def_multiplier": 0.961,
+          "final_score": 0.13
         }
       },
       "settled": false,
@@ -874,21 +522,21 @@
         "hits_of_3": null,
         "picks": {
           "1": {
-            "player": "Leon Draisaitl",
-            "team": "EDM",
-            "score": 0.66,
+            "player": "Macklin Celebrini",
+            "team": "SJS",
+            "score": 0.484,
             "scored": null
           },
           "2": {
-            "player": "Brandon Hagel",
-            "team": "TBL",
-            "score": 0.552,
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "score": 0.465,
             "scored": null
           },
           "3": {
-            "player": "Cole Sillinger",
-            "team": "CBJ",
-            "score": 0.208,
+            "player": "Thomas Harley",
+            "team": "DAL",
+            "score": 0.13,
             "scored": null
           }
         }
