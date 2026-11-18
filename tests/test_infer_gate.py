@@ -77,138 +77,80 @@ class TestInferGate(unittest.TestCase):
             with open(matinee_path, "w", encoding="utf-8") as f:
                 json.dump(matinee_payload, f)
 
-            # --- 10:00 PM EPT (day before) Opening Odds Release ---
-            # EST (Nov 18, 2026): 03:00 UTC should match (-0500); 02:00 UTC should skip
-            ok, reason = evaluate_gate(
+            # --- Fixed ET odds slots: one cron works in both EST and EDT ---
+            # The workflow sends `timezone: America/New_York`, so the gate sees the
+            # same wall-clock cron all year and GitHub handles the UTC conversion.
+            slots = [
+                (
+                    "0 22 * * *",
+                    datetime(2026, 11, 18, 3, 0, tzinfo=timezone.utc),   # 10:00 PM EST
+                    datetime(2026, 6, 15, 2, 0, tzinfo=timezone.utc),    # 10:00 PM EDT
+                    "10:00 PM EPT",
+                ),
+                (
+                    "30 16 * * *",
+                    datetime(2026, 11, 18, 21, 30, tzinfo=timezone.utc),  # 4:30 PM EST
+                    datetime(2026, 6, 15, 20, 30, tzinfo=timezone.utc),   # 4:30 PM EDT
+                    "4:30 PM EPT",
+                ),
+                (
+                    "0 12 * * *",
+                    datetime(2026, 11, 18, 17, 0, tzinfo=timezone.utc),   # 12:00 PM EST
+                    datetime(2026, 6, 15, 16, 0, tzinfo=timezone.utc),    # 12:00 PM EDT
+                    "12:00 PM EPT",
+                ),
+            ]
+            for cron, est_now, edt_now, label in slots:
+                for now in (est_now, edt_now):
+                    ok, reason = evaluate_gate(evening_path, cron=cron, now_utc=now)
+                    self.assertTrue(ok, msg=f"{label} cron {cron} at {now}: {reason}")
+                    self.assertIn(label, reason)
+                    self.assertNotIn("Seasonal offset mismatch", reason)
+
+            # An unrecognised non-empty schedule still runs: hockeypicks_infer.yml
+            # only contains fixed odds slots now, so skipping would lose a release.
+            fallback_ok, fallback_reason = evaluate_gate(
                 evening_path,
                 cron="0 3 * * *",
                 now_utc=datetime(2026, 11, 18, 3, 0, tzinfo=timezone.utc),
             )
-            self.assertTrue(ok)
-            self.assertIn("10:00 PM EPT", reason)
-            self.assertIn("-0500", reason)
+            self.assertTrue(fallback_ok)
+            self.assertIn("Scheduled odds window", fallback_reason)
 
-            skip, skip_reason = evaluate_gate(
-                evening_path,
-                cron="0 2 * * *",
-                now_utc=datetime(2026, 11, 18, 2, 0, tzinfo=timezone.utc),
-            )
-            self.assertFalse(skip)
-            self.assertIn("Seasonal offset mismatch", skip_reason)
-
-            # EDT (June 15, 2026): 02:00 UTC should match (-0400); 03:00 UTC should skip
-            ok_edt, reason_edt = evaluate_gate(
-                evening_path,
-                cron="0 2 * * *",
-                now_utc=datetime(2026, 6, 15, 2, 0, tzinfo=timezone.utc),
-            )
-            self.assertTrue(ok_edt)
-            self.assertIn("10:00 PM EPT", reason_edt)
-            self.assertIn("-0400", reason_edt)
-
-            skip_edt, _ = evaluate_gate(
-                evening_path,
-                cron="0 3 * * *",
-                now_utc=datetime(2026, 6, 15, 3, 0, tzinfo=timezone.utc),
-            )
-            self.assertFalse(skip_edt)
-
-            # --- 4:30 PM EPT Pre-Game Line Movements ---
-            # EST (Nov 18, 2026): 21:30 UTC should match; 20:30 UTC should skip
-            ok_430, reason_430 = evaluate_gate(
-                evening_path,
-                cron="30 21 * * *",
-                now_utc=datetime(2026, 11, 18, 21, 30, tzinfo=timezone.utc),
-            )
-            self.assertTrue(ok_430)
-            self.assertIn("4:30 PM EPT", reason_430)
-
-            skip_430, _ = evaluate_gate(
-                evening_path,
-                cron="30 20 * * *",
-                now_utc=datetime(2026, 11, 18, 20, 30, tzinfo=timezone.utc),
-            )
-            self.assertFalse(skip_430)
-
-            # EDT (June 15, 2026): 20:30 UTC should match; 21:30 UTC should skip
-            ok_430_edt, _ = evaluate_gate(
-                evening_path,
-                cron="30 20 * * *",
-                now_utc=datetime(2026, 6, 15, 20, 30, tzinfo=timezone.utc),
-            )
-            self.assertTrue(ok_430_edt)
-
-            skip_430_edt, _ = evaluate_gate(
-                evening_path,
-                cron="30 21 * * *",
-                now_utc=datetime(2026, 6, 15, 21, 30, tzinfo=timezone.utc),
-            )
-            self.assertFalse(skip_430_edt)
-
-            # --- 12:00 PM EPT Daily Noon Odds & Line Movements ---
-            # EST (Nov 18, 2026): 17:00 UTC should match (-0500)
-            ok_12, reason_12 = evaluate_gate(
-                evening_path,
-                cron="0 17 * * *",
-                now_utc=datetime(2026, 11, 18, 17, 0, tzinfo=timezone.utc),
-            )
-            self.assertTrue(ok_12)
-            self.assertIn("12:00 PM EPT", reason_12)
-            self.assertIn("-0500", reason_12)
-
-            # EDT (June 15, 2026): 16:00 UTC should match (-0400)
-            ok_12_edt, reason_12_edt = evaluate_gate(
-                evening_path,
-                cron="0 16 * * *",
-                now_utc=datetime(2026, 6, 15, 16, 0, tzinfo=timezone.utc),
-            )
-            self.assertTrue(ok_12_edt)
-            self.assertIn("12:00 PM EPT", reason_12_edt)
-            self.assertIn("-0400", reason_12_edt)
-
-            # Seasonal mismatch for 12:00 PM (0 17 * * * during summer EDT)
-            skip_12_mismatch, reason_12_mismatch = evaluate_gate(
-                evening_path,
-                cron="0 17 * * *",
-                now_utc=datetime(2026, 6, 15, 17, 0, tzinfo=timezone.utc),
-            )
-            self.assertFalse(skip_12_mismatch)
-            self.assertIn("Seasonal offset mismatch", reason_12_mismatch)
-
-            # --- 11:00 AM EPT Weekend & Holiday / Early Matinee Windows ---
-            # Weekend (Saturday 2026-11-21 in EST, 16:00 UTC)
+            # --- 11:00 AM ET Weekend & Holiday / Early Matinee Windows ---
+            # Weekend (Saturday 2026-11-21 in EST, 11:00 AM ET)
             ok_sat, reason_sat = evaluate_gate(
                 evening_path,
-                cron="0 16 * * *",
+                cron="0 11 * * *",
                 now_utc=datetime(2026, 11, 21, 16, 0, tzinfo=timezone.utc),
             )
             self.assertTrue(ok_sat)
             self.assertIn("weekend matinee", reason_sat)
             self.assertIn("Saturday", reason_sat)
 
-            # Weekend (Sunday 2026-11-22 in EST, 16:00 UTC)
+            # Weekend (Sunday 2026-11-22 in EST, 11:00 AM ET)
             ok_sun, reason_sun = evaluate_gate(
                 evening_path,
-                cron="0 16 * * *",
+                cron="0 11 * * *",
                 now_utc=datetime(2026, 11, 22, 16, 0, tzinfo=timezone.utc),
             )
             self.assertTrue(ok_sun)
             self.assertIn("Sunday", reason_sun)
 
-            # Holiday (US Thanksgiving Thursday 2026-11-26 in EST, 16:00 UTC)
+            # Holiday (US Thanksgiving Thursday 2026-11-26 in EST, 11:00 AM ET)
             ok_hol, reason_hol = evaluate_gate(
                 evening_path,
-                cron="0 16 * * *",
+                cron="0 11 * * *",
                 now_utc=datetime(2026, 11, 26, 16, 0, tzinfo=timezone.utc),
             )
             self.assertTrue(ok_hol)
             self.assertIn("holiday matinee", reason_hol)
             self.assertIn("US Thanksgiving", reason_hol)
 
-            # Weekday with early matinee game (Tuesday 2026-11-17, 16:00 UTC)
+            # Weekday with early matinee game (Tuesday 2026-11-17, 11:00 AM ET)
             ok_mat, reason_mat = evaluate_gate(
                 matinee_path,
-                cron="0 16 * * *",
+                cron="0 11 * * *",
                 now_utc=datetime(2026, 11, 17, 16, 0, tzinfo=timezone.utc),
             )
             self.assertTrue(ok_mat)
@@ -218,27 +160,19 @@ class TestInferGate(unittest.TestCase):
             # Weekday without early game (Tuesday 2026-11-17, evening only games)
             skip_wd, reason_wd = evaluate_gate(
                 evening_path,
-                cron="0 16 * * *",
+                cron="0 11 * * *",
                 now_utc=datetime(2026, 11, 17, 16, 0, tzinfo=timezone.utc),
             )
             self.assertFalse(skip_wd)
             self.assertIn("regular weekday (Tuesday) with no early games", reason_wd)
 
-            # EDT 11:00 AM (0 15 * * * during summer EDT Saturday 2026-06-20)
+            # EDT 11:00 AM (Saturday 2026-06-20, 15:00 UTC)
             ok_edt_mat, _ = evaluate_gate(
                 evening_path,
-                cron="0 15 * * *",
+                cron="0 11 * * *",
                 now_utc=datetime(2026, 6, 20, 15, 0, tzinfo=timezone.utc),
             )
             self.assertTrue(ok_edt_mat)
-
-            # Seasonal mismatch for 11:00 AM (0 15 * * * during winter EST)
-            skip_11_mismatch, _ = evaluate_gate(
-                evening_path,
-                cron="0 15 * * *",
-                now_utc=datetime(2026, 11, 21, 15, 0, tzinfo=timezone.utc),
-            )
-            self.assertFalse(skip_11_mismatch)
 
     def test_infer_gate_post_start_window(self):
         payload = {
@@ -317,11 +251,11 @@ class TestInferGate(unittest.TestCase):
             manual_ok, _ = evaluate_gate(json_path, event_name="workflow_dispatch")
             self.assertTrue(manual_ok)
 
-            # Reactive puck-drop cron string passes through cleanly
+            # The live loop evaluates post-start games with an empty cron.
             cron_ok, cron_reason = evaluate_gate(
                 json_path,
                 event_name="schedule",
-                cron="3,18,33,48 15-23,0-4 * * *",
+                cron="",
                 now_utc=datetime(2026, 11, 17, 2, 35, tzinfo=timezone.utc),
             )
             self.assertTrue(cron_ok)
@@ -330,7 +264,7 @@ class TestInferGate(unittest.TestCase):
             cron_skip, _ = evaluate_gate(
                 json_path,
                 event_name="schedule",
-                cron="3,18,33,48 15-23,0-4 * * *",
+                cron="",
                 now_utc=datetime(2026, 11, 17, 0, 48, tzinfo=timezone.utc),
             )
             self.assertFalse(cron_skip)

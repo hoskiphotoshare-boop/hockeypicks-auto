@@ -1200,6 +1200,14 @@
       }
     }
 
+    function gameHasStarted(g) {
+      const state = g.game_state ? String(g.game_state).toUpperCase() : '';
+      const pregameStates = ['FUT', 'PRE', 'PREGAME', 'SCHEDULED', 'TBD'];
+      if (state && !pregameStates.includes(state)) return true;
+      const start = Date.parse(g.start_time_utc || '');
+      return Number.isFinite(start) && start <= Date.now();
+    }
+
     function renderMatchups(games, meta) {
       document.getElementById('matchupSeasonPill').textContent = (meta && meta.active_mode) || 'Regular Season';
       document.getElementById('oddsStatusPill').textContent = meta.odds_enabled ? 'Sharp Odds Enabled' : 'Model-Only Mode';
@@ -1209,9 +1217,14 @@
         return;
       }
       grid.innerHTML = games.map(g => {
+        const started = gameHasStarted(g);
         const edgeBlocks = [];
-        if (g.away_edge) edgeBlocks.push(`${esc(g.away)} +EV ${esc(g.away_edge.edge_pct)}% (${esc(g.away_edge.odds)}) • Bet $${esc(g.away_edge.rec_bet)}`);
-        if (g.home_edge) edgeBlocks.push(`${esc(g.home)} +EV ${esc(g.home_edge.edge_pct)}% (${esc(g.home_edge.odds)}) • Bet $${esc(g.home_edge.rec_bet)}`);
+        if (started) {
+          edgeBlocks.push('Betting closed — game has started');
+        } else {
+          if (g.away_edge) edgeBlocks.push(`${esc(g.away)} +EV ${esc(g.away_edge.edge_pct)}% (${esc(g.away_edge.odds)}) • Bet $${esc(g.away_edge.rec_bet)}`);
+          if (g.home_edge) edgeBlocks.push(`${esc(g.home)} +EV ${esc(g.home_edge.edge_pct)}% (${esc(g.home_edge.odds)}) • Bet $${esc(g.home_edge.rec_bet)}`);
+        }
         const formatGoalie = (gl) => gl && gl.name ? `${esc(gl.name)} (${gl.sv_pct != null ? esc(Number(gl.sv_pct).toFixed(3)) : '--'} • ${esc(gl.confirmation || 'Expected')})` : 'TBD';
         const b2bTag = (isB2B, is3in4) => isB2B
           ? `<span class="pill warn" style="font-size:0.64rem;padding:1px 6px;margin-left:4px">B2B</span>`
