@@ -171,6 +171,7 @@ def compute_tims_deferral_advice(
 
     if len(sorted_waves) == 1:
         w0 = sorted_waves[0]
+        total_visible = sum(len(lst) for lst in ordered_groups.values())
         return {
             "status": "single_wave",
             "decision": "SELECT_NOW",
@@ -189,6 +190,9 @@ def compute_tims_deferral_advice(
                     "est_ev": round(v_now, 4),
                     "ev_delta": 0.0,
                     "beat_now_pct": 0.0,
+                    "visible_carried": total_visible,
+                    "hidden_available": 0,
+                    "unlisted_scorers": [],
                     "is_current": True,
                 }
             ],
@@ -286,6 +290,17 @@ def compute_tims_deferral_advice(
             "beat_now_pct": 0.0,
             "visible_carried": sum(1 for p in tims_flat if p["wave_idx"] >= 0),
             "hidden_available": len(hidden_pool),
+            "unlisted_scorers": [
+                {
+                    "player": h["player"],
+                    "team": h["team"],
+                    "final_score": h["final_score"],
+                    "p_goal_pct": h["p_goal_pct"],
+                    "injury_status": h.get("injury_status"),
+                }
+                for h in hidden_pool
+                if h["wave_idx"] == 0
+            ][:4],
             "is_current": True,
         }
     ]
@@ -294,6 +309,17 @@ def compute_tims_deferral_advice(
     for k in range(1, len(sorted_waves)):
         carried = [p for p in tims_flat if p["wave_idx"] >= k]
         rem_hidden = [h for h in hidden_pool if h["wave_idx"] >= k]
+        wave_unlisted = [
+            {
+                "player": h["player"],
+                "team": h["team"],
+                "final_score": h["final_score"],
+                "p_goal_pct": h["p_goal_pct"],
+                "injury_status": h.get("injury_status"),
+            }
+            for h in hidden_pool
+            if h["wave_idx"] == k
+        ][:4]
         total_rem = len(carried) + len(rem_hidden)
         if total_rem < 15:
             continue
@@ -352,6 +378,7 @@ def compute_tims_deferral_advice(
             "beat_now_pct": round(beat_pct, 1),
             "visible_carried": len(carried),
             "hidden_available": len(rem_hidden),
+            "unlisted_scorers": wave_unlisted,
             "is_current": False,
         }
         wave_summaries.append(w_rec)

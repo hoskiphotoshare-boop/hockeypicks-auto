@@ -1028,8 +1028,25 @@
 
       const wavesHtml = waves.length ? `
         <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-          ${waves.map(w => `
-            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:0.78rem;min-width:170px;flex:1 1 180px">
+          ${waves.map(w => {
+            const unlisted = w.unlisted_scorers || [];
+            const unlistedPills = unlisted.length ? `
+              <div style="margin-top:6px;padding-top:5px;border-top:1px dashed var(--border)">
+                <div style="font-size:0.70rem;color:var(--cyan);font-weight:600;margin-bottom:3px">
+                  ${w.is_current ? 'Top Unlisted Slate Scorers:' : 'Unlisted Backfill Candidates:'}
+                </div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap">
+                  ${unlisted.map(u => `
+                    <span class="pill ${u.injury_status ? 'warn' : 'cyan'}" style="font-size:0.68rem;padding:1px 6px;line-height:1.2" title="${esc(u.player)} (${esc(u.team)}) • ${esc(Number(u.final_score).toFixed(3))} xG/G (${esc(u.p_goal_pct)}% goal prob)">
+                      ${esc(u.player.split(' ').pop())} (${esc(u.team)}) • ${esc(Number(u.final_score).toFixed(3))}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            ` : '';
+
+            return `
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:0.78rem;min-width:180px;flex:1 1 190px">
               <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:3px">
                 <strong style="color:var(--text-0)">Wave ${esc(w.wave)} • ${esc(w.start_time_et)}</strong>
                 <span style="color:${Number(w.ev_delta) > 0.02 ? 'var(--amber)' : (w.is_current ? 'var(--emerald)' : 'var(--text-2)')}">
@@ -1037,8 +1054,10 @@
                 </span>
               </div>
               <div style="color:var(--text-2);font-size:0.74rem">${esc((w.matchups || []).join(', '))}</div>
+              ${unlistedPills}
             </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       ` : '';
 
