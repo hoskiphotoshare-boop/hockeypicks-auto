@@ -56,11 +56,60 @@ class TestHealthCheck(unittest.TestCase):
 
     def test_grace_period_suppresses_early_alert(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            path = _write(tmpdir, _payload("2026-11-17 20:00:00 UTC"))
+            path = _write(tmpdir, _payload("2026-11-18 00:05:00 UTC"))
             healthy, _ = check_freshness(
                 path,
                 now_utc=datetime(2026, 11, 18, 0, 15, tzinfo=timezone.utc),
                 grace_minutes=20,
+            )
+            self.assertTrue(healthy)
+
+    def test_live_game_with_frozen_snapshot_alerts(self):
+        # The update landed after the 00:03 trigger, so the missed-trigger rule
+        # would pass it. The payload is now 50 minutes old while the game is live.
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = _write(tmpdir, _payload("2026-11-18 00:10:00 UTC"))
+            healthy, reason = check_freshness(
+                path,
+                now_utc=datetime(2026, 11, 18, 1, 0, tzinfo=timezone.utc),
+            )
+            self.assertFalse(healthy)
+            self.assertIn("MTL@NYR", reason)
+            self.assertIn("live game(s) have not been updated", reason)
+            self.assertIn("50 min", reason)
+
+    def test_live_game_recent_snapshot_is_healthy(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = _write(tmpdir, _payload("2026-11-18 00:50:00 UTC"))
+            healthy, _ = check_freshness(
+                path,
+                now_utc=datetime(2026, 11, 18, 1, 0, tzinfo=timezone.utc),
+            )
+            self.assertTrue(healthy)
+
+    def test_crit_game_counts_as_live(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = _write(
+                tmpdir,
+                _payload("2026-11-18 00:00:00 UTC", start_utc="2026-11-17T23:00:00Z", state="CRIT"),
+            )
+            healthy, reason = check_freshness(
+                path,
+                now_utc=datetime(2026, 11, 18, 1, 0, tzinfo=timezone.utc),
+            )
+            self.assertFalse(healthy)
+            self.assertIn("MTL@NYR", reason)
+
+    def test_live_age_rule_can_be_disabled(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = _write(
+                tmpdir,
+                _payload("2026-11-18 00:00:00 UTC", start_utc="2026-11-17T23:00:00Z"),
+            )
+            healthy, _ = check_freshness(
+                path,
+                now_utc=datetime(2026, 11, 18, 1, 0, tzinfo=timezone.utc),
+                live_stale_minutes=0,
             )
             self.assertTrue(healthy)
 

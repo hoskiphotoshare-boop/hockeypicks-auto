@@ -1472,13 +1472,15 @@
     }
 
     // --- Freshness banner -------------------------------------------------
-    // Mirrors src/health_check.py: a non-final game is stale when its
-    // start + 3 min trigger has passed, the payload has not been updated since
-    // that trigger, and the 20-minute grace period has elapsed. The 180-minute
-    // cap keeps old games from lighting up the banner all night.
+    // Mirrors src/health_check.py. A game is stale when either:
+    //   1. its start+3m trigger passed, the payload predates that trigger, the
+    //      20-minute grace has elapsed, and it is within the 180-minute cap; or
+    //   2. it is LIVE/CRIT and the payload itself is older than 45 minutes.
+    // The second rule catches a snapshot that froze midway through a game.
     const STALE_DELAY_MINUTES = 3;
     const STALE_GRACE_MINUTES = 20;
     const STALE_MAX_LAG_MINUTES = 180;
+    const STALE_LIVE_MINUTES = 45;
 
     function parseUtc(value) {
       if (!value) return null;
@@ -1502,22 +1504,41 @@
       const meta = (data && data.meta) || {};
       const updated = parseUtc(meta.updated_utc);
       const now = Date.now();
-      const stale = [];
+      const missed = [];
+      const liveAge = [];
       if (updated) {
+        const ageMs = now - updated.getTime();
+        const liveTooOld = ageMs > STALE_LIVE_MINUTES * 60000;
+        const seen = new Set();
         for (const g of ((data && data.games) || [])) {
           const state = String(g.game_state || '').toUpperCase();
           if (state === 'FINAL' || state === 'OFF') continue;
           const start = parseUtc(g.start_time_utc);
           if (!start) continue;
+          const key = g.id || `${g.away}@${g.home}:${g.date || ''}:${g.start_time_utc || ''}`;
           const trigger = start.getTime() + STALE_DELAY_MINUTES * 60000;
-          if (trigger > now) continue;
-          if (now - trigger > STALE_MAX_LAG_MINUTES * 60000) continue;
-          if (updated.getTime() >= trigger) continue;
-          if (now - trigger < STALE_GRACE_MINUTES * 60000) continue;
-          stale.push(g);
+          const sinceTrigger = now - trigger;
+          if (
+            trigger <= now &&
+            sinceTrigger <= STALE_MAX_LAG_MINUTES * 60000 &&
+            updated.getTime() < trigger &&
+            sinceTrigger >= STALE_GRACE_MINUTES * 60000
+          ) {
+            missed.push(g);
+            seen.add(key);
+            continue;
+          }
+          if (
+            liveTooOld &&
+            (state === 'LIVE' || state === 'CRIT') &&
+            start.getTime() <= now &&
+            !seen.has(key)
+          ) {
+            liveAge.push(g);
+          }
         }
       }
-      return { games: stale, updated: updated, ageMs: updated ? now - updated.getTime() : 0 };
+      return { missed, liveAge, updated, ageMs: updated ? now - updated.getTime() : 0 };
     }
 
     function renderStatusBanner(data) {
@@ -1540,19 +1561,24 @@
         banner.innerHTML = '<strong>Freshness unknown.</strong> The dashboard payload has no update timestamp. <button class="banner-btn" onclick="location.reload()">Refresh</button>';
         return;
       }
-      if (!report.games.length) {
+      const issues = [
+        ...report.missed.map(g => ({ g, note: 'no update since puck drop' })),
+        ...report.liveAge.map(g => ({ g, note: 'live data stale' })),
+      ];
+      if (!issues.length) {
         banner.className = 'banner hidden';
         banner.innerHTML = '';
         return;
       }
-      const shown = report.games.slice(0, 5).map(g =>
-        `<strong>${esc(g.away)}@${esc(g.home)}</strong> (${esc(g.start_time_et || 'start time unknown')})`
+      const shown = issues.slice(0, 5).map(({ g, note }) =>
+        `<strong>${esc(g.away)}@${esc(g.home)}</strong> (${esc(g.start_time_et || 'start time unknown')}, ${note})`
       ).join(', ');
-      const extra = report.games.length > 5 ? ` and ${report.games.length - 5} more` : '';
-      const noun = report.games.length === 1 ? 'game' : 'games';
+      const extra = issues.length > 5 ? ` and ${issues.length - 5} more` : '';
+      const noun = issues.length === 1 ? 'game' : 'games';
+      const verb = issues.length === 1 ? 'needs' : 'need';
       banner.className = 'banner banner-stale';
       banner.innerHTML =
-        `<strong>Data may be stale.</strong> ${report.games.length} ${noun} started without a dashboard update: ` +
+        `<strong>Data may be stale.</strong> ${issues.length} ${noun} ${verb} a refresh: ` +
         `${shown}${extra}. Last update: ${esc(meta.updated_et || 'unknown')} (${formatAge(report.ageMs)}). ` +
         '<button class="banner-btn" onclick="location.reload()">Refresh</button>';
     }
