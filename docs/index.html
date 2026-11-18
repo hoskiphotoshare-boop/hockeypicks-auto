@@ -476,6 +476,25 @@
       color: var(--emerald);
     }
 
+    th.sortable::after {
+      content: '\2195';
+      opacity: 0.35;
+      font-size: 0.9em;
+      margin-left: 5px;
+    }
+
+    th.sortable.sort-asc::after {
+      content: '\25B2';
+      opacity: 1;
+      color: var(--emerald);
+    }
+
+    th.sortable.sort-desc::after {
+      content: '\25BC';
+      opacity: 1;
+      color: var(--emerald);
+    }
+
     tr:last-child td {
       border-bottom: none;
     }
@@ -717,6 +736,7 @@
 
       <div class="section-title">
         <span>Active NHL Slate — Top Projected Goal Scorers</span>
+        <span style="font-size:0.78rem;color:var(--text-2)">Click column headers to sort</span>
       </div>
       <div class="controls-row">
         <input id="skaterSearch" class="control-input" type="search" placeholder="Filter player name..." oninput="renderSlateTable()" />
@@ -728,15 +748,15 @@
         <table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>Player</th>
-              <th>Team</th>
-              <th>Opp</th>
-              <th>Pos</th>
-              <th>AI Base G/GP</th>
-              <th>Live Form</th>
-              <th>Opp D-Mult</th>
-              <th>Final Score</th>
+              <th class="sortable" data-sort-key="rank" onclick="sortSlate('rank')">#</th>
+              <th class="sortable" data-sort-key="player" onclick="sortSlate('player')">Player</th>
+              <th class="sortable" data-sort-key="team" onclick="sortSlate('team')">Team</th>
+              <th class="sortable" data-sort-key="opponent" onclick="sortSlate('opponent')">Opp</th>
+              <th class="sortable" data-sort-key="position" onclick="sortSlate('position')">Pos</th>
+              <th class="sortable" data-sort-key="base_pred" onclick="sortSlate('base_pred')">AI Base G/GP</th>
+              <th class="sortable" data-sort-key="live_goals" onclick="sortSlate('live_goals')">Live Form</th>
+              <th class="sortable" data-sort-key="def_multiplier" onclick="sortSlate('def_multiplier')">Opp D-Mult</th>
+              <th class="sortable" data-sort-key="final_score" onclick="sortSlate('final_score')">Final Score</th>
             </tr>
           </thead>
           <tbody id="slateTableBody"></tbody>
@@ -775,17 +795,17 @@
         <table>
           <thead>
             <tr>
-              <th class="sortable" onclick="sortRankings('rank')">Rank</th>
-              <th class="sortable" onclick="sortRankings('team')">Team</th>
-              <th class="sortable" onclick="sortRankings('ai_power')">AI Power</th>
-              <th class="sortable" onclick="sortRankings('avg_win_prob')">Field Win %</th>
-              <th class="sortable" onclick="sortRankings('streak')">Streak</th>
-              <th class="sortable" onclick="sortRankings('gsax')">Goalie GSAx</th>
-              <th class="sortable" onclick="sortRankings('starter_sv_pct')">Starter SV%</th>
-              <th class="sortable" onclick="sortRankings('top3_pts')">Top-3 Pts</th>
-              <th class="sortable" onclick="sortRankings('def_multiplier')">D-Mult</th>
-              <th class="sortable" onclick="sortRankings('ga_gp')">GA/GP</th>
-              <th class="sortable" onclick="sortRankings('xga_gp')">xGA/GP</th>
+              <th class="sortable" data-sort-key="rank" onclick="sortRankings('rank')">Rank</th>
+              <th class="sortable" data-sort-key="team" onclick="sortRankings('team')">Team</th>
+              <th class="sortable" data-sort-key="ai_power" onclick="sortRankings('ai_power')">AI Power</th>
+              <th class="sortable" data-sort-key="avg_win_prob" onclick="sortRankings('avg_win_prob')">Field Win %</th>
+              <th class="sortable" data-sort-key="streak" onclick="sortRankings('streak')">Streak</th>
+              <th class="sortable" data-sort-key="gsax" onclick="sortRankings('gsax')">Goalie GSAx</th>
+              <th class="sortable" data-sort-key="starter_sv_pct" onclick="sortRankings('starter_sv_pct')">Starter SV%</th>
+              <th class="sortable" data-sort-key="top3_pts" onclick="sortRankings('top3_pts')">Top-3 Pts</th>
+              <th class="sortable" data-sort-key="def_multiplier" onclick="sortRankings('def_multiplier')">D-Mult</th>
+              <th class="sortable" data-sort-key="ga_gp" onclick="sortRankings('ga_gp')">GA/GP</th>
+              <th class="sortable" data-sort-key="xga_gp" onclick="sortRankings('xga_gp')">xGA/GP</th>
             </tr>
           </thead>
           <tbody id="rankingsTableBody"></tbody>
@@ -844,8 +864,8 @@
 
   <script>
     let APP_DATA = null;
-    let RANK_SORT_KEY = 'rank';
-    let RANK_SORT_ASC = true;
+    let RANK_SORT = newSortState('rank', true);
+    let SLATE_SORT = newSortState('', false);
 
     function esc(str) {
       const div = document.createElement('div');
@@ -1137,13 +1157,31 @@
       const slate = (APP_DATA && APP_DATA.slate_top_scorers) || [];
       const q = (document.getElementById('skaterSearch').value || '').trim().toLowerCase();
       const teamF = document.getElementById('skaterTeamFilter').value;
-      const filtered = slate.filter(r =>
-        (!q || (r.player || '').toLowerCase().includes(q)) &&
-        (!teamF || r.team === teamF)
-      );
+      const filtered = slate
+        .map((r, i) => Object.assign({}, r, { __idx: i }))
+        .filter(r =>
+          (!q || (r.player || '').toLowerCase().includes(q)) &&
+          (!teamF || r.team === teamF)
+        );
+      if (SLATE_SORT.key) {
+        filtered.sort((a, b) => {
+          if (SLATE_SORT.key === 'rank') {
+            return SLATE_SORT.asc ? a.__idx - b.__idx : b.__idx - a.__idx;
+          }
+          if (SLATE_SORT.key === 'live_goals') {
+            // Rank the live-form column by goals-per-game so the sort matches
+            // the form shown in the cell, not raw goal totals.
+            const ga = a.live_gp > 0 ? a.live_goals / a.live_gp : 0;
+            const gb = b.live_gp > 0 ? b.live_goals / b.live_gp : 0;
+            return SLATE_SORT.asc ? ga - gb : gb - ga;
+          }
+          return compareRows(a, b, SLATE_SORT, (r) => r[SLATE_SORT.key]);
+        });
+      }
       const tbody = document.getElementById('slateTableBody');
       if (!filtered.length) {
         tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No skaters match the current filter / no active slate today.</td></tr>';
+        paintSortHeaders(document.querySelector('#tab-picks table'), SLATE_SORT);
         return;
       }
       tbody.innerHTML = filtered.map((r, i) => `
@@ -1159,6 +1197,7 @@
           <td><strong style="color:var(--emerald)">${esc(r.final_score.toFixed(3))}</strong></td>
         </tr>
       `).join('');
+      paintSortHeaders(document.querySelector('#tab-picks table'), SLATE_SORT);
     }
 
     function renderPlayoffSeries(playoffSeries, meta) {
@@ -1266,13 +1305,60 @@
     }
 
     function sortRankings(key) {
-      if (RANK_SORT_KEY === key) {
-        RANK_SORT_ASC = !RANK_SORT_ASC;
-      } else {
-        RANK_SORT_KEY = key;
-        RANK_SORT_ASC = (key === 'rank' || key === 'team' || key === 'def_multiplier' || key === 'ga_gp' || key === 'xga_gp');
-      }
+      applySort(RANK_SORT, key, (k) => (k === 'rank' || k === 'team' || k === 'def_multiplier' || k === 'ga_gp' || k === 'xga_gp'));
       renderRankings();
+    }
+
+    function sortSlate(key) {
+      applySort(SLATE_SORT, key, (k) => (k === 'rank' || k === 'team' || k === 'opponent' || k === 'position' || k === 'player'));
+      renderSlateTable();
+    }
+
+    // Shared table sorting: tracks key + direction per table, toggles on repeat
+    // clicks, and falls back to the numeric/text comparator that fits each value.
+    function newSortState(key, asc) {
+      return { key: key, asc: asc };
+    }
+
+    function applySort(state, key, ascOnNewKey) {
+      if (state.key === key) {
+        state.asc = !state.asc;
+      } else {
+        state.key = key;
+        state.asc = ascOnNewKey ? ascOnNewKey(key) : true;
+      }
+    }
+
+    function compareRows(a, b, state, pick) {
+      const va = pick(a);
+      const vb = pick(b);
+      const aMissing = va === null || va === undefined || va === '';
+      const bMissing = vb === null || vb === undefined || vb === '';
+      // Missing values always sort to the bottom, regardless of direction.
+      if (aMissing || bMissing) return aMissing === bMissing ? 0 : (aMissing ? 1 : -1);
+      const na = typeof va === 'number' ? va : parseFloat(va);
+      const nb = typeof vb === 'number' ? vb : parseFloat(vb);
+      const bothNumeric = Number.isFinite(na) && Number.isFinite(nb);
+      let cmp;
+      if (bothNumeric) {
+        cmp = na - nb;
+      } else if (typeof va === 'boolean' || typeof vb === 'boolean') {
+        cmp = (va ? 1 : 0) - (vb ? 1 : 0);
+      } else {
+        cmp = String(va).localeCompare(String(vb), undefined, { numeric: true, sensitivity: 'base' });
+      }
+      return state.asc ? cmp : -cmp;
+    }
+
+    function paintSortHeaders(table, state) {
+      if (!table) return;
+      table.querySelectorAll('thead th.sortable').forEach((th) => {
+        const key = th.dataset.sortKey || '';
+        const isSorted = key && key === state.key;
+        th.classList.toggle('sort-asc', !!isSorted && state.asc);
+        th.classList.toggle('sort-desc', !!isSorted && !state.asc);
+        th.setAttribute('aria-sort', isSorted ? (state.asc ? 'ascending' : 'descending') : 'none');
+      });
     }
 
     function renderRankings() {
@@ -1280,14 +1366,25 @@
       const tbody = document.getElementById('rankingsTableBody');
       if (!list.length) {
         tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Power rankings will populate after the first live pipeline run.</td></tr>';
+        paintSortHeaders(document.querySelector('#tab-rankings table'), RANK_SORT);
         return;
       }
       list.sort((a, b) => {
-        const va = a[RANK_SORT_KEY];
-        const vb = b[RANK_SORT_KEY];
-        if (typeof va === 'string') return RANK_SORT_ASC ? va.localeCompare(vb) : vb.localeCompare(va);
-        return RANK_SORT_ASC ? (va - vb) : (vb - va);
+        const va = a[RANK_SORT.key];
+        const vb = b[RANK_SORT.key];
+        const aMissing = va === null || va === undefined || va === '';
+        const bMissing = vb === null || vb === undefined || vb === '';
+        // Missing values always sort to the bottom, regardless of direction.
+        if (aMissing || bMissing) return aMissing === bMissing ? 0 : (aMissing ? 1 : -1);
+        let cmp;
+        if (typeof va === 'string') {
+          cmp = va.localeCompare(String(vb), undefined, { numeric: true, sensitivity: 'base' });
+        } else {
+          cmp = Number(va) - Number(vb);
+        }
+        return RANK_SORT.asc ? cmp : -cmp;
       });
+      paintSortHeaders(document.querySelector('#tab-rankings table'), RANK_SORT);
       tbody.innerHTML = list.map(r => `
         <tr>
           <td><strong>#${esc(r.rank)}</strong></td>
