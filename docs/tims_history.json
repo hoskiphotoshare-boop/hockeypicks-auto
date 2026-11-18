@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-17 09:08 PM ET",
+      "captured_et": "2026-11-17 09:11 PM ET",
       "model_n_half": 30.46,
       "groups": {
         "1": [
@@ -28,7 +28,7 @@
             "base_pred": 0.364,
             "live_gp": 20,
             "live_goals": 9,
-            "def_multiplier": 0.961,
+            "def_multiplier": 0.962,
             "final_score": 0.376
           },
           {
@@ -52,7 +52,7 @@
             "base_pred": 0.48,
             "live_gp": 20,
             "live_goals": 10,
-            "def_multiplier": 0.961,
+            "def_multiplier": 0.962,
             "final_score": 0.465
           },
           {
@@ -63,7 +63,7 @@
             "base_pred": 0.35,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 1.045,
+            "def_multiplier": 1.044,
             "final_score": 0.359
           },
           {
@@ -120,7 +120,7 @@
             "base_pred": 0.156,
             "live_gp": 20,
             "live_goals": 2,
-            "def_multiplier": 0.961,
+            "def_multiplier": 0.962,
             "final_score": 0.13
           },
           {
@@ -142,7 +142,7 @@
             "base_pred": 0.054,
             "live_gp": 20,
             "live_goals": 0,
-            "def_multiplier": 0.961,
+            "def_multiplier": 0.962,
             "final_score": 0.036
           }
         ]
@@ -167,7 +167,7 @@
           "base_pred": 0.48,
           "live_gp": 20,
           "live_goals": 10,
-          "def_multiplier": 0.961,
+          "def_multiplier": 0.962,
           "final_score": 0.465
         },
         "3": {
@@ -178,7 +178,7 @@
           "base_pred": 0.156,
           "live_gp": 20,
           "live_goals": 2,
-          "def_multiplier": 0.961,
+          "def_multiplier": 0.962,
           "final_score": 0.13
         }
       },
