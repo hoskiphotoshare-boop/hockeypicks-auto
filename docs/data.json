@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "full",
-    "updated_utc": "2026-11-18 02:12:03 UTC",
-    "updated_et": "2026-11-17 09:12 PM ET",
+    "updated_utc": "2026-11-18 02:32:00 UTC",
+    "updated_et": "2026-11-17 09:32 PM ET",
     "today_date": "2026-11-17",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -15,7 +15,7 @@
     "odds_enabled": true,
     "availability": {
       "injury_source": "espn",
-      "injury_count": 110,
+      "injury_count": 109,
       "goalie_source": "dailyfaceoff",
       "goalie_count": 22
     },
@@ -359,6 +359,9 @@
         "est_ev": 0.8775,
         "ev_delta": 0.0,
         "beat_now_pct": 0.0,
+        "visible_carried": 12,
+        "hidden_available": 0,
+        "unlisted_scorers": [],
         "is_current": true
       }
     ]
@@ -1247,8 +1250,8 @@
       "bookie": "Pinnacle",
       "away_edge": null,
       "home_edge": {
-        "odds": 7.24,
-        "edge_pct": 357.39,
+        "odds": 10.55,
+        "edge_pct": 566.5,
         "quarter_kelly_pct": 5.0,
         "rec_bet": 50.0
       }
@@ -1259,12 +1262,12 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "CRIT",
       "game_type": 2,
       "away": "EDM",
       "home": "FLA",
       "away_score": 4,
-      "home_score": 0,
+      "home_score": 2,
       "away_prob": 57.6,
       "home_prob": 42.4,
       "favored": "EDM",
@@ -1304,9 +1307,14 @@
         "Aleksander Barkov (IR)",
         "Jonah Gadjovich (IR)"
       ],
-      "bookie": null,
+      "bookie": "Unibet (UK)",
       "away_edge": null,
-      "home_edge": null
+      "home_edge": {
+        "odds": 251.0,
+        "edge_pct": 10546.72,
+        "quarter_kelly_pct": 5.0,
+        "rec_bet": 50.0
+      }
     },
     {
       "id": 2026020336,
@@ -1314,12 +1322,12 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "CRIT",
       "game_type": 2,
       "away": "CBJ",
       "home": "NYI",
       "away_score": 1,
-      "home_score": 3,
+      "home_score": 5,
       "away_prob": 42.3,
       "home_prob": 57.7,
       "favored": "NYI",
@@ -1372,7 +1380,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "CRIT",
       "game_type": 2,
       "away": "BUF",
       "home": "PHI",
@@ -1416,8 +1424,8 @@
       ],
       "bookie": "Pinnacle",
       "away_edge": {
-        "odds": 3.44,
-        "edge_pct": 88.09,
+        "odds": 5.76,
+        "edge_pct": 214.94,
         "quarter_kelly_pct": 5.0,
         "rec_bet": 50.0
       },
@@ -1429,7 +1437,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T00:00:00Z",
       "start_time_et": "7:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "CRIT",
       "game_type": 2,
       "away": "OTT",
       "home": "WPG",
@@ -1478,8 +1486,8 @@
       "bookie": "Pinnacle",
       "away_edge": null,
       "home_edge": {
-        "odds": 3.99,
-        "edge_pct": 80.61,
+        "odds": 5.33,
+        "edge_pct": 141.26,
         "quarter_kelly_pct": 5.0,
         "rec_bet": 50.0
       }
@@ -1532,10 +1540,10 @@
         "Brandon Hagel (Out)",
         "Conor Geekie (IR)"
       ],
-      "bookie": "Pinnacle",
+      "bookie": "DraftKings",
       "away_edge": {
-        "odds": 19.15,
-        "edge_pct": 621.25,
+        "odds": 23.0,
+        "edge_pct": 766.25,
         "quarter_kelly_pct": 5.0,
         "rec_bet": 50.0
       },
@@ -1551,8 +1559,8 @@
       "game_type": 2,
       "away": "TOR",
       "home": "CHI",
-      "away_score": 1,
-      "home_score": 2,
+      "away_score": 2,
+      "home_score": 3,
       "away_prob": 58.2,
       "home_prob": 41.8,
       "favored": "TOR",
@@ -1591,7 +1599,12 @@
         "Bowen Byram (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_edge": null,
+      "away_edge": {
+        "odds": 2.95,
+        "edge_pct": 71.69,
+        "quarter_kelly_pct": 5.0,
+        "rec_bet": 50.0
+      },
       "home_edge": null
     },
     {
@@ -1605,7 +1618,7 @@
       "away": "ANA",
       "home": "STL",
       "away_score": 2,
-      "home_score": 2,
+      "home_score": 3,
       "away_prob": 53.6,
       "home_prob": 46.4,
       "favored": "ANA",
@@ -1659,7 +1672,7 @@
       "game_type": 2,
       "away": "NSH",
       "home": "MIN",
-      "away_score": 1,
+      "away_score": 2,
       "home_score": 6,
       "away_prob": 34.8,
       "home_prob": 65.2,
@@ -1703,7 +1716,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T03:00:00Z",
       "start_time_et": "10:00 PM ET",
-      "game_state": "FUT",
+      "game_state": "PRE",
       "game_type": 2,
       "away": "DAL",
       "home": "VGK",
@@ -1756,7 +1769,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-18T03:00:00Z",
       "start_time_et": "10:00 PM ET",
-      "game_state": "FUT",
+      "game_state": "PRE",
       "game_type": 2,
       "away": "CGY",
       "home": "SJS",
