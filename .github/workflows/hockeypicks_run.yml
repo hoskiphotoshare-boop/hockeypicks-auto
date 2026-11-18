@@ -3,13 +3,15 @@ name: Hockeypicks Automated AI Pipeline
 on:
   workflow_dispatch:
   schedule:
-    # Thrice-daily ET runs (12:01 AM ET post-midnight Tims release, 10:17 AM ET morning, 4:17 PM ET pre-puck drop)
-    - cron: '1 4 * * *'   # 12:01 AM EDT (UTC-4)
-    - cron: '1 5 * * *'   # 12:01 AM EST (UTC-5)
-    - cron: '17 14 * * *' # 10:17 AM EDT (UTC-4)
-    - cron: '17 15 * * *' # 10:17 AM EST (UTC-5)
-    - cron: '17 20 * * *' # 4:17 PM EDT (UTC-4)
-    - cron: '17 21 * * *' # 4:17 PM EST (UTC-5)
+    # Thrice-daily ET runs (12:01 AM ET post-midnight Tims release, 10:17 AM ET
+    # morning, 4:17 PM ET pre-puck drop). GitHub applies EDT/EST via `timezone`,
+    # so each slot is a single entry instead of a dual-cron pair.
+    - cron: '1 0 * * *'
+      timezone: 'America/New_York'
+    - cron: '17 10 * * *'
+      timezone: 'America/New_York'
+    - cron: '17 16 * * *'
+      timezone: 'America/New_York'
 
 permissions:
   contents: write
@@ -23,57 +25,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check EDT/EST Schedule Match
-        id: tz_check
-        run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            OFFSET=$(TZ="America/New_York" date +%z)
-            SCHED="${{ github.event.schedule }}"
-            if [ "$OFFSET" = "-0400" ]; then
-              case "$SCHED" in
-                '1 4 * * *'|'17 14 * * *'|'17 20 * * *') ;;
-                *)
-                  echo "Skipping non-EDT cron ($SCHED) during EDT (-0400)."
-                  echo "should_run=false" >> "$GITHUB_OUTPUT"
-                  exit 0
-                  ;;
-              esac
-            elif [ "$OFFSET" = "-0500" ]; then
-              case "$SCHED" in
-                '1 5 * * *'|'17 15 * * *'|'17 21 * * *') ;;
-                *)
-                  echo "Skipping non-EST cron ($SCHED) during EST (-0500)."
-                  echo "should_run=false" >> "$GITHUB_OUTPUT"
-                  exit 0
-                  ;;
-              esac
-            fi
-          fi
-          echo "should_run=true" >> "$GITHUB_OUTPUT"
-
       - name: Checkout Repository
-        if: steps.tz_check.outputs.should_run == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Python 3.11
-        if: steps.tz_check.outputs.should_run == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
       - name: Install Dependencies
-        if: steps.tz_check.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run Unit & End-to-End Smoke Tests
-        if: steps.tz_check.outputs.should_run == 'true'
         run: python -m unittest discover -s tests -v
 
       - name: Restore Cached MoneyPuck & NHL Game Logs
-        if: steps.tz_check.outputs.should_run == 'true'
         uses: actions/cache@v4
         with:
           path: data
@@ -82,13 +51,11 @@ jobs:
             hockeypicks-data-
 
       - name: Execute Hockeypicks AI Training & Inference Pipeline
-        if: steps.tz_check.outputs.should_run == 'true'
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python main_pipeline.py --mode full
 
       - name: Commit and Push Predictions & Model Bundles
-        if: steps.tz_check.outputs.should_run == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"

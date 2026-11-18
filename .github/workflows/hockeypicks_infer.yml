@@ -3,18 +3,20 @@ name: Hockeypicks Live Inference Only
 on:
   workflow_dispatch:
   schedule:
-    # 10:00 PM EPT (day before) — Daily opening odds release & next-day line movements
-    - cron: '0 2 * * *'    # EDT (UTC-4)
-    - cron: '0 3 * * *'    # EST (UTC-5)
-    # 11:00 AM EPT — Weekend & holiday early matinee odds release & line movements
-    - cron: '0 15 * * *'   # EDT (UTC-4)
-    - cron: '0 16 * * *'   # EST (UTC-5)
-    # 12:00 PM EPT — Daily noon odds release & mid-day line movements
-    # (Note: In EDT, 12:00 PM EDT runs at 16:00 UTC matching '0 16 * * *' above; in EST, 12:00 PM EST runs at 17:00 UTC)
-    - cron: '0 17 * * *'   # EST (UTC-5)
-    # 4:30 PM EPT — Daily pre-game line movements & starting goalie confirmations
-    - cron: '30 20 * * *'  # EDT (UTC-4)
-    - cron: '30 21 * * *'  # EST (UTC-5)
+    # All entries are ET wall-clock time. GitHub converts each one to UTC and
+    # follows daylight saving, so one entry covers both EDT and EST.
+    # 10:00 PM ET (day before) — Daily opening odds release & next-day line movements
+    - cron: '0 22 * * *'
+      timezone: 'America/New_York'
+    # 11:00 AM ET — Weekend & holiday early matinee odds release & line movements
+    - cron: '0 11 * * *'
+      timezone: 'America/New_York'
+    # 12:00 PM ET — Daily noon odds release & mid-day line movements
+    - cron: '0 12 * * *'
+      timezone: 'America/New_York'
+    # 4:30 PM ET — Daily pre-game line movements & starting goalie confirmations
+    - cron: '30 16 * * *'
+      timezone: 'America/New_York'
     # Post-puck-drop inference now runs in the Hockeypicks Live Game Loop workflow,
     # which ticks every 5 minutes inside the game windows instead of relying on 56
     # one-shot scheduler triggers per day.

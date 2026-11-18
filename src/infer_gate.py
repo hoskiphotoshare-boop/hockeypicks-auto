@@ -11,28 +11,14 @@ from zoneinfo import ZoneInfo
 
 ET_ZONE = ZoneInfo("America/New_York")
 
-# Dual-cron schedule mappings for Eastern Prevailing Time (EPT).
-# GitHub Actions schedule triggers run on UTC. During EDT (summer/fall), offset is -0400;
-# during EST (winter/spring), offset is -0500. Dual crons ensure exact alignment across DST.
-ODDS_CRONS_10PM_ET: dict[str, str] = {
-    "0 2 * * *": "-0400",  # EDT: 22:00 EDT = 02:00 UTC (day before / overnight)
-    "0 3 * * *": "-0500",  # EST: 22:00 EST = 03:00 UTC (day before / overnight)
-}
-
-ODDS_CRONS_430PM_ET: dict[str, str] = {
-    "30 20 * * *": "-0400",  # EDT: 16:30 EDT = 20:30 UTC
-    "30 21 * * *": "-0500",  # EST: 16:30 EST = 21:30 UTC
-}
-
-ODDS_CRONS_11AM_ET: dict[str, str] = {
-    "0 15 * * *": "-0400",  # EDT: 11:00 EDT = 15:00 UTC
-    "0 16 * * *": "-0500",  # EST: 11:00 EST = 16:00 UTC
-}
-
-ODDS_CRONS_12PM_ET: dict[str, str] = {
-    "0 16 * * *": "-0400",  # EDT: 12:00 EDT = 16:00 UTC
-    "0 17 * * *": "-0500",  # EST: 12:00 EST = 17:00 UTC
-}
+# Fixed odds slots are written as ET wall-clock crons in the workflow
+# (`cron:` + `timezone: America/New_York`). GitHub converts them to UTC and follows
+# daylight saving, so one entry covers both EDT and EST. The gate only needs to
+# recognise the slot to apply the 11:00 AM matinee filter.
+ODDS_CRON_10PM = "0 22 * * *"
+ODDS_CRON_430PM = "30 16 * * *"
+ODDS_CRON_12PM = "0 12 * * *"
+ODDS_CRON_11AM = "0 11 * * *"
 
 # A full NHL game runs about 2.5 hours. Keep the post-start window open for that
 # long so a trigger that arrives hours late still produces a useful in-game update
@@ -275,54 +261,39 @@ def evaluate_gate(
     else:
         now = now.astimezone(timezone.utc)
     now_et = now.astimezone(ET_ZONE)
-    active_offset = now_et.strftime("%z")
 
     cron_clean = str(cron or "").strip()
 
-    # 1) 10:00 PM EPT (day before): Daily opening odds release & next-day line movements
-    if cron_clean in ODDS_CRONS_10PM_ET:
-        expected_offset = ODDS_CRONS_10PM_ET[cron_clean]
-        if active_offset != expected_offset:
-            return (
-                False,
-                f"Seasonal offset mismatch for 10:00 PM EPT cron '{cron_clean}' "
-                f"(active ET offset is {active_offset}, expected {expected_offset}).",
-            )
-        return True, f"10:00 PM EPT opening odds & next-day line movements window (offset {active_offset})."
+    # 1) 10:00 PM ET: Daily opening odds release & next-day line movements
+    if cron_clean == ODDS_CRON_10PM:
+        return True, "10:00 PM EPT opening odds & next-day line movements window."
 
-    # 2) 4:30 PM EPT: Daily pre-game line movements & starting goalie confirmations
-    if cron_clean in ODDS_CRONS_430PM_ET:
-        expected_offset = ODDS_CRONS_430PM_ET[cron_clean]
-        if active_offset != expected_offset:
-            return (
-                False,
-                f"Seasonal offset mismatch for 4:30 PM EPT cron '{cron_clean}' "
-                f"(active ET offset is {active_offset}, expected {expected_offset}).",
-            )
-        return True, f"4:30 PM EPT pre-game odds & line movements window (offset {active_offset})."
+    # 2) 4:30 PM ET: Daily pre-game line movements & starting goalie confirmations
+    if cron_clean == ODDS_CRON_430PM:
+        return True, "4:30 PM EPT pre-game odds & line movements window."
 
-    # 3) 12:00 PM EPT: Daily noon odds release & mid-day line movements
-    if cron_clean in ODDS_CRONS_12PM_ET and active_offset == ODDS_CRONS_12PM_ET[cron_clean]:
-        return True, f"12:00 PM EPT daily noon odds & line movements window (offset {active_offset})."
+    # 3) 12:00 PM ET: Daily noon odds release & mid-day line movements
+    if cron_clean == ODDS_CRON_12PM:
+        return True, "12:00 PM EPT daily noon odds & line movements window."
 
-    # 4) 11:00 AM EPT: Weekend & holiday early matinee odds release & line movements
-    if cron_clean in ODDS_CRONS_11AM_ET and active_offset == ODDS_CRONS_11AM_ET[cron_clean]:
+    # 4) 11:00 AM ET: Weekend & holiday early matinee odds release & line movements
+    if cron_clean == ODDS_CRON_11AM:
         # Check weekend (5 = Saturday, 6 = Sunday)
         weekday = now_et.weekday()
         if weekday == 5:
-            return True, f"11:00 AM EPT weekend matinee odds window (Saturday, offset {active_offset})."
+            return True, "11:00 AM EPT weekend matinee odds window (Saturday)."
         if weekday == 6:
-            return True, f"11:00 AM EPT weekend matinee odds window (Sunday, offset {active_offset})."
+            return True, "11:00 AM EPT weekend matinee odds window (Sunday)."
 
         # Check US / Canadian national holidays
         is_hol, hol_name = is_us_canada_holiday(now_et.date())
         if is_hol:
-            return True, f"11:00 AM EPT holiday matinee odds window ({hol_name}, offset {active_offset})."
+            return True, f"11:00 AM EPT holiday matinee odds window ({hol_name})."
 
         # Check if today's slate has an early matinee game starting before 4:00 PM ET
         has_mat, mat_detail = has_early_matinee_game(payload, now_et)
         if has_mat:
-            return True, f"11:00 AM EPT early matinee odds window ({mat_detail}, offset {active_offset})."
+            return True, f"11:00 AM EPT early matinee odds window ({mat_detail})."
 
         day_name = now_et.strftime("%A")
         return (
@@ -330,20 +301,14 @@ def evaluate_gate(
             f"11:00 AM EPT matinee window skipped: regular weekday ({day_name}) with no early games scheduled before 4:00 PM ET.",
         )
 
-    # 5) Handle seasonal offset mismatch for 11:00 AM or 12:00 PM crons that did not match active offset
-    if cron_clean in ODDS_CRONS_12PM_ET or cron_clean in ODDS_CRONS_11AM_ET:
-        target_label = (
-            "12:00 PM EPT"
-            if cron_clean == "0 17 * * *"
-            else ("11:00 AM EPT" if cron_clean == "0 15 * * *" else "11:00 AM / 12:00 PM EPT")
-        )
-        return (
-            False,
-            f"Seasonal offset mismatch for {target_label} cron '{cron_clean}' "
-            f"(active ET offset is {active_offset}).",
-        )
+    # 5) Any other non-empty scheduled cron belongs to hockeypicks_infer.yml, which
+    # now only holds fixed odds slots. Run rather than silently skip the release if
+    # GitHub reports the schedule in an unexpected form.
+    if event_name == "schedule" and cron_clean:
+        return True, f"Scheduled odds window (cron '{cron_clean}')."
 
-    # 6) Post-puck-drop reactive schedule (+3 min after game start)
+    # 6) Post-puck-drop / live-window schedule: the live loop calls this every few
+    # minutes with an empty cron, so only games that are actually due trigger a run.
     due = find_due_games(
         payload,
         now_utc=now,
