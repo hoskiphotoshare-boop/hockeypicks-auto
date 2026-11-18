@@ -1,0 +1,61 @@
+name: Hockeypicks Data Health Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Hourly at :17 so the check itself avoids the top-of-hour scheduler peak.
+    - cron: '17 * * * *'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: hockeypicks-health
+  cancel-in-progress: false
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check Live Data Freshness
+        id: health
+        run: |
+          set +e
+          python3 -m src.health_check --data-json docs/data.json 2>&1 | tee "$RUNNER_TEMP/health.txt"
+          STATUS=${PIPESTATUS[0]}
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Open or Update Alert Issue
+        if: steps.health.outputs.status != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Hockeypicks live data is stale"
+          BODY="$(cat "$RUNNER_TEMP/health.txt")"
+          NUM="$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$NUM" ]; then
+            gh issue comment "$NUM" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi
+
+      - name: Close Alert Issue After Recovery
+        if: steps.health.outputs.status == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Hockeypicks live data is stale"
+          NUM="$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$NUM" ]; then
+            gh issue close "$NUM" --comment "Data freshness restored."
+          fi
+
+      - name: Fail When Stale
+        if: steps.health.outputs.status != '0'
+        run: exit 1
