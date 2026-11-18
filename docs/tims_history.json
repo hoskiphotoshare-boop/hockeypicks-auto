@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-18 08:43 AM ET",
+      "captured_et": "2026-11-18 05:36 PM ET",
       "model_n_half": 30.63,
       "groups": {
         "1": [
@@ -39,8 +39,8 @@
             "base_pred": 0.33,
             "live_gp": 21,
             "live_goals": 15,
-            "def_multiplier": 0.973,
-            "final_score": 0.456
+            "def_multiplier": 0.974,
+            "final_score": 0.457
           },
           {
             "player": "David Pastrnak",
@@ -94,7 +94,7 @@
             "base_pred": 0.302,
             "live_gp": 21,
             "live_goals": 10,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.352
           },
           {
@@ -106,7 +106,7 @@
             "live_gp": 22,
             "live_goals": 5,
             "def_multiplier": 0.939,
-            "final_score": 0.317
+            "final_score": 0.316
           }
         ],
         "2": [
@@ -140,7 +140,7 @@
             "base_pred": 0.361,
             "live_gp": 21,
             "live_goals": 5,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.308
           },
           {
@@ -151,7 +151,7 @@
             "base_pred": 0.297,
             "live_gp": 21,
             "live_goals": 8,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.308
           },
           {
@@ -206,7 +206,7 @@
             "base_pred": 0.259,
             "live_gp": 21,
             "live_goals": 6,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.26
           },
           {
@@ -217,7 +217,7 @@
             "base_pred": 0.203,
             "live_gp": 21,
             "live_goals": 7,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.241
           },
           {
@@ -307,7 +307,7 @@
             "base_pred": 0.121,
             "live_gp": 21,
             "live_goals": 4,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.138
           },
           {
@@ -406,7 +406,7 @@
             "base_pred": 0.092,
             "live_gp": 6,
             "live_goals": 0,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.078
           },
           {
@@ -439,7 +439,7 @@
             "base_pred": 0.102,
             "live_gp": 20,
             "live_goals": 0,
-            "def_multiplier": 0.973,
+            "def_multiplier": 0.974,
             "final_score": 0.065
           }
         ]
