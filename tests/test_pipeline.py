@@ -1065,6 +1065,11 @@ class TestSkaterAndTeamMath(unittest.TestCase):
         self.assertIn("Logan Cooley", hidden_names)
         self.assertNotIn("Jonathan Lekkerimaki", hidden_names)
 
+        # Waves carry per-wave unlisted backfill candidates
+        self.assertIn("unlisted_scorers", res_defer["waves"][1])
+        wave2_unlisted_names = {u["player"] for u in res_defer["waves"][1]["unlisted_scorers"]}
+        self.assertIn("Logan Cooley", wave2_unlisted_names)
+
         # 3. Multi-wave where early stars are elite and late hidden pool is weak -> SELECT_NOW
         groups_strong_now = {
             "1": [{"player": "Auston Matthews", "team": "NYR", "opponent": "MTL", "final_score": 0.65}]
