@@ -16,10 +16,11 @@ ET_TZ = pytz.timezone("America/New_York")
 
 
 def write_json_report(payload: dict[str, Any], path: str) -> None:
-    """Write structured dashboard payload atomically as formatted JSON."""
+    """Write structured dashboard payload as formatted JSON, rejecting NaN/Infinity."""
+    text = json.dumps(payload, indent=2, allow_nan=False)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2)
+        f.write(text)
 
 
 def write_terminal_log_html(log_text: str, meta: dict[str, Any], path: str) -> None:

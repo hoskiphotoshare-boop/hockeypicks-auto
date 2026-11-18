@@ -27,6 +27,7 @@ except ImportError:  # pragma: no cover
 
 from src.availability import build_injury_matcher
 from src.data_sync import PlayerMatcher, clean_name, normalize_team_abbrev
+from src.tims_grouping import group_tims_candidates
 
 
 SKATER_EXCLUDE_COLS = {
@@ -622,11 +623,7 @@ def score_skater_candidates(
                     group=int(pick.get("group", 1)),
                 )
             )
-        df_t = pd.DataFrame(scored_tims).sort_values(
-            ["group", "injury_out", "final_score"], ascending=[True, True, False]
-        )
-        for g_num, g_df in df_t.groupby("group"):
-            tims_groups[str(int(g_num))] = g_df.to_dict(orient="records")
+        tims_groups = group_tims_candidates(scored_tims)
 
     # Update current team from live NHL roster stats when available (handles mid-season trades)
     if live_skaters:
