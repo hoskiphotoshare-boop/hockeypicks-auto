@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-19 16:49:13 UTC",
-    "updated_et": "2026-11-19 11:49 AM ET",
+    "updated_utc": "2026-11-19 17:01:47 UTC",
+    "updated_et": "2026-11-19 12:01 PM ET",
     "today_date": "2026-11-19",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -971,12 +971,12 @@
     "status": "evaluated",
     "decision": "SELECT_DEFER",
     "headline": "Selective Defer \u2014 Wait Until Before 7:30 PM ET",
-    "detail": "Waiting past 7:00 PM ET projects +0.155 xG (100% win chance) as unlisted late-wave skaters backfill 18 vacated spots.",
+    "detail": "Waiting past 7:00 PM ET projects +0.151 xG (100% win chance) as unlisted late-wave skaters backfill 18 vacated spots.",
     "defer_threshold": 0.02,
     "recommended_wave_et": "7:30 PM ET",
     "v_now": 1.022,
-    "v_defer_best": 1.1775,
-    "ev_delta": 0.1555,
+    "v_defer_best": 1.1726,
+    "ev_delta": 0.1506,
     "locked_picks_if_defer_1": 1,
     "current_best": {
       "1": {
@@ -1054,18 +1054,6 @@
     "selection_wave": 2,
     "hidden_upside_players": [
       {
-        "player": "Connor Bedard",
-        "team": "CHI",
-        "opponent": "CBJ",
-        "position": "C",
-        "final_score": 0.468,
-        "p_goal_pct": 37.4,
-        "wave_idx": 2,
-        "wave_et": "8:00 PM ET",
-        "injury_status": "DTD",
-        "injury_dtd": true
-      },
-      {
         "player": "Beckett Sennecke",
         "team": "ANA",
         "opponent": "COL",
@@ -1135,8 +1123,8 @@
         "matchups": [
           "EDM @ TBL"
         ],
-        "est_ev": 1.1775,
-        "ev_delta": 0.1554,
+        "est_ev": 1.1726,
+        "ev_delta": 0.1506,
         "beat_now_pct": 100.0,
         "visible_carried": 27,
         "hidden_available": 222,
@@ -1179,19 +1167,12 @@
           "CBJ @ CHI",
           "MIN @ CGY"
         ],
-        "est_ev": 1.1289,
-        "ev_delta": 0.1069,
+        "est_ev": 1.129,
+        "ev_delta": 0.107,
         "beat_now_pct": 100.0,
         "visible_carried": 23,
         "hidden_available": 183,
         "unlisted_scorers": [
-          {
-            "player": "Connor Bedard",
-            "team": "CHI",
-            "final_score": 0.468,
-            "p_goal_pct": 37.4,
-            "injury_status": "DTD"
-          },
           {
             "player": "Frank Nazar",
             "team": "CHI",
@@ -1212,6 +1193,13 @@
             "final_score": 0.379,
             "p_goal_pct": 31.5,
             "injury_status": null
+          },
+          {
+            "player": "Adam Fantilli",
+            "team": "CBJ",
+            "final_score": 0.346,
+            "p_goal_pct": 29.2,
+            "injury_status": null
           }
         ],
         "is_current": false
@@ -1222,11 +1210,11 @@
         "matchups": [
           "ANA @ COL"
         ],
-        "est_ev": 1.0973,
-        "ev_delta": 0.0753,
-        "beat_now_pct": 99.0,
+        "est_ev": 1.1005,
+        "ev_delta": 0.0785,
+        "beat_now_pct": 99.7,
         "visible_carried": 16,
-        "hidden_available": 101,
+        "hidden_available": 102,
         "unlisted_scorers": [
           {
             "player": "Beckett Sennecke",
@@ -1265,11 +1253,11 @@
         "matchups": [
           "VAN @ SEA"
         ],
-        "est_ev": 0.9526,
-        "ev_delta": -0.0694,
+        "est_ev": 0.9509,
+        "ev_delta": -0.0711,
         "beat_now_pct": 0.0,
         "visible_carried": 11,
-        "hidden_available": 68,
+        "hidden_available": 69,
         "unlisted_scorers": [
           {
             "player": "Jordan Eberle",
@@ -1308,11 +1296,11 @@
         "matchups": [
           "DAL @ VGK"
         ],
-        "est_ev": 0.8579,
-        "ev_delta": -0.1641,
+        "est_ev": 0.8648,
+        "ev_delta": -0.1572,
         "beat_now_pct": 0.0,
         "visible_carried": 11,
-        "hidden_available": 28,
+        "hidden_available": 29,
         "unlisted_scorers": [
           {
             "player": "Tomas Hertl",
@@ -1336,10 +1324,10 @@
             "injury_status": null
           },
           {
-            "player": "Tyler Seguin",
+            "player": "Matt Duchene",
             "team": "DAL",
-            "final_score": 0.216,
-            "p_goal_pct": 19.4,
+            "final_score": 0.22,
+            "p_goal_pct": 19.7,
             "injury_status": null
           }
         ],
@@ -1375,8 +1363,8 @@
           "lock_et": "7:30 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.022,
-          "v_defer_best": 1.1775,
-          "ev_delta": 0.1555
+          "v_defer_best": 1.1726,
+          "ev_delta": 0.1506
         },
         "picks_locked": false,
         "hits_of_3": null,
@@ -1696,25 +1684,6 @@
       "injury_out": false,
       "injury_dtd": false,
       "injury_note": ""
-    },
-    {
-      "player": "Connor Bedard",
-      "team": "CHI",
-      "position": "C",
-      "opponent": "CBJ",
-      "base_pred": 0.437,
-      "live_gp": 15,
-      "live_goals": 7,
-      "live_shots": 44,
-      "live_g_gp": 0.467,
-      "eb_live_weight_pct": 32.9,
-      "def_multiplier": 1.05,
-      "final_score": 0.468,
-      "mode": "Regular Season",
-      "injury_status": "DTD",
-      "injury_out": false,
-      "injury_dtd": true,
-      "injury_note": "Bedard is being evaluated for a shoulder injury, Emily Kaplan of ESPN reports Wednesday."
     },
     {
       "player": "Andrei Svechnikov",
@@ -2247,6 +2216,25 @@
       "injury_out": false,
       "injury_dtd": false,
       "injury_note": ""
+    },
+    {
+      "player": "Jake DeBrusk",
+      "team": "VAN",
+      "position": "L",
+      "opponent": "SEA",
+      "base_pred": 0.395,
+      "live_gp": 21,
+      "live_goals": 6,
+      "live_shots": 51,
+      "live_g_gp": 0.286,
+      "eb_live_weight_pct": 40.7,
+      "def_multiplier": 1.032,
+      "final_score": 0.367,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
     }
   ],
   "games": [
@@ -2568,8 +2556,8 @@
         "Alexander Romanov (IR)"
       ],
       "home_injuries": [
-        "Isak Rosen (IR)",
         "Dylan DeMelo (IR)",
+        "Isak Rosen (IR)",
         "Elias Salomonsson (IR)",
         "Vladislav Namestnikov (IR)"
       ],
@@ -2652,10 +2640,10 @@
       "home": "CHI",
       "away_score": null,
       "home_score": null,
-      "away_prob": 59.1,
-      "home_prob": 40.9,
+      "away_prob": 59.4,
+      "home_prob": 40.6,
       "favored": "CBJ",
-      "fav_prob": 59.1,
+      "fav_prob": 59.4,
       "away_streak": -5,
       "home_streak": 1,
       "away_b2b": false,
@@ -2684,6 +2672,7 @@
         "Sean Monahan (Out)"
       ],
       "home_injuries": [
+        "Connor Bedard (Out)",
         "Bowen Byram (IR)"
       ],
       "bookie": "Pinnacle",
@@ -2968,7 +2957,7 @@
     },
     {
       "team": "TBL",
-      "ai_power": 10.27,
+      "ai_power": 10.28,
       "elo": 1525.5,
       "avg_win_prob": 60.6,
       "gp": 21,
@@ -3004,7 +2993,7 @@
       "team": "DAL",
       "ai_power": 9.82,
       "elo": 1510.5,
-      "avg_win_prob": 56.8,
+      "avg_win_prob": 56.9,
       "gp": 21,
       "streak": 3,
       "last_won": 1,
@@ -3087,7 +3076,7 @@
     },
     {
       "team": "NYI",
-      "ai_power": 9.43,
+      "ai_power": 9.44,
       "elo": 1506.5,
       "avg_win_prob": 53.6,
       "gp": 20,
@@ -3172,7 +3161,7 @@
     },
     {
       "team": "ANA",
-      "ai_power": 8.98,
+      "ai_power": 8.99,
       "elo": 1497.3,
       "avg_win_prob": 49.9,
       "gp": 22,
@@ -3242,7 +3231,7 @@
       "team": "BUF",
       "ai_power": 8.69,
       "elo": 1478.1,
-      "avg_win_prob": 47.4,
+      "avg_win_prob": 47.5,
       "gp": 21,
       "streak": -5,
       "last_won": 0,
@@ -3427,9 +3416,9 @@
     },
     {
       "team": "CHI",
-      "ai_power": 7.12,
+      "ai_power": 7.09,
       "elo": 1461.7,
-      "avg_win_prob": 34.3,
+      "avg_win_prob": 34.1,
       "gp": 21,
       "streak": 1,
       "last_won": 1,
