@@ -25,17 +25,22 @@ def _parse_utc_ts(utc_str: str | None) -> float | None:
         return None
 
 
-def _split_groups_proportional(pool: list[dict[str, Any]]) -> dict[int, list[dict[str, Any]]]:
-    """Slice an unstarted pool into Groups 1, 2, 3 preserving Tims 10/12/14 ratios."""
-    n = len(pool)
-    if n >= 36:
-        return {1: pool[:10], 2: pool[10:22], 3: pool[22:36]}
-    n1 = max(2, round(n * (10.0 / 36.0)))
-    n2 = max(2, round(n * (12.0 / 36.0)))
-    if n1 + n2 >= n - 1:
-        n1 = max(1, n // 3)
-        n2 = max(1, (2 * n) // 3 - n1)
-    return {1: pool[:n1], 2: pool[n1 : n1 + n2], 3: pool[n1 + n2 :]}
+def _group_medians(groups: dict[str, list[dict[str, Any]]]) -> dict[str, float]:
+    """Median projected score of each contest group, used to tier late entrants."""
+    medians: dict[str, float] = {}
+    for g_key, lst in groups.items():
+        scores = sorted(float(p.get("final_score", 0.0)) for p in lst)
+        medians[str(g_key)] = float(np.median(scores)) if scores else 0.0
+    return medians
+
+
+def _group_for_score(score: float, medians: dict[str, float]) -> str:
+    """Map a prospective late entrant to the group whose typical score it matches.
+
+    The contest never moves a skater between groups, so a simulated Group 2 or 3
+    pick must not be allowed to take a Group 1 calibre player.
+    """
+    return min(medians, key=lambda g: abs(score - medians[g]))
 
 
 def build_group_ticket(
@@ -334,6 +339,16 @@ def compute_tims_deferral_advice(
         h for h in hidden_pool if h["wave_idx"] >= 1 and h["final_score"] >= max(0.18, g2_score * 0.90)
     ][:6]
 
+    # Prospective late entrants inherit the contest's tier, so bucket them by
+    # the group whose typical score they match. They never migrate between
+    # groups in the real contest, and neither should the simulation.
+    group_medians = _group_medians(ordered_groups)
+    hidden_by_group: dict[str, list[dict[str, Any]]] = {g: [] for g in ordered_groups}
+    for h in hidden_pool:
+        hidden_by_group[_group_for_score(h["final_score"], group_medians)].append(h)
+    for lst in hidden_by_group.values():
+        lst.sort(key=lambda x: x["final_score"], reverse=True)
+
     # Backward-induction continuation EV estimate at each future wave k >= 1
     rng = np.random.default_rng(42)
     wave_summaries: list[dict[str, Any]] = [
@@ -376,48 +391,48 @@ def compute_tims_deferral_advice(
             for h in hidden_pool
             if h["wave_idx"] == k
         ][:4]
-        total_rem = len(carried) + len(rem_hidden)
-        if total_rem < 15:
+        if len(carried) + len(rem_hidden) < 3:
             continue
 
-        # Realistic refill target: preserve carried slots and fill vacated slots from remaining rosters
-        max_fill = min(36, len(carried) + len(rem_hidden))
+        # Stay inside each group: the ticket at wave k is one skater per group,
+        # picked from the players still listed then plus a few possible late
+        # additions in that same group. Re-sorting the whole pool and re-slicing
+        # it into equal groups would let one ticket take two Group 1 stars.
+        carried_by_group = {
+            g: [p for p in carried if str(p["group"]) == str(g)] for g in ordered_groups
+        }
+        hidden_by_group_k = {
+            g: [h for h in hidden_by_group.get(g, []) if h["wave_idx"] >= k] for g in ordered_groups
+        }
         sim_evs: list[float] = []
-        if not rem_hidden:
-            if len(carried) >= 12:
-                ordered_c = sorted(carried, key=lambda x: x["final_score"], reverse=True)
-                grps = _split_groups_proportional(ordered_c[:36])
-                ev_k = sum(
-                    poisson_goal_prob(max(grp, key=lambda x: x["final_score"])["final_score"])
-                    for grp in grps.values()
-                )
-                sim_evs = [ev_k]
-        else:
-            min_fill = min(max_fill, len(carried) + min(len(rem_hidden), max(1, round(0.55 * (max_fill - len(carried))))))
-            for _ in range(mc_trials):
-                target_n = int(rng.integers(min_fill, max_fill + 1)) if max_fill > min_fill else max_fill
-                active_hidden = [h for h in rem_hidden if (not h.get("injury_dtd") or rng.random() < 0.65)]
-                need = max(0, target_n - len(carried))
-                added = sorted(
-                    active_hidden,
-                    key=lambda x: x["final_score"] + float(rng.normal(0.0, 0.08)),
-                    reverse=True,
-                )[:need]
-                active_carried = [c for c in carried if (not c.get("injury_dtd") or rng.random() < 0.65)]
-                pool_src = active_carried + added
-                if len(pool_src) < 12:
+        for _ in range(mc_trials):
+            ev_k = 0.0
+            for g in ordered_groups:
+                pool_g = [
+                    p
+                    for p in carried_by_group[g]
+                    if (not p.get("injury_dtd") or rng.random() < 0.65)
+                ]
+                # A wave rebuild tends to surface a small number of skaters
+                # from the remaining games. History shows 0-4 per wave, so give
+                # each group 0-2 and keep them in their own tier.
+                n_new = int(rng.integers(0, 3))
+                candidates = [
+                    h
+                    for h in hidden_by_group_k[g]
+                    if (not h.get("injury_dtd") or rng.random() < 0.65)
+                ]
+                if n_new and candidates:
+                    ranked = sorted(
+                        candidates,
+                        key=lambda x: x["final_score"] + float(rng.normal(0.0, 0.08)),
+                        reverse=True,
+                    )
+                    pool_g.extend(ranked[:n_new])
+                if not pool_g:
                     continue
-                combined = sorted(
-                    pool_src,
-                    key=lambda x: x["final_score"] + float(rng.normal(0.0, 0.08)),
-                    reverse=True,
-                )
-                grps = _split_groups_proportional(combined)
-                ev_k = sum(
-                    poisson_goal_prob(max(grp, key=lambda x: x["final_score"])["final_score"])
-                    for grp in grps.values()
-                )
-                sim_evs.append(ev_k)
+                ev_k += poisson_goal_prob(max(pool_g, key=lambda x: x["final_score"])["final_score"])
+            sim_evs.append(ev_k)
 
         if not sim_evs:
             continue
@@ -425,6 +440,19 @@ def compute_tims_deferral_advice(
         est_ev = float(np.mean(arr))
         delta = est_ev - v_now
         beat_pct = float(np.mean(arr > v_now) * 100.0)
+        projected_ticket: dict[str, dict[str, Any]] = {}
+        for g in ordered_groups:
+            healthy = [p for p in carried_by_group[g] if not p.get("injury_dtd")]
+            if not healthy:
+                continue
+            top = max(healthy, key=lambda x: x["final_score"])
+            projected_ticket[g] = {
+                "player": top["player"],
+                "team": top["team"],
+                "group": g,
+                "final_score": round(float(top["final_score"]), 3),
+            }
+
         w_rec = {
             "wave": k + 1,
             "start_time_et": sorted_waves[k]["start_time_et"],
@@ -434,6 +462,7 @@ def compute_tims_deferral_advice(
             "beat_now_pct": round(beat_pct, 1),
             "visible_carried": len(carried),
             "hidden_available": len(rem_hidden),
+            "projected_ticket": projected_ticket,
             "unlisted_scorers": wave_unlisted,
             "is_current": False,
         }
@@ -450,7 +479,8 @@ def compute_tims_deferral_advice(
         headline = f"Selective Defer — Wait Until Before {target_et}"
         detail = (
             f"Waiting past {sorted_waves[0]['start_time_et']} projects +{ev_delta:.3f} xG "
-            f"({best_future_wave['beat_now_pct']:.0f}% win chance) as unlisted late-wave skaters backfill {len(tims_flat) - best_future_wave['visible_carried']} vacated spots."
+            f"({best_future_wave['beat_now_pct']:.0f}% of simulations) if late-game additions "
+            f"upgrade the remaining group ticket."
         )
     elif best_future_wave is not None and ev_delta > 0.0:
         decision = "BORDERLINE_WATCH"
