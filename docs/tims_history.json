@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-19 12:03 PM ET",
+      "captured_et": "2026-11-19 12:38 PM ET",
       "model_n_half": 30.65,
       "groups": {
         "1": [
@@ -548,14 +548,14 @@
       "settled": false,
       "results": null,
       "timing": {
-        "decision": "SELECT_DEFER",
-        "basis": "deferred",
-        "lock_utc": "2026-11-20T00:30:00Z",
-        "lock_et": "7:30 PM ET",
+        "decision": "BORDERLINE_WATCH",
+        "basis": "now",
+        "lock_utc": "2026-11-20T00:00:00Z",
+        "lock_et": "7:00 PM ET",
         "recommended_wave_et": "7:30 PM ET",
         "v_now": 1.022,
-        "v_defer_best": 1.1741,
-        "ev_delta": 0.1521
+        "v_defer_best": 1.0225,
+        "ev_delta": 0.0005
       },
       "picks_locked": false,
       "locked_et": ""
@@ -1375,14 +1375,14 @@
         "mode": "Regular Season",
         "settled": false,
         "timing": {
-          "decision": "SELECT_DEFER",
-          "basis": "deferred",
-          "lock_utc": "2026-11-20T00:30:00Z",
-          "lock_et": "7:30 PM ET",
+          "decision": "BORDERLINE_WATCH",
+          "basis": "now",
+          "lock_utc": "2026-11-20T00:00:00Z",
+          "lock_et": "7:00 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.022,
-          "v_defer_best": 1.1741,
-          "ev_delta": 0.1521
+          "v_defer_best": 1.0225,
+          "ev_delta": 0.0005
         },
         "picks_locked": false,
         "hits_of_3": null,

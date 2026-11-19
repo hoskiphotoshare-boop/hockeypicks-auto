@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-19 17:04:10 UTC",
-    "updated_et": "2026-11-19 12:04 PM ET",
+    "updated_utc": "2026-11-19 17:38:37 UTC",
+    "updated_et": "2026-11-19 12:38 PM ET",
     "today_date": "2026-11-19",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -969,14 +969,14 @@
   },
   "tims_timing": {
     "status": "evaluated",
-    "decision": "SELECT_DEFER",
-    "headline": "Selective Defer \u2014 Wait Until Before 7:30 PM ET",
-    "detail": "Waiting past 7:00 PM ET projects +0.152 xG (100% win chance) as unlisted late-wave skaters backfill 18 vacated spots.",
+    "decision": "BORDERLINE_WATCH",
+    "headline": "Select Now (Borderline Defer Watch Before 7:30 PM ET)",
+    "detail": "Current best ticket (1.022 xG) is near-optimal, though waiting past 7:00 PM ET offers slight +0.001 xG (42% chance) upside if unlisted late scorers enter.",
     "defer_threshold": 0.02,
     "recommended_wave_et": "7:30 PM ET",
     "v_now": 1.022,
-    "v_defer_best": 1.1741,
-    "ev_delta": 0.1521,
+    "v_defer_best": 1.0225,
+    "ev_delta": 0.0005,
     "locked_picks_if_defer_1": 1,
     "current_best": {
       "1": {
@@ -1048,10 +1048,10 @@
         "injury_status": null
       }
     },
-    "lock_basis": "deferred",
-    "selection_lock_utc": "2026-11-20T00:30:00Z",
-    "selection_lock_et": "7:30 PM ET",
-    "selection_wave": 2,
+    "lock_basis": "now",
+    "selection_lock_utc": "2026-11-20T00:00:00Z",
+    "selection_lock_et": "7:00 PM ET",
+    "selection_wave": 1,
     "hidden_upside_players": [
       {
         "player": "Beckett Sennecke",
@@ -1123,11 +1123,31 @@
         "matchups": [
           "EDM @ TBL"
         ],
-        "est_ev": 1.1741,
-        "ev_delta": 0.1521,
-        "beat_now_pct": 100.0,
+        "est_ev": 1.0225,
+        "ev_delta": 0.0005,
+        "beat_now_pct": 42.3,
         "visible_carried": 27,
         "hidden_available": 221,
+        "projected_ticket": {
+          "1": {
+            "player": "Leon Draisaitl",
+            "team": "EDM",
+            "group": "1",
+            "final_score": 0.646
+          },
+          "2": {
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "group": "2",
+            "final_score": 0.453
+          },
+          "3": {
+            "player": "Braeden Bowman",
+            "team": "VGK",
+            "group": "3",
+            "final_score": 0.19
+          }
+        },
         "unlisted_scorers": [
           {
             "player": "Vasily Podkolzin",
@@ -1167,11 +1187,31 @@
           "CBJ @ CHI",
           "MIN @ CGY"
         ],
-        "est_ev": 1.1268,
-        "ev_delta": 0.1048,
-        "beat_now_pct": 99.7,
+        "est_ev": 1.0165,
+        "ev_delta": -0.0055,
+        "beat_now_pct": 30.0,
         "visible_carried": 23,
         "hidden_available": 182,
+        "projected_ticket": {
+          "1": {
+            "player": "Cutter Gauthier",
+            "team": "ANA",
+            "group": "1",
+            "final_score": 0.636
+          },
+          "2": {
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "group": "2",
+            "final_score": 0.453
+          },
+          "3": {
+            "player": "Braeden Bowman",
+            "team": "VGK",
+            "group": "3",
+            "final_score": 0.19
+          }
+        },
         "unlisted_scorers": [
           {
             "player": "Frank Nazar",
@@ -1210,11 +1250,31 @@
         "matchups": [
           "ANA @ COL"
         ],
-        "est_ev": 1.097,
-        "ev_delta": 0.075,
-        "beat_now_pct": 99.7,
+        "est_ev": 1.0147,
+        "ev_delta": -0.0073,
+        "beat_now_pct": 24.7,
         "visible_carried": 16,
         "hidden_available": 101,
+        "projected_ticket": {
+          "1": {
+            "player": "Cutter Gauthier",
+            "team": "ANA",
+            "group": "1",
+            "final_score": 0.636
+          },
+          "2": {
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "group": "2",
+            "final_score": 0.453
+          },
+          "3": {
+            "player": "Braeden Bowman",
+            "team": "VGK",
+            "group": "3",
+            "final_score": 0.19
+          }
+        },
         "unlisted_scorers": [
           {
             "player": "Beckett Sennecke",
@@ -1253,11 +1313,31 @@
         "matchups": [
           "VAN @ SEA"
         ],
-        "est_ev": 0.9503,
-        "ev_delta": -0.0718,
+        "est_ev": 0.8649,
+        "ev_delta": -0.1571,
         "beat_now_pct": 0.0,
         "visible_carried": 11,
         "hidden_available": 68,
+        "projected_ticket": {
+          "1": {
+            "player": "Mikko Rantanen",
+            "team": "DAL",
+            "group": "1",
+            "final_score": 0.388
+          },
+          "2": {
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "group": "2",
+            "final_score": 0.453
+          },
+          "3": {
+            "player": "Braeden Bowman",
+            "team": "VGK",
+            "group": "3",
+            "final_score": 0.19
+          }
+        },
         "unlisted_scorers": [
           {
             "player": "Jordan Eberle",
@@ -1296,11 +1376,31 @@
         "matchups": [
           "DAL @ VGK"
         ],
-        "est_ev": 0.8555,
-        "ev_delta": -0.1665,
+        "est_ev": 0.8669,
+        "ev_delta": -0.1552,
         "beat_now_pct": 0.0,
         "visible_carried": 11,
         "hidden_available": 28,
+        "projected_ticket": {
+          "1": {
+            "player": "Mikko Rantanen",
+            "team": "DAL",
+            "group": "1",
+            "final_score": 0.388
+          },
+          "2": {
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "group": "2",
+            "final_score": 0.453
+          },
+          "3": {
+            "player": "Braeden Bowman",
+            "team": "VGK",
+            "group": "3",
+            "final_score": 0.19
+          }
+        },
         "unlisted_scorers": [
           {
             "player": "Tomas Hertl",
@@ -1357,14 +1457,14 @@
         "mode": "Regular Season",
         "settled": false,
         "timing": {
-          "decision": "SELECT_DEFER",
-          "basis": "deferred",
-          "lock_utc": "2026-11-20T00:30:00Z",
-          "lock_et": "7:30 PM ET",
+          "decision": "BORDERLINE_WATCH",
+          "basis": "now",
+          "lock_utc": "2026-11-20T00:00:00Z",
+          "lock_et": "7:00 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.022,
-          "v_defer_best": 1.1741,
-          "ev_delta": 0.1521
+          "v_defer_best": 1.0225,
+          "ev_delta": 0.0005
         },
         "picks_locked": false,
         "hits_of_3": null,
@@ -2281,12 +2381,7 @@
         "Nick Blankenburg (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_edge": {
-        "odds": 2.04,
-        "edge_pct": 2.25,
-        "quarter_kelly_pct": 0.54,
-        "rec_bet": 5.42
-      },
+      "away_edge": null,
       "home_edge": null
     },
     {
@@ -2570,10 +2665,10 @@
       ],
       "bookie": "Pinnacle",
       "away_edge": {
-        "odds": 2.25,
-        "edge_pct": 11.82,
-        "quarter_kelly_pct": 2.36,
-        "rec_bet": 23.64
+        "odds": 2.29,
+        "edge_pct": 13.81,
+        "quarter_kelly_pct": 2.68,
+        "rec_bet": 26.76
       },
       "home_edge": null
     },
