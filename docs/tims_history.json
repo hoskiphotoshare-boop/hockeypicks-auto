@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-19 04:31 PM ET",
+      "captured_et": "2026-11-19 06:41 PM ET",
       "model_n_half": 30.65,
       "groups": {
         "1": [
@@ -487,17 +487,6 @@
             "final_score": 0.074
           },
           {
-            "player": "Gavin Brindley",
-            "team": "COL",
-            "opponent": "ANA",
-            "position": "F",
-            "base_pred": 0.071,
-            "live_gp": 7,
-            "live_goals": 0,
-            "def_multiplier": 1.026,
-            "final_score": 0.063
-          },
-          {
             "player": "Oliver Ekman-Larsson",
             "team": "TOR",
             "opponent": "LAK",
@@ -507,6 +496,17 @@
             "live_goals": 0,
             "def_multiplier": 0.999,
             "final_score": 0.046
+          },
+          {
+            "player": "Gavin Brindley",
+            "team": "COL",
+            "opponent": "ANA",
+            "position": "F",
+            "base_pred": 0.071,
+            "live_gp": 7,
+            "live_goals": 0,
+            "def_multiplier": 1.026,
+            "final_score": 0.063
           }
         ]
       },
@@ -555,8 +555,8 @@
         "lock_et": "7:00 PM ET",
         "recommended_wave_et": "7:30 PM ET",
         "v_now": 1.022,
-        "v_defer_best": 1.0239,
-        "ev_delta": 0.0019
+        "v_defer_best": 1.0251,
+        "ev_delta": 0.0031
       },
       "picks_locked": false,
       "locked_et": ""
@@ -1383,8 +1383,8 @@
           "lock_et": "7:00 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.022,
-          "v_defer_best": 1.0239,
-          "ev_delta": 0.0019
+          "v_defer_best": 1.0251,
+          "ev_delta": 0.0031
         },
         "picks_locked": false,
         "hits_of_3": null,
