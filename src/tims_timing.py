@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 import math
 from typing import Any
 
@@ -38,6 +38,61 @@ def _split_groups_proportional(pool: list[dict[str, Any]]) -> dict[int, list[dic
     return {1: pool[:n1], 2: pool[n1 : n1 + n2], 3: pool[n1 + n2 :]}
 
 
+def build_group_ticket(
+    groups: dict[str, list[dict[str, Any]]],
+    *,
+    team_wave_idx: dict[str, int],
+    wave_labels: list[str],
+    allowed_teams: set[str],
+    min_wave_idx: int = 0,
+) -> dict[str, dict[str, Any]]:
+    allowed_norm = {normalize_team_abbrev(t) for t in (allowed_teams or set())}
+    result: dict[str, dict[str, Any]] = {}
+    for g_key in sorted((groups or {}).keys(), key=lambda x: int(x)):
+        lst = groups.get(g_key) or []
+        if not lst:
+            continue
+
+        def _norm_team(p: dict[str, Any]) -> str:
+            return normalize_team_abbrev(p.get("team"))
+
+        eligible = [
+            p
+            for p in lst
+            if _norm_team(p) in allowed_norm
+            and not bool(p.get("injury_out"))
+            and int(team_wave_idx.get(_norm_team(p), 0)) >= int(min_wave_idx)
+        ]
+        if not eligible:
+            eligible = [
+                p
+                for p in lst
+                if _norm_team(p) in allowed_norm and not bool(p.get("injury_out"))
+            ]
+        if not eligible:
+            # Every candidate's game has started; prefer healthy players as the
+            # original selection logic did before falling back to the full list.
+            eligible = [p for p in lst if not bool(p.get("injury_out"))] or list(lst)
+
+        pick = max(eligible, key=lambda x: float(x.get("final_score", 0.0)))
+        team = _norm_team(pick)
+        w_idx = int(team_wave_idx.get(team, 0))
+        p_g = poisson_goal_prob(float(pick.get("final_score", 0.0)))
+        wave_et = wave_labels[w_idx] if 0 <= w_idx < len(wave_labels) else "--"
+        result[str(g_key)] = {
+            "player": str(pick.get("player", "")),
+            "team": team,
+            "opponent": normalize_team_abbrev(pick.get("opponent")),
+            "position": str(pick.get("position", "F")),
+            "final_score": round(float(pick.get("final_score", 0.0)), 3),
+            "p_goal_pct": round(p_g * 100.0, 1),
+            "wave_idx": w_idx + 1,
+            "wave_et": wave_et if wave_et is not None else "--",
+            "injury_status": pick.get("injury_status"),
+        }
+    return result
+
+
 def compute_tims_deferral_advice(
     *,
     tims_groups: dict[str, list[dict[str, Any]]],
@@ -68,6 +123,11 @@ def compute_tims_deferral_advice(
             "headline": "Awaiting Tim Hortons Player Lists",
             "detail": "Upstream Tim Hortons groups are not posted yet.",
             "current_best": {},
+            "selection": {},
+            "selection_basis": "unavailable",
+            "selection_lock_utc": "",
+            "selection_lock_et": "",
+            "selection_wave": 0,
             "v_now": 0.0,
             "v_defer_best": 0.0,
             "ev_delta": 0.0,
@@ -132,6 +192,11 @@ def compute_tims_deferral_advice(
             "headline": "All Today's Games Started or Final",
             "detail": "No future puck-drop waves remain on today's schedule.",
             "current_best": cur_best,
+            "selection": cur_best,
+            "selection_basis": "now",
+            "selection_lock_utc": "",
+            "selection_lock_et": "",
+            "selection_wave": 1,
             "v_now": v_now,
             "v_defer_best": v_now,
             "ev_delta": 0.0,
@@ -146,28 +211,16 @@ def compute_tims_deferral_advice(
 
     # Best immediately available pick in each group (filtered to unstarted teams when matched)
     unstarted_teams = {t for w in sorted_waves for t in w["teams"]}
-    cur_best: dict[str, dict[str, Any]] = {}
-    v_now = 0.0
-    locked_if_defer_1 = 0
-    for g_k, lst in ordered_groups.items():
-        elig_grp = [p for p in lst if normalize_team_abbrev(p.get("team")) in unstarted_teams] or lst
-        healthy_grp = [p for p in elig_grp if not p.get("injury_out")] or elig_grp
-        best = max(healthy_grp, key=lambda x: float(x.get("final_score", 0.0)))
-        w_idx = team_wave_idx.get(normalize_team_abbrev(best.get("team")), 0)
-        if w_idx == 0:
-            locked_if_defer_1 += 1
-        p_g = poisson_goal_prob(float(best.get("final_score", 0.0)))
-        v_now += p_g
-        cur_best[g_k] = {
-            "player": str(best.get("player", "")),
-            "team": normalize_team_abbrev(best.get("team")),
-            "opponent": normalize_team_abbrev(best.get("opponent")),
-            "final_score": round(float(best.get("final_score", 0.0)), 3),
-            "p_goal_pct": round(p_g * 100.0, 1),
-            "wave_idx": w_idx + 1,
-            "wave_et": sorted_waves[w_idx]["start_time_et"] if w_idx < len(sorted_waves) else "--",
-            "injury_status": best.get("injury_status"),
-        }
+    wave_labels = [str(w.get("start_time_et", "--")) for w in sorted_waves]
+    cur_best: dict[str, dict[str, Any]] = build_group_ticket(
+        ordered_groups,
+        team_wave_idx=team_wave_idx,
+        wave_labels=wave_labels,
+        allowed_teams=unstarted_teams,
+        min_wave_idx=0,
+    )
+    v_now = sum(poisson_goal_prob(float(p.get("final_score", 0.0))) for p in cur_best.values())
+    locked_if_defer_1 = sum(1 for p in cur_best.values() if int(p.get("wave_idx", 0)) == 1)
 
     if len(sorted_waves) == 1:
         w0 = sorted_waves[0]
@@ -178,6 +231,11 @@ def compute_tims_deferral_advice(
             "headline": f"Select Current Best Now (Single Wave at {w0['start_time_et']})",
             "detail": "All remaining games start together; waiting adds no new players.",
             "current_best": cur_best,
+            "selection": cur_best,
+            "selection_basis": "now",
+            "selection_lock_et": w0["start_time_et"],
+            "selection_lock_utc": datetime.fromtimestamp(float(w0["start_ts"]), tz=timezone.utc).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "selection_wave": 1,
             "v_now": round(v_now, 4),
             "v_defer_best": round(v_now, 4),
             "ev_delta": 0.0,
@@ -413,6 +471,30 @@ def compute_tims_deferral_advice(
             else "Current pool captures maximum available scoring value."
         )
 
+    if best_future_wave is not None and ev_delta > defer_threshold:
+        target_idx = int(best_future_wave["wave"]) - 1
+        selection = build_group_ticket(
+            ordered_groups,
+            team_wave_idx=team_wave_idx,
+            wave_labels=wave_labels,
+            allowed_teams=unstarted_teams,
+            min_wave_idx=target_idx,
+        )
+        selection_basis = "deferred"
+        selection_lock_et = sorted_waves[target_idx]["start_time_et"]
+        selection_lock_utc = datetime.fromtimestamp(
+            float(sorted_waves[target_idx]["start_ts"]), tz=timezone.utc
+        ).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+        selection_wave = target_idx + 1
+    else:
+        selection = cur_best
+        selection_basis = "now"
+        selection_lock_et = sorted_waves[0]["start_time_et"]
+        selection_lock_utc = datetime.fromtimestamp(
+            float(sorted_waves[0]["start_ts"]), tz=timezone.utc
+        ).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+        selection_wave = 1
+
     return {
         "status": "evaluated",
         "decision": decision,
@@ -425,6 +507,11 @@ def compute_tims_deferral_advice(
         "ev_delta": ev_delta,
         "locked_picks_if_defer_1": locked_if_defer_1,
         "current_best": cur_best,
+        "selection": selection,
+        "selection_basis": selection_basis,
+        "selection_lock_utc": selection_lock_utc,
+        "selection_lock_et": selection_lock_et,
+        "selection_wave": selection_wave,
         "hidden_upside_players": hidden_later_upside,
         "g1_best_score": round(g1_score, 3),
         "g2_best_score": round(g2_score, 3),

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime, timezone
 from typing import Any
 
 from src.data_sync import (
@@ -52,6 +53,27 @@ def _compact_candidate(item: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _resolve_pick(groups_raw: dict[str, Any], group_key: str, pick: dict[str, Any]) -> dict[str, Any]:
+    grp = []
+    if isinstance(groups_raw, dict):
+        grp = groups_raw.get(group_key) or groups_raw.get(str(group_key)) or []
+    target_team = normalize_team_abbrev(pick.get("team"))
+    for cand in grp:
+        if str(cand.get("player", "")) == str(pick.get("player", "")) and normalize_team_abbrev(cand.get("team")) == target_team:
+            return _compact_candidate(cand)
+    return {
+        "player": str(pick.get("player", "")),
+        "team": normalize_team_abbrev(pick.get("team")),
+        "opponent": normalize_team_abbrev(pick.get("opponent")),
+        "position": str(pick.get("position", "F")),
+        "base_pred": round(float(pick.get("final_score", pick.get("base_pred", 0.0))), 3),
+        "live_gp": 0,
+        "live_goals": 0,
+        "def_multiplier": 1.0,
+        "final_score": round(float(pick.get("final_score", 0.0)), 3),
+    }
+
+
 def upsert_tims_snapshot(
     history: dict[str, Any],
     *,
@@ -61,15 +83,40 @@ def upsert_tims_snapshot(
     skater_bundle: dict[str, Any],
     tims_groups: dict[str, list[dict[str, Any]]],
     captured_et: str,
+    timing_advice: dict[str, Any] | None = None,
+    now_utc: datetime | None = None,
 ) -> bool:
     """Record or refresh today's unsettled Tim Hortons Group 1-3 AI rankings."""
     if not tims_groups:
         return False
 
+    if now_utc is None:
+        now_utc = datetime.now(timezone.utc)
+    elif now_utc.tzinfo is None:
+        now_utc = now_utc.replace(tzinfo=timezone.utc)
+
     days: list[dict[str, Any]] = history.setdefault("days", [])
     existing_idx = next((i for i, d in enumerate(days) if d.get("date") == date_str), None)
     if existing_idx is not None and days[existing_idx].get("settled"):
         return False
+
+    # Freeze rule for already-locked records.
+    if existing_idx is not None:
+        existing = days[existing_idx]
+        if existing.get("picks_locked") is True:
+            return False
+        existing_timing = existing.get("timing") or {}
+        lock_str = existing_timing.get("lock_utc")
+        if lock_str:
+            try:
+                lock_dt = datetime.fromisoformat(str(lock_str).replace("Z", "+00:00"))
+            except ValueError:
+                lock_dt = None
+            if lock_dt is not None and now_utc >= lock_dt:
+                existing["picks_locked"] = True
+                if not existing.get("locked_et"):
+                    existing["locked_et"] = str(existing.get("captured_et") or "")
+                return False
 
     groups_compact = {
         str(k): [_compact_candidate(c) for c in grp]
@@ -79,7 +126,52 @@ def upsert_tims_snapshot(
     if not groups_compact:
         return False
 
-    ai_picks = {k: grp[0] for k, grp in groups_compact.items()}
+    selection: dict[str, Any] = {}
+    if isinstance(timing_advice, dict):
+        selection = timing_advice.get("selection") or {}
+
+    if selection:
+        ai_picks: dict[str, Any] = {}
+        for key in groups_compact:
+            sel_pick = selection.get(key) if isinstance(selection, dict) else None
+            if sel_pick:
+                ai_picks[key] = _resolve_pick(tims_groups, key, sel_pick)
+            else:
+                ai_picks[key] = groups_compact[key][0]
+    else:
+        ai_picks = {k: grp[0] for k, grp in groups_compact.items()}
+
+    # Parse advice lock time.
+    lock_str = ""
+    if isinstance(timing_advice, dict):
+        lock_str = timing_advice.get("selection_lock_utc") or ""
+    lock_dt = None
+    if lock_str:
+        try:
+            lock_dt = datetime.fromisoformat(str(lock_str).replace("Z", "+00:00"))
+        except ValueError:
+            lock_dt = None
+    if lock_str:
+        picks_locked = bool(lock_dt is not None and now_utc >= lock_dt)
+    else:
+        # No future wave is left to wait for (e.g. every game has started), so the
+        # ticket is final at capture. Records without any advice keep refreshing.
+        picks_locked = bool(isinstance(timing_advice, dict) and selection)
+    locked_et = captured_et if picks_locked else ""
+
+    timing_obj: dict[str, Any] = {}
+    if isinstance(timing_advice, dict):
+        timing_obj = {
+            "decision": timing_advice.get("decision"),
+            "basis": timing_advice.get("selection_basis"),
+            "lock_utc": timing_advice.get("selection_lock_utc"),
+            "lock_et": timing_advice.get("selection_lock_et"),
+            "recommended_wave_et": timing_advice.get("recommended_wave_et"),
+            "v_now": timing_advice.get("v_now"),
+            "v_defer_best": timing_advice.get("v_defer_best"),
+            "ev_delta": timing_advice.get("ev_delta"),
+        }
+
     record = {
         "date": date_str,
         "season": str(context.get("nhl_season", "")),
@@ -91,6 +183,9 @@ def upsert_tims_snapshot(
         "ai_picks": ai_picks,
         "settled": False,
         "results": None,
+        "timing": timing_obj,
+        "picks_locked": picks_locked,
+        "locked_et": locked_et,
     }
     if existing_idx is not None:
         days[existing_idx] = record
@@ -341,6 +436,8 @@ def recompute_tims_summary(history: dict[str, Any]) -> dict[str, Any]:
                 "date": d.get("date"),
                 "mode": d.get("mode"),
                 "settled": bool(d.get("settled")),
+                "timing": d.get("timing") or {},
+                "picks_locked": bool(d.get("picks_locked")),
                 "hits_of_3": d["results"]["hits_of_3"] if d.get("settled") and d.get("results") else None,
                 "picks": {
                     g_key: {
