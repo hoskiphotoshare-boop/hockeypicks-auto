@@ -127,6 +127,91 @@ class TestTimsTiming(unittest.TestCase):
         self.assertEqual(res["lock_basis"], "now")
         self.assertEqual(res["selection"], res["current_best"])
 
+    def test_late_group_one_scorers_do_not_inflate_deferral(self):
+        """Regression: a pool of late Group 1 scorers must not become a fake
+
+        Group 3 upgrade. Before the fix the solver re-sorted the whole remaining
+        pool and split it into equal thirds, so the simulated Group 3 took a
+        Group 1 calibre player and deferral always looked profitable.
+        """
+        schedule = [
+            _game("AAA", "BBB", "2026-11-17T00:00:00Z", "7:00 PM ET"),
+            _game("CCC", "DDD", "2026-11-17T03:00:00Z", "10:00 PM ET"),
+        ]
+        groups = {
+            "1": [
+                {"player": "Early Star", "team": "AAA", "opponent": "BBB", "final_score": 0.55},
+                {"player": "Late Star", "team": "CCC", "opponent": "DDD", "final_score": 0.50},
+            ],
+            "2": [
+                {"player": "Early Mid", "team": "BBB", "opponent": "AAA", "final_score": 0.45},
+                {"player": "Late Mid", "team": "CCC", "opponent": "DDD", "final_score": 0.40},
+            ],
+            "3": [
+                {"player": "Early Low", "team": "AAA", "opponent": "BBB", "final_score": 0.25},
+                {"player": "Late Low", "team": "DDD", "opponent": "CCC", "final_score": 0.30},
+            ],
+        }
+        # 30 unlisted stars from the late game: high enough to be Group 1 tier,
+        # below the carried Group 1 scorer, so no group can actually improve.
+        slate = [
+            {"player": f"Late Star {i}", "team": "CCC", "opponent": "DDD", "position": "C",
+             "final_score": 0.52 - 0.001 * i}
+            for i in range(30)
+        ]
+        res = compute_tims_deferral_advice(
+            tims_groups=groups,
+            slate_candidates=slate,
+            schedule_games=schedule,
+        )
+        self.assertEqual(res["decision"], "SELECT_NOW")
+        self.assertLessEqual(res["ev_delta"], 0.0)
+        self.assertEqual(res["selection"], res["current_best"])
+        self.assertEqual(res["current_best"]["1"]["player"], "Early Star")
+
+    def test_same_group_upgrade_still_defers(self):
+        """Deferral can still win when a late addition lands in the same group."""
+        schedule = [
+            _game("AAA", "BBB", "2026-11-17T00:00:00Z", "7:00 PM ET"),
+            _game("CCC", "DDD", "2026-11-17T03:00:00Z", "10:00 PM ET"),
+        ]
+        groups = {
+            "1": [
+                {"player": "G1 Early", "team": "AAA", "opponent": "BBB", "final_score": 0.60},
+                {"player": "G1 Late", "team": "CCC", "opponent": "DDD", "final_score": 0.60},
+            ],
+            "2": [
+                {"player": "G2 Early", "team": "BBB", "opponent": "AAA", "final_score": 0.30},
+                {"player": "G2 Late", "team": "CCC", "opponent": "DDD", "final_score": 0.30},
+            ],
+            "3": [
+                {"player": "G3 Early", "team": "AAA", "opponent": "BBB", "final_score": 0.10},
+                {"player": "G3 Late", "team": "DDD", "opponent": "CCC", "final_score": 0.10},
+            ],
+        }
+        # Mid-tier skaters from the late game can join Group 2 and beat its
+        # current .30 best. They are Group 2 tier, so this is a legitimate
+        # same-group upgrade rather than a Group 1 star leaking into Group 2.
+        slate = [
+            {"player": f"Late Add {i}", "team": "CCC", "opponent": "DDD", "position": "C",
+             "final_score": 0.35}
+            for i in range(20)
+        ]
+        res = compute_tims_deferral_advice(
+            tims_groups=groups,
+            slate_candidates=slate,
+            schedule_games=schedule,
+        )
+        self.assertEqual(res["decision"], "SELECT_DEFER")
+        self.assertEqual(res["lock_basis"], "deferred")
+        self.assertEqual(res["selection_lock_et"], "10:00 PM ET")
+        self.assertGreater(res["ev_delta"], 0.02)
+        # The displayed ticket is still the best one available now.
+        self.assertEqual(res["selection"], res["current_best"])
+        self.assertEqual(res["current_best"]["2"]["player"], "G2 Early")
+
+
+
 
 if __name__ == "__main__":
     unittest.main()
