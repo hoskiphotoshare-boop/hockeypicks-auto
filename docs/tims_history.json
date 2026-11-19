@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-19 11:49 AM ET",
+      "captured_et": "2026-11-19 12:01 PM ET",
       "model_n_half": 30.65,
       "groups": {
         "1": [
@@ -554,8 +554,8 @@
         "lock_et": "7:30 PM ET",
         "recommended_wave_et": "7:30 PM ET",
         "v_now": 1.022,
-        "v_defer_best": 1.1775,
-        "ev_delta": 0.1555
+        "v_defer_best": 1.1726,
+        "ev_delta": 0.1506
       },
       "picks_locked": false,
       "locked_et": ""
@@ -1381,8 +1381,8 @@
           "lock_et": "7:30 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.022,
-          "v_defer_best": 1.1775,
-          "ev_delta": 0.1555
+          "v_defer_best": 1.1726,
+          "ev_delta": 0.1506
         },
         "picks_locked": false,
         "hits_of_3": null,
