@@ -45,6 +45,7 @@ from src.team_game_model import (
     build_live_team_profiles,
     build_team_star_goalie_history,
     compute_power_rankings_and_defense,
+    extract_cached_odds_lookup,
     extract_latest_team_form,
     load_active_goalie_lookup,
     load_pairwise_bundle,
@@ -318,6 +319,18 @@ def run_training(
     }
 
 
+def _load_existing_payload(path: str) -> dict[str, Any]:
+    """Load an existing docs/data.json payload safely for cached odds & quota state."""
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
 def run_inference(
     *,
     data_dir: str = "./data",
@@ -325,6 +338,8 @@ def run_inference(
     docs_dir: str = "./docs",
     skip_network: bool = False,
     odds_api_key: str | None = None,
+    odds_policy: str = "always",
+    live_odds_cap: int = 3,
     trained_state: dict[str, Any] | None = None,
     run_mode: str = "infer",
 ) -> dict[str, Any]:
@@ -469,14 +484,84 @@ def run_inference(
         skater_baseline_df=df_pool,
     )
     power_rankings, defense_multipliers = compute_power_rankings_and_defense(profiles, pairwise_bundle)
+
+    existing_payload = _load_existing_payload(os.path.join(docs_dir, "data.json"))
+    cached_odds = extract_cached_odds_lookup(existing_payload)
+    prev_usage = (existing_payload.get("meta") or {}).get("odds_usage") or {}
+    prev_live_fetches = (
+        int(prev_usage.get("live_loop_fetches", 0) or 0)
+        if prev_usage.get("date") == context["today_str"]
+        else 0
+    )
+    has_unstarted = any(
+        str(g.get("game_state", "FUT")) in ("FUT", "PRE")
+        for g in (schedule_info.get("games") or [])
+    )
+
+    skip_reason = ""
+    effective_odds_key = odds_key
+    if not odds_key or skip_network:
+        effective_odds_key = ""
+        skip_reason = "disabled"
+    elif odds_policy == "cached":
+        effective_odds_key = ""
+        skip_reason = "cached_forced"
+    elif odds_policy == "live_loop":
+        if not has_unstarted:
+            effective_odds_key = ""
+            skip_reason = "cached_all_started"
+        elif prev_live_fetches >= live_odds_cap:
+            effective_odds_key = ""
+            skip_reason = "cached_cap_reached"
+
+    odds_meta_out: dict[str, Any] = {}
     game_predictions, playoff_series = predict_upcoming_games(
         schedule_games=schedule_info["games"],
         profiles=profiles,
         bundle=pairwise_bundle,
-        odds_api_key=odds_key,
+        odds_api_key=effective_odds_key,
         session=session,
         team_availability=team_availability,
+        cached_odds=cached_odds,
+        odds_meta_out=odds_meta_out,
     )
+
+    if effective_odds_key and odds_meta_out.get("api_ok"):
+        live_loop_fetches = prev_live_fetches + (1 if odds_policy == "live_loop" else 0)
+        req_last = odds_meta_out.get("requests_last")
+        req_used = odds_meta_out.get("requests_used")
+        req_rem = odds_meta_out.get("requests_remaining")
+        odds_usage = {
+            "date": context["today_str"],
+            "live_loop_fetches": live_loop_fetches,
+            "live_loop_cap": live_odds_cap,
+            "last_source": "api",
+            "requests_last": req_last if req_last is not None else prev_usage.get("requests_last"),
+            "requests_used": req_used if req_used is not None else prev_usage.get("requests_used"),
+            "requests_remaining": req_rem if req_rem is not None else prev_usage.get("requests_remaining"),
+        }
+        loop_note = f" | Live-loop {live_loop_fetches}/{live_odds_cap}" if odds_policy == "live_loop" else ""
+        print(
+            f"Odds API -> {odds_meta_out.get('fetched_games', 0)} games fetched{loop_note} "
+            f"(cost={odds_usage['requests_last']}, used={odds_usage['requests_used']}, remaining={odds_usage['requests_remaining']})"
+        )
+    else:
+        live_loop_fetches = prev_live_fetches
+        odds_usage = {
+            "date": context["today_str"],
+            "live_loop_fetches": live_loop_fetches,
+            "live_loop_cap": live_odds_cap,
+            "last_source": skip_reason or "cached_api_fallback",
+            "requests_last": prev_usage.get("requests_last"),
+            "requests_used": prev_usage.get("requests_used"),
+            "requests_remaining": prev_usage.get("requests_remaining"),
+        }
+        if odds_key and not skip_network:
+            print(
+                f"Odds API -> Skipped ({odds_usage['last_source']}; live-loop {live_loop_fetches}/{live_odds_cap}, "
+                f"reused {len(cached_odds)} cached games)"
+            )
+
     print(f"Power Rankings computed for {len(power_rankings)} teams | Predicted {len(game_predictions)} games.")
 
     print("\n[Infer 3/4] Scoring Tim Hortons & Full Slate Skaters (Empirical Bayes + Matchup D-Mult)...")
@@ -568,6 +653,7 @@ def run_inference(
         game_predictions=game_predictions,
         playoff_series=playoff_series,
         odds_enabled=bool(odds_key),
+        odds_usage=odds_usage,
         tims_history=history_summary,
         tims_timing_advice=tims_timing_advice,
         availability_summary={
@@ -590,6 +676,8 @@ def run_pipeline(
     docs_dir: str = "./docs",
     skip_network: bool = False,
     odds_api_key: str | None = None,
+    odds_policy: str = "always",
+    live_odds_cap: int = 3,
     mode: str = "full",
 ) -> dict[str, Any]:
     """Orchestrate training, inference, or full end-to-end execution."""
@@ -606,6 +694,8 @@ def run_pipeline(
             docs_dir=docs_dir,
             skip_network=skip_network,
             odds_api_key=odds_api_key,
+            odds_policy=odds_policy,
+            live_odds_cap=live_odds_cap,
             run_mode="infer",
         )
     trained_state = run_training(
@@ -619,6 +709,8 @@ def run_pipeline(
         docs_dir=docs_dir,
         skip_network=skip_network,
         odds_api_key=odds_api_key,
+        odds_policy=odds_policy,
+        live_odds_cap=live_odds_cap,
         trained_state=trained_state,
         run_mode="full",
     )
@@ -636,6 +728,18 @@ def main() -> int:
     parser.add_argument("--models-dir", default="./models", help="Directory for saved joblib bundles & snapshots.")
     parser.add_argument("--docs-dir", default="./docs", help="Directory for GitHub Pages HTML & JSON artifacts.")
     parser.add_argument("--skip-network", action="store_true", help="Run strictly from cached local data.")
+    parser.add_argument(
+        "--odds-policy",
+        choices=("always", "live_loop", "cached"),
+        default="always",
+        help="Odds API fetch policy: 'always', 'live_loop' (daily capped + unstarted check), or 'cached'.",
+    )
+    parser.add_argument(
+        "--live-odds-cap",
+        type=int,
+        default=3,
+        help="Max live-loop Odds API fetches per ET day when --odds-policy=live_loop.",
+    )
     args = parser.parse_args()
 
     buf = io.StringIO()
@@ -656,6 +760,8 @@ def main() -> int:
             models_dir=args.models_dir,
             docs_dir=args.docs_dir,
             skip_network=args.skip_network,
+            odds_policy=args.odds_policy,
+            live_odds_cap=args.live_odds_cap,
             mode=args.mode,
         )
 

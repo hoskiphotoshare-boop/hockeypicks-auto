@@ -27,6 +27,7 @@ LATE_END = dt_time(23, 40)
 
 COMMIT_PATHS = ("docs/data.json", "docs/latest_run.html", "docs/tims_history.json", "models/")
 DEFAULT_INTERVAL_SECONDS = 300
+DEFAULT_LIVE_ODDS_CAP = 3
 
 
 def parse_now(value: str | None) -> datetime:
@@ -98,9 +99,18 @@ def window_has_games(payload: dict[str, Any], end_utc: datetime) -> bool:
     return False
 
 
-def _default_inference() -> int:
+def _default_inference(live_odds_cap: int = DEFAULT_LIVE_ODDS_CAP) -> int:
     return subprocess.run(
-        [sys.executable, "main_pipeline.py", "--mode", "infer"],
+        [
+            sys.executable,
+            "main_pipeline.py",
+            "--mode",
+            "infer",
+            "--odds-policy",
+            "live_loop",
+            "--live-odds-cap",
+            str(live_odds_cap),
+        ],
         check=False,
     ).returncode
 
@@ -137,6 +147,7 @@ def run_iteration(
     data_json: str,
     *,
     max_lag_minutes: int = DEFAULT_MAX_LAG_MINUTES,
+    live_odds_cap: int = DEFAULT_LIVE_ODDS_CAP,
     dry_run: bool = False,
     now_utc: datetime | None = None,
     inference_runner: Callable[[], int] | None = None,
@@ -160,7 +171,8 @@ def run_iteration(
         print("[dry-run] inference and commit skipped", flush=True)
         return True
 
-    code = (inference_runner or _default_inference)()
+    runner = inference_runner or (lambda: _default_inference(live_odds_cap=live_odds_cap))
+    code = runner()
     if code != 0:
         print(f"inference exited {code}; skipping commit", file=sys.stderr, flush=True)
         return True
@@ -174,6 +186,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--data-json", default="docs/data.json")
     parser.add_argument("--interval-seconds", type=int, default=DEFAULT_INTERVAL_SECONDS)
     parser.add_argument("--max-lag-minutes", type=int, default=DEFAULT_MAX_LAG_MINUTES)
+    parser.add_argument("--live-odds-cap", type=int, default=DEFAULT_LIVE_ODDS_CAP)
     parser.add_argument("--once", action="store_true", help="Run a single iteration and exit.")
     parser.add_argument("--dry-run", action="store_true", help="Evaluate the gate without running inference.")
     parser.add_argument("--now", default="", help="ISO-8601 override for tests; implies --once.")
@@ -216,6 +229,7 @@ def main(argv: list[str] | None = None) -> int:
         run_iteration(
             args.data_json,
             max_lag_minutes=args.max_lag_minutes,
+            live_odds_cap=args.live_odds_cap,
             dry_run=args.dry_run,
             now_utc=parse_now(args.now) if args.now else None,
         )
