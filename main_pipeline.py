@@ -8,6 +8,7 @@ import json
 import os
 import sys
 from contextlib import redirect_stdout
+from datetime import timezone
 from typing import Any
 
 import pandas as pd
@@ -542,6 +543,8 @@ def run_inference(
         skater_bundle=skater_bundle,
         tims_groups=skater_scores["tims_groups"],
         captured_et=now_et_str,
+        timing_advice=tims_timing_advice,
+        now_utc=context["now_et"].astimezone(timezone.utc),
     )
     history_summary = recompute_tims_summary(tims_history)
     save_tims_history(tims_history, tims_history_path)
