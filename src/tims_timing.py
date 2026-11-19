@@ -10,10 +10,18 @@ import numpy as np
 
 from src.data_sync import PlayerMatcher, clean_name, normalize_team_abbrev
 
+DTD_PLAY_PROB = 0.65
+
 
 def poisson_goal_prob(rate: float) -> float:
     """Convert expected goals-per-game rate to anytime 1+ goal probability."""
     return 1.0 - math.exp(-max(0.0, float(rate)))
+
+
+def effective_goal_prob(player: dict[str, Any]) -> float:
+    """Anytime 1+ goal probability discounted by DTD play probability when applicable."""
+    prob = poisson_goal_prob(float(player.get("final_score", 0.0)))
+    return prob * (DTD_PLAY_PROB if bool(player.get("injury_dtd")) else 1.0)
 
 
 def _parse_utc_ts(utc_str: str | None) -> float | None:
@@ -78,10 +86,10 @@ def build_group_ticket(
         if not eligible:
             eligible = [p for p in lst if not bool(p.get("injury_out"))] or list(lst)
 
-        pick = max(eligible, key=lambda x: float(x.get("final_score", 0.0)))
+        pick = max(eligible, key=effective_goal_prob)
         team = _norm_team(pick)
         w_idx = int(team_wave_idx.get(team, 0))
-        p_g = poisson_goal_prob(float(pick.get("final_score", 0.0)))
+        p_g = effective_goal_prob(pick)
         wave_et = wave_labels[w_idx] if 0 <= w_idx < len(wave_labels) else "--"
         result[str(g_key)] = {
             "player": str(pick.get("player", "")),
@@ -93,6 +101,7 @@ def build_group_ticket(
             "wave_idx": w_idx + 1,
             "wave_et": wave_et if wave_et is not None else "--",
             "injury_status": pick.get("injury_status"),
+            "injury_dtd": bool(pick.get("injury_dtd")),
         }
     return result
 
@@ -129,6 +138,7 @@ def compute_tims_deferral_advice(
             "current_best": {},
             "selection": {},
             "lock_basis": "unavailable",
+            "first_wave_utc": "",
             "selection_lock_utc": "",
             "selection_lock_et": "",
             "selection_wave": 0,
@@ -180,16 +190,13 @@ def compute_tims_deferral_advice(
 
     sorted_waves = [waves_map[k] for k in sorted(waves_map.keys(), key=lambda kv: kv[0])]
     if not sorted_waves:
-        cur_best = {
-            g_k: {
-                "player": lst[0]["player"],
-                "team": lst[0]["team"],
-                "final_score": round(float(lst[0]["final_score"]), 3),
-                "p_goal_pct": round(poisson_goal_prob(lst[0]["final_score"]) * 100.0, 1),
-            }
-            for g_k, lst in ordered_groups.items()
-        }
-        v_now = round(sum(poisson_goal_prob(lst[0]["final_score"]) for lst in ordered_groups.values()), 4)
+        cur_best = build_group_ticket(
+            ordered_groups,
+            team_wave_idx={},
+            wave_labels=[],
+            allowed_teams=set(),
+        )
+        v_now = round(sum(effective_goal_prob(p) for p in cur_best.values()), 4)
         return {
             "status": "all_started",
             "decision": "SELECT_NOW",
@@ -198,6 +205,7 @@ def compute_tims_deferral_advice(
             "current_best": cur_best,
             "selection": cur_best,
             "lock_basis": "now",
+            "first_wave_utc": "",
             "selection_lock_utc": "",
             "selection_lock_et": "",
             "selection_wave": 1,
@@ -222,7 +230,10 @@ def compute_tims_deferral_advice(
         wave_labels=wave_labels,
         allowed_teams=unstarted_teams,
     )
-    v_now = sum(poisson_goal_prob(float(p.get("final_score", 0.0))) for p in cur_best.values())
+    first_wave_utc = datetime.fromtimestamp(
+        float(sorted_waves[0]["start_ts"]), tz=timezone.utc
+    ).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+    v_now = sum(effective_goal_prob(p) for p in cur_best.values())
     locked_if_defer_1 = sum(1 for p in cur_best.values() if int(p.get("wave_idx", 0)) == 1)
 
     if len(sorted_waves) == 1:
@@ -236,8 +247,9 @@ def compute_tims_deferral_advice(
             "current_best": cur_best,
             "selection": cur_best,
             "lock_basis": "now",
+            "first_wave_utc": first_wave_utc,
             "selection_lock_et": w0["start_time_et"],
-            "selection_lock_utc": datetime.fromtimestamp(float(w0["start_ts"]), tz=timezone.utc).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "selection_lock_utc": first_wave_utc,
             "selection_wave": 1,
             "v_now": round(v_now, 4),
             "v_defer_best": round(v_now, 4),
@@ -411,7 +423,7 @@ def compute_tims_deferral_advice(
                 pool_g = [
                     p
                     for p in carried_by_group[g]
-                    if (not p.get("injury_dtd") or rng.random() < 0.65)
+                    if (not p.get("injury_dtd") or rng.random() < DTD_PLAY_PROB)
                 ]
                 # A wave rebuild tends to surface a small number of skaters
                 # from the remaining games. History shows 0-4 per wave, so give
@@ -420,7 +432,7 @@ def compute_tims_deferral_advice(
                 candidates = [
                     h
                     for h in hidden_by_group_k[g]
-                    if (not h.get("injury_dtd") or rng.random() < 0.65)
+                    if (not h.get("injury_dtd") or rng.random() < DTD_PLAY_PROB)
                 ]
                 if n_new and candidates:
                     ranked = sorted(
@@ -443,9 +455,10 @@ def compute_tims_deferral_advice(
         projected_ticket: dict[str, dict[str, Any]] = {}
         for g in ordered_groups:
             healthy = [p for p in carried_by_group[g] if not p.get("injury_dtd")]
-            if not healthy:
+            pool_proj = healthy or carried_by_group[g]
+            if not pool_proj:
                 continue
-            top = max(healthy, key=lambda x: x["final_score"])
+            top = max(pool_proj, key=effective_goal_prob)
             projected_ticket[g] = {
                 "player": top["player"],
                 "team": top["team"],
@@ -528,6 +541,7 @@ def compute_tims_deferral_advice(
         "current_best": cur_best,
         "selection": selection,
         "lock_basis": lock_basis,
+        "first_wave_utc": first_wave_utc,
         "selection_lock_utc": selection_lock_utc,
         "selection_lock_et": selection_lock_et,
         "selection_wave": selection_wave,

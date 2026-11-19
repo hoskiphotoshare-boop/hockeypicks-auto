@@ -194,6 +194,75 @@ class TestTimsTracker(unittest.TestCase):
         self.assertEqual(rd["timing"]["basis"], "deferred")
         self.assertIs(rd["picks_locked"], False)
 
+    def test_preserves_deferred_basis_when_wave_one_starts_and_advisor_switches_to_now(self):
+        history = {"days": [], "summary": {}}
+        early = self._advice(
+            self._picks({
+                "1": {"player": "Early G1", "team": "AAA", "final_score": 0.5},
+                "2": {"player": "Early G2", "team": "BBB", "final_score": 0.45},
+                "3": {"player": "Early G3", "team": "AAA", "final_score": 0.3},
+            }),
+            lock_utc=LOCK_UTC,
+            lock_basis="deferred",
+        )
+        early["first_wave_utc"] = "2026-11-18T00:00:00Z"
+        self.assertTrue(self._upsert(history, self._groups(), advice=early))
+
+        # 7:05 PM ET (after Wave 1 7:00 PM started, before 9:30 PM lock):
+        # advisor now sees 9:30 PM as Wave 1 and reports lock_basis="now".
+        post_w1 = self._advice(
+            self._picks({
+                "1": {"player": "Late G1", "team": "CCC", "final_score": 0.4},
+                "2": {"player": "Late G2", "team": "CCC", "final_score": 0.35},
+                "3": {"player": "Late G3", "team": "CCC", "final_score": 0.25},
+            }),
+            lock_utc=LOCK_UTC,
+            lock_basis="now",
+        )
+        post_w1["first_wave_utc"] = LOCK_UTC
+        after_w1 = datetime(2026, 11, 18, 0, 5, tzinfo=timezone.utc)
+        self.assertTrue(
+            self._upsert(history, self._late_groups(), advice=post_w1, captured="2026-11-17 7:05 PM ET", now=after_w1)
+        )
+        entry = history["days"][0]
+        self.assertEqual(entry["timing"]["basis"], "deferred")
+        self.assertEqual(entry["timing"]["first_wave_utc"], "2026-11-18T00:00:00Z")
+        self.assertEqual(entry["ai_picks"]["1"]["player"], "Late G1")
+        self.assertFalse(entry["picks_locked"])
+
+    def test_resets_to_now_when_advisor_reverts_before_wave_one(self):
+        history = {"days": [], "summary": {}}
+        early = self._advice(
+            self._picks({
+                "1": {"player": "Early G1", "team": "AAA", "final_score": 0.5},
+                "2": {"player": "Early G2", "team": "BBB", "final_score": 0.45},
+                "3": {"player": "Early G3", "team": "AAA", "final_score": 0.3},
+            }),
+            lock_utc=LOCK_UTC,
+            lock_basis="deferred",
+        )
+        early["first_wave_utc"] = "2026-11-18T00:00:00Z"
+        self.assertTrue(self._upsert(history, self._groups(), advice=early))
+
+        # 5:00 PM ET (still before Wave 1 7:00 PM): advisor reverts to Wave 1 NOW lock.
+        reverted = self._advice(
+            self._picks({
+                "1": {"player": "Early G1", "team": "AAA", "final_score": 0.5},
+                "2": {"player": "Early G2", "team": "BBB", "final_score": 0.45},
+                "3": {"player": "Early G3", "team": "AAA", "final_score": 0.3},
+            }),
+            lock_utc="2026-11-18T00:00:00Z",
+            lock_basis="now",
+        )
+        reverted["first_wave_utc"] = "2026-11-18T00:00:00Z"
+        before_w1 = datetime(2026, 11, 17, 22, 0, tzinfo=timezone.utc)
+        self.assertTrue(
+            self._upsert(history, self._groups(), advice=reverted, captured="2026-11-17 5:00 PM ET", now=before_w1)
+        )
+        entry = history["days"][0]
+        self.assertEqual(entry["timing"]["basis"], "now")
+        self.assertEqual(entry["timing"]["lock_utc"], "2026-11-18T00:00:00Z")
+
 
 if __name__ == "__main__":
     unittest.main()

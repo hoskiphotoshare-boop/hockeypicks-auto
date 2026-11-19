@@ -5,7 +5,12 @@ from __future__ import annotations
 import unittest
 from datetime import datetime
 
-from src.tims_timing import build_group_ticket, compute_tims_deferral_advice
+from src.tims_timing import (
+    DTD_PLAY_PROB,
+    build_group_ticket,
+    compute_tims_deferral_advice,
+    poisson_goal_prob,
+)
 
 
 def _game(away: str, home: str, start_utc: str, label: str, state: str = "FUT") -> dict:
@@ -210,7 +215,53 @@ class TestTimsTiming(unittest.TestCase):
         self.assertEqual(res["selection"], res["current_best"])
         self.assertEqual(res["current_best"]["2"]["player"], "G2 Early")
 
+    def test_dtd_discount_applied_consistently_to_ticket_and_v_now(self):
+        groups = {
+            "1": [
+                {"player": "DTD Star", "team": "AAA", "opponent": "BBB", "final_score": 0.40, "injury_dtd": True, "injury_status": "DTD"},
+                {"player": "Healthy Wing", "team": "AAA", "opponent": "BBB", "final_score": 0.35, "injury_dtd": False},
+            ]
+        }
+        ticket = build_group_ticket(
+            groups,
+            team_wave_idx={"AAA": 0},
+            wave_labels=["7:00 PM ET"],
+            allowed_teams={"AAA"},
+        )
+        # Healthy 0.35 (0.2953) beats DTD 0.40 discounted by 0.65 (0.2143)
+        self.assertEqual(ticket["1"]["player"], "Healthy Wing")
+        self.assertFalse(ticket["1"]["injury_dtd"])
 
+        # Isolated DTD skater has v_now discounted by DTD_PLAY_PROB
+        dtd_only = {
+            "1": [
+                {"player": "DTD Only", "team": "AAA", "opponent": "BBB", "final_score": 0.40, "injury_dtd": True, "injury_status": "DTD"}
+            ]
+        }
+        schedule = [_game("AAA", "BBB", "2026-11-17T00:00:00Z", "7:00 PM ET")]
+        res = compute_tims_deferral_advice(
+            tims_groups=dtd_only,
+            slate_candidates=[],
+            schedule_games=schedule,
+        )
+        expected_v = round(DTD_PLAY_PROB * poisson_goal_prob(0.40), 4)
+        self.assertEqual(res["v_now"], expected_v)
+        self.assertTrue(res["selection"]["1"]["injury_dtd"])
+
+    def test_all_started_ticket_has_uniform_schema(self):
+        schedule = [_game("AAA", "BBB", "2026-11-17T00:00:00Z", "7:00 PM ET", state="LIVE")]
+        groups = {
+            "1": [{"player": "Alpha", "team": "AAA", "opponent": "BBB", "position": "C", "final_score": 0.42}],
+        }
+        res = compute_tims_deferral_advice(
+            tims_groups=groups,
+            slate_candidates=[],
+            schedule_games=schedule,
+        )
+        self.assertEqual(res["status"], "all_started")
+        pick = res["selection"]["1"]
+        for key in ("opponent", "position", "wave_idx", "wave_et", "injury_status", "injury_dtd"):
+            self.assertIn(key, pick)
 
 
 if __name__ == "__main__":
