@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-19 04:18 PM ET",
+      "captured_et": "2026-11-19 04:31 PM ET",
       "model_n_half": 30.65,
       "groups": {
         "1": [
@@ -17,7 +17,7 @@
             "base_pred": 0.506,
             "live_gp": 23,
             "live_goals": 21,
-            "def_multiplier": 0.957,
+            "def_multiplier": 0.956,
             "final_score": 0.646
           },
           {
@@ -28,7 +28,7 @@
             "base_pred": 0.447,
             "live_gp": 21,
             "live_goals": 21,
-            "def_multiplier": 0.952,
+            "def_multiplier": 0.951,
             "final_score": 0.637
           },
           {
@@ -50,7 +50,7 @@
             "base_pred": 0.503,
             "live_gp": 23,
             "live_goals": 17,
-            "def_multiplier": 1.023,
+            "def_multiplier": 1.024,
             "final_score": 0.615
           },
           {
@@ -72,8 +72,8 @@
             "base_pred": 0.496,
             "live_gp": 23,
             "live_goals": 12,
-            "def_multiplier": 1.023,
-            "final_score": 0.517
+            "def_multiplier": 1.024,
+            "final_score": 0.518
           },
           {
             "player": "Jake Guentzel",
@@ -83,7 +83,7 @@
             "base_pred": 0.46,
             "live_gp": 21,
             "live_goals": 13,
-            "def_multiplier": 0.947,
+            "def_multiplier": 0.946,
             "final_score": 0.489
           },
           {
@@ -95,7 +95,7 @@
             "live_gp": 23,
             "live_goals": 12,
             "def_multiplier": 0.999,
-            "final_score": 0.484
+            "final_score": 0.485
           },
           {
             "player": "Connor McDavid",
@@ -105,7 +105,7 @@
             "base_pred": 0.467,
             "live_gp": 23,
             "live_goals": 13,
-            "def_multiplier": 0.957,
+            "def_multiplier": 0.956,
             "final_score": 0.482
           },
           {
@@ -116,7 +116,7 @@
             "base_pred": 0.318,
             "live_gp": 22,
             "live_goals": 15,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.465
           },
           {
@@ -127,7 +127,7 @@
             "base_pred": 0.478,
             "live_gp": 21,
             "live_goals": 8,
-            "def_multiplier": 0.947,
+            "def_multiplier": 0.946,
             "final_score": 0.414
           },
           {
@@ -160,8 +160,8 @@
             "base_pred": 0.3,
             "live_gp": 22,
             "live_goals": 10,
-            "def_multiplier": 1.025,
-            "final_score": 0.363
+            "def_multiplier": 1.026,
+            "final_score": 0.364
           },
           {
             "player": "Jack Eichel",
@@ -172,7 +172,7 @@
             "live_gp": 23,
             "live_goals": 9,
             "def_multiplier": 0.952,
-            "final_score": 0.352
+            "final_score": 0.351
           }
         ],
         "2": [
@@ -251,7 +251,7 @@
             "live_gp": 10,
             "live_goals": 7,
             "def_multiplier": 0.952,
-            "final_score": 0.397
+            "final_score": 0.396
           },
           {
             "player": "Mark Stone",
@@ -262,7 +262,7 @@
             "live_gp": 23,
             "live_goals": 11,
             "def_multiplier": 0.952,
-            "final_score": 0.358
+            "final_score": 0.357
           },
           {
             "player": "Roope Hintz",
@@ -295,7 +295,7 @@
             "live_gp": 23,
             "live_goals": 7,
             "def_multiplier": 0.952,
-            "final_score": 0.264
+            "final_score": 0.263
           },
           {
             "player": "Matias Maccelli",
@@ -362,8 +362,8 @@
             "base_pred": 0.15,
             "live_gp": 2,
             "live_goals": 1,
-            "def_multiplier": 1.023,
-            "final_score": 0.171
+            "def_multiplier": 1.024,
+            "final_score": 0.172
           },
           {
             "player": "Zayne Parekh",
@@ -417,8 +417,8 @@
             "base_pred": 0.127,
             "live_gp": 19,
             "live_goals": 2,
-            "def_multiplier": 1.028,
-            "final_score": 0.124
+            "def_multiplier": 1.027,
+            "final_score": 0.123
           },
           {
             "player": "Noel Acciari",
@@ -428,7 +428,7 @@
             "base_pred": 0.129,
             "live_gp": 24,
             "live_goals": 3,
-            "def_multiplier": 0.964,
+            "def_multiplier": 0.963,
             "final_score": 0.122
           },
           {
@@ -450,7 +450,7 @@
             "base_pred": 0.136,
             "live_gp": 11,
             "live_goals": 0,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.109
           },
           {
@@ -494,7 +494,7 @@
             "base_pred": 0.071,
             "live_gp": 7,
             "live_goals": 0,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.063
           },
           {
@@ -519,7 +519,7 @@
           "base_pred": 0.506,
           "live_gp": 23,
           "live_goals": 21,
-          "def_multiplier": 0.957,
+          "def_multiplier": 0.956,
           "final_score": 0.646
         },
         "2": {
@@ -555,8 +555,8 @@
         "lock_et": "7:00 PM ET",
         "recommended_wave_et": "7:30 PM ET",
         "v_now": 1.022,
-        "v_defer_best": 1.0238,
-        "ev_delta": 0.0018
+        "v_defer_best": 1.0239,
+        "ev_delta": 0.0019
       },
       "picks_locked": false,
       "locked_et": ""
@@ -1383,8 +1383,8 @@
           "lock_et": "7:00 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.022,
-          "v_defer_best": 1.0238,
-          "ev_delta": 0.0018
+          "v_defer_best": 1.0239,
+          "ev_delta": 0.0019
         },
         "picks_locked": false,
         "hits_of_3": null,
