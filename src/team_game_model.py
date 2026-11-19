@@ -39,6 +39,7 @@ except ImportError:  # pragma: no cover
 from src.data_sync import TEAM_FULL_TO_ABBREV, normalize_team_abbrev
 
 FRANCHISE_PRIOR_MAP: dict[str, str] = {"UTA": "ARI"}
+ODDS_API_BOOKMAKERS = "pinnacle,fanduel,draftkings,betmgm,betrivers"
 
 
 TEAM_EXCLUDE_COLS = {
@@ -1148,20 +1149,90 @@ def evaluate_kelly_edge(
     }
 
 
-def _fetch_nhl_odds_lookup(odds_api_key: str, session: Any) -> dict[tuple[str, str], dict[str, float]]:
+def _safe_int(val: Any) -> int | None:
+    try:
+        if val is None or val == "":
+            return None
+        return int(float(val))
+    except (TypeError, ValueError):
+        return None
+
+
+def extract_cached_odds_lookup(
+    payload: dict[str, Any] | None,
+) -> dict[tuple[str, str, str], dict[str, Any]]:
+    """Extract cached per-game moneyline odds keyed by (date, away, home) from data.json."""
+    cached: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for g in (payload or {}).get("games") or []:
+        date_str = str(g.get("date") or "").strip()
+        away_abbr = normalize_team_abbrev(g.get("away"))
+        home_abbr = normalize_team_abbrev(g.get("home"))
+        if not date_str or not away_abbr or not home_abbr:
+            continue
+
+        raw_h = g.get("home_odds")
+        if raw_h is None and isinstance(g.get("home_edge"), dict):
+            raw_h = g["home_edge"].get("odds")
+        raw_a = g.get("away_odds")
+        if raw_a is None and isinstance(g.get("away_edge"), dict):
+            raw_a = g["away_edge"].get("odds")
+
+        try:
+            home_odds = float(raw_h) if raw_h is not None else 0.0
+        except (TypeError, ValueError):
+            home_odds = 0.0
+        try:
+            away_odds = float(raw_a) if raw_a is not None else 0.0
+        except (TypeError, ValueError):
+            away_odds = 0.0
+
+        if home_odds <= 1.0 and away_odds <= 1.0:
+            continue
+
+        entry: dict[str, Any] = {"bookie": g.get("bookie") or "Sharp"}
+        if home_odds > 1.0:
+            entry[home_abbr] = home_odds
+        if away_odds > 1.0:
+            entry[away_abbr] = away_odds
+        cached[(date_str, away_abbr, home_abbr)] = entry
+    return cached
+
+
+def _fetch_nhl_odds_lookup(
+    odds_api_key: str,
+    session: Any,
+    meta_out: dict[str, Any] | None = None,
+) -> dict[tuple[str, str], dict[str, Any]]:
     """Fetch live Pinnacle / best NHL h2h moneyline odds when ODDS_API_KEY env var is present."""
     if not odds_api_key:
         return {}
-    url = f"https://api.the-odds-api.com/v4/sports/icehockey_nhl/odds/?apiKey={odds_api_key}&regions=us,eu,uk&markets=h2h"
+    url = (
+        f"https://api.the-odds-api.com/v4/sports/icehockey_nhl/odds/"
+        f"?apiKey={odds_api_key}&bookmakers={ODDS_API_BOOKMAKERS}&markets=h2h"
+    )
     try:
         res = session.get(url, timeout=15)
+        raw_headers = getattr(res, "headers", None) or {}
+        headers = {str(k).lower(): v for k, v in raw_headers.items()} if hasattr(raw_headers, "items") else {}
         if res.status_code != 200:
+            if meta_out is not None:
+                meta_out.update(
+                    {
+                        "api_ok": False,
+                        "status_code": res.status_code,
+                        "requests_last": _safe_int(headers.get("x-requests-last")),
+                        "requests_used": _safe_int(headers.get("x-requests-used")),
+                        "requests_remaining": _safe_int(headers.get("x-requests-remaining")),
+                    }
+                )
             return {}
         data = res.json()
     except Exception:
+        if meta_out is not None:
+            meta_out.update({"api_ok": False, "status_code": None})
         return {}
 
-    odds_map: dict[tuple[str, str], dict[str, float]] = {}
+    odds_map: dict[tuple[str, str], dict[str, Any]] = {}
     for game in data:
         h_full = game.get("home_team", "")
         a_full = game.get("away_team", "")
@@ -1189,6 +1260,18 @@ def _fetch_nhl_odds_lookup(odds_api_key: str, session: Any) -> dict[tuple[str, s
                     away_abbr: a_odds,
                     "bookie": sharp.get("title", "Sharp"),
                 }
+
+    if meta_out is not None:
+        meta_out.update(
+            {
+                "api_ok": True,
+                "status_code": res.status_code,
+                "fetched_games": len(odds_map),
+                "requests_last": _safe_int(headers.get("x-requests-last")),
+                "requests_used": _safe_int(headers.get("x-requests-used")),
+                "requests_remaining": _safe_int(headers.get("x-requests-remaining")),
+            }
+        )
     return odds_map
 
 
@@ -1199,9 +1282,15 @@ def predict_upcoming_games(
     odds_api_key: str = "",
     session: Any | None = None,
     team_availability: dict[str, dict[str, Any]] | None = None,
+    cached_odds: dict[tuple[str, str, str], dict[str, Any]] | None = None,
+    odds_meta_out: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Generate single-game win probabilities and optional active playoff series projections."""
-    odds_map = _fetch_nhl_odds_lookup(odds_api_key, session) if (odds_api_key and session) else {}
+    odds_map = (
+        _fetch_nhl_odds_lookup(odds_api_key, session, meta_out=odds_meta_out)
+        if (odds_api_key and session)
+        else {}
+    )
 
     scheduled_dates_by_team: dict[str, list[str]] = {}
     for g in schedule_games:
@@ -1236,7 +1325,7 @@ def predict_upcoming_games(
         b2b_h, rest_h, f3in4_h = _schedule_fatigue_for_date(st_h, g_date, extra_dates=extra_h)
         b2b_a, rest_a, f3in4_a = _schedule_fatigue_for_date(st_a, g_date, extra_dates=extra_a)
 
-        game_odds = odds_map.get((away, home), {})
+        game_odds = odds_map.get((away, home)) or (cached_odds or {}).get((str(g_date or ""), away, home)) or {}
         home_edge = evaluate_kelly_edge(home_prob, game_odds.get(home), min_edge_pct=2.0)
         away_edge = evaluate_kelly_edge(away_prob, game_odds.get(away), min_edge_pct=2.0)
         avail_a = (team_availability or {}).get(away, {})
@@ -1278,6 +1367,8 @@ def predict_upcoming_games(
                 "away_injuries": [r["player"] + f" ({r['status']})" for r in (avail_a.get("out_skaters") or [])[:4]],
                 "home_injuries": [r["player"] + f" ({r['status']})" for r in (avail_h.get("out_skaters") or [])[:4]],
                 "bookie": game_odds.get("bookie"),
+                "away_odds": round(float(game_odds[away]), 3) if game_odds.get(away) else None,
+                "home_odds": round(float(game_odds[home]), 3) if game_odds.get(home) else None,
                 "away_edge": away_edge,
                 "home_edge": home_edge,
             }
