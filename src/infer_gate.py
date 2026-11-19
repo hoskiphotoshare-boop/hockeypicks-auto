@@ -24,6 +24,7 @@ ODDS_CRON_11AM = "0 11 * * *"
 # long so a trigger that arrives hours late still produces a useful in-game update
 # instead of being discarded for missing a 50-minute slot.
 DEFAULT_MAX_LAG_MINUTES = 180
+DEFAULT_PRE_LOCK_LEAD_MINUTES = 20
 
 
 def _nth_weekday(year: int, month: int, weekday: int, n: int) -> date:
@@ -230,6 +231,39 @@ def find_due_games(
     return due
 
 
+def is_pre_lock_refresh_due(
+    payload: dict[str, Any],
+    *,
+    now_utc: datetime | None = None,
+    lead_minutes: int = DEFAULT_PRE_LOCK_LEAD_MINUTES,
+) -> tuple[bool, str]:
+    """Return True once inside [lock - lead_minutes, lock) if not already refreshed there."""
+    now = now_utc or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    else:
+        now = now.astimezone(timezone.utc)
+
+    timing = payload.get("tims_timing") or {}
+    lock_dt = parse_utc_timestamp(timing.get("selection_lock_utc"))
+    if lock_dt is None:
+        return False, ""
+
+    remaining = lock_dt - now
+    lead = timedelta(minutes=lead_minutes)
+    if not (timedelta(0) < remaining <= lead):
+        return False, ""
+
+    last_updated = parse_utc_timestamp((payload.get("meta") or {}).get("updated_utc"))
+    window_start = lock_dt - lead
+    if last_updated is not None and last_updated >= window_start:
+        return False, ""
+
+    mins_left = max(1, int((remaining.total_seconds() + 59) // 60))
+    lock_label = str(timing.get("selection_lock_et") or timing.get("selection_lock_utc"))
+    return True, f"Pre-lock Tims refresh due ({mins_left}m before {lock_label} lock)."
+
+
 def evaluate_gate(
     data_json_path: str,
     *,
@@ -315,6 +349,9 @@ def evaluate_gate(
         max_lag_minutes=max_lag_minutes,
     )
     if not due:
+        pre_lock_due, pre_lock_reason = is_pre_lock_refresh_due(payload, now_utc=now)
+        if pre_lock_due:
+            return True, pre_lock_reason
         return False, "No scheduled games passed start_time + 3m since last update."
 
     labels = ", ".join(f"{g.get('away', '?')}@{g.get('home', '?')} ({g.get('start_time_et', '?')})" for g in due[:5])

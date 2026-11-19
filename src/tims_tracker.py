@@ -74,6 +74,20 @@ def _resolve_pick(groups_raw: dict[str, Any], group_key: str, pick: dict[str, An
     }
 
 
+def _parse_iso_utc(value: Any) -> datetime | None:
+    """Parse an ISO-8601 UTC timestamp string safely into an aware UTC datetime."""
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
 def upsert_tims_snapshot(
     history: dict[str, Any],
     *,
@@ -101,22 +115,24 @@ def upsert_tims_snapshot(
         return False
 
     # Freeze rule for already-locked records.
+    prev_was_deferred = False
+    prev_lock_dt: datetime | None = None
+    prev_first_wave_utc = ""
+    prev_first_wave_dt: datetime | None = None
     if existing_idx is not None:
         existing = days[existing_idx]
         if existing.get("picks_locked") is True:
             return False
         existing_timing = existing.get("timing") or {}
-        lock_str = existing_timing.get("lock_utc")
-        if lock_str:
-            try:
-                lock_dt = datetime.fromisoformat(str(lock_str).replace("Z", "+00:00"))
-            except ValueError:
-                lock_dt = None
-            if lock_dt is not None and now_utc >= lock_dt:
-                existing["picks_locked"] = True
-                if not existing.get("locked_et"):
-                    existing["locked_et"] = str(existing.get("captured_et") or "")
-                return False
+        prev_was_deferred = existing_timing.get("basis") == "deferred"
+        prev_lock_dt = _parse_iso_utc(existing_timing.get("lock_utc"))
+        prev_first_wave_utc = str(existing_timing.get("first_wave_utc") or "")
+        prev_first_wave_dt = _parse_iso_utc(prev_first_wave_utc)
+        if prev_lock_dt is not None and now_utc >= prev_lock_dt:
+            existing["picks_locked"] = True
+            if not existing.get("locked_et"):
+                existing["locked_et"] = str(existing.get("captured_et") or "")
+            return False
 
     groups_compact = {
         str(k): [_compact_candidate(c) for c in grp]
@@ -145,12 +161,7 @@ def upsert_tims_snapshot(
     lock_str = ""
     if isinstance(timing_advice, dict):
         lock_str = timing_advice.get("selection_lock_utc") or ""
-    lock_dt = None
-    if lock_str:
-        try:
-            lock_dt = datetime.fromisoformat(str(lock_str).replace("Z", "+00:00"))
-        except ValueError:
-            lock_dt = None
+    lock_dt = _parse_iso_utc(lock_str)
     if lock_str:
         picks_locked = bool(lock_dt is not None and now_utc >= lock_dt)
     else:
@@ -164,6 +175,7 @@ def upsert_tims_snapshot(
         timing_obj = {
             "decision": timing_advice.get("decision"),
             "basis": timing_advice.get("lock_basis"),
+            "first_wave_utc": prev_first_wave_utc or str(timing_advice.get("first_wave_utc") or ""),
             "lock_utc": timing_advice.get("selection_lock_utc"),
             "lock_et": timing_advice.get("selection_lock_et"),
             "recommended_wave_et": timing_advice.get("recommended_wave_et"),
@@ -171,6 +183,11 @@ def upsert_tims_snapshot(
             "v_defer_best": timing_advice.get("v_defer_best"),
             "ev_delta": timing_advice.get("ev_delta"),
         }
+        if prev_was_deferred and timing_obj.get("basis") == "now":
+            if (prev_first_wave_dt is not None and now_utc >= prev_first_wave_dt) or (
+                prev_lock_dt is None or lock_dt is None or lock_dt >= prev_lock_dt
+            ):
+                timing_obj["basis"] = "deferred"
 
     record = {
         "date": date_str,

@@ -313,6 +313,75 @@ class TestInferGate(unittest.TestCase):
             )
             self.assertFalse(cron_skip)
 
+    def test_pre_lock_refresh_window(self):
+        payload = {
+            "meta": {
+                "status": "live",
+                "updated_utc": "2026-11-19 21:35:00 UTC",  # 4:35 PM ET
+            },
+            "games": [
+                {
+                    "away": "MTL",
+                    "home": "NYR",
+                    "date": "2026-11-19",
+                    "start_time_et": "7:00 PM ET",
+                    "start_time_utc": "2026-11-20T00:00:00Z",
+                    "game_state": "FUT",
+                }
+            ],
+            "tims_timing": {
+                "selection_lock_utc": "2026-11-20T00:00:00Z",
+                "selection_lock_et": "7:00 PM ET",
+            },
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            json_path = os.path.join(tmpdir, "data.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+
+            # 25 minutes before lock -> outside 20m lead window
+            early_ok, _ = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 19, 23, 35, tzinfo=timezone.utc),
+            )
+            self.assertFalse(early_ok)
+
+            # 15 minutes before lock -> triggers pre-lock refresh
+            due_ok, due_reason = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 19, 23, 45, tzinfo=timezone.utc),
+            )
+            self.assertTrue(due_ok)
+            self.assertIn("Pre-lock Tims refresh due", due_reason)
+
+            # Once refreshed inside [lock - 20m, lock), skips on subsequent ticks
+            payload["meta"]["updated_utc"] = "2026-11-19 23:46:00 UTC"
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+            refreshed_ok, _ = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 19, 23, 55, tzinfo=timezone.utc),
+            )
+            self.assertFalse(refreshed_ok)
+
+            # At or after lock_utc -> skips pre-lock rule (game post-start handles +3m)
+            payload["meta"]["updated_utc"] = "2026-11-19 21:35:00 UTC"
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+            after_ok, _ = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc),
+            )
+            self.assertFalse(after_ok)
+
 
 if __name__ == "__main__":
     unittest.main()
