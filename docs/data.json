@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-19 00:36:34 UTC",
-    "updated_et": "2026-11-18 07:36 PM ET",
+    "updated_utc": "2026-11-19 03:01:50 UTC",
+    "updated_et": "2026-11-18 10:01 PM ET",
     "today_date": "2026-11-18",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -11,7 +11,7 @@
     "active_mode": "Regular Season",
     "active_game_type": 2,
     "skater_baseline_source": "2026 Regular + 2025 Playoffs",
-    "tims_status": "ok",
+    "tims_status": "empty_404",
     "odds_enabled": true,
     "availability": {
       "injury_source": "espn",
@@ -59,442 +59,18 @@
       }
     }
   },
-  "tims_picks": {
-    "1": [
-      {
-        "player": "Artturi Lehkonen",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.33,
-        "live_gp": 21,
-        "live_goals": 15,
-        "live_shots": 46,
-        "live_g_gp": 0.714,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.974,
-        "final_score": 0.457,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
-        "player": "Martin Necas",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.302,
-        "live_gp": 21,
-        "live_goals": 10,
-        "live_shots": 44,
-        "live_g_gp": 0.476,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.974,
-        "final_score": 0.352,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
-        "player": "Clayton Keller",
-        "team": "UTA",
-        "position": "F",
-        "opponent": "COL",
-        "base_pred": 0.408,
-        "live_gp": 22,
-        "live_goals": 5,
-        "live_shots": 60,
-        "live_g_gp": 0.227,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.939,
-        "final_score": 0.316,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      }
-    ],
-    "2": [
-      {
-        "player": "Nazem Kadri",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.361,
-        "live_gp": 21,
-        "live_goals": 5,
-        "live_shots": 60,
-        "live_g_gp": 0.238,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.974,
-        "final_score": 0.308,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Gabriel Landeskog",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.297,
-        "live_gp": 21,
-        "live_goals": 8,
-        "live_shots": 31,
-        "live_g_gp": 0.381,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.974,
-        "final_score": 0.308,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Brock Nelson",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.259,
-        "live_gp": 21,
-        "live_goals": 6,
-        "live_shots": 36,
-        "live_g_gp": 0.286,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.974,
-        "final_score": 0.26,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Jaden Schwartz",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.203,
-        "live_gp": 21,
-        "live_goals": 7,
-        "live_shots": 36,
-        "live_g_gp": 0.333,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.974,
-        "final_score": 0.241,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Barrett Hayton",
-        "team": "UTA",
-        "position": "F",
-        "opponent": "COL",
-        "base_pred": 0.261,
-        "live_gp": 22,
-        "live_goals": 4,
-        "live_shots": 42,
-        "live_g_gp": 0.182,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.939,
-        "final_score": 0.218,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Mikhail Sergachev",
-        "team": "UTA",
-        "position": "D",
-        "opponent": "COL",
-        "base_pred": 0.161,
-        "live_gp": 22,
-        "live_goals": 6,
-        "live_shots": 58,
-        "live_g_gp": 0.273,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.939,
-        "final_score": 0.192,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      }
-    ],
-    "3": [
-      {
-        "player": "Parker Kelly",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.121,
-        "live_gp": 21,
-        "live_goals": 4,
-        "live_shots": 23,
-        "live_g_gp": 0.19,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.974,
-        "final_score": 0.138,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "MacKenzie Weegar",
-        "team": "UTA",
-        "position": "D",
-        "opponent": "COL",
-        "base_pred": 0.101,
-        "live_gp": 22,
-        "live_goals": 2,
-        "live_shots": 40,
-        "live_g_gp": 0.091,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.939,
-        "final_score": 0.092,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Gavin Brindley",
-        "team": "COL",
-        "position": "F",
-        "opponent": "UTA",
-        "base_pred": 0.092,
-        "live_gp": 6,
-        "live_goals": 0,
-        "live_shots": 4,
-        "live_g_gp": 0.0,
-        "eb_live_weight_pct": 16.4,
-        "def_multiplier": 0.974,
-        "final_score": 0.078,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Kevin Stenlund",
-        "team": "UTA",
-        "position": "F",
-        "opponent": "COL",
-        "base_pred": 0.095,
-        "live_gp": 22,
-        "live_goals": 1,
-        "live_shots": 20,
-        "live_g_gp": 0.045,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.939,
-        "final_score": 0.073,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Sam Malinski",
-        "team": "COL",
-        "position": "D",
-        "opponent": "UTA",
-        "base_pred": 0.102,
-        "live_gp": 20,
-        "live_goals": 0,
-        "live_shots": 30,
-        "live_g_gp": 0.0,
-        "eb_live_weight_pct": 39.5,
-        "def_multiplier": 0.974,
-        "final_score": 0.065,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      }
-    ]
-  },
+  "tims_picks": {},
   "tims_timing": {
-    "status": "evaluated",
-    "decision": "SELECT_DEFER",
-    "headline": "Selective Defer \u2014 Wait Until Before 10:00 PM ET",
-    "detail": "Waiting past 7:30 PM ET projects +0.063 xG (92% win chance) as unlisted late-wave skaters backfill 0 vacated spots.",
-    "defer_threshold": 0.02,
-    "recommended_wave_et": "10:00 PM ET",
-    "v_now": 0.7608,
-    "v_defer_best": 0.8242,
-    "ev_delta": 0.0634,
-    "locked_picks_if_defer_1": 0,
-    "current_best": {
-      "1": {
-        "player": "Artturi Lehkonen",
-        "team": "COL",
-        "opponent": "UTA",
-        "final_score": 0.457,
-        "p_goal_pct": 36.7,
-        "wave_idx": 2,
-        "wave_et": "10:00 PM ET",
-        "injury_status": null
-      },
-      "2": {
-        "player": "Nazem Kadri",
-        "team": "COL",
-        "opponent": "UTA",
-        "final_score": 0.308,
-        "p_goal_pct": 26.5,
-        "wave_idx": 2,
-        "wave_et": "10:00 PM ET",
-        "injury_status": null
-      },
-      "3": {
-        "player": "Parker Kelly",
-        "team": "COL",
-        "opponent": "UTA",
-        "final_score": 0.138,
-        "p_goal_pct": 12.9,
-        "wave_idx": 2,
-        "wave_et": "10:00 PM ET",
-        "injury_status": null
-      }
-    },
-    "hidden_upside_players": [
-      {
-        "player": "Logan Cooley",
-        "team": "UTA",
-        "opponent": "COL",
-        "position": "C",
-        "final_score": 0.399,
-        "p_goal_pct": 32.9,
-        "wave_idx": 1,
-        "wave_et": "10:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      }
-    ],
-    "g1_best_score": 0.457,
-    "g2_best_score": 0.308,
-    "waves": [
-      {
-        "wave": 1,
-        "start_time_et": "7:30 PM ET",
-        "matchups": [
-          "BOS @ DET",
-          "MTL @ NJD"
-        ],
-        "est_ev": 0.7608,
-        "ev_delta": 0.0,
-        "beat_now_pct": 0.0,
-        "visible_carried": 14,
-        "hidden_available": 99,
-        "unlisted_scorers": [
-          {
-            "player": "Jack Hughes",
-            "team": "NJD",
-            "final_score": 0.478,
-            "p_goal_pct": 38.0,
-            "injury_status": null
-          },
-          {
-            "player": "Cole Caufield",
-            "team": "MTL",
-            "final_score": 0.464,
-            "p_goal_pct": 37.1,
-            "injury_status": null
-          },
-          {
-            "player": "Nick Suzuki",
-            "team": "MTL",
-            "final_score": 0.453,
-            "p_goal_pct": 36.4,
-            "injury_status": null
-          },
-          {
-            "player": "David Pastrnak",
-            "team": "BOS",
-            "final_score": 0.45,
-            "p_goal_pct": 36.2,
-            "injury_status": null
-          }
-        ],
-        "is_current": true
-      },
-      {
-        "wave": 2,
-        "start_time_et": "10:00 PM ET",
-        "matchups": [
-          "COL @ UTA"
-        ],
-        "est_ev": 0.8242,
-        "ev_delta": 0.0634,
-        "beat_now_pct": 92.0,
-        "visible_carried": 14,
-        "hidden_available": 22,
-        "unlisted_scorers": [
-          {
-            "player": "Logan Cooley",
-            "team": "UTA",
-            "final_score": 0.399,
-            "p_goal_pct": 32.9,
-            "injury_status": null
-          },
-          {
-            "player": "Vincent Trocheck",
-            "team": "UTA",
-            "final_score": 0.241,
-            "p_goal_pct": 21.4,
-            "injury_status": null
-          },
-          {
-            "player": "Kailer Yamamoto",
-            "team": "UTA",
-            "final_score": 0.235,
-            "p_goal_pct": 20.9,
-            "injury_status": null
-          },
-          {
-            "player": "Anders Lee",
-            "team": "UTA",
-            "final_score": 0.229,
-            "p_goal_pct": 20.5,
-            "injury_status": null
-          }
-        ],
-        "is_current": false
-      }
-    ]
+    "status": "no_tims_pool",
+    "decision": "UNAVAILABLE",
+    "headline": "Awaiting Tim Hortons Player Lists",
+    "detail": "Upstream Tim Hortons groups are not posted yet.",
+    "current_best": {},
+    "v_now": 0.0,
+    "v_defer_best": 0.0,
+    "ev_delta": 0.0,
+    "hidden_upside_players": [],
+    "waves": []
   },
   "tims_history": {
     "total_days_logged": 3,
@@ -1349,10 +925,10 @@
       "def_multiplier": 0.949,
       "final_score": 0.21,
       "mode": "Regular Season",
-      "injury_status": null,
+      "injury_status": "DTD",
       "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
+      "injury_dtd": true,
+      "injury_note": "day-to-day"
     }
   ],
   "games": [
@@ -1362,26 +938,26 @@
       "is_today": true,
       "start_time_utc": "2026-11-19T00:30:00Z",
       "start_time_et": "7:30 PM ET",
-      "game_state": "PRE",
+      "game_state": "CRIT",
       "game_type": 2,
       "away": "BOS",
       "home": "DET",
-      "away_score": null,
-      "home_score": null,
-      "away_prob": 46.7,
-      "home_prob": 53.3,
+      "away_score": 3,
+      "home_score": 1,
+      "away_prob": 46.5,
+      "home_prob": 53.5,
       "favored": "DET",
-      "fav_prob": 53.3,
-      "away_streak": -3,
-      "home_streak": 1,
+      "fav_prob": 53.5,
+      "away_streak": 1,
+      "home_streak": -1,
       "away_b2b": true,
       "home_b2b": false,
       "away_3in4": false,
       "home_3in4": false,
       "away_rest": 0,
       "home_rest": 3,
-      "away_elo": 1516.6,
-      "home_elo": 1488.6,
+      "away_elo": 1520.1,
+      "home_elo": 1485.1,
       "away_gsax": 11.2,
       "home_gsax": 1.6,
       "away_top3_pts": 58,
@@ -1389,12 +965,12 @@
       "away_goalie": {
         "name": "Jeremy Swayman",
         "confirmation": "Confirmed",
-        "sv_pct": 0.906
+        "sv_pct": 0.907
       },
       "home_goalie": {
         "name": "Daniil Tarasov",
         "confirmation": "Confirmed",
-        "sv_pct": 0.937
+        "sv_pct": 0.935
       },
       "away_injuries": [
         "James Hagens (IR)"
@@ -1408,10 +984,10 @@
       "bookie": "Pinnacle",
       "away_edge": null,
       "home_edge": {
-        "odds": 1.93,
-        "edge_pct": 2.84,
-        "quarter_kelly_pct": 0.76,
-        "rec_bet": 7.63
+        "odds": 23.24,
+        "edge_pct": 1142.35,
+        "quarter_kelly_pct": 5.0,
+        "rec_bet": 50.0
       }
     },
     {
@@ -1420,12 +996,12 @@
       "is_today": true,
       "start_time_utc": "2026-11-19T00:30:00Z",
       "start_time_et": "7:30 PM ET",
-      "game_state": "PRE",
+      "game_state": "LIVE",
       "game_type": 2,
       "away": "MTL",
       "home": "NJD",
-      "away_score": null,
-      "home_score": null,
+      "away_score": 3,
+      "home_score": 2,
       "away_prob": 45.0,
       "home_prob": 55.0,
       "favored": "NJD",
@@ -1447,12 +1023,12 @@
       "away_goalie": {
         "name": "Jacob Fowler",
         "confirmation": "Confirmed",
-        "sv_pct": 0.921
+        "sv_pct": 0.919
       },
       "home_goalie": {
         "name": "Connor Hellebuyck",
         "confirmation": "Confirmed",
-        "sv_pct": 0.915
+        "sv_pct": 0.913
       },
       "away_injuries": [
         "Mike Matheson (Out)",
@@ -1466,13 +1042,13 @@
         "Seamus Casey (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_edge": {
-        "odds": 2.46,
-        "edge_pct": 10.69,
-        "quarter_kelly_pct": 1.83,
-        "rec_bet": 18.31
-      },
-      "home_edge": null
+      "away_edge": null,
+      "home_edge": {
+        "odds": 4.3,
+        "edge_pct": 136.51,
+        "quarter_kelly_pct": 5.0,
+        "rec_bet": 50.0
+      }
     },
     {
       "id": 2026020346,
@@ -1480,7 +1056,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-19T03:00:00Z",
       "start_time_et": "10:00 PM ET",
-      "game_state": "FUT",
+      "game_state": "PRE",
       "game_type": 2,
       "away": "COL",
       "home": "UTA",
@@ -1748,7 +1324,7 @@
       "away_goalie": {
         "name": "Jacob Fowler",
         "confirmation": "Confirmed",
-        "sv_pct": 0.921
+        "sv_pct": 0.919
       },
       "home_goalie": null,
       "away_injuries": [
@@ -2216,12 +1792,12 @@
     },
     {
       "team": "BOS",
-      "ai_power": 9.67,
-      "elo": 1516.6,
+      "ai_power": 9.68,
+      "elo": 1520.1,
       "avg_win_prob": 55.6,
       "gp": 21,
-      "streak": -3,
-      "last_won": 0,
+      "streak": 1,
+      "last_won": 1,
       "gsax": 11.2,
       "starter_sv_pct": 0.905,
       "top3_pts": 58,
@@ -2235,7 +1811,7 @@
       "team": "NJD",
       "ai_power": 9.57,
       "elo": 1529.6,
-      "avg_win_prob": 54.8,
+      "avg_win_prob": 54.7,
       "gp": 21,
       "streak": 2,
       "last_won": 1,
@@ -2267,7 +1843,7 @@
     },
     {
       "team": "OTT",
-      "ai_power": 9.42,
+      "ai_power": 9.41,
       "elo": 1514.9,
       "avg_win_prob": 53.5,
       "gp": 22,
@@ -2286,7 +1862,7 @@
       "team": "NYI",
       "ai_power": 9.23,
       "elo": 1506.5,
-      "avg_win_prob": 52.0,
+      "avg_win_prob": 51.9,
       "gp": 20,
       "streak": 3,
       "last_won": 1,
@@ -2403,12 +1979,12 @@
     },
     {
       "team": "DET",
-      "ai_power": 8.78,
-      "elo": 1488.6,
-      "avg_win_prob": 48.2,
+      "ai_power": 8.81,
+      "elo": 1485.1,
+      "avg_win_prob": 48.5,
       "gp": 21,
-      "streak": 1,
-      "last_won": 1,
+      "streak": -1,
+      "last_won": 0,
       "gsax": 1.6,
       "starter_sv_pct": 0.918,
       "top3_pts": 52,
@@ -2420,7 +1996,7 @@
     },
     {
       "team": "BUF",
-      "ai_power": 8.75,
+      "ai_power": 8.74,
       "elo": 1478.1,
       "avg_win_prob": 47.9,
       "gp": 21,
@@ -2490,7 +2066,7 @@
       "team": "CBJ",
       "ai_power": 8.42,
       "elo": 1475.2,
-      "avg_win_prob": 45.2,
+      "avg_win_prob": 45.1,
       "gp": 19,
       "streak": -5,
       "last_won": 0,
@@ -2505,9 +2081,9 @@
     },
     {
       "team": "TOR",
-      "ai_power": 8.29,
+      "ai_power": 8.28,
       "elo": 1480.4,
-      "avg_win_prob": 44.1,
+      "avg_win_prob": 44.0,
       "gp": 23,
       "streak": -7,
       "last_won": 0,
@@ -2556,7 +2132,7 @@
     },
     {
       "team": "PHI",
-      "ai_power": 8.04,
+      "ai_power": 8.03,
       "elo": 1470.9,
       "avg_win_prob": 42.0,
       "gp": 24,
@@ -2624,7 +2200,7 @@
     },
     {
       "team": "VAN",
-      "ai_power": 6.94,
+      "ai_power": 6.93,
       "elo": 1454.6,
       "avg_win_prob": 32.8,
       "gp": 23,
