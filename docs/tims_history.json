@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-19 10:18 AM ET",
+      "captured_et": "2026-11-19 11:49 AM ET",
       "model_n_half": 30.65,
       "groups": {
         "1": [
@@ -17,7 +17,7 @@
             "base_pred": 0.506,
             "live_gp": 23,
             "live_goals": 21,
-            "def_multiplier": 0.957,
+            "def_multiplier": 0.956,
             "final_score": 0.646
           },
           {
@@ -28,8 +28,8 @@
             "base_pred": 0.447,
             "live_gp": 21,
             "live_goals": 21,
-            "def_multiplier": 0.95,
-            "final_score": 0.636
+            "def_multiplier": 0.951,
+            "final_score": 0.637
           },
           {
             "player": "Kyle Connor",
@@ -39,8 +39,8 @@
             "base_pred": 0.501,
             "live_gp": 22,
             "live_goals": 17,
-            "def_multiplier": 1.025,
-            "final_score": 0.628
+            "def_multiplier": 1.023,
+            "final_score": 0.626
           },
           {
             "player": "Kirill Kaprizov",
@@ -50,7 +50,7 @@
             "base_pred": 0.503,
             "live_gp": 23,
             "live_goals": 17,
-            "def_multiplier": 1.023,
+            "def_multiplier": 1.024,
             "final_score": 0.615
           },
           {
@@ -72,7 +72,7 @@
             "base_pred": 0.496,
             "live_gp": 23,
             "live_goals": 12,
-            "def_multiplier": 1.023,
+            "def_multiplier": 1.024,
             "final_score": 0.518
           },
           {
@@ -83,8 +83,8 @@
             "base_pred": 0.46,
             "live_gp": 21,
             "live_goals": 13,
-            "def_multiplier": 0.947,
-            "final_score": 0.49
+            "def_multiplier": 0.946,
+            "final_score": 0.489
           },
           {
             "player": "Auston Matthews",
@@ -95,7 +95,7 @@
             "live_gp": 23,
             "live_goals": 12,
             "def_multiplier": 0.999,
-            "final_score": 0.484
+            "final_score": 0.485
           },
           {
             "player": "Connor McDavid",
@@ -105,7 +105,7 @@
             "base_pred": 0.467,
             "live_gp": 23,
             "live_goals": 13,
-            "def_multiplier": 0.957,
+            "def_multiplier": 0.956,
             "final_score": 0.482
           },
           {
@@ -116,7 +116,7 @@
             "base_pred": 0.318,
             "live_gp": 22,
             "live_goals": 15,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.465
           },
           {
@@ -127,7 +127,7 @@
             "base_pred": 0.478,
             "live_gp": 21,
             "live_goals": 8,
-            "def_multiplier": 0.947,
+            "def_multiplier": 0.946,
             "final_score": 0.414
           },
           {
@@ -160,8 +160,8 @@
             "base_pred": 0.3,
             "live_gp": 22,
             "live_goals": 10,
-            "def_multiplier": 1.025,
-            "final_score": 0.363
+            "def_multiplier": 1.026,
+            "final_score": 0.364
           },
           {
             "player": "Jack Eichel",
@@ -172,7 +172,7 @@
             "live_gp": 23,
             "live_goals": 9,
             "def_multiplier": 0.952,
-            "final_score": 0.352
+            "final_score": 0.351
           }
         ],
         "2": [
@@ -206,7 +206,7 @@
             "base_pred": 0.444,
             "live_gp": 20,
             "live_goals": 9,
-            "def_multiplier": 1.014,
+            "def_multiplier": 1.015,
             "final_score": 0.453
           },
           {
@@ -251,7 +251,7 @@
             "live_gp": 10,
             "live_goals": 7,
             "def_multiplier": 0.952,
-            "final_score": 0.397
+            "final_score": 0.396
           },
           {
             "player": "Mark Stone",
@@ -262,7 +262,7 @@
             "live_gp": 23,
             "live_goals": 11,
             "def_multiplier": 0.952,
-            "final_score": 0.358
+            "final_score": 0.357
           },
           {
             "player": "Roope Hintz",
@@ -295,7 +295,7 @@
             "live_gp": 23,
             "live_goals": 7,
             "def_multiplier": 0.952,
-            "final_score": 0.264
+            "final_score": 0.263
           },
           {
             "player": "Matias Maccelli",
@@ -305,7 +305,7 @@
             "base_pred": 0.195,
             "live_gp": 11,
             "live_goals": 2,
-            "def_multiplier": 1.014,
+            "def_multiplier": 1.015,
             "final_score": 0.195
           },
           {
@@ -362,8 +362,8 @@
             "base_pred": 0.15,
             "live_gp": 2,
             "live_goals": 1,
-            "def_multiplier": 1.023,
-            "final_score": 0.171
+            "def_multiplier": 1.024,
+            "final_score": 0.172
           },
           {
             "player": "Zayne Parekh",
@@ -417,8 +417,8 @@
             "base_pred": 0.127,
             "live_gp": 19,
             "live_goals": 2,
-            "def_multiplier": 1.028,
-            "final_score": 0.124
+            "def_multiplier": 1.027,
+            "final_score": 0.123
           },
           {
             "player": "Noel Acciari",
@@ -450,7 +450,7 @@
             "base_pred": 0.136,
             "live_gp": 11,
             "live_goals": 0,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.109
           },
           {
@@ -472,7 +472,7 @@
             "base_pred": 0.101,
             "live_gp": 20,
             "live_goals": 1,
-            "def_multiplier": 1.014,
+            "def_multiplier": 1.015,
             "final_score": 0.087
           },
           {
@@ -494,7 +494,7 @@
             "base_pred": 0.071,
             "live_gp": 7,
             "live_goals": 0,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.063
           },
           {
@@ -519,19 +519,19 @@
           "base_pred": 0.506,
           "live_gp": 23,
           "live_goals": 21,
-          "def_multiplier": 0.957,
+          "def_multiplier": 0.956,
           "final_score": 0.646
         },
         "2": {
-          "player": "Andrei Svechnikov",
-          "team": "CAR",
-          "opponent": "MTL",
+          "player": "Jason Robertson",
+          "team": "DAL",
+          "opponent": "VGK",
           "position": "F",
-          "base_pred": 0.411,
+          "base_pred": 0.473,
           "live_gp": 21,
-          "live_goals": 11,
-          "def_multiplier": 1.028,
-          "final_score": 0.467
+          "live_goals": 10,
+          "def_multiplier": 0.964,
+          "final_score": 0.453
         },
         "3": {
           "player": "Braeden Bowman",
@@ -546,7 +546,19 @@
         }
       },
       "settled": false,
-      "results": null
+      "results": null,
+      "timing": {
+        "decision": "SELECT_DEFER",
+        "basis": "deferred",
+        "lock_utc": "2026-11-20T00:30:00Z",
+        "lock_et": "7:30 PM ET",
+        "recommended_wave_et": "7:30 PM ET",
+        "v_now": 1.022,
+        "v_defer_best": 1.1775,
+        "ev_delta": 0.1555
+      },
+      "picks_locked": false,
+      "locked_et": ""
     },
     {
       "date": "2026-11-18",
@@ -1362,6 +1374,17 @@
         "date": "2026-11-19",
         "mode": "Regular Season",
         "settled": false,
+        "timing": {
+          "decision": "SELECT_DEFER",
+          "basis": "deferred",
+          "lock_utc": "2026-11-20T00:30:00Z",
+          "lock_et": "7:30 PM ET",
+          "recommended_wave_et": "7:30 PM ET",
+          "v_now": 1.022,
+          "v_defer_best": 1.1775,
+          "ev_delta": 0.1555
+        },
+        "picks_locked": false,
         "hits_of_3": null,
         "picks": {
           "1": {
@@ -1371,9 +1394,9 @@
             "scored": null
           },
           "2": {
-            "player": "Andrei Svechnikov",
-            "team": "CAR",
-            "score": 0.467,
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "score": 0.453,
             "scored": null
           },
           "3": {
@@ -1388,6 +1411,8 @@
         "date": "2026-11-18",
         "mode": "Regular Season",
         "settled": true,
+        "timing": {},
+        "picks_locked": false,
         "hits_of_3": 1,
         "picks": {
           "1": {
@@ -1414,6 +1439,8 @@
         "date": "2026-11-17",
         "mode": "Regular Season",
         "settled": true,
+        "timing": {},
+        "picks_locked": false,
         "hits_of_3": 0,
         "picks": {
           "1": {
@@ -1440,6 +1467,8 @@
         "date": "2026-11-16",
         "mode": "Regular Season",
         "settled": true,
+        "timing": {},
+        "picks_locked": false,
         "hits_of_3": 1,
         "picks": {
           "1": {
