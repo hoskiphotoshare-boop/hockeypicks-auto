@@ -5,32 +5,10 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-18 06:12 PM ET",
+      "captured_et": "2026-11-18 07:36 PM ET",
       "model_n_half": 30.63,
       "groups": {
         "1": [
-          {
-            "player": "Jack Hughes",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.456,
-            "live_gp": 21,
-            "live_goals": 10,
-            "def_multiplier": 1.03,
-            "final_score": 0.478
-          },
-          {
-            "player": "Cole Caufield",
-            "team": "MTL",
-            "opponent": "NJD",
-            "position": "F",
-            "base_pred": 0.429,
-            "live_gp": 21,
-            "live_goals": 12,
-            "def_multiplier": 0.949,
-            "final_score": 0.464
-          },
           {
             "player": "Artturi Lehkonen",
             "team": "COL",
@@ -41,50 +19,6 @@
             "live_goals": 15,
             "def_multiplier": 0.974,
             "final_score": 0.457
-          },
-          {
-            "player": "David Pastrnak",
-            "team": "BOS",
-            "opponent": "DET",
-            "position": "F",
-            "base_pred": 0.471,
-            "live_gp": 21,
-            "live_goals": 9,
-            "def_multiplier": 0.99,
-            "final_score": 0.45
-          },
-          {
-            "player": "Lucas Raymond",
-            "team": "DET",
-            "opponent": "BOS",
-            "position": "F",
-            "base_pred": 0.446,
-            "live_gp": 21,
-            "live_goals": 8,
-            "def_multiplier": 0.971,
-            "final_score": 0.41
-          },
-          {
-            "player": "Alex DeBrincat",
-            "team": "DET",
-            "opponent": "BOS",
-            "position": "F",
-            "base_pred": 0.458,
-            "live_gp": 21,
-            "live_goals": 7,
-            "def_multiplier": 0.971,
-            "final_score": 0.399
-          },
-          {
-            "player": "Nico Hischier",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.361,
-            "live_gp": 21,
-            "live_goals": 9,
-            "def_multiplier": 1.03,
-            "final_score": 0.396
           },
           {
             "player": "Martin Necas",
@@ -111,28 +45,6 @@
         ],
         "2": [
           {
-            "player": "Nicholas Suzuki",
-            "team": "MTL",
-            "opponent": "NJD",
-            "position": "F",
-            "base_pred": 0.448,
-            "live_gp": 15,
-            "live_goals": 8,
-            "def_multiplier": 0.949,
-            "final_score": 0.453
-          },
-          {
-            "player": "Viktor Arvidsson",
-            "team": "DET",
-            "opponent": "BOS",
-            "position": "F",
-            "base_pred": 0.384,
-            "live_gp": 21,
-            "live_goals": 8,
-            "def_multiplier": 0.971,
-            "final_score": 0.372
-          },
-          {
             "player": "Nazem Kadri",
             "team": "COL",
             "opponent": "UTA",
@@ -153,50 +65,6 @@
             "live_goals": 8,
             "def_multiplier": 0.974,
             "final_score": 0.308
-          },
-          {
-            "player": "Pavel Zacha",
-            "team": "BOS",
-            "opponent": "DET",
-            "position": "F",
-            "base_pred": 0.328,
-            "live_gp": 20,
-            "live_goals": 5,
-            "def_multiplier": 0.99,
-            "final_score": 0.298
-          },
-          {
-            "player": "Timo Meier",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.344,
-            "live_gp": 21,
-            "live_goals": 4,
-            "def_multiplier": 1.03,
-            "final_score": 0.293
-          },
-          {
-            "player": "Jesper Bratt",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.334,
-            "live_gp": 21,
-            "live_goals": 4,
-            "def_multiplier": 1.03,
-            "final_score": 0.291
-          },
-          {
-            "player": "Morgan Geekie",
-            "team": "BOS",
-            "opponent": "DET",
-            "position": "F",
-            "base_pred": 0.311,
-            "live_gp": 21,
-            "live_goals": 5,
-            "def_multiplier": 0.99,
-            "final_score": 0.281
           },
           {
             "player": "Brock Nelson",
@@ -232,17 +100,6 @@
             "final_score": 0.218
           },
           {
-            "player": "Alex Newhook",
-            "team": "MTL",
-            "opponent": "NJD",
-            "position": "F",
-            "base_pred": 0.223,
-            "live_gp": 21,
-            "live_goals": 5,
-            "def_multiplier": 0.949,
-            "final_score": 0.211
-          },
-          {
             "player": "Mikhail Sergachev",
             "team": "UTA",
             "opponent": "COL",
@@ -252,53 +109,9 @@
             "live_goals": 6,
             "def_multiplier": 0.939,
             "final_score": 0.192
-          },
-          {
-            "player": "Stefan Noesen",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.13,
-            "live_gp": 7,
-            "live_goals": 2,
-            "def_multiplier": 1.03,
-            "final_score": 0.157
-          },
-          {
-            "player": "Marat Khusnutdinov",
-            "team": "BOS",
-            "opponent": "DET",
-            "position": "F",
-            "base_pred": 0.136,
-            "live_gp": 21,
-            "live_goals": 3,
-            "def_multiplier": 0.99,
-            "final_score": 0.139
           }
         ],
         "3": [
-          {
-            "player": "Jesper Boqvist",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.175,
-            "live_gp": 19,
-            "live_goals": 6,
-            "def_multiplier": 1.03,
-            "final_score": 0.226
-          },
-          {
-            "player": "Dougie Hamilton",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "D",
-            "base_pred": 0.184,
-            "live_gp": 21,
-            "live_goals": 2,
-            "def_multiplier": 1.03,
-            "final_score": 0.156
-          },
           {
             "player": "Parker Kelly",
             "team": "COL",
@@ -311,92 +124,15 @@
             "final_score": 0.138
           },
           {
-            "player": "Mason Lohrei",
-            "team": "BOS",
-            "opponent": "DET",
+            "player": "MacKenzie Weegar",
+            "team": "UTA",
+            "opponent": "COL",
             "position": "D",
-            "base_pred": 0.114,
-            "live_gp": 20,
-            "live_goals": 3,
-            "def_multiplier": 0.99,
-            "final_score": 0.126
-          },
-          {
-            "player": "Michael Rasmussen",
-            "team": "DET",
-            "opponent": "BOS",
-            "position": "F",
-            "base_pred": 0.16,
-            "live_gp": 20,
-            "live_goals": 1,
-            "def_multiplier": 0.971,
-            "final_score": 0.121
-          },
-          {
-            "player": "Cody Glass",
-            "team": "NJD",
-            "opponent": "MTL",
-            "position": "F",
-            "base_pred": 0.125,
-            "live_gp": 21,
+            "base_pred": 0.101,
+            "live_gp": 22,
             "live_goals": 2,
-            "def_multiplier": 1.03,
-            "final_score": 0.118
-          },
-          {
-            "player": "Florian Xhekaj",
-            "team": "MTL",
-            "opponent": "NJD",
-            "position": "F",
-            "base_pred": 0.127,
-            "live_gp": 9,
-            "live_goals": 1,
-            "def_multiplier": 0.949,
-            "final_score": 0.118
-          },
-          {
-            "player": "Charlie McAvoy",
-            "team": "BOS",
-            "opponent": "DET",
-            "position": "D",
-            "base_pred": 0.126,
-            "live_gp": 15,
-            "live_goals": 1,
-            "def_multiplier": 0.99,
-            "final_score": 0.108
-          },
-          {
-            "player": "Carter Mazur",
-            "team": "DET",
-            "opponent": "BOS",
-            "position": "F",
-            "base_pred": 0.118,
-            "live_gp": 14,
-            "live_goals": 1,
-            "def_multiplier": 0.971,
-            "final_score": 0.103
-          },
-          {
-            "player": "Hampus Lindholm",
-            "team": "BOS",
-            "opponent": "DET",
-            "position": "D",
-            "base_pred": 0.12,
-            "live_gp": 21,
-            "live_goals": 1,
-            "def_multiplier": 0.99,
-            "final_score": 0.096
-          },
-          {
-            "player": "Sean Kuraly",
-            "team": "BOS",
-            "opponent": "DET",
-            "position": "F",
-            "base_pred": 0.093,
-            "live_gp": 7,
-            "live_goals": 0,
-            "def_multiplier": 0.99,
-            "final_score": 0.082
+            "def_multiplier": 0.939,
+            "final_score": 0.092
           },
           {
             "player": "Gavin Brindley",
@@ -408,17 +144,6 @@
             "live_goals": 0,
             "def_multiplier": 0.974,
             "final_score": 0.078
-          },
-          {
-            "player": "Kaiden Guhle",
-            "team": "MTL",
-            "opponent": "NJD",
-            "position": "D",
-            "base_pred": 0.062,
-            "live_gp": 17,
-            "live_goals": 2,
-            "def_multiplier": 0.949,
-            "final_score": 0.076
           },
           {
             "player": "Kevin Stenlund",
@@ -446,37 +171,37 @@
       },
       "ai_picks": {
         "1": {
-          "player": "Jack Hughes",
-          "team": "NJD",
-          "opponent": "MTL",
+          "player": "Artturi Lehkonen",
+          "team": "COL",
+          "opponent": "UTA",
           "position": "F",
-          "base_pred": 0.456,
+          "base_pred": 0.33,
           "live_gp": 21,
-          "live_goals": 10,
-          "def_multiplier": 1.03,
-          "final_score": 0.478
+          "live_goals": 15,
+          "def_multiplier": 0.974,
+          "final_score": 0.457
         },
         "2": {
-          "player": "Nicholas Suzuki",
-          "team": "MTL",
-          "opponent": "NJD",
+          "player": "Nazem Kadri",
+          "team": "COL",
+          "opponent": "UTA",
           "position": "F",
-          "base_pred": 0.448,
-          "live_gp": 15,
-          "live_goals": 8,
-          "def_multiplier": 0.949,
-          "final_score": 0.453
+          "base_pred": 0.361,
+          "live_gp": 21,
+          "live_goals": 5,
+          "def_multiplier": 0.974,
+          "final_score": 0.308
         },
         "3": {
-          "player": "Jesper Boqvist",
-          "team": "NJD",
-          "opponent": "MTL",
+          "player": "Parker Kelly",
+          "team": "COL",
+          "opponent": "UTA",
           "position": "F",
-          "base_pred": 0.175,
-          "live_gp": 19,
-          "live_goals": 6,
-          "def_multiplier": 1.03,
-          "final_score": 0.226
+          "base_pred": 0.121,
+          "live_gp": 21,
+          "live_goals": 4,
+          "def_multiplier": 0.974,
+          "final_score": 0.138
         }
       },
       "settled": false,
@@ -1047,21 +772,21 @@
         "hits_of_3": null,
         "picks": {
           "1": {
-            "player": "Jack Hughes",
-            "team": "NJD",
-            "score": 0.478,
+            "player": "Artturi Lehkonen",
+            "team": "COL",
+            "score": 0.457,
             "scored": null
           },
           "2": {
-            "player": "Nicholas Suzuki",
-            "team": "MTL",
-            "score": 0.453,
+            "player": "Nazem Kadri",
+            "team": "COL",
+            "score": 0.308,
             "scored": null
           },
           "3": {
-            "player": "Jesper Boqvist",
-            "team": "NJD",
-            "score": 0.226,
+            "player": "Parker Kelly",
+            "team": "COL",
+            "score": 0.138,
             "scored": null
           }
         }
