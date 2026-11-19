@@ -1064,14 +1064,9 @@
           return `<span class="runner-name" style="font-size:0.8rem"><strong>G${esc(g)}:</strong> ${esc(p.player)} (${esc(p.team)}, ${esc(p.wave_et || '--')})${injBadge(p.injury_status)} • <strong>${esc(Number(p.final_score).toFixed(3))}</strong></span>`;
         }).join('<span style="color:var(--text-2)"> | </span>');
 
-      const isDeferred = dec === 'SELECT_DEFER' && t.selection && Object.keys(t.selection).length;
-      const selectionChips = isDeferred
-        ? Object.keys(t.selection)
-            .sort((a, b) => Number(a) - Number(b))
-            .map(g => {
-              const p = t.selection[g];
-              return `<span class="runner-name" style="font-size:0.8rem"><strong>G${esc(g)}:</strong> ${esc(p.player)} (${esc(p.team)}, ${esc(p.wave_et || '--')})${injBadge(p.injury_status)} • <strong>${esc(Number(p.final_score).toFixed(3))}</strong></span>`;
-            }).join('<span style="color:var(--text-2)"> | </span>')
+      const isDeferred = dec === 'SELECT_DEFER';
+      const lockNote = isDeferred && t.selection_lock_et
+        ? `<div style="font-size:0.75rem;color:var(--text-2);margin-bottom:4px">Tracker will record the best ticket in effect at ${esc(t.selection_lock_et)}.</div>`
         : '';
 
       const wavesHtml = waves.length ? `
@@ -1136,12 +1131,10 @@
           <div class="pick-score-cell"><span>Best Defer EV</span><strong>${esc(Number(t.v_defer_best || 0).toFixed(3))} xG (${esc(deltaStr)})</strong></div>
           <div class="pick-score-cell"><span>Wave 1 Risk</span><strong>${esc(t.locked_picks_if_defer_1 ?? 0)} / 3 locks</strong></div>
         </div>
-        ${isDeferred ? `<div style="font-size:0.78rem;color:var(--text-1);margin-bottom:4px">
-          <strong>Ticket to Lock (before ${esc(t.selection_lock_et || '--')}):</strong> ${selectionChips || '--'}
-        </div>` : ''}
         <div style="font-size:0.78rem;color:var(--text-1);margin-bottom:4px">
-          <strong>${isDeferred ? 'Best Now (pre-defer):' : 'Current Best Ticket:'}</strong> ${curBestChips || '--'}
+          <strong>Current Best Ticket:</strong> ${curBestChips || '--'}
         </div>
+        ${lockNote}
         ${wavesHtml}
         ${hiddenHtml}
       `;
