@@ -163,7 +163,7 @@ def upsert_tims_snapshot(
     if isinstance(timing_advice, dict):
         timing_obj = {
             "decision": timing_advice.get("decision"),
-            "basis": timing_advice.get("selection_basis"),
+            "basis": timing_advice.get("lock_basis"),
             "lock_utc": timing_advice.get("selection_lock_utc"),
             "lock_et": timing_advice.get("selection_lock_et"),
             "recommended_wave_et": timing_advice.get("recommended_wave_et"),
