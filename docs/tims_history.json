@@ -558,8 +558,8 @@
         "v_defer_best": 1.0251,
         "ev_delta": 0.0031
       },
-      "picks_locked": false,
-      "locked_et": ""
+      "picks_locked": true,
+      "locked_et": "2026-11-19 06:41 PM ET"
     },
     {
       "date": "2026-11-18",
@@ -1386,7 +1386,7 @@
           "v_defer_best": 1.0251,
           "ev_delta": 0.0031
         },
-        "picks_locked": false,
+        "picks_locked": true,
         "hits_of_3": null,
         "picks": {
           "1": {
