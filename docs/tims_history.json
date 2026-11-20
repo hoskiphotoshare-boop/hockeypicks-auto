@@ -545,8 +545,83 @@
           "final_score": 0.19
         }
       },
-      "settled": false,
-      "results": null,
+      "settled": true,
+      "results": {
+        "hits_of_3": 0,
+        "total_picks": 3,
+        "group_hits": {
+          "1": {
+            "player": "Leon Draisaitl",
+            "team": "EDM",
+            "goals": 0,
+            "scored": false
+          },
+          "2": {
+            "player": "Andrei Svechnikov",
+            "team": "CAR",
+            "goals": 0,
+            "scored": false
+          },
+          "3": {
+            "player": "Braeden Bowman",
+            "team": "VGK",
+            "goals": 0,
+            "scored": false
+          }
+        },
+        "group_random_probs": {
+          "1": 0.4667,
+          "2": 0.1333,
+          "3": 0.0667
+        },
+        "player_goals": {
+          "Leon Draisaitl": 0,
+          "Cutter Gauthier": 0,
+          "Kyle Connor": 1,
+          "Kirill Kaprizov": 1,
+          "Tage Thompson": 1,
+          "Matt Boldy": 1,
+          "Jake Guentzel": 0,
+          "Auston Matthews": 1,
+          "Connor McDavid": 0,
+          "Artturi Lehkonen": 0,
+          "Nikita Kucherov": 1,
+          "Mikko Rantanen": 0,
+          "Wyatt Johnston": 1,
+          "Martin Necas": 0,
+          "Jack Eichel": 0,
+          "Andrei Svechnikov": 0,
+          "William Nylander": 0,
+          "Bo Horvat": 0,
+          "Jason Robertson": 0,
+          "Cole Caufield": 0,
+          "Jimmy Snuggerud": 2,
+          "Victor Olofsson": 1,
+          "Mark Stone": 0,
+          "Roope Hintz": 0,
+          "Joel Farabee": 0,
+          "Brett Howden": 0,
+          "Matias Maccelli": 0,
+          "Jamie Benn": 0,
+          "Teuvo Teravainen": 0,
+          "Peyton Krebs": 0,
+          "Braeden Bowman": 0,
+          "Brock Faber": 0,
+          "Zayne Parekh": 0,
+          "Connor Dewar": 0,
+          "Brandt Clarke": 0,
+          "Dakota Joshua": 1,
+          "Anthony Beauvillier": 0,
+          "Noel Acciari": 0,
+          "Andre Lee": 0,
+          "Logan O'Connor": 0,
+          "Sam Steel": 0,
+          "Casey Cizikas": 0,
+          "Maxim Tsyplakov": 0,
+          "Oliver Ekman-Larsson": 0,
+          "Gavin Brindley": 0
+        }
+      },
       "timing": {
         "decision": "BORDERLINE_WATCH",
         "basis": "now",
@@ -559,7 +634,8 @@
         "ev_delta": 0.0031
       },
       "picks_locked": true,
-      "locked_et": "2026-11-19 06:41 PM ET"
+      "locked_et": "2026-11-19 06:41 PM ET",
+      "settled_et": "2026-11-20 10:18 AM ET"
     },
     {
       "date": "2026-11-18",
@@ -1356,25 +1432,25 @@
   ],
   "summary": {
     "total_days_logged": 4,
-    "settled_days": 3,
-    "pending_days": 1,
+    "settled_days": 4,
+    "pending_days": 0,
     "ai_hits": 2,
-    "ai_possible": 9,
-    "ai_hit_rate_pct": 22.2,
-    "random_expected_pct": 24.8,
+    "ai_possible": 12,
+    "ai_hit_rate_pct": 16.7,
+    "random_expected_pct": 24.2,
     "hit_1plus_days": 2,
     "hit_2plus_days": 0,
     "sweep_3_days": 0,
     "group_hit_rates": {
       "1": 0.0,
-      "2": 33.3,
-      "3": 33.3
+      "2": 25.0,
+      "3": 25.0
     },
     "recent_days": [
       {
         "date": "2026-11-19",
         "mode": "Regular Season",
-        "settled": false,
+        "settled": true,
         "timing": {
           "decision": "BORDERLINE_WATCH",
           "basis": "now",
@@ -1387,25 +1463,25 @@
           "ev_delta": 0.0031
         },
         "picks_locked": true,
-        "hits_of_3": null,
+        "hits_of_3": 0,
         "picks": {
           "1": {
             "player": "Leon Draisaitl",
             "team": "EDM",
             "score": 0.646,
-            "scored": null
+            "scored": false
           },
           "2": {
             "player": "Andrei Svechnikov",
             "team": "CAR",
             "score": 0.467,
-            "scored": null
+            "scored": false
           },
           "3": {
             "player": "Braeden Bowman",
             "team": "VGK",
             "score": 0.19,
-            "scored": null
+            "scored": false
           }
         }
       },
