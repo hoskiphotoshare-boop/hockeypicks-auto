@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-20 00:37:17 UTC",
-    "updated_et": "2026-11-19 07:37 PM ET",
+    "updated_utc": "2026-11-20 01:07:36 UTC",
+    "updated_et": "2026-11-19 08:07 PM ET",
     "today_date": "2026-11-19",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -17,7 +17,7 @@
       "date": "2026-11-19",
       "live_loop_fetches": 3,
       "live_loop_cap": 3,
-      "last_source": "api",
+      "last_source": "cached_cap_reached",
       "requests_last": 1,
       "requests_used": 120,
       "requests_remaining": 380
@@ -83,46 +83,6 @@
         "eb_live_weight_pct": 40.7,
         "def_multiplier": 0.951,
         "final_score": 0.637,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
-        "player": "Kirill Kaprizov",
-        "team": "MIN",
-        "position": "F",
-        "opponent": "CGY",
-        "base_pred": 0.503,
-        "live_gp": 23,
-        "live_goals": 17,
-        "live_shots": 73,
-        "live_g_gp": 0.739,
-        "eb_live_weight_pct": 42.9,
-        "def_multiplier": 1.024,
-        "final_score": 0.615,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
-        "player": "Matt Boldy",
-        "team": "MIN",
-        "position": "F",
-        "opponent": "CGY",
-        "base_pred": 0.496,
-        "live_gp": 23,
-        "live_goals": 12,
-        "live_shots": 94,
-        "live_g_gp": 0.522,
-        "eb_live_weight_pct": 42.9,
-        "def_multiplier": 1.024,
-        "final_score": 0.518,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -293,26 +253,6 @@
         "group": 2
       },
       {
-        "player": "Adam Fantilli",
-        "team": "CBJ",
-        "position": "F",
-        "opponent": "CHI",
-        "base_pred": 0.361,
-        "live_gp": 19,
-        "live_goals": 5,
-        "live_shots": 53,
-        "live_g_gp": 0.263,
-        "eb_live_weight_pct": 38.3,
-        "def_multiplier": 1.058,
-        "final_score": 0.346,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
         "player": "Roope Hintz",
         "team": "DAL",
         "position": "F",
@@ -325,26 +265,6 @@
         "eb_live_weight_pct": 40.7,
         "def_multiplier": 0.964,
         "final_score": 0.339,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Joel Farabee",
-        "team": "CGY",
-        "position": "F",
-        "opponent": "MIN",
-        "base_pred": 0.338,
-        "live_gp": 22,
-        "live_goals": 7,
-        "live_shots": 58,
-        "live_g_gp": 0.318,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.926,
-        "final_score": 0.306,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -411,26 +331,6 @@
         "injury_dtd": false,
         "injury_note": "",
         "group": 2
-      },
-      {
-        "player": "Teuvo Teravainen",
-        "team": "CHI",
-        "position": "F",
-        "opponent": "CBJ",
-        "base_pred": 0.129,
-        "live_gp": 17,
-        "live_goals": 2,
-        "live_shots": 12,
-        "live_g_gp": 0.118,
-        "eb_live_weight_pct": 35.7,
-        "def_multiplier": 1.05,
-        "final_score": 0.132,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
       }
     ],
     "3": [
@@ -447,86 +347,6 @@
         "eb_live_weight_pct": 42.9,
         "def_multiplier": 0.952,
         "final_score": 0.19,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Ivan Provorov",
-        "team": "CBJ",
-        "position": "D",
-        "opponent": "CHI",
-        "base_pred": 0.151,
-        "live_gp": 8,
-        "live_goals": 2,
-        "live_shots": 19,
-        "live_g_gp": 0.25,
-        "eb_live_weight_pct": 20.7,
-        "def_multiplier": 1.058,
-        "final_score": 0.179,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Brock Faber",
-        "team": "MIN",
-        "position": "D",
-        "opponent": "CGY",
-        "base_pred": 0.15,
-        "live_gp": 2,
-        "live_goals": 1,
-        "live_shots": 4,
-        "live_g_gp": 0.5,
-        "eb_live_weight_pct": 6.1,
-        "def_multiplier": 1.024,
-        "final_score": 0.172,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Adam Klapka",
-        "team": "CGY",
-        "position": "F",
-        "opponent": "MIN",
-        "base_pred": 0.181,
-        "live_gp": 22,
-        "live_goals": 4,
-        "live_shots": 31,
-        "live_g_gp": 0.182,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.926,
-        "final_score": 0.168,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Zayne Parekh",
-        "team": "CGY",
-        "position": "D",
-        "opponent": "MIN",
-        "base_pred": 0.224,
-        "live_gp": 22,
-        "live_goals": 2,
-        "live_shots": 39,
-        "live_g_gp": 0.091,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.926,
-        "final_score": 0.164,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -567,26 +387,6 @@
         "eb_live_weight_pct": 37.0,
         "def_multiplier": 0.964,
         "final_score": 0.1,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Maxim Tsyplakov",
-        "team": "CGY",
-        "position": "F",
-        "opponent": "MIN",
-        "base_pred": 0.096,
-        "live_gp": 9,
-        "live_goals": 0,
-        "live_shots": 5,
-        "live_g_gp": 0.0,
-        "eb_live_weight_pct": 22.7,
-        "def_multiplier": 0.926,
-        "final_score": 0.074,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -640,12 +440,12 @@
     "status": "evaluated",
     "decision": "BORDERLINE_WATCH",
     "headline": "Select Now (Borderline Defer Watch Before 9:00 PM ET)",
-    "detail": "Current best ticket (1.008 xG) is near-optimal, though waiting past 7:30 PM ET offers slight +0.008 xG (50% chance) upside if unlisted late scorers enter.",
+    "detail": "Current best ticket (1.008 xG) is near-optimal, though waiting past 8:00 PM ET offers slight +0.006 xG (48% chance) upside if unlisted late scorers enter.",
     "defer_threshold": 0.02,
     "recommended_wave_et": "9:00 PM ET",
     "v_now": 1.0084,
-    "v_defer_best": 1.0164,
-    "ev_delta": 0.008,
+    "v_defer_best": 1.0148,
+    "ev_delta": 0.0064,
     "locked_picks_if_defer_1": 0,
     "current_best": {
       "1": {
@@ -655,7 +455,7 @@
         "position": "F",
         "final_score": 0.637,
         "p_goal_pct": 47.1,
-        "wave_idx": 3,
+        "wave_idx": 2,
         "wave_et": "9:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -667,7 +467,7 @@
         "position": "F",
         "final_score": 0.453,
         "p_goal_pct": 36.4,
-        "wave_idx": 5,
+        "wave_idx": 4,
         "wave_et": "10:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -679,7 +479,7 @@
         "position": "F",
         "final_score": 0.19,
         "p_goal_pct": 17.3,
-        "wave_idx": 5,
+        "wave_idx": 4,
         "wave_et": "10:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -693,7 +493,7 @@
         "position": "F",
         "final_score": 0.637,
         "p_goal_pct": 47.1,
-        "wave_idx": 3,
+        "wave_idx": 2,
         "wave_et": "9:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -705,7 +505,7 @@
         "position": "F",
         "final_score": 0.453,
         "p_goal_pct": 36.4,
-        "wave_idx": 5,
+        "wave_idx": 4,
         "wave_et": "10:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -717,16 +517,16 @@
         "position": "F",
         "final_score": 0.19,
         "p_goal_pct": 17.3,
-        "wave_idx": 5,
+        "wave_idx": 4,
         "wave_et": "10:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
       }
     },
     "lock_basis": "now",
-    "first_wave_utc": "2026-11-20T00:30:00Z",
-    "selection_lock_utc": "2026-11-20T00:30:00Z",
-    "selection_lock_et": "7:30 PM ET",
+    "first_wave_utc": "2026-11-20T01:00:00Z",
+    "selection_lock_utc": "2026-11-20T01:00:00Z",
+    "selection_lock_et": "8:00 PM ET",
     "selection_wave": 1,
     "hidden_upside_players": [
       {
@@ -736,20 +536,8 @@
         "position": "R",
         "final_score": 0.459,
         "p_goal_pct": 36.8,
-        "wave_idx": 2,
-        "wave_et": "9:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      },
-      {
-        "player": "Frank Nazar",
-        "team": "CHI",
-        "opponent": "CBJ",
-        "position": "C",
-        "final_score": 0.416,
-        "p_goal_pct": 34.0,
         "wave_idx": 1,
-        "wave_et": "8:00 PM ET",
+        "wave_et": "9:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
       }
@@ -759,80 +547,31 @@
     "waves": [
       {
         "wave": 1,
-        "start_time_et": "7:30 PM ET",
-        "matchups": [
-          "EDM @ TBL"
-        ],
-        "est_ev": 1.0084,
-        "ev_delta": 0.0,
-        "beat_now_pct": 0.0,
-        "visible_carried": 27,
-        "hidden_available": 218,
-        "unlisted_scorers": [
-          {
-            "player": "Leon Draisaitl",
-            "team": "EDM",
-            "final_score": 0.646,
-            "p_goal_pct": 47.6,
-            "injury_status": null
-          },
-          {
-            "player": "Jake Guentzel",
-            "team": "TBL",
-            "final_score": 0.489,
-            "p_goal_pct": 38.7,
-            "injury_status": null
-          },
-          {
-            "player": "Connor McDavid",
-            "team": "EDM",
-            "final_score": 0.482,
-            "p_goal_pct": 38.2,
-            "injury_status": null
-          },
-          {
-            "player": "Nikita Kucherov",
-            "team": "TBL",
-            "final_score": 0.414,
-            "p_goal_pct": 33.9,
-            "injury_status": null
-          }
-        ],
-        "is_current": true
-      },
-      {
-        "wave": 2,
         "start_time_et": "8:00 PM ET",
         "matchups": [
           "CBJ @ CHI",
           "MIN @ CGY"
         ],
-        "est_ev": 1.0161,
-        "ev_delta": 0.0077,
-        "beat_now_pct": 45.3,
-        "visible_carried": 27,
-        "hidden_available": 177,
-        "projected_ticket": {
-          "1": {
-            "player": "Cutter Gauthier",
-            "team": "ANA",
-            "group": "1",
-            "final_score": 0.637
-          },
-          "2": {
-            "player": "Jason Robertson",
-            "team": "DAL",
-            "group": "2",
-            "final_score": 0.453
-          },
-          "3": {
-            "player": "Braeden Bowman",
-            "team": "VGK",
-            "group": "3",
-            "final_score": 0.19
-          }
-        },
+        "est_ev": 1.0084,
+        "ev_delta": 0.0,
+        "beat_now_pct": 0.0,
+        "visible_carried": 17,
+        "hidden_available": 187,
         "unlisted_scorers": [
+          {
+            "player": "Kirill Kaprizov",
+            "team": "MIN",
+            "final_score": 0.615,
+            "p_goal_pct": 45.9,
+            "injury_status": null
+          },
+          {
+            "player": "Matt Boldy",
+            "team": "MIN",
+            "final_score": 0.518,
+            "p_goal_pct": 40.4,
+            "injury_status": null
+          },
           {
             "player": "Frank Nazar",
             "team": "CHI",
@@ -846,33 +585,19 @@
             "final_score": 0.399,
             "p_goal_pct": 32.9,
             "injury_status": null
-          },
-          {
-            "player": "Joel Eriksson Ek",
-            "team": "MIN",
-            "final_score": 0.379,
-            "p_goal_pct": 31.5,
-            "injury_status": null
-          },
-          {
-            "player": "Roman Kantserov",
-            "team": "CHI",
-            "final_score": 0.336,
-            "p_goal_pct": 28.5,
-            "injury_status": null
           }
         ],
-        "is_current": false
+        "is_current": true
       },
       {
-        "wave": 3,
+        "wave": 2,
         "start_time_et": "9:00 PM ET",
         "matchups": [
           "ANA @ COL"
         ],
-        "est_ev": 1.0164,
-        "ev_delta": 0.008,
-        "beat_now_pct": 50.0,
+        "est_ev": 1.0148,
+        "ev_delta": 0.0064,
+        "beat_now_pct": 48.0,
         "visible_carried": 17,
         "hidden_available": 100,
         "projected_ticket": {
@@ -928,7 +653,7 @@
         "is_current": false
       },
       {
-        "wave": 4,
+        "wave": 3,
         "start_time_et": "9:40 PM ET",
         "matchups": [
           "VAN @ SEA"
@@ -991,13 +716,13 @@
         "is_current": false
       },
       {
-        "wave": 5,
+        "wave": 4,
         "start_time_et": "10:00 PM ET",
         "matchups": [
           "DAL @ VGK"
         ],
-        "est_ev": 0.869,
-        "ev_delta": -0.1395,
+        "est_ev": 0.8664,
+        "ev_delta": -0.142,
         "beat_now_pct": 0.0,
         "visible_carried": 12,
         "hidden_available": 28,
@@ -1970,7 +1695,7 @@
       "away": "LAK",
       "home": "TOR",
       "away_score": 0,
-      "home_score": 1,
+      "home_score": 2,
       "away_prob": 50.3,
       "home_prob": 49.7,
       "favored": "LAK",
@@ -2149,7 +1874,7 @@
       "game_type": 2,
       "away": "BUF",
       "home": "WSH",
-      "away_score": 3,
+      "away_score": 4,
       "home_score": 1,
       "away_prob": 45.9,
       "home_prob": 54.1,
@@ -2262,8 +1987,8 @@
       "game_type": 2,
       "away": "NYI",
       "home": "WPG",
-      "away_score": 2,
-      "home_score": 1,
+      "away_score": 3,
+      "home_score": 2,
       "away_prob": 55.9,
       "home_prob": 44.1,
       "favored": "NYI",
@@ -2319,12 +2044,12 @@
       "is_today": true,
       "start_time_utc": "2026-11-20T00:30:00Z",
       "start_time_et": "7:30 PM ET",
-      "game_state": "PRE",
+      "game_state": "LIVE",
       "game_type": 2,
       "away": "EDM",
       "home": "TBL",
-      "away_score": null,
-      "home_score": null,
+      "away_score": 0,
+      "home_score": 0,
       "away_prob": 48.8,
       "home_prob": 51.2,
       "favored": "TBL",
