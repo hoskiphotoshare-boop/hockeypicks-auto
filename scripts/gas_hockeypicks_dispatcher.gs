@@ -31,17 +31,19 @@ var HP_ALLOWED_WORKFLOWS = {
   "hockeypicks_run.yml": true,
   "hockeypicks_infer.yml": true,
   "hockeypicks_live_loop.yml": true,
-  "hockeypicks_health.yml": true
+  "hockeypicks_health.yml": true,
+  "hockeypicks_futures.yml": true
 };
 
 /**
- * Daily America/New_York wall-clock dispatch slots.
+ * America/New_York wall-clock dispatch slots (daily unless `dayOfWeek` 1..7 Mon..Sun is set).
  * Each slot has a 10-minute catch-up window (`catchupWindowMinutes`) and is
  * deduplicated per ET calendar date via ScriptProperties (`HP_FIRED_<id>`).
  */
 var HP_SCHEDULE_SLOTS = [
   { id: "run_0001", hour: 0, minute: 1, workflow: "hockeypicks_run.yml", inputs: {} },
   { id: "run_1017", hour: 10, minute: 17, workflow: "hockeypicks_run.yml", inputs: {} },
+  { id: "futures_mon_1030", dayOfWeek: 1, hour: 10, minute: 30, workflow: "hockeypicks_futures.yml", inputs: {} },
   { id: "infer_1100", hour: 11, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 11 * * *" } },
   { id: "infer_1200", hour: 12, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 12 * * *" } },
   { id: "loop_1215", hour: 12, minute: 15, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
@@ -64,18 +66,22 @@ var HP_SCHEDULE_SLOTS = [
  */
 function hockeypicksCronTick() {
   var now = new Date();
-  var formatted = Utilities.formatDate(now, HP_CONFIG.timeZone, "yyyy-MM-dd|HH|mm|HH:mm z");
+  var formatted = Utilities.formatDate(now, HP_CONFIG.timeZone, "yyyy-MM-dd|HH|mm|HH:mm z|u");
   var parts = formatted.split("|");
   var dateStr = parts[0];
   var hourStr = parts[1];
   var hour = parseInt(hourStr, 10);
   var minute = parseInt(parts[2], 10);
   var etLabel = dateStr + " " + parts[3];
+  var dayOfWeek = parseInt(parts[4], 10);
   var currentTotalMin = hour * 60 + minute;
 
   var matchingSlots = [];
   for (var i = 0; i < HP_SCHEDULE_SLOTS.length; i++) {
     var slot = HP_SCHEDULE_SLOTS[i];
+    if (slot.dayOfWeek !== undefined && slot.dayOfWeek !== dayOfWeek) {
+      continue;
+    }
     var slotTotalMin = slot.hour * 60 + slot.minute;
     var diff = currentTotalMin - slotTotalMin;
     if (diff >= 0 && diff <= HP_CONFIG.catchupWindowMinutes) {
@@ -284,6 +290,7 @@ function getHockeypicksDispatcherStatus() {
     var key = HP_CONFIG.firedPrefix + s.id;
     slots.push({
       id: s.id,
+      dayOfWeek: s.dayOfWeek !== undefined ? s.dayOfWeek : null,
       timeEt: (s.hour < 10 ? "0" : "") + s.hour + ":" + (s.minute < 10 ? "0" : "") + s.minute,
       workflow: s.workflow,
       skipIfActive: Boolean(s.skipIfActive),
@@ -354,6 +361,9 @@ function handleHockeypicksDoGet(e) {
         } else if (workflow === "hockeypicks_live_loop.yml") {
           if (params.once !== undefined) inputs.once = (params.once === "true");
           if (params.dry_run !== undefined) inputs.dry_run = (params.dry_run === "true");
+        } else if (workflow === "hockeypicks_futures.yml") {
+          if (params.bankroll !== undefined) inputs.bankroll = String(params.bankroll);
+          if (params.n_sims !== undefined) inputs.n_sims = String(params.n_sims);
         }
         var dispatchRes = hpDispatchWorkflow_(workflow, inputs, token);
         var etLabel = Utilities.formatDate(new Date(), HP_CONFIG.timeZone, "yyyy-MM-dd HH:mm:ss z");

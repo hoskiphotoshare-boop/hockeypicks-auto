@@ -101,6 +101,69 @@ def expected_remaining_series_games(p: float, wins_a: int = 0, wins_b: int = 0) 
     return float(dp(wins_a, wins_b))
 
 
+HOME_ICE_PATTERN_22111: tuple[bool, ...] = (True, True, False, False, True, False, True)
+
+
+def series_prob_22111(
+    p_home: float,
+    p_away: float,
+    wins_high: int = 0,
+    wins_low: int = 0,
+) -> float:
+    """Exact NHL 2-2-1-1-1 Best-of-7 win probability for the higher seed.
+
+    Games 1, 2, 5, 7 use ``p_home`` (high seed at home); Games 3, 4, 6 use
+    ``p_away`` (high seed on road).
+    """
+    if wins_high >= 4:
+        return 1.0
+    if wins_low >= 4:
+        return 0.0
+    p_h = float(np.clip(p_home, 0.0, 1.0))
+    p_a = float(np.clip(p_away, 0.0, 1.0))
+    memo: dict[tuple[int, int], float] = {}
+
+    def dp(wh: int, wl: int) -> float:
+        if wh >= 4:
+            return 1.0
+        if wl >= 4:
+            return 0.0
+        key = (wh, wl)
+        if key not in memo:
+            game_idx = wh + wl
+            p_g = p_h if (game_idx < len(HOME_ICE_PATTERN_22111) and HOME_ICE_PATTERN_22111[game_idx]) else p_a
+            memo[key] = p_g * dp(wh + 1, wl) + (1.0 - p_g) * dp(wh, wl + 1)
+        return memo[key]
+
+    return float(dp(wins_high, wins_low))
+
+
+def expected_remaining_games_22111(
+    p_home: float,
+    p_away: float,
+    wins_high: int = 0,
+    wins_low: int = 0,
+) -> float:
+    """Compute expected remaining games under 2-2-1-1-1 home-ice alternation."""
+    if wins_high >= 4 or wins_low >= 4:
+        return 0.0
+    p_h = float(np.clip(p_home, 0.0, 1.0))
+    p_a = float(np.clip(p_away, 0.0, 1.0))
+    memo: dict[tuple[int, int], float] = {}
+
+    def dp(wh: int, wl: int) -> float:
+        if wh >= 4 or wl >= 4:
+            return 0.0
+        key = (wh, wl)
+        if key not in memo:
+            game_idx = wh + wl
+            p_g = p_h if (game_idx < len(HOME_ICE_PATTERN_22111) and HOME_ICE_PATTERN_22111[game_idx]) else p_a
+            memo[key] = 1.0 + p_g * dp(wh + 1, wl) + (1.0 - p_g) * dp(wh, wl + 1)
+        return memo[key]
+
+    return float(dp(wins_high, wins_low))
+
+
 def _read_optional_csv(path: str) -> pd.DataFrame:
     if os.path.exists(path) and os.path.getsize(path) > 0:
         return pd.read_csv(path)
@@ -666,6 +729,8 @@ def train_pairwise_game_model(
     df_master_logs: pd.DataFrame,
     *,
     lr_weight: float = 0.70,
+    feature_subset: list[str] | None = None,
+    playoff_weight: float = 1.0,
 ) -> dict[str, Any]:
     """Train leak-free causal Pairwise XGBoost + L2-LogReg ensemble on Elo, prior MoneyPuck, form & B2B rest."""
     if not HAS_GAME_ML:
@@ -675,12 +740,23 @@ def train_pairwise_game_model(
 
     df_team_norm = normalize_team_frame_per_game(df_team_hist)
     base_features = _select_top_team_features(df_team_norm, max_features=20)
-    _, X_pair, y_pair, seasons = _build_causal_training_frame(
+    df_games_pair, X_pair, y_pair, seasons = _build_causal_training_frame(
         df_team_norm, df_stars, df_goalies, df_master_logs
     )
 
-    feature_names = list(CAUSAL_PAIRWISE_FEATURES)
-    weights = np.ones(len(y_pair), dtype=float)
+    if feature_subset is not None:
+        subset_set = set(feature_subset)
+        feature_names = [f for f in CAUSAL_PAIRWISE_FEATURES if f in subset_set]
+        if not feature_names:
+            raise ValueError("feature_subset matched none of CAUSAL_PAIRWISE_FEATURES.")
+        X_pair = X_pair[feature_names]
+    else:
+        feature_names = list(CAUSAL_PAIRWISE_FEATURES)
+
+    if playoff_weight != 1.0 and "GameType" in df_games_pair.columns:
+        weights = np.where(df_games_pair["GameType"].to_numpy() == 3, float(playoff_weight), 1.0)
+    else:
+        weights = np.ones(len(y_pair), dtype=float)
     mcw = min(25, max(1, len(y_pair) // 50))
     xgb_kwargs = {
         "n_estimators": 140,
@@ -1385,9 +1461,10 @@ def predict_upcoming_games(
                 seen_series.add(s_key)
                 w1 = int(ss.get("topSeedWins", 0) or 0)
                 w2 = int(ss.get("bottomSeedWins", 0) or 0)
-                p_single = _pairwise_win_prob(t1, t2, profiles, bundle)
-                p_series_t1 = single_game_to_best_of_7_prob(p_single, w1, w2)
-                exp_rem = expected_remaining_series_games(p_single, w1, w2)
+                p_home = _pairwise_win_prob(t1, t2, profiles, bundle)
+                p_away = 1.0 - _pairwise_win_prob(t2, t1, profiles, bundle)
+                p_series_t1 = series_prob_22111(p_home, p_away, w1, w2)
+                exp_rem = expected_remaining_games_22111(p_home, p_away, w1, w2)
                 playoff_series.append(
                     {
                         "round": rnd,
