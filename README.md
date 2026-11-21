@@ -11,7 +11,8 @@ Automated CPU-based NHL machine learning pipeline, live in-game updating service
 - **`src/data_sync.py`** — Syncs MoneyPuck season summary CSVs (2021–present) with Chrome/Cloudflare headers, compiles leak-free NHL API team game logs + streaks (`api-web.nhle.com`), fetches daily/tomorrow schedules (`gameWeek`), pulls live club skater stats (`gameType` `2` Regular Season / `3` Playoffs auto-detected), and retrieves Tim Hortons Challenge player lists.
 - **`src/availability.py`** — Ingests live NHL injury reports (ESPN with CBS fallback) and Daily Faceoff starting goalie confirmations into team and skater availability adjustments.
 - **`src/skater_model.py`** — Trains an `XGBRegressor` on dynamic per-game skater features, computes Empirical Bayes shrinkage (`N_half`), and scores both Tim Hortons Challenge groups and active slate skaters with 70/30 defense matchup multipliers.
-- **`src/team_game_model.py`** — Trains a Pairwise `XGBClassifier` on historical `Home - Away` diffs (Top-20 team features + Top-3 Star Power + Goalie GSAx/SV% + Streak/Bounce-Back momentum, weighting playoffs 5x), calibrates Log-Loss Temperature (`T`) via 5-fold CV, generates 32-team AI Power Rankings, predicts upcoming games & Best-of-7 series, and evaluates Quarter-Kelly betting edges when `ODDS_API_KEY` is configured (fetching `bookmakers=pinnacle,fanduel,draftkings,betmgm,betrivers&markets=h2h` at **1 credit/call** and falling back to cached `docs/data.json` odds when live-loop fetches are capped or skipped).
+- **`src/team_game_model.py`** — Trains a Pairwise `XGBClassifier` on historical `Home - Away` diffs (Top-20 team features + Top-3 Star Power + Goalie GSAx/SV% + Streak/Bounce-Back momentum, weighting playoffs 5x), calibrates Log-Loss Temperature (`T`) via 5-fold CV, includes true `2-2-1-1-1` Best-of-7 home-ice series DP (`series_prob_22111`), generates 32-team AI Power Rankings, predicts upcoming games & Best-of-7 series, and evaluates Quarter-Kelly betting edges when `ODDS_API_KEY` is configured (fetching `bookmakers=pinnacle,fanduel,draftkings,betmgm,betrivers&markets=h2h` at **1 credit/call** and falling back to cached `docs/data.json` odds when live-loop fetches are capped or skipped).
+- **`src/cup_futures.py`** — Weekly Stanley Cup Futures & Playoff Monte Carlo engine (`python -m src.cup_futures`). Trains a dedicated long-horizon pairwise model (`models/futures_game_bundle.joblib`) on 10 durable team-strength features without transient streak/B2B noise, fetches live NHL standings (`standings/now`) and remaining regular-season schedule (`club-schedule-season`), runs 10,000 vectorized season + `2-2-1-1-1` playoff simulations (switching to exact bracket trees once playoffs start), blends simulated probabilities with 1-credit devigged `icehockey_nhl_championship_winner` outright odds (`ODDS_API_KEY`), and solves constrained mutually-exclusive `1/8` Portfolio Kelly stakes above a time-adjusted capital lock-up hurdle, exporting `docs/cup_futures.json` for the webapp's **Playoffs & Futures** tab.
 - **`src/tims_grouping.py`** — Pure-Python grouping/sorting for Tim Hortons candidates by group, injury status, and projected goal probability (`group_tims_candidates`), avoiding pandas `NaN` JSON coercion.
 - **`src/tims_timing.py`** — Backward-induction optimal-stopping advisor (`SELECT NOW` vs `SELECTIVE DEFER`) estimating the expected value of locking picks now versus waiting for later puck-drop waves, and returning the per-group ticket to lock (`selection`) at the recommended wave. Future waves keep the contest's real group membership: each simulated pick is the best of that group's still-eligible skaters plus a few tier-matched late additions, so one ticket can never take two Group 1 stars.
 - **`src/tims_tracker.py`** — Forward logger and automatic next-day NHL boxscore grader maintaining cumulative AI Hit Rate vs. Random baselines in `docs/tims_history.json`. It records the deferral-aware ticket (not the raw group leaders), freezes it once the advised lock wave passes, and exposes the lock metadata for the dashboard.
@@ -68,10 +69,11 @@ All times are evaluated in **`America/New_York`** (with corresponding Vancouver 
 | `loop_2215` | **10:15 PM ET** | **7:15 PM PT** | `hockeypicks_live_loop.yml` | **Late Live Loop (`10:15–11:40 PM ET`)**: Late West Coast puck-drop updates |
 | `loop_2315` | **11:15 PM ET** | **8:15 PM PT** | `hockeypicks_live_loop.yml` | **Late Loop Backup** *(skipped if `hockeypicks_live_loop.yml` already active)* |
 
-### Hourly Watchdog
+### Weekly & Hourly Slots
 
 | Slot ID | Schedule (ET & PT) | Workflow | Purpose |
 |---|---|---|---|
+| `futures_mon_1030` | **Mondays at 10:30 AM ET** (`7:30 AM PT`) | `hockeypicks_futures.yml` | **Weekly Stanley Cup Futures**: Trains `futures_game_bundle.joblib`, runs 10k season/playoff sims, fetches 1-credit Cup outrights, and computes `+EV` Portfolio Kelly bets |
 | `health_hourly` | **Hourly at `:17`** *(window `:17–:25`)* | `hockeypicks_health.yml` | Verifies data freshness and opens/closes the alert GitHub Issue |
 
 ---
@@ -79,7 +81,7 @@ All times are evaluated in **`America/New_York`** (with corresponding Vancouver 
 ## Workflow Coordination & Concurrency Locks
 
 1. **Repo-Write Lock (`concurrency.group: hockeypicks-repo-write`, `cancel-in-progress: false`)**:
-   Shared by `hockeypicks_run.yml`, `hockeypicks_infer.yml`, and `hockeypicks_live_loop.yml` so concurrent runs never race when committing `docs/data.json`, `docs/tims_history.json`, `docs/latest_run.html`, or `models/`.
+   Shared by `hockeypicks_run.yml`, `hockeypicks_infer.yml`, `hockeypicks_live_loop.yml`, and `hockeypicks_futures.yml` so concurrent runs never race when committing `docs/data.json`, `docs/cup_futures.json`, `docs/tims_history.json`, `docs/latest_run.html`, or `models/`.
 2. **Intentional Live-Loop Gaps**:
    `src/live_loop.py` terminates its three game windows at `4:15 PM ET`, `9:45 PM ET`, and `11:40 PM ET`, leaving clear gaps before the fixed `4:17 PM` full pipeline, `4:30 PM` pre-game odds run, `10:00 PM` opening odds run, and `12:01 AM` post-midnight run so odds releases never wait behind an idle sleep loop.
 3. **Independent Health Lock (`concurrency.group: hockeypicks-health`)**:

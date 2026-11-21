@@ -734,7 +734,7 @@
     <nav class="nav-tabs-desktop" aria-label="Main sections">
       <button class="nav-btn active" data-tab="picks" onclick="switchTab('picks', this)">Skater Picks</button>
       <button class="nav-btn" data-tab="matchups" onclick="switchTab('matchups', this)">Game Matchups</button>
-      <button class="nav-btn" data-tab="playoffs" onclick="switchTab('playoffs', this)">Playoff Series</button>
+      <button class="nav-btn" data-tab="playoffs" onclick="switchTab('playoffs', this)">Playoffs &amp; Futures</button>
       <button class="nav-btn" data-tab="rankings" onclick="switchTab('rankings', this)">Power Rankings</button>
       <button class="nav-btn" data-tab="models" onclick="switchTab('models', this)">Models &amp; Drivers</button>
       <button class="nav-btn" data-tab="logs" onclick="switchTab('logs', this)">Run Logs</button>
@@ -796,13 +796,52 @@
       <div id="matchupsGrid" class="grid-2col"></div>
     </section>
 
-    <!-- TAB 3: PLAYOFF SERIES (BEST-OF-7) -->
+    <!-- TAB 3: PLAYOFFS & STANLEY CUP FUTURES -->
     <section id="tab-playoffs" class="tab-pane">
       <div class="section-title">
         <span>Stanley Cup Playoff Series Projections (Best-of-7)</span>
         <span class="pill cyan" id="playoffSeriesStatusPill">--</span>
       </div>
       <div id="playoffSeriesGrid" class="grid-2col"></div>
+
+      <div class="section-title">
+        <span>Stanley Cup Futures &amp; +EV Betting Engine (Weekly Model)</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="pill cyan" id="cupFuturesUpdatedPill">--</span>
+          <span class="pill" id="cupFuturesOddsPill">--</span>
+        </div>
+      </div>
+      <div id="cupFuturesKpiGrid" class="kpi-grid"></div>
+      <div id="cupFuturesBetsCard" class="card" style="margin-bottom:14px"></div>
+      <div class="controls-row">
+        <select id="cupConfFilter" class="control-input" onchange="renderCupFutures()">
+          <option value="">All Conferences (32 Teams)</option>
+          <option value="Eastern">Eastern Conference</option>
+          <option value="Western">Western Conference</option>
+        </select>
+      </div>
+      <div class="table-responsive-wrapper">
+        <table id="cupFuturesTable">
+          <thead>
+            <tr>
+              <th class="sortable" data-sort-key="rank" onclick="sortCupFutures('rank')">Rank</th>
+              <th class="sortable" data-sort-key="team" onclick="sortCupFutures('team')">Team</th>
+              <th class="sortable" data-sort-key="division" onclick="sortCupFutures('division')">Div</th>
+              <th class="sortable" data-sort-key="points" onclick="sortCupFutures('points')">Pts (GP)</th>
+              <th class="sortable" data-sort-key="proj_points" onclick="sortCupFutures('proj_points')">Proj Pts</th>
+              <th class="sortable" data-sort-key="make_playoffs_pct" onclick="sortCupFutures('make_playoffs_pct')">Playoffs %</th>
+              <th class="sortable" data-sort-key="make_conf_final_pct" onclick="sortCupFutures('make_conf_final_pct')">Conf %</th>
+              <th class="sortable" data-sort-key="model_cup_pct" onclick="sortCupFutures('model_cup_pct')">AI Cup %</th>
+              <th class="sortable" data-sort-key="market_cup_pct" onclick="sortCupFutures('market_cup_pct')">Mkt %</th>
+              <th class="sortable" data-sort-key="blended_cup_pct" onclick="sortCupFutures('blended_cup_pct')">Blend %</th>
+              <th class="sortable" data-sort-key="best_odds" onclick="sortCupFutures('best_odds')">Best Odds</th>
+              <th class="sortable" data-sort-key="edge_pct" onclick="sortCupFutures('edge_pct')">Edge %</th>
+              <th class="sortable" data-sort-key="rec_bet" onclick="sortCupFutures('rec_bet')">1/8 Kelly $</th>
+            </tr>
+          </thead>
+          <tbody id="cupFuturesTableBody"></tbody>
+        </table>
+      </div>
     </section>
 
     <!-- TAB 3: POWER RANKINGS -->
@@ -884,8 +923,10 @@
 
   <script>
     let APP_DATA = null;
+    let CUP_FUTURES_DATA = null;
     let RANK_SORT = newSortState('rank', true);
     let SLATE_SORT = newSortState('', false);
+    let CUP_SORT = newSortState('rank', true);
 
     function esc(str) {
       const div = document.createElement('div');
@@ -1361,6 +1402,133 @@
       renderSlateTable();
     }
 
+    function sortCupFutures(key) {
+      applySort(CUP_SORT, key, (k) => (k === 'rank' || k === 'team' || k === 'division'));
+      renderCupFutures();
+    }
+
+    function renderCupFutures() {
+      const updatedPill = document.getElementById('cupFuturesUpdatedPill');
+      const oddsPill = document.getElementById('cupFuturesOddsPill');
+      const kpiEl = document.getElementById('cupFuturesKpiGrid');
+      const betsEl = document.getElementById('cupFuturesBetsCard');
+      const tbody = document.getElementById('cupFuturesTableBody');
+      const table = document.getElementById('cupFuturesTable');
+      if (!tbody || !kpiEl || !betsEl) return;
+
+      const cf = CUP_FUTURES_DATA;
+      if (!cf || !cf.teams || !cf.teams.length) {
+        if (updatedPill) updatedPill.textContent = 'Awaiting Weekly Run';
+        if (oddsPill) oddsPill.textContent = 'Odds: Pending';
+        kpiEl.innerHTML = '';
+        betsEl.innerHTML = '<div style="font-size:0.84rem;color:var(--text-2)">Weekly Stanley Cup Monte Carlo &amp; Futures model has not run yet. It runs automatically every Monday at 10:30 AM ET (or via workflow_dispatch).</div>';
+        tbody.innerHTML = '<tr><td colspan="13" class="empty-state">No Stanley Cup futures simulation data available yet.</td></tr>';
+        paintSortHeaders(table, CUP_SORT);
+        return;
+      }
+
+      const meta = cf.meta || {};
+      const sum = cf.summary || {};
+      const rows = [...cf.teams];
+      const topTeam = rows[0] || {};
+      const modelMetrics = meta.model_metrics || {};
+
+      if (updatedPill) {
+        updatedPill.textContent = `${meta.updated_et || '--'} • ${meta.n_sims || 10000} sims`;
+      }
+      if (oddsPill) {
+        oddsPill.textContent = meta.odds_enabled
+          ? `${sum.devig_source || 'Market'} Devig (${sum.market_overround_pct ?? '--'}% vig)`
+          : 'Model-Only Mode';
+      }
+
+      kpiEl.innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">Cup Favorite</div>
+          <div class="kpi-value">${esc(topTeam.team || '--')}</div>
+          <div class="kpi-sub">Blend ${esc(Number(topTeam.blended_cup_pct || 0).toFixed(1))}% • AI ${esc(Number(topTeam.model_cup_pct || 0).toFixed(1))}%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Model / Market Blend</div>
+          <div class="kpi-value">${esc(Math.round((sum.model_weight || 0) * 100))}% / ${esc(Math.round((sum.market_weight || 0) * 100))}%</div>
+          <div class="kpi-sub">Avg GP: ${esc(sum.avg_gp ?? '--')} • OOF AUC: ${esc(modelMetrics.oof_auc ?? '--')}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">+EV Hurdle (Lock-Up)</div>
+          <div class="kpi-value">&ge; +${esc(sum.min_edge_pct ?? '--')}%</div>
+          <div class="kpi-sub">~${esc(sum.months_to_cup ?? '--')} mo to Cup Final</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Recommended Stakes</div>
+          <div class="kpi-value">$${esc(Number(sum.total_rec_stake || 0).toFixed(2))}</div>
+          <div class="kpi-sub">${esc(sum.recommended_count || 0)} team(s) • 1/8 Portfolio Kelly ($${esc(sum.bankroll ?? 1000)})</div>
+        </div>
+      `;
+
+      const recs = sum.recommended_bets || [];
+      if (recs.length) {
+        betsEl.innerHTML = `
+          <div class="pick-header" style="margin-bottom:8px">
+            <span class="group-label">+EV Stanley Cup Futures Recommendations (1/8 Portfolio Kelly)</span>
+            <span class="pill">${esc(recs.length)} Qualified Bet(s)</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${recs.map(b => `
+              <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.28);border-radius:8px;padding:8px 12px;font-size:0.82rem;flex:1 1 200px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <strong style="font-size:0.95rem;color:var(--text-0)">${esc(b.team)}</strong>
+                  <span class="pill">+${esc(Number(b.edge_pct).toFixed(1))}% EV</span>
+                </div>
+                <div style="color:var(--text-1)">Bet: <strong>$${esc(Number(b.rec_bet).toFixed(2))}</strong> (${esc(b.kelly_pct)}% bankroll)</div>
+                <div style="color:var(--text-2);font-size:0.76rem;margin-top:2px">Best: <strong>${esc(b.best_odds)}</strong> (${esc(b.best_bookie || 'Book')}) vs Fair ${esc(b.fair_odds ?? '--')} (${esc(b.blended_cup_pct)}%)</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        betsEl.innerHTML = `
+          <div class="pick-header" style="margin-bottom:4px">
+            <span class="group-label">+EV Stanley Cup Futures Recommendations</span>
+            <span class="pill warn">No Bets Above +${esc(sum.min_edge_pct ?? '--')}% Hurdle</span>
+          </div>
+          <div style="font-size:0.82rem;color:var(--text-2)">
+            ${meta.odds_enabled
+              ? `No team currently clears the +${esc(sum.min_edge_pct)}% time-adjusted edge hurdle after shrinking ${esc(Math.round((sum.model_weight || 0) * 100))}/${esc(Math.round((sum.market_weight || 0) * 100))} against ${esc(sum.devig_source)} consensus.`
+              : 'Configure ODDS_API_KEY in GitHub Secrets to compare simulated Cup probabilities against sharp outright lines.'}
+          </div>
+        `;
+      }
+
+      const confFilter = (document.getElementById('cupConfFilter') && document.getElementById('cupConfFilter').value) || '';
+      const filtered = confFilter ? rows.filter(r => r.conference === confFilter) : rows;
+      filtered.sort((a, b) => compareRows(a, b, CUP_SORT, r => r[CUP_SORT.key]));
+      paintSortHeaders(table, CUP_SORT);
+
+      tbody.innerHTML = filtered.map(r => {
+        const edgeStr = r.edge_pct == null ? '--' : `${r.edge_pct >= 0 ? '+' : ''}${Number(r.edge_pct).toFixed(1)}%`;
+        const edgeColor = r.qualified ? 'color:var(--emerald);font-weight:700' : (r.edge_pct > 0 ? 'color:var(--cyan)' : 'color:var(--text-2)');
+        const oddStr = r.best_odds == null ? '--' : `${Number(r.best_odds).toFixed(2)} <span style="font-size:0.72rem;color:var(--text-2)">(${esc(r.best_bookie || '')})</span>`;
+        const betStr = r.qualified ? `<strong style="color:var(--emerald)">$${esc(Number(r.rec_bet).toFixed(2))}</strong>` : '<span style="color:var(--text-2)">--</span>';
+        return `
+          <tr>
+            <td><strong>#${esc(r.rank)}</strong></td>
+            <td><strong>${esc(r.team)}</strong></td>
+            <td>${esc(r.division)}</td>
+            <td>${esc(r.points)} <span style="color:var(--text-2);font-size:0.75rem">(${esc(r.gp)})</span></td>
+            <td>${esc(Number(r.proj_points).toFixed(1))}</td>
+            <td>${esc(Number(r.make_playoffs_pct).toFixed(1))}%</td>
+            <td>${esc(Number(r.make_conf_final_pct).toFixed(1))}%</td>
+            <td><strong>${esc(Number(r.model_cup_pct).toFixed(2))}%</strong></td>
+            <td>${r.market_cup_pct == null ? '--' : esc(Number(r.market_cup_pct).toFixed(2)) + '%'}</td>
+            <td><strong style="color:var(--cyan)">${esc(Number(r.blended_cup_pct).toFixed(2))}%</strong></td>
+            <td>${oddStr}</td>
+            <td style="${edgeColor}">${edgeStr}</td>
+            <td>${betStr}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     // Shared table sorting: tracks key + direction per table, toggles on repeat
     // clicks, and falls back to the numeric/text comparator that fits each value.
     function newSortState(key, asc) {
@@ -1599,8 +1767,12 @@
 
     async function init() {
       try {
-        const res = await fetch('./data.json?t=' + Date.now());
+        const [res, cfRes] = await Promise.all([
+          fetch('./data.json?t=' + Date.now()),
+          fetch('./cup_futures.json?t=' + Date.now()).catch(() => null),
+        ]);
         APP_DATA = await res.json();
+        CUP_FUTURES_DATA = (cfRes && cfRes.ok) ? await cfRes.json().catch(() => null) : null;
         const meta = APP_DATA.meta || {};
 
         document.getElementById('headerSubtitle').textContent = `${meta.nhl_season_label || 'NHL'} Automated XGBoost & Empirical Bayes Engine`;
@@ -1618,6 +1790,7 @@
         renderSlateTable();
         renderMatchups(APP_DATA.games, meta);
         renderPlayoffSeries(APP_DATA.playoff_series, meta);
+        renderCupFutures();
         renderRankings();
         renderFeatureBars('skaterFeatureBars', APP_DATA.feature_importance && APP_DATA.feature_importance.skater);
         renderFeatureBars('pairwiseFeatureBars', APP_DATA.feature_importance && APP_DATA.feature_importance.pairwise);
