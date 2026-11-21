@@ -1284,7 +1284,7 @@ def _fetch_nhl_odds_lookup(
         return {}
     url = (
         f"https://api.the-odds-api.com/v4/sports/icehockey_nhl/odds/"
-        f"?apiKey={odds_api_key}&bookmakers={ODDS_API_BOOKMAKERS}&markets=h2h"
+        f"?apiKey={odds_api_key}&bookmakers={ODDS_API_BOOKMAKERS}&markets=h2h&oddsFormat=decimal"
     )
     try:
         res = session.get(url, timeout=15)
