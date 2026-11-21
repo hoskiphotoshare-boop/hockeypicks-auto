@@ -1,6 +1,6 @@
 {
   "artifact_schema_version": 4,
-  "trained_et": "2026-11-21 10:18 AM ET",
+  "trained_et": "2026-11-21 04:19 PM ET",
   "active_mp_year": 2026,
   "skater_baseline_source": "2026 Regular + 2025 Playoffs",
   "sync_stats": {
@@ -14,6 +14,6 @@
     "downloaded": 32,
     "cached": 160,
     "errors": 0,
-    "total_rows": 14702
+    "total_rows": 14704
   }
 }
