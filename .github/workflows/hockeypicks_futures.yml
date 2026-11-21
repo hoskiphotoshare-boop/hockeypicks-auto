@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: hockeypicks-repo-write
+  group: hockeypicks-futures-write
   cancel-in-progress: false
 
 jobs:
@@ -71,8 +71,14 @@ jobs:
           git add docs/cup_futures.json models/futures_game_bundle.joblib
           if ! git diff --staged --quiet; then
             git commit -m "Weekly Stanley Cup Futures Update ($(TZ='America/New_York' date '+%Y-%m-%d %H:%M ET'))"
-            git pull --rebase origin main
-            git push origin main
+            for attempt in 1 2 3; do
+              git pull --rebase origin main && git push origin main && exit 0
+              echo "Push attempt ${attempt} failed; retrying after rebase..."
+              git rebase --abort 2>/dev/null || true
+              sleep 3
+            done
+            echo "Failed to push Stanley Cup futures update after 3 attempts." >&2
+            exit 1
           else
             echo "No futures changes to commit."
           fi
