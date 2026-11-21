@@ -1,8 +1,8 @@
 {
   "meta": {
     "status": "live",
-    "updated_utc": "2026-11-21 17:23:31 UTC",
-    "updated_et": "2026-11-21 12:23 PM ET",
+    "updated_utc": "2026-11-21 17:27:38 UTC",
+    "updated_et": "2026-11-21 12:27 PM ET",
     "today_date": "2026-11-21",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -15,8 +15,8 @@
     "odds_api": {
       "status_code": 200,
       "requests_last": 1,
-      "requests_used": 132,
-      "requests_remaining": 368,
+      "requests_used": 133,
+      "requests_remaining": 367,
       "api_ok": true,
       "quoted_teams": 31,
       "devig_source": "pinnacle"
