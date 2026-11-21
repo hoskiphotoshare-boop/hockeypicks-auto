@@ -81,10 +81,12 @@ All times are evaluated in **`America/New_York`** (with corresponding Vancouver 
 ## Workflow Coordination & Concurrency Locks
 
 1. **Repo-Write Lock (`concurrency.group: hockeypicks-repo-write`, `cancel-in-progress: false`)**:
-   Shared by `hockeypicks_run.yml`, `hockeypicks_infer.yml`, `hockeypicks_live_loop.yml`, and `hockeypicks_futures.yml` so concurrent runs never race when committing `docs/data.json`, `docs/cup_futures.json`, `docs/tims_history.json`, `docs/latest_run.html`, or `models/`.
-2. **Intentional Live-Loop Gaps**:
+   Shared by `hockeypicks_run.yml`, `hockeypicks_infer.yml`, and `hockeypicks_live_loop.yml` so concurrent runs never race when committing `docs/data.json`, `docs/tims_history.json`, `docs/latest_run.html`, or `models/`.
+2. **Futures-Write Lock (`concurrency.group: hockeypicks-futures-write`, `cancel-in-progress: false`)**:
+   Dedicated to `hockeypicks_futures.yml`, which commits only disjoint artifacts (`docs/cup_futures.json` and `models/futures_game_bundle.joblib`) with a 3-attempt `git pull --rebase` push retry loop so weekly or manual futures runs never queue behind multi-hour `hockeypicks_live_loop.yml` windows.
+3. **Intentional Live-Loop Gaps**:
    `src/live_loop.py` terminates its three game windows at `4:15 PM ET`, `9:45 PM ET`, and `11:40 PM ET`, leaving clear gaps before the fixed `4:17 PM` full pipeline, `4:30 PM` pre-game odds run, `10:00 PM` opening odds run, and `12:01 AM` post-midnight run so odds releases never wait behind an idle sleep loop.
-3. **Independent Health Lock (`concurrency.group: hockeypicks-health`)**:
+4. **Independent Health Lock (`concurrency.group: hockeypicks-health`)**:
    `hockeypicks_health.yml` only requires read access to `docs/data.json` (`contents: read`, `issues: write`), so it runs independently without blocking or queuing behind data-writing jobs.
 
 ---
