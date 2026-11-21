@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-21 12:02 AM ET",
+      "captured_et": "2026-11-21 10:18 AM ET",
       "model_n_half": 30.66,
       "groups": {
         "1": [
@@ -17,7 +17,7 @@
             "base_pred": 0.498,
             "live_gp": 24,
             "live_goals": 18,
-            "def_multiplier": 1.116,
+            "def_multiplier": 1.115,
             "final_score": 0.674
           },
           {
@@ -28,8 +28,8 @@
             "base_pred": 0.444,
             "live_gp": 22,
             "live_goals": 21,
-            "def_multiplier": 0.966,
-            "final_score": 0.632
+            "def_multiplier": 0.967,
+            "final_score": 0.633
           },
           {
             "player": "Leon Draisaitl",
@@ -39,7 +39,7 @@
             "base_pred": 0.506,
             "live_gp": 24,
             "live_goals": 21,
-            "def_multiplier": 0.914,
+            "def_multiplier": 0.913,
             "final_score": 0.607
           },
           {
@@ -61,7 +61,7 @@
             "base_pred": 0.487,
             "live_gp": 24,
             "live_goals": 13,
-            "def_multiplier": 1.116,
+            "def_multiplier": 1.115,
             "final_score": 0.568
           },
           {
@@ -72,8 +72,8 @@
             "base_pred": 0.455,
             "live_gp": 24,
             "live_goals": 13,
-            "def_multiplier": 1.044,
-            "final_score": 0.512
+            "def_multiplier": 1.042,
+            "final_score": 0.511
           },
           {
             "player": "David Pastrnak",
@@ -83,7 +83,7 @@
             "base_pred": 0.47,
             "live_gp": 22,
             "live_goals": 10,
-            "def_multiplier": 1.043,
+            "def_multiplier": 1.042,
             "final_score": 0.484
           },
           {
@@ -105,8 +105,8 @@
             "base_pred": 0.373,
             "live_gp": 22,
             "live_goals": 12,
-            "def_multiplier": 1.059,
-            "final_score": 0.463
+            "def_multiplier": 1.061,
+            "final_score": 0.464
           },
           {
             "player": "Sam Reinhart",
@@ -116,8 +116,8 @@
             "base_pred": 0.404,
             "live_gp": 23,
             "live_goals": 12,
-            "def_multiplier": 1.028,
-            "final_score": 0.463
+            "def_multiplier": 1.03,
+            "final_score": 0.464
           },
           {
             "player": "Jack Hughes",
@@ -127,8 +127,8 @@
             "base_pred": 0.453,
             "live_gp": 22,
             "live_goals": 10,
-            "def_multiplier": 1.018,
-            "final_score": 0.461
+            "def_multiplier": 1.015,
+            "final_score": 0.46
           },
           {
             "player": "Connor McDavid",
@@ -138,7 +138,7 @@
             "base_pred": 0.444,
             "live_gp": 24,
             "live_goals": 13,
-            "def_multiplier": 0.914,
+            "def_multiplier": 0.913,
             "final_score": 0.44
           },
           {
@@ -149,7 +149,7 @@
             "base_pred": 0.368,
             "live_gp": 23,
             "live_goals": 5,
-            "def_multiplier": 1.022,
+            "def_multiplier": 1.023,
             "final_score": 0.314
           }
         ],
@@ -173,7 +173,7 @@
             "base_pred": 0.422,
             "live_gp": 23,
             "live_goals": 12,
-            "def_multiplier": 1.032,
+            "def_multiplier": 1.031,
             "final_score": 0.482
           },
           {
@@ -184,8 +184,8 @@
             "base_pred": 0.373,
             "live_gp": 20,
             "live_goals": 11,
-            "def_multiplier": 1.024,
-            "final_score": 0.444
+            "def_multiplier": 1.026,
+            "final_score": 0.445
           },
           {
             "player": "Brady Tkachuk",
@@ -195,8 +195,8 @@
             "base_pred": 0.395,
             "live_gp": 23,
             "live_goals": 11,
-            "def_multiplier": 1.028,
-            "final_score": 0.442
+            "def_multiplier": 1.03,
+            "final_score": 0.443
           },
           {
             "player": "Filip Forsberg",
@@ -206,8 +206,8 @@
             "base_pred": 0.426,
             "live_gp": 22,
             "live_goals": 8,
-            "def_multiplier": 1.059,
-            "final_score": 0.426
+            "def_multiplier": 1.061,
+            "final_score": 0.427
           },
           {
             "player": "Mark Stone",
@@ -217,7 +217,7 @@
             "base_pred": 0.311,
             "live_gp": 24,
             "live_goals": 11,
-            "def_multiplier": 1.011,
+            "def_multiplier": 1.01,
             "final_score": 0.366
           },
           {
@@ -228,7 +228,7 @@
             "base_pred": 0.285,
             "live_gp": 23,
             "live_goals": 7,
-            "def_multiplier": 1.028,
+            "def_multiplier": 1.03,
             "final_score": 0.301
           },
           {
@@ -239,7 +239,7 @@
             "base_pred": 0.257,
             "live_gp": 24,
             "live_goals": 8,
-            "def_multiplier": 0.926,
+            "def_multiplier": 0.925,
             "final_score": 0.264
           },
           {
@@ -250,7 +250,7 @@
             "base_pred": 0.298,
             "live_gp": 20,
             "live_goals": 3,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.253
           },
           {
@@ -261,7 +261,7 @@
             "base_pred": 0.242,
             "live_gp": 14,
             "live_goals": 3,
-            "def_multiplier": 1.022,
+            "def_multiplier": 1.023,
             "final_score": 0.247
           },
           {
@@ -294,7 +294,7 @@
             "base_pred": 0.164,
             "live_gp": 19,
             "live_goals": 3,
-            "def_multiplier": 1.039,
+            "def_multiplier": 1.038,
             "final_score": 0.168
           },
           {
@@ -316,7 +316,7 @@
             "base_pred": 0.135,
             "live_gp": 25,
             "live_goals": 3,
-            "def_multiplier": 1.023,
+            "def_multiplier": 1.021,
             "final_score": 0.131
           }
         ],
@@ -329,8 +329,8 @@
             "base_pred": 0.203,
             "live_gp": 19,
             "live_goals": 3,
-            "def_multiplier": 0.958,
-            "final_score": 0.18
+            "def_multiplier": 0.96,
+            "final_score": 0.181
           },
           {
             "player": "Travis Sanheim",
@@ -340,7 +340,7 @@
             "base_pred": 0.138,
             "live_gp": 25,
             "live_goals": 4,
-            "def_multiplier": 1.023,
+            "def_multiplier": 1.021,
             "final_score": 0.151
           },
           {
@@ -362,7 +362,7 @@
             "base_pred": 0.142,
             "live_gp": 9,
             "live_goals": 1,
-            "def_multiplier": 1.044,
+            "def_multiplier": 1.042,
             "final_score": 0.143
           },
           {
@@ -373,7 +373,7 @@
             "base_pred": 0.14,
             "live_gp": 0,
             "live_goals": 0,
-            "def_multiplier": 0.958,
+            "def_multiplier": 0.96,
             "final_score": 0.134
           },
           {
@@ -384,7 +384,7 @@
             "base_pred": 0.139,
             "live_gp": 23,
             "live_goals": 2,
-            "def_multiplier": 1.065,
+            "def_multiplier": 1.064,
             "final_score": 0.128
           },
           {
@@ -395,7 +395,7 @@
             "base_pred": 0.176,
             "live_gp": 17,
             "live_goals": 0,
-            "def_multiplier": 1.018,
+            "def_multiplier": 1.015,
             "final_score": 0.126
           },
           {
@@ -428,7 +428,7 @@
             "base_pred": 0.122,
             "live_gp": 18,
             "live_goals": 2,
-            "def_multiplier": 0.967,
+            "def_multiplier": 0.964,
             "final_score": 0.115
           },
           {
@@ -461,7 +461,7 @@
             "base_pred": 0.099,
             "live_gp": 17,
             "live_goals": 1,
-            "def_multiplier": 1.039,
+            "def_multiplier": 1.038,
             "final_score": 0.091
           },
           {
@@ -483,7 +483,7 @@
             "base_pred": 0.113,
             "live_gp": 18,
             "live_goals": 0,
-            "def_multiplier": 1.025,
+            "def_multiplier": 1.026,
             "final_score": 0.082
           }
         ]
@@ -497,7 +497,7 @@
           "base_pred": 0.498,
           "live_gp": 24,
           "live_goals": 18,
-          "def_multiplier": 1.116,
+          "def_multiplier": 1.115,
           "final_score": 0.674
         },
         "2": {
@@ -519,8 +519,8 @@
           "base_pred": 0.203,
           "live_gp": 19,
           "live_goals": 3,
-          "def_multiplier": 0.958,
-          "final_score": 0.18
+          "def_multiplier": 0.96,
+          "final_score": 0.181
         }
       },
       "settled": false,
@@ -532,9 +532,9 @@
         "lock_utc": "2026-11-21T18:00:00Z",
         "lock_et": "1:00 PM ET",
         "recommended_wave_et": "3:30 PM ET",
-        "v_now": 1.0599,
-        "v_defer_best": 1.0616,
-        "ev_delta": 0.0017
+        "v_now": 1.0608,
+        "v_defer_best": 1.0623,
+        "ev_delta": 0.0015
       },
       "picks_locked": false,
       "locked_et": ""
@@ -1997,9 +1997,9 @@
           "lock_utc": "2026-11-21T18:00:00Z",
           "lock_et": "1:00 PM ET",
           "recommended_wave_et": "3:30 PM ET",
-          "v_now": 1.0599,
-          "v_defer_best": 1.0616,
-          "ev_delta": 0.0017
+          "v_now": 1.0608,
+          "v_defer_best": 1.0623,
+          "ev_delta": 0.0015
         },
         "picks_locked": false,
         "hits_of_3": null,
@@ -2019,7 +2019,7 @@
           "3": {
             "player": "Jonatan Berggren",
             "team": "STL",
-            "score": 0.18,
+            "score": 0.181,
             "scored": null
           }
         }
