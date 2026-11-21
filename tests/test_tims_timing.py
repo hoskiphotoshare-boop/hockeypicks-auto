@@ -215,6 +215,44 @@ class TestTimsTiming(unittest.TestCase):
         self.assertEqual(res["selection"], res["current_best"])
         self.assertEqual(res["current_best"]["2"]["player"], "G2 Early")
 
+    def test_borderline_watch_headline_cites_lock_wave_not_target_wave(self):
+        """BORDERLINE_WATCH is select-now, so the card must show the real deadline."""
+        schedule = [
+            _game("MTL", "NYR", "2026-11-17T00:00:00Z", "7:00 PM ET"),
+            _game("VAN", "UTA", "2026-11-17T02:30:00Z", "9:30 PM ET"),
+        ]
+        groups = {
+            "1": [
+                {"player": "Early G1", "team": "NYR", "opponent": "MTL", "final_score": 0.30},
+                {"player": "Late G1", "team": "VAN", "opponent": "UTA", "final_score": 0.28},
+            ],
+            "2": [
+                {"player": "Early G2", "team": "MTL", "opponent": "NYR", "final_score": 0.20},
+                {"player": "Late G2", "team": "VAN", "opponent": "UTA", "final_score": 0.205},
+            ],
+            "3": [
+                {"player": "Early G3", "team": "NYR", "opponent": "MTL", "final_score": 0.15},
+                {"player": "Late G3", "team": "UTA", "opponent": "VAN", "final_score": 0.155},
+            ],
+        }
+        # Late entrants only upgrade their own group by a hair, so the deferral
+        # EV edge stays inside the 0.020 borderline band.
+        slate = [
+            {"player": "Hidden G1", "team": "VAN", "opponent": "UTA", "position": "C", "final_score": 0.31},
+            {"player": "Hidden G2", "team": "VAN", "opponent": "UTA", "position": "C", "final_score": 0.21},
+            {"player": "Hidden G3", "team": "UTA", "opponent": "VAN", "position": "C", "final_score": 0.16},
+        ]
+        res = compute_tims_deferral_advice(
+            tims_groups=groups,
+            slate_candidates=slate,
+            schedule_games=schedule,
+        )
+        self.assertEqual(res["decision"], "BORDERLINE_WATCH")
+        self.assertEqual(res["lock_basis"], "now")
+        self.assertEqual(res["selection_lock_et"], "7:00 PM ET")
+        self.assertIn("7:00 PM ET", res["headline"])
+        self.assertNotIn("9:30 PM ET", res["headline"])
+
     def test_dtd_discount_applied_consistently_to_ticket_and_v_now(self):
         groups = {
             "1": [

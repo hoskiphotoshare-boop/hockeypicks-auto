@@ -498,10 +498,11 @@ def compute_tims_deferral_advice(
     elif best_future_wave is not None and ev_delta > 0.0:
         decision = "BORDERLINE_WATCH"
         target_et = best_future_wave["start_time_et"]
-        headline = f"Select Now (Borderline Defer Watch Before {target_et})"
+        headline = f"Select Now — Lock Current Ticket Before {sorted_waves[0]['start_time_et']}"
         detail = (
-            f"Current best ticket ({v_now:.3f} xG) is near-optimal, though waiting past {sorted_waves[0]['start_time_et']} "
-            f"offers slight +{ev_delta:.3f} xG ({best_future_wave['beat_now_pct']:.0f}% chance) upside if unlisted late scorers enter."
+            f"Current best ticket ({v_now:.3f} xG) is near-optimal; deferring to {target_et} projects only "
+            f"+{ev_delta:.3f} xG ({best_future_wave['beat_now_pct']:.0f}% of sims) even if unlisted late "
+            f"scorers enter, so lock the current ticket."
         )
     else:
         decision = "SELECT_NOW"
