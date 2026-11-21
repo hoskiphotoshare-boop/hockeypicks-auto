@@ -24,7 +24,18 @@ var HP_CONFIG = {
   firedPrefix: "HP_FIRED_",
   healthWorkflow: "hockeypicks_health.yml",
   healthStartMinute: 17,
-  healthEndMinute: 25
+  healthEndMinute: 25,
+  liveWorkflow: "hockeypicks_live_loop.yml",
+  waveCacheProperty: "HP_WAVE_CACHE",
+  waveCacheTtlMs: 15 * 60 * 1000,
+  waveRecheckBeforeFireMs: 2 * 60 * 1000,
+  preLockLeadMs: 20 * 60 * 1000,
+  postStartDelayMs: 3 * 60 * 1000,
+  postStartMaxLagMs: 180 * 60 * 1000,
+  liveRefreshMs: 35 * 60 * 1000,
+  liveRetryCooldownMs: 20 * 60 * 1000,
+  pagesDataUrl: "https://hoskiphotoshare-boop.github.io/hockeypicks-auto/data.json",
+  rawDataUrl: "https://raw.githubusercontent.com/hoskiphotoshare-boop/hockeypicks-auto/main/docs/data.json"
 };
 
 var HP_ALLOWED_WORKFLOWS = {
@@ -36,9 +47,9 @@ var HP_ALLOWED_WORKFLOWS = {
 };
 
 /**
- * America/New_York wall-clock dispatch slots (daily unless `dayOfWeek` 1..7 Mon..Sun is set).
- * Each slot has a 10-minute catch-up window (`catchupWindowMinutes`) and is
- * deduplicated per ET calendar date via ScriptProperties (`HP_FIRED_<id>`).
+ * America/New_York fixed wall-clock dispatch slots (daily unless `dayOfWeek` 1..7 Mon..Sun is set).
+ * Live pre-lock, post-puck-drop (+3m), and 35m in-game refreshes are dispatched dynamically as
+ * one-shot `--once` runs from docs/data.json waves rather than long-running sleep loops.
  */
 var HP_SCHEDULE_SLOTS = [
   { id: "run_0001", hour: 0, minute: 1, workflow: "hockeypicks_run.yml", inputs: {} },
@@ -46,26 +57,19 @@ var HP_SCHEDULE_SLOTS = [
   { id: "futures_mon_1030", dayOfWeek: 1, hour: 10, minute: 30, workflow: "hockeypicks_futures.yml", inputs: {} },
   { id: "infer_1100", hour: 11, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 11 * * *" } },
   { id: "infer_1200", hour: 12, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 12 * * *" } },
-  { id: "loop_1215", hour: 12, minute: 15, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
-  { id: "loop_1315", hour: 13, minute: 15, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
-  { id: "loop_1415", hour: 14, minute: 15, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
   { id: "run_1617", hour: 16, minute: 17, workflow: "hockeypicks_run.yml", inputs: {} },
   { id: "infer_1630", hour: 16, minute: 30, workflow: "hockeypicks_infer.yml", inputs: { cron: "30 16 * * *" } },
-  { id: "loop_1840", hour: 18, minute: 40, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
-  { id: "loop_1940", hour: 19, minute: 40, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
-  { id: "loop_2040", hour: 20, minute: 40, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
-  { id: "infer_2200", hour: 22, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 22 * * *" } },
-  { id: "loop_2215", hour: 22, minute: 15, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true },
-  { id: "loop_2315", hour: 23, minute: 15, workflow: "hockeypicks_live_loop.yml", inputs: { once: false, dry_run: false }, skipIfActive: true }
+  { id: "infer_2200", hour: 22, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 22 * * *" } }
 ];
 
 /**
  * 1-minute time-driven entry point.
- * Fast-path returns immediately in memory outside scheduled slot windows so
- * ScriptProperties and UrlFetchApp are only touched when a dispatch is due.
+ * Fast-path returns immediately in memory outside fixed slot windows and wave triggers so
+ * ScriptProperties and UrlFetchApp are only touched when a sync or dispatch is due.
  */
 function hockeypicksCronTick() {
   var now = new Date();
+  var nowMs = now.getTime();
   var formatted = Utilities.formatDate(now, HP_CONFIG.timeZone, "yyyy-MM-dd|HH|mm|HH:mm z|u");
   var parts = formatted.split("|");
   var dateStr = parts[0];
@@ -90,9 +94,25 @@ function hockeypicksCronTick() {
   }
 
   var inHealthWindow = (minute >= HP_CONFIG.healthStartMinute && minute <= HP_CONFIG.healthEndMinute);
+  var waveCache = hpReadWaveCache_();
+  var needsWaveSync = (
+    !waveCache ||
+    waveCache.date !== dateStr ||
+    typeof waveCache.fetchedAtMs !== "number" ||
+    (nowMs - waveCache.fetchedAtMs) >= HP_CONFIG.waveCacheTtlMs
+  );
+  var waveCheck = waveCache
+    ? hpFindDueWaveTriggers_(waveCache, nowMs)
+    : { dueTriggers: [], liveRefreshDue: false };
 
-  // Fast-path exit outside all windows to minimize daily quota consumption
-  if (matchingSlots.length === 0 && !inHealthWindow) {
+  // Fast-path exit outside fixed windows, wave triggers, and 15m sync intervals
+  if (
+    matchingSlots.length === 0 &&
+    !inHealthWindow &&
+    !needsWaveSync &&
+    waveCheck.dueTriggers.length === 0 &&
+    !waveCheck.liveRefreshDue
+  ) {
     return {
       ok: true,
       fastPathExit: true,
@@ -217,6 +237,117 @@ function hockeypicksCronTick() {
       }
     }
 
+    // Re-read wave cache inside lock in case another execution just refreshed it
+    waveCache = hpReadWaveCache_(props) || waveCache;
+    var lockedNeedsSync = (
+      !waveCache ||
+      waveCache.date !== dateStr ||
+      typeof waveCache.fetchedAtMs !== "number" ||
+      (nowMs - waveCache.fetchedAtMs) >= HP_CONFIG.waveCacheTtlMs
+    );
+    var lockedCheck = waveCache
+      ? hpFindDueWaveTriggers_(waveCache, nowMs)
+      : { dueTriggers: [], liveRefreshDue: false };
+
+    if (lockedNeedsSync || lockedCheck.dueTriggers.length > 0 || lockedCheck.liveRefreshDue) {
+      var shouldFetchFresh = lockedNeedsSync || (
+        (lockedCheck.dueTriggers.length > 0 || lockedCheck.liveRefreshDue) &&
+        (!waveCache || (nowMs - waveCache.fetchedAtMs) >= HP_CONFIG.waveRecheckBeforeFireMs)
+      );
+
+      if (shouldFetchFresh) {
+        var fetchRes = hpFetchDashboardJson_(token);
+        if (fetchRes.ok) {
+          waveCache = hpBuildWaveCache_(fetchRes.data, dateStr, nowMs, waveCache, fetchRes.source);
+          hpSaveWaveCache_(waveCache, props);
+          Logger.log(
+            "Synced wave schedule (" + fetchRes.source + "): " +
+            waveCache.triggers.length + " triggers, hasLiveGames=" + waveCache.hasLiveGames
+          );
+        } else {
+          Logger.log("Wave schedule sync warning: " + fetchRes.error);
+          actions.push({
+            slotId: "wave_sync",
+            status: "sync_warning",
+            error: fetchRes.error
+          });
+        }
+      }
+
+      var freshCheck = waveCache
+        ? hpFindDueWaveTriggers_(waveCache, nowMs)
+        : { dueTriggers: [], liveRefreshDue: false };
+
+      if (freshCheck.dueTriggers.length > 0 || freshCheck.liveRefreshDue) {
+        var triggerLabels = [];
+        for (var k = 0; k < freshCheck.dueTriggers.length; k++) {
+          triggerLabels.push(freshCheck.dueTriggers[k].label);
+        }
+        if (freshCheck.liveRefreshDue) {
+          triggerLabels.push("35m live refresh (" + (waveCache.liveLabels || []).join(", ") + ")");
+        }
+
+        var waveActive = hpCheckWorkflowActive_(HP_CONFIG.liveWorkflow, token);
+        if (!waveActive.ok) {
+          actions.push({
+            slotId: "dynamic_wave",
+            workflow: HP_CONFIG.liveWorkflow,
+            status: "active_check_error",
+            detail: waveActive.error
+          });
+        } else if (waveActive.active) {
+          var waveSkip = {
+            slotId: "dynamic_wave",
+            workflow: HP_CONFIG.liveWorkflow,
+            status: "skipped_already_active",
+            activeRunId: waveActive.runId,
+            activeStatus: waveActive.runStatus,
+            triggers: triggerLabels,
+            etTime: etLabel
+          };
+          Logger.log("Skipped dynamic_wave (" + HP_CONFIG.liveWorkflow + "): run " + waveActive.runId + " is " + waveActive.runStatus);
+          actions.push(waveSkip);
+        } else {
+          var waveInputs = { once: true, dry_run: false };
+          var wRes = hpDispatchWorkflow_(HP_CONFIG.liveWorkflow, waveInputs, token);
+          if (wRes.ok) {
+            if (!waveCache.firedIds) {
+              waveCache.firedIds = {};
+            }
+            for (var fIdx = 0; fIdx < freshCheck.dueTriggers.length; fIdx++) {
+              waveCache.firedIds[freshCheck.dueTriggers[fIdx].id] = nowMs;
+            }
+            if (freshCheck.liveRefreshDue) {
+              waveCache.lastLiveDispatchMs = nowMs;
+            }
+            hpSaveWaveCache_(waveCache, props);
+
+            var wRecord = {
+              slotId: "dynamic_wave",
+              workflow: HP_CONFIG.liveWorkflow,
+              inputs: waveInputs,
+              triggers: triggerLabels,
+              status: "dispatched",
+              statusCode: wRes.statusCode,
+              etTime: etLabel
+            };
+            props.setProperty(HP_CONFIG.lastDispatchProperty, JSON.stringify(wRecord));
+            Logger.log("Dispatched dynamic_wave --once -> " + HP_CONFIG.liveWorkflow + " (" + triggerLabels.join("; ") + ")");
+            actions.push(wRecord);
+          } else {
+            Logger.log("Failed dispatching dynamic_wave: " + wRes.error);
+            actions.push({
+              slotId: "dynamic_wave",
+              workflow: HP_CONFIG.liveWorkflow,
+              status: "dispatch_error",
+              statusCode: wRes.statusCode,
+              error: wRes.error
+            });
+          }
+        }
+      }
+    }
+
     return {
       ok: true,
       fastPathExit: false,
@@ -266,10 +397,12 @@ function setupHockeypicksTriggers(githubToken) {
 
 /**
  * Returns the dispatcher configuration, installed trigger state, token readiness
- * (boolean only; never exposes the token), and per-slot execution status.
+ * (boolean only; never exposes the token), fixed slot execution status, and
+ * cached dynamic game-wave triggers.
  */
 function getHockeypicksDispatcherStatus() {
   var now = new Date();
+  var nowMs = now.getTime();
   var todayEt = Utilities.formatDate(now, HP_CONFIG.timeZone, "yyyy-MM-dd");
   var etTime = Utilities.formatDate(now, HP_CONFIG.timeZone, "yyyy-MM-dd HH:mm:ss z");
 
@@ -281,7 +414,8 @@ function getHockeypicksDispatcherStatus() {
     }
   }
 
-  var props = PropertiesService.getScriptProperties().getProperties();
+  var rawProps = PropertiesService.getScriptProperties();
+  var props = rawProps.getProperties();
   var hasToken = Boolean(props[HP_CONFIG.tokenProperty] || props.HP_GITHUB_TOKEN);
 
   var slots = [];
@@ -308,6 +442,9 @@ function getHockeypicksDispatcherStatus() {
     }
   }
 
+  var waveCache = hpReadWaveCache_(rawProps);
+  var waveSchedule = hpFormatWaveStatus_(waveCache, nowMs);
+
   return {
     ok: true,
     repo: HP_CONFIG.owner + "/" + HP_CONFIG.repo,
@@ -320,7 +457,8 @@ function getHockeypicksDispatcherStatus() {
     hasGithubToken: hasToken,
     healthLastHourFired: props[HP_CONFIG.firedPrefix + "health_hourly"] || null,
     lastDispatch: lastDispatch,
-    slots: slots
+    slots: slots,
+    waveSchedule: waveSchedule
   };
 }
 
@@ -341,6 +479,40 @@ function handleHockeypicksDoGet(e) {
     };
   } else if (action === "hockeypicks_tick") {
     result = hockeypicksCronTick();
+  } else if (action === "hockeypicks_sync_waves") {
+    var lock = LockService.getScriptLock();
+    if (!lock.tryLock(10000)) {
+      result = { ok: false, error: "Could not acquire script lock" };
+    } else {
+      try {
+        var now = new Date();
+        var nowMs = now.getTime();
+        var dateStr = Utilities.formatDate(now, HP_CONFIG.timeZone, "yyyy-MM-dd");
+        var props = PropertiesService.getScriptProperties();
+        var token = hpGetToken_(props);
+        var prevCache = hpReadWaveCache_(props);
+        var fetchRes = hpFetchDashboardJson_(token);
+        if (!fetchRes.ok) {
+          result = { ok: false, error: fetchRes.error };
+        } else {
+          var nextCache = hpBuildWaveCache_(fetchRes.data, dateStr, nowMs, prevCache, fetchRes.source);
+          hpSaveWaveCache_(nextCache, props);
+          result = {
+            ok: true,
+            etTime: Utilities.formatDate(now, HP_CONFIG.timeZone, "yyyy-MM-dd HH:mm:ss z"),
+            sync: {
+              source: fetchRes.source,
+              fetchedAtEt: hpFormatEtMs_(nextCache.fetchedAtMs),
+              triggerCount: nextCache.triggers.length,
+              hasLiveGames: nextCache.hasLiveGames
+            },
+            status: getHockeypicksDispatcherStatus()
+          };
+        }
+      } finally {
+        lock.releaseLock();
+      }
+    }
   } else if (action === "hockeypicks_dispatch") {
     var workflow = String(params.workflow || "").trim();
     if (!HP_ALLOWED_WORKFLOWS[workflow]) {
@@ -350,9 +522,9 @@ function handleHockeypicksDoGet(e) {
         allowed: Object.keys(HP_ALLOWED_WORKFLOWS)
       };
     } else {
-      var props = PropertiesService.getScriptProperties();
-      var token = hpGetToken_(props);
-      if (!token) {
+      var dispatchProps = PropertiesService.getScriptProperties();
+      var dispatchToken = hpGetToken_(dispatchProps);
+      if (!dispatchToken) {
         result = { ok: false, error: "GITHUB_TOKEN is not configured in ScriptProperties" };
       } else {
         var inputs = {};
@@ -365,10 +537,10 @@ function handleHockeypicksDoGet(e) {
           if (params.bankroll !== undefined) inputs.bankroll = String(params.bankroll);
           if (params.n_sims !== undefined) inputs.n_sims = String(params.n_sims);
         }
-        var dispatchRes = hpDispatchWorkflow_(workflow, inputs, token);
+        var dispatchRes = hpDispatchWorkflow_(workflow, inputs, dispatchToken);
         var etLabel = Utilities.formatDate(new Date(), HP_CONFIG.timeZone, "yyyy-MM-dd HH:mm:ss z");
         if (dispatchRes.ok) {
-          props.setProperty(HP_CONFIG.lastDispatchProperty, JSON.stringify({
+          dispatchProps.setProperty(HP_CONFIG.lastDispatchProperty, JSON.stringify({
             slotId: "manual_web_dispatch",
             workflow: workflow,
             inputs: inputs,
@@ -401,6 +573,325 @@ function handleHockeypicksDoGet(e) {
 function hpGetToken_(props) {
   var p = props || PropertiesService.getScriptProperties();
   return p.getProperty(HP_CONFIG.tokenProperty) || p.getProperty("HP_GITHUB_TOKEN") || "";
+}
+
+/**
+ * Parses `"YYYY-MM-DD HH:MM:SS UTC"`, `"YYYY-MM-DD HH:MM UTC"`, or ISO-8601 strings to UTC epoch ms.
+ */
+function hpParseUtcMs_(value) {
+  if (!value || typeof value !== "string") {
+    return null;
+  }
+  var s = value.trim();
+  if (!s) {
+    return null;
+  }
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\s*UTC|Z)?$/i);
+  if (m) {
+    return Date.UTC(
+      parseInt(m[1], 10),
+      parseInt(m[2], 10) - 1,
+      parseInt(m[3], 10),
+      parseInt(m[4], 10),
+      parseInt(m[5], 10),
+      m[6] ? parseInt(m[6], 10) : 0
+    );
+  }
+  var ms = Date.parse(s);
+  return isNaN(ms) ? null : ms;
+}
+
+/**
+ * Formats an epoch millisecond timestamp in America/New_York for status diagnostics.
+ */
+function hpFormatEtMs_(ms) {
+  if (typeof ms !== "number" || !isFinite(ms)) {
+    return null;
+  }
+  return Utilities.formatDate(new Date(ms), HP_CONFIG.timeZone, "yyyy-MM-dd HH:mm z");
+}
+
+/**
+ * Fetches docs/data.json from GitHub Contents API (0s CDN lag), falling back to GitHub Pages
+ * and raw.githubusercontent.com.
+ */
+function hpFetchDashboardJson_(token) {
+  var attempts = [];
+  var apiHeaders = {
+    "Accept": "application/vnd.github.raw+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+    "User-Agent": "hockeypicks-gas-dispatcher"
+  };
+  if (token) {
+    apiHeaders.Authorization = "Bearer " + token;
+  }
+  attempts.push({
+    source: "github_api",
+    url: "https://api.github.com/repos/" + HP_CONFIG.owner + "/" + HP_CONFIG.repo + "/contents/docs/data.json?ref=" + encodeURIComponent(HP_CONFIG.ref),
+    headers: apiHeaders
+  });
+  var bust = "?t=" + Date.now();
+  attempts.push({
+    source: "github_pages",
+    url: HP_CONFIG.pagesDataUrl + bust,
+    headers: { "User-Agent": "hockeypicks-gas-dispatcher" }
+  });
+  attempts.push({
+    source: "github_raw",
+    url: HP_CONFIG.rawDataUrl + bust,
+    headers: { "User-Agent": "hockeypicks-gas-dispatcher" }
+  });
+
+  var errors = [];
+  for (var i = 0; i < attempts.length; i++) {
+    var a = attempts[i];
+    try {
+      var resp = UrlFetchApp.fetch(a.url, {
+        method: "get",
+        muteHttpExceptions: true,
+        headers: a.headers
+      });
+      var code = resp.getResponseCode();
+      if (code >= 200 && code < 300) {
+        var parsed = JSON.parse(resp.getContentText());
+        if (parsed && typeof parsed === "object" && parsed.meta) {
+          return { ok: true, data: parsed, source: a.source };
+        }
+        errors.push(a.source + ": missing meta object");
+      } else {
+        errors.push(a.source + ": HTTP " + code);
+      }
+    } catch (err) {
+      errors.push(a.source + ": " + String(err));
+    }
+  }
+  return { ok: false, error: errors.join(" | ") };
+}
+
+/**
+ * Builds a compact (<2 KB) wave schedule cache from docs/data.json.
+ */
+function hpBuildWaveCache_(payload, dateStr, nowMs, prevCache, source) {
+  var meta = (payload && payload.meta) || {};
+  var dataUpdatedMs = hpParseUtcMs_(meta.updated_utc);
+
+  var firedIds = {};
+  if (prevCache && prevCache.firedIds) {
+    var cutoffMs = nowMs - 24 * 60 * 60 * 1000;
+    var prevKeys = Object.keys(prevCache.firedIds);
+    for (var i = 0; i < prevKeys.length; i++) {
+      var k = prevKeys[i];
+      var ts = prevCache.firedIds[k];
+      if (typeof ts === "number" && ts >= cutoffMs) {
+        firedIds[k] = ts;
+      }
+    }
+  }
+
+  var lastLiveDispatchMs = null;
+  if (prevCache && typeof prevCache.lastLiveDispatchMs === "number" && (nowMs - prevCache.lastLiveDispatchMs) < 24 * 60 * 60 * 1000) {
+    lastLiveDispatchMs = prevCache.lastLiveDispatchMs;
+  }
+
+  var triggers = [];
+  var timing = (payload && payload.tims_timing) || {};
+  var lockUtc = timing.selection_lock_utc;
+  var lockMs = hpParseUtcMs_(lockUtc);
+  if (lockMs !== null) {
+    triggers.push({
+      id: "prelock_" + lockUtc,
+      kind: "pre_lock",
+      dueMs: lockMs - HP_CONFIG.preLockLeadMs,
+      expireMs: lockMs,
+      label: "Pre-lock " + (timing.selection_lock_et || lockUtc)
+    });
+  }
+
+  var games = (payload && payload.games) || [];
+  var waveGroups = {};
+  var hasLiveGames = false;
+  var liveLabels = [];
+
+  for (var gIdx = 0; gIdx < games.length; gIdx++) {
+    var g = games[gIdx] || {};
+    var state = String(g.game_state || "").toUpperCase();
+    var startUtc = g.start_time_utc;
+    var startMs = hpParseUtcMs_(startUtc);
+    var matchup = (g.away || "?") + "@" + (g.home || "?");
+
+    if ((state === "LIVE" || state === "CRIT") && (startMs === null || startMs <= nowMs)) {
+      hasLiveGames = true;
+      if (liveLabels.length < 3) {
+        liveLabels.push(matchup);
+      }
+    }
+
+    if (state === "FINAL" || state === "OFF" || startMs === null) {
+      continue;
+    }
+
+    if (!waveGroups[startUtc]) {
+      waveGroups[startUtc] = {
+        startUtc: startUtc,
+        startMs: startMs,
+        et: g.start_time_et || startUtc,
+        matchups: []
+      };
+    }
+    waveGroups[startUtc].matchups.push(matchup);
+  }
+
+  var startKeys = Object.keys(waveGroups);
+  for (var wIdx = 0; wIdx < startKeys.length; wIdx++) {
+    var grp = waveGroups[startKeys[wIdx]];
+    var shown = grp.matchups.slice(0, 3).join(", ");
+    var extra = grp.matchups.length > 3 ? " +" + (grp.matchups.length - 3) : "";
+    var dueMs = grp.startMs + HP_CONFIG.postStartDelayMs;
+    triggers.push({
+      id: "wave_" + grp.startUtc,
+      kind: "post_start",
+      dueMs: dueMs,
+      expireMs: dueMs + HP_CONFIG.postStartMaxLagMs,
+      label: grp.et + " (" + shown + extra + ")"
+    });
+  }
+
+  triggers.sort(function(a, b) { return a.dueMs - b.dueMs; });
+
+  var liveRefreshDueMs = (hasLiveGames && dataUpdatedMs !== null)
+    ? (dataUpdatedMs + HP_CONFIG.liveRefreshMs)
+    : null;
+
+  return {
+    date: dateStr,
+    source: source || "unknown",
+    fetchedAtMs: nowMs,
+    dataUpdatedMs: dataUpdatedMs,
+    triggers: triggers,
+    hasLiveGames: hasLiveGames,
+    liveLabels: liveLabels,
+    liveRefreshDueMs: liveRefreshDueMs,
+    lastLiveDispatchMs: lastLiveDispatchMs,
+    firedIds: firedIds
+  };
+}
+
+/**
+ * Reads the compact wave cache from ScriptCache first, falling back to ScriptProperties.
+ */
+function hpReadWaveCache_(props) {
+  var key = HP_CONFIG.waveCacheProperty;
+  var scriptCache = CacheService.getScriptCache();
+  var raw = scriptCache.get(key);
+  if (!raw) {
+    var p = props || PropertiesService.getScriptProperties();
+    raw = p.getProperty(key);
+    if (raw) {
+      scriptCache.put(key, raw, 1200);
+    }
+  }
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Writes the compact wave cache to both ScriptCache (fast 1m read) and ScriptProperties (durable).
+ */
+function hpSaveWaveCache_(cache, props) {
+  var raw = JSON.stringify(cache);
+  CacheService.getScriptCache().put(HP_CONFIG.waveCacheProperty, raw, 1200);
+  (props || PropertiesService.getScriptProperties()).setProperty(HP_CONFIG.waveCacheProperty, raw);
+}
+
+/**
+ * Evaluates which wave triggers or 35m live refreshes are currently due and unfired.
+ */
+function hpFindDueWaveTriggers_(cache, nowMs) {
+  var dueTriggers = [];
+  if (!cache) {
+    return { dueTriggers: dueTriggers, liveRefreshDue: false };
+  }
+  var triggers = cache.triggers || [];
+  var firedIds = cache.firedIds || {};
+  var dataUpdatedMs = cache.dataUpdatedMs;
+
+  for (var i = 0; i < triggers.length; i++) {
+    var t = triggers[i];
+    if (firedIds[t.id]) {
+      continue;
+    }
+    if (nowMs < t.dueMs || nowMs >= t.expireMs) {
+      continue;
+    }
+    if (typeof dataUpdatedMs === "number" && dataUpdatedMs >= t.dueMs) {
+      continue;
+    }
+    dueTriggers.push(t);
+  }
+
+  var liveRefreshDue = Boolean(
+    cache.hasLiveGames &&
+    typeof cache.liveRefreshDueMs === "number" &&
+    nowMs >= cache.liveRefreshDueMs &&
+    (!cache.lastLiveDispatchMs || (nowMs - cache.lastLiveDispatchMs) >= HP_CONFIG.liveRetryCooldownMs)
+  );
+
+  return {
+    dueTriggers: dueTriggers,
+    liveRefreshDue: liveRefreshDue
+  };
+}
+
+/**
+ * Formats cached wave schedule state for `hockeypicks_status`.
+ */
+function hpFormatWaveStatus_(cache, nowMs) {
+  if (!cache) {
+    return null;
+  }
+  var firedIds = cache.firedIds || {};
+  var dataUpdatedMs = cache.dataUpdatedMs;
+  var mapped = [];
+  var triggers = cache.triggers || [];
+  var firedCount = 0;
+
+  for (var i = 0; i < triggers.length; i++) {
+    var t = triggers[i];
+    var isFired = Boolean(firedIds[t.id]);
+    var covered = (typeof dataUpdatedMs === "number" && dataUpdatedMs >= t.dueMs);
+    if (isFired) {
+      firedCount++;
+    }
+    mapped.push({
+      id: t.id,
+      kind: t.kind,
+      label: t.label,
+      dueEt: hpFormatEtMs_(t.dueMs),
+      expireEt: hpFormatEtMs_(t.expireMs),
+      fired: isFired,
+      coveredByData: covered,
+      expired: nowMs >= t.expireMs
+    });
+  }
+
+  return {
+    date: cache.date,
+    source: cache.source || null,
+    fetchedAtEt: hpFormatEtMs_(cache.fetchedAtMs),
+    dataUpdatedEt: hpFormatEtMs_(cache.dataUpdatedMs),
+    hasLiveGames: Boolean(cache.hasLiveGames),
+    liveLabels: cache.liveLabels || [],
+    liveRefreshDueEt: hpFormatEtMs_(cache.liveRefreshDueMs),
+    lastLiveDispatchEt: hpFormatEtMs_(cache.lastLiveDispatchMs),
+    firedCount: firedCount,
+    triggers: mapped
+  };
 }
 
 /**

@@ -382,6 +382,84 @@ class TestInferGate(unittest.TestCase):
             )
             self.assertFalse(after_ok)
 
+    def test_live_game_refresh_window(self):
+        payload = {
+            "meta": {
+                "status": "live",
+                "updated_utc": "2026-11-20 00:05:00 UTC",
+            },
+            "games": [
+                {
+                    "away": "MTL",
+                    "home": "NYR",
+                    "date": "2026-11-19",
+                    "start_time_et": "7:00 PM ET",
+                    "start_time_utc": "2026-11-20T00:00:00Z",
+                    "game_state": "LIVE",
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            json_path = os.path.join(tmpdir, "data.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+
+            # 20 minutes old -> below 35m threshold
+            ok_20, _ = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 20, 0, 25, tzinfo=timezone.utc),
+            )
+            self.assertFalse(ok_20)
+
+            # 35 minutes old with LIVE game -> triggers live refresh
+            ok_35, reason_35 = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 20, 0, 40, tzinfo=timezone.utc),
+            )
+            self.assertTrue(ok_35)
+            self.assertIn("Live game refresh due", reason_35)
+
+            # CRIT game 40m old -> triggers live refresh
+            payload["games"][0]["game_state"] = "CRIT"
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+            ok_crit, reason_crit = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 20, 0, 45, tzinfo=timezone.utc),
+            )
+            self.assertTrue(ok_crit)
+            self.assertIn("Live game refresh due", reason_crit)
+
+            # Disabled with live_refresh_minutes=0 -> False
+            ok_disabled, _ = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 20, 0, 45, tzinfo=timezone.utc),
+                live_refresh_minutes=0,
+            )
+            self.assertFalse(ok_disabled)
+
+            # FINAL and FUT games 40m old -> False (when not post-start due)
+            for state in ("FINAL", "FUT"):
+                payload["games"][0]["game_state"] = state
+                payload["games"][0]["start_time_utc"] = "2026-11-20T03:00:00Z"
+                with open(json_path, "w", encoding="utf-8") as f:
+                    json.dump(payload, f)
+                ok_nonlive, _ = evaluate_gate(
+                    json_path,
+                    event_name="schedule",
+                    cron="",
+                    now_utc=datetime(2026, 11, 20, 0, 45, tzinfo=timezone.utc),
+                )
+                self.assertFalse(ok_nonlive, msg=f"state={state} should not trigger live refresh")
+
 
 if __name__ == "__main__":
     unittest.main()

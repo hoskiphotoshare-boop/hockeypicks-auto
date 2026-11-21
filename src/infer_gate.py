@@ -25,6 +25,8 @@ ODDS_CRON_11AM = "0 11 * * *"
 # instead of being discarded for missing a 50-minute slot.
 DEFAULT_MAX_LAG_MINUTES = 180
 DEFAULT_PRE_LOCK_LEAD_MINUTES = 20
+DEFAULT_LIVE_REFRESH_MINUTES = 35
+LIVE_GAME_STATES = {"LIVE", "CRIT"}
 
 
 def _nth_weekday(year: int, month: int, weekday: int, n: int) -> date:
@@ -264,6 +266,51 @@ def is_pre_lock_refresh_due(
     return True, f"Pre-lock Tims refresh due ({mins_left}m before {lock_label} lock)."
 
 
+def is_live_refresh_due(
+    payload: dict[str, Any],
+    *,
+    now_utc: datetime | None = None,
+    live_refresh_minutes: int = DEFAULT_LIVE_REFRESH_MINUTES,
+) -> tuple[bool, str]:
+    """Return True when LIVE/CRIT games are active and payload is >= live_refresh_minutes old."""
+    if live_refresh_minutes <= 0:
+        return False, ""
+
+    now = now_utc or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    else:
+        now = now.astimezone(timezone.utc)
+
+    updated = parse_utc_timestamp((payload.get("meta") or {}).get("updated_utc"))
+    if updated is None:
+        return False, ""
+
+    age = now - updated
+    if age < timedelta(minutes=live_refresh_minutes):
+        return False, ""
+
+    live_games: list[dict[str, Any]] = []
+    for game in payload.get("games") or []:
+        if str(game.get("game_state") or "").upper() not in LIVE_GAME_STATES:
+            continue
+        start_dt = parse_game_start_utc(game)
+        if start_dt is not None and start_dt > now:
+            continue
+        live_games.append(game)
+
+    if not live_games:
+        return False, ""
+
+    age_min = int(age.total_seconds() // 60)
+    labels = ", ".join(
+        f"{g.get('away', '?')}@{g.get('home', '?')} ({g.get('start_time_et', '?')})"
+        for g in live_games[:5]
+    )
+    extra = f" (+{len(live_games) - 5} more)" if len(live_games) > 5 else ""
+    return True, f"Live game refresh due ({age_min}m since last update): {labels}{extra}"
+
+
 def evaluate_gate(
     data_json_path: str,
     *,
@@ -272,6 +319,7 @@ def evaluate_gate(
     now_utc: datetime | None = None,
     delay_minutes: int = 3,
     max_lag_minutes: int = DEFAULT_MAX_LAG_MINUTES,
+    live_refresh_minutes: int = DEFAULT_LIVE_REFRESH_MINUTES,
 ) -> tuple[bool, str]:
     """Evaluate whether scheduled odds release or post-puck-drop inference should proceed."""
     cron_clean = str(cron or "").strip()
@@ -352,6 +400,13 @@ def evaluate_gate(
         pre_lock_due, pre_lock_reason = is_pre_lock_refresh_due(payload, now_utc=now)
         if pre_lock_due:
             return True, pre_lock_reason
+        live_due, live_reason = is_live_refresh_due(
+            payload,
+            now_utc=now,
+            live_refresh_minutes=live_refresh_minutes,
+        )
+        if live_due:
+            return True, live_reason
         return False, "No scheduled games passed start_time + 3m since last update."
 
     labels = ", ".join(f"{g.get('away', '?')}@{g.get('home', '?')} ({g.get('start_time_et', '?')})" for g in due[:5])

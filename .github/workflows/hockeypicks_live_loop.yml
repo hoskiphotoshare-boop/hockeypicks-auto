@@ -11,10 +11,10 @@ on:
         description: "Evaluate the gate without running inference or committing"
         type: boolean
         default: false
-  # Daily live window wake-ups (12:15 PM, 6:40 PM, 10:15 PM ET, plus backup
-  # wake-ups at 1:15 PM, 2:15 PM, 7:40 PM, 8:40 PM, 11:15 PM ET) are dispatched
-  # externally by Google Apps Script (scripts/gas_hockeypicks_dispatcher.gs) via
-  # workflow_dispatch on exact America/New_York wall-clock times.
+  # Dynamic game-wave updates (Tims pre-lock T-20m, puck-drop waves +3m, and 35m
+  # LIVE/CRIT refreshes) are dispatched externally by Google Apps Script
+  # (scripts/gas_hockeypicks_dispatcher.gs) via workflow_dispatch with `once: true`
+  # so runners finish in ~1 minute instead of holding multi-hour sleep loops.
 
 permissions:
   contents: write
