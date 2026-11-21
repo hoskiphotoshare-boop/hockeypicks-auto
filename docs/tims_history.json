@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-21 10:18 AM ET",
+      "captured_et": "2026-11-21 11:01 AM ET",
       "model_n_half": 30.66,
       "groups": {
         "1": [
@@ -17,7 +17,7 @@
             "base_pred": 0.498,
             "live_gp": 24,
             "live_goals": 18,
-            "def_multiplier": 1.115,
+            "def_multiplier": 1.117,
             "final_score": 0.674
           },
           {
@@ -40,7 +40,7 @@
             "live_gp": 24,
             "live_goals": 21,
             "def_multiplier": 0.913,
-            "final_score": 0.607
+            "final_score": 0.606
           },
           {
             "player": "Kyle Connor",
@@ -51,7 +51,7 @@
             "live_gp": 23,
             "live_goals": 18,
             "def_multiplier": 0.961,
-            "final_score": 0.587
+            "final_score": 0.586
           },
           {
             "player": "Matt Boldy",
@@ -61,8 +61,8 @@
             "base_pred": 0.487,
             "live_gp": 24,
             "live_goals": 13,
-            "def_multiplier": 1.115,
-            "final_score": 0.568
+            "def_multiplier": 1.117,
+            "final_score": 0.569
           },
           {
             "player": "Auston Matthews",
@@ -84,7 +84,7 @@
             "live_gp": 22,
             "live_goals": 10,
             "def_multiplier": 1.042,
-            "final_score": 0.484
+            "final_score": 0.483
           },
           {
             "player": "Macklin Celebrini",
@@ -94,7 +94,7 @@
             "base_pred": 0.505,
             "live_gp": 22,
             "live_goals": 9,
-            "def_multiplier": 1.022,
+            "def_multiplier": 1.023,
             "final_score": 0.476
           },
           {
@@ -116,7 +116,7 @@
             "base_pred": 0.404,
             "live_gp": 23,
             "live_goals": 12,
-            "def_multiplier": 1.03,
+            "def_multiplier": 1.029,
             "final_score": 0.464
           },
           {
@@ -139,7 +139,7 @@
             "live_gp": 24,
             "live_goals": 13,
             "def_multiplier": 0.913,
-            "final_score": 0.44
+            "final_score": 0.439
           },
           {
             "player": "Clayton Keller",
@@ -184,7 +184,7 @@
             "base_pred": 0.373,
             "live_gp": 20,
             "live_goals": 11,
-            "def_multiplier": 1.026,
+            "def_multiplier": 1.027,
             "final_score": 0.445
           },
           {
@@ -195,7 +195,7 @@
             "base_pred": 0.395,
             "live_gp": 23,
             "live_goals": 11,
-            "def_multiplier": 1.03,
+            "def_multiplier": 1.029,
             "final_score": 0.443
           },
           {
@@ -228,7 +228,7 @@
             "base_pred": 0.285,
             "live_gp": 23,
             "live_goals": 7,
-            "def_multiplier": 1.03,
+            "def_multiplier": 1.029,
             "final_score": 0.301
           },
           {
@@ -250,7 +250,7 @@
             "base_pred": 0.298,
             "live_gp": 20,
             "live_goals": 3,
-            "def_multiplier": 1.026,
+            "def_multiplier": 1.027,
             "final_score": 0.253
           },
           {
@@ -294,7 +294,7 @@
             "base_pred": 0.164,
             "live_gp": 19,
             "live_goals": 3,
-            "def_multiplier": 1.038,
+            "def_multiplier": 1.039,
             "final_score": 0.168
           },
           {
@@ -384,7 +384,7 @@
             "base_pred": 0.139,
             "live_gp": 23,
             "live_goals": 2,
-            "def_multiplier": 1.064,
+            "def_multiplier": 1.065,
             "final_score": 0.128
           },
           {
@@ -428,7 +428,7 @@
             "base_pred": 0.122,
             "live_gp": 18,
             "live_goals": 2,
-            "def_multiplier": 0.964,
+            "def_multiplier": 0.963,
             "final_score": 0.115
           },
           {
@@ -450,7 +450,7 @@
             "base_pred": 0.08,
             "live_gp": 24,
             "live_goals": 3,
-            "def_multiplier": 1.022,
+            "def_multiplier": 1.023,
             "final_score": 0.098
           },
           {
@@ -461,7 +461,7 @@
             "base_pred": 0.099,
             "live_gp": 17,
             "live_goals": 1,
-            "def_multiplier": 1.038,
+            "def_multiplier": 1.039,
             "final_score": 0.091
           },
           {
@@ -483,7 +483,7 @@
             "base_pred": 0.113,
             "live_gp": 18,
             "live_goals": 0,
-            "def_multiplier": 1.026,
+            "def_multiplier": 1.027,
             "final_score": 0.082
           }
         ]
@@ -497,7 +497,7 @@
           "base_pred": 0.498,
           "live_gp": 24,
           "live_goals": 18,
-          "def_multiplier": 1.115,
+          "def_multiplier": 1.117,
           "final_score": 0.674
         },
         "2": {
