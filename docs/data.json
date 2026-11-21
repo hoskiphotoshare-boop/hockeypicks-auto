@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-21 17:01:37 UTC",
-    "updated_et": "2026-11-21 12:01 PM ET",
+    "updated_utc": "2026-11-21 18:16:26 UTC",
+    "updated_et": "2026-11-21 01:16 PM ET",
     "today_date": "2026-11-21",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -15,16 +15,16 @@
     "odds_enabled": true,
     "odds_usage": {
       "date": "2026-11-21",
-      "live_loop_fetches": 0,
+      "live_loop_fetches": 1,
       "live_loop_cap": 3,
       "last_source": "api",
       "requests_last": 1,
-      "requests_used": 131,
-      "requests_remaining": 369
+      "requests_used": 134,
+      "requests_remaining": 366
     },
     "availability": {
       "injury_source": "espn",
-      "injury_count": 111,
+      "injury_count": 112,
       "goalie_source": "dailyfaceoff",
       "goalie_count": 28
     },
@@ -103,26 +103,6 @@
         "eb_live_weight_pct": 41.8,
         "def_multiplier": 0.967,
         "final_score": 0.633,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
-        "player": "Leon Draisaitl",
-        "team": "EDM",
-        "position": "F",
-        "opponent": "CAR",
-        "base_pred": 0.506,
-        "live_gp": 24,
-        "live_goals": 21,
-        "live_shots": 92,
-        "live_g_gp": 0.875,
-        "eb_live_weight_pct": 43.9,
-        "def_multiplier": 0.913,
-        "final_score": 0.606,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -291,26 +271,6 @@
         "group": 1
       },
       {
-        "player": "Connor McDavid",
-        "team": "EDM",
-        "position": "F",
-        "opponent": "CAR",
-        "base_pred": 0.444,
-        "live_gp": 24,
-        "live_goals": 13,
-        "live_shots": 66,
-        "live_g_gp": 0.542,
-        "eb_live_weight_pct": 43.9,
-        "def_multiplier": 0.913,
-        "final_score": 0.439,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
         "player": "Clayton Keller",
         "team": "UTA",
         "position": "F",
@@ -345,6 +305,26 @@
         "eb_live_weight_pct": 41.8,
         "def_multiplier": 1.005,
         "final_score": 0.519,
+        "mode": "Regular Season",
+        "injury_status": null,
+        "injury_out": false,
+        "injury_dtd": false,
+        "injury_note": "",
+        "group": 2
+      },
+      {
+        "player": "Alex Tuch",
+        "team": "WSH",
+        "position": "F",
+        "opponent": "BOS",
+        "base_pred": 0.427,
+        "live_gp": 20,
+        "live_goals": 13,
+        "live_shots": 50,
+        "live_g_gp": 0.65,
+        "eb_live_weight_pct": 39.5,
+        "def_multiplier": 0.964,
+        "final_score": 0.483,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -393,26 +373,6 @@
         "group": 2
       },
       {
-        "player": "Brady Tkachuk",
-        "team": "FLA",
-        "position": "F",
-        "opponent": "BUF",
-        "base_pred": 0.395,
-        "live_gp": 23,
-        "live_goals": 11,
-        "live_shots": 82,
-        "live_g_gp": 0.478,
-        "eb_live_weight_pct": 42.9,
-        "def_multiplier": 1.029,
-        "final_score": 0.442,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
         "player": "Filip Forsberg",
         "team": "NSH",
         "position": "F",
@@ -453,18 +413,18 @@
         "group": 2
       },
       {
-        "player": "Sam Bennett",
-        "team": "FLA",
+        "player": "Casey Mittelstadt",
+        "team": "BOS",
         "position": "F",
-        "opponent": "BUF",
-        "base_pred": 0.285,
-        "live_gp": 23,
-        "live_goals": 7,
-        "live_shots": 56,
-        "live_g_gp": 0.304,
-        "eb_live_weight_pct": 42.9,
-        "def_multiplier": 1.029,
-        "final_score": 0.301,
+        "opponent": "WSH",
+        "base_pred": 0.232,
+        "live_gp": 22,
+        "live_goals": 8,
+        "live_shots": 30,
+        "live_g_gp": 0.364,
+        "eb_live_weight_pct": 41.8,
+        "def_multiplier": 1.043,
+        "final_score": 0.289,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -525,26 +485,6 @@
         "eb_live_weight_pct": 31.3,
         "def_multiplier": 1.023,
         "final_score": 0.247,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Jordan Staal",
-        "team": "CAR",
-        "position": "F",
-        "opponent": "EDM",
-        "base_pred": 0.251,
-        "live_gp": 8,
-        "live_goals": 0,
-        "live_shots": 9,
-        "live_g_gp": 0.0,
-        "eb_live_weight_pct": 20.7,
-        "def_multiplier": 0.948,
-        "final_score": 0.191,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -631,6 +571,26 @@
         "injury_dtd": false,
         "injury_note": "",
         "group": 2
+      },
+      {
+        "player": "Kevin Fiala",
+        "team": "LAK",
+        "position": "F",
+        "opponent": "OTT",
+        "base_pred": 0.12,
+        "live_gp": 4,
+        "live_goals": 0,
+        "live_shots": 4,
+        "live_g_gp": 0.0,
+        "eb_live_weight_pct": 11.5,
+        "def_multiplier": 0.963,
+        "final_score": 0.105,
+        "mode": "Regular Season",
+        "injury_status": null,
+        "injury_out": false,
+        "injury_dtd": false,
+        "injury_note": "",
+        "group": 2
       }
     ],
     "3": [
@@ -667,26 +627,6 @@
         "eb_live_weight_pct": 44.9,
         "def_multiplier": 1.021,
         "final_score": 0.151,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Eric Robinson",
-        "team": "CAR",
-        "position": "F",
-        "opponent": "EDM",
-        "base_pred": 0.184,
-        "live_gp": 21,
-        "live_goals": 2,
-        "live_shots": 27,
-        "live_g_gp": 0.095,
-        "eb_live_weight_pct": 40.7,
-        "def_multiplier": 0.948,
-        "final_score": 0.146,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -795,26 +735,6 @@
         "group": 3
       },
       {
-        "player": "Sean Walker",
-        "team": "CAR",
-        "position": "D",
-        "opponent": "EDM",
-        "base_pred": 0.111,
-        "live_gp": 22,
-        "live_goals": 3,
-        "live_shots": 42,
-        "live_g_gp": 0.136,
-        "eb_live_weight_pct": 41.8,
-        "def_multiplier": 0.948,
-        "final_score": 0.115,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
         "player": "Andre Lee",
         "team": "LAK",
         "position": "F",
@@ -827,6 +747,46 @@
         "eb_live_weight_pct": 37.0,
         "def_multiplier": 0.963,
         "final_score": 0.115,
+        "mode": "Regular Season",
+        "injury_status": null,
+        "injury_out": false,
+        "injury_dtd": false,
+        "injury_note": "",
+        "group": 3
+      },
+      {
+        "player": "Justin Faulk",
+        "team": "DET",
+        "position": "D",
+        "opponent": "NYI",
+        "base_pred": 0.098,
+        "live_gp": 22,
+        "live_goals": 3,
+        "live_shots": 30,
+        "live_g_gp": 0.136,
+        "eb_live_weight_pct": 41.8,
+        "def_multiplier": 1.027,
+        "final_score": 0.114,
+        "mode": "Regular Season",
+        "injury_status": null,
+        "injury_out": false,
+        "injury_dtd": false,
+        "injury_note": "",
+        "group": 3
+      },
+      {
+        "player": "Jean-Gabriel Pageau",
+        "team": "NYI",
+        "position": "F",
+        "opponent": "DET",
+        "base_pred": 0.133,
+        "live_gp": 18,
+        "live_goals": 1,
+        "live_shots": 23,
+        "live_g_gp": 0.056,
+        "eb_live_weight_pct": 37.0,
+        "def_multiplier": 0.996,
+        "final_score": 0.11,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -875,6 +835,26 @@
         "group": 3
       },
       {
+        "player": "Scott Laughton",
+        "team": "LAK",
+        "position": "F",
+        "opponent": "OTT",
+        "base_pred": 0.105,
+        "live_gp": 20,
+        "live_goals": 2,
+        "live_shots": 25,
+        "live_g_gp": 0.1,
+        "eb_live_weight_pct": 39.5,
+        "def_multiplier": 0.963,
+        "final_score": 0.097,
+        "mode": "Regular Season",
+        "injury_status": null,
+        "injury_out": false,
+        "injury_dtd": false,
+        "injury_note": "",
+        "group": 3
+      },
+      {
         "player": "Ben Meyers",
         "team": "SEA",
         "position": "F",
@@ -887,26 +867,6 @@
         "eb_live_weight_pct": 35.7,
         "def_multiplier": 1.039,
         "final_score": 0.091,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Alexander Nikishin",
-        "team": "CAR",
-        "position": "D",
-        "opponent": "EDM",
-        "base_pred": 0.071,
-        "live_gp": 3,
-        "live_goals": 1,
-        "live_shots": 2,
-        "live_g_gp": 0.333,
-        "eb_live_weight_pct": 8.9,
-        "def_multiplier": 0.948,
-        "final_score": 0.083,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -939,13 +899,13 @@
   "tims_timing": {
     "status": "evaluated",
     "decision": "BORDERLINE_WATCH",
-    "headline": "Select Now (Borderline Defer Watch Before 3:30 PM ET)",
-    "detail": "Current best ticket (1.061 xG) is near-optimal, though waiting past 1:00 PM ET offers slight +0.002 xG (27% chance) upside if unlisted late scorers enter.",
+    "headline": "Select Now (Borderline Defer Watch Before 6:00 PM ET)",
+    "detail": "Current best ticket (1.061 xG) is near-optimal, though waiting past 3:30 PM ET offers slight +0.001 xG (16% chance) upside if unlisted late scorers enter.",
     "defer_threshold": 0.02,
-    "recommended_wave_et": "3:30 PM ET",
+    "recommended_wave_et": "6:00 PM ET",
     "v_now": 1.0608,
-    "v_defer_best": 1.0624,
-    "ev_delta": 0.0016,
+    "v_defer_best": 1.0614,
+    "ev_delta": 0.0006,
     "locked_picks_if_defer_1": 0,
     "current_best": {
       "1": {
@@ -955,7 +915,7 @@
         "position": "F",
         "final_score": 0.674,
         "p_goal_pct": 49.0,
-        "wave_idx": 6,
+        "wave_idx": 5,
         "wave_et": "10:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -967,7 +927,7 @@
         "position": "F",
         "final_score": 0.519,
         "p_goal_pct": 40.5,
-        "wave_idx": 3,
+        "wave_idx": 2,
         "wave_et": "6:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -979,7 +939,7 @@
         "position": "F",
         "final_score": 0.181,
         "p_goal_pct": 16.6,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "7:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -993,7 +953,7 @@
         "position": "F",
         "final_score": 0.674,
         "p_goal_pct": 49.0,
-        "wave_idx": 6,
+        "wave_idx": 5,
         "wave_et": "10:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -1005,7 +965,7 @@
         "position": "F",
         "final_score": 0.519,
         "p_goal_pct": 40.5,
-        "wave_idx": 3,
+        "wave_idx": 2,
         "wave_et": "6:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -1017,16 +977,16 @@
         "position": "F",
         "final_score": 0.181,
         "p_goal_pct": 16.6,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "7:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
       }
     },
     "lock_basis": "now",
-    "first_wave_utc": "2026-11-21T18:00:00Z",
-    "selection_lock_utc": "2026-11-21T18:00:00Z",
-    "selection_lock_et": "1:00 PM ET",
+    "first_wave_utc": "2026-11-21T20:30:00Z",
+    "selection_lock_utc": "2026-11-21T20:30:00Z",
+    "selection_lock_et": "3:30 PM ET",
     "selection_wave": 1,
     "hidden_upside_players": [
       {
@@ -1036,19 +996,7 @@
         "position": "C",
         "final_score": 0.511,
         "p_goal_pct": 40.0,
-        "wave_idx": 3,
-        "wave_et": "7:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      },
-      {
-        "player": "Alex Tuch",
-        "team": "WSH",
-        "opponent": "BOS",
-        "position": "R",
-        "final_score": 0.483,
-        "p_goal_pct": 38.3,
-        "wave_idx": 3,
+        "wave_idx": 2,
         "wave_et": "7:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -1060,7 +1008,7 @@
         "position": "R",
         "final_score": 0.468,
         "p_goal_pct": 37.4,
-        "wave_idx": 3,
+        "wave_idx": 2,
         "wave_et": "7:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -1071,78 +1019,15 @@
     "waves": [
       {
         "wave": 1,
-        "start_time_et": "1:00 PM ET",
-        "matchups": [
-          "EDM @ CAR"
-        ],
-        "est_ev": 1.0608,
-        "ev_delta": 0.0,
-        "beat_now_pct": 0.0,
-        "visible_carried": 43,
-        "hidden_available": 539,
-        "unlisted_scorers": [
-          {
-            "player": "Sebastian Aho",
-            "team": "CAR",
-            "final_score": 0.44,
-            "p_goal_pct": 35.6,
-            "injury_status": null
-          },
-          {
-            "player": "Andrei Svechnikov",
-            "team": "CAR",
-            "final_score": 0.421,
-            "p_goal_pct": 34.4,
-            "injury_status": null
-          },
-          {
-            "player": "Logan Stankoven",
-            "team": "CAR",
-            "final_score": 0.413,
-            "p_goal_pct": 33.8,
-            "injury_status": null
-          },
-          {
-            "player": "Vasily Podkolzin",
-            "team": "EDM",
-            "final_score": 0.347,
-            "p_goal_pct": 29.3,
-            "injury_status": null
-          }
-        ],
-        "is_current": true
-      },
-      {
-        "wave": 2,
         "start_time_et": "3:30 PM ET",
         "matchups": [
           "CHI @ CGY"
         ],
-        "est_ev": 1.0624,
-        "ev_delta": 0.0017,
-        "beat_now_pct": 26.7,
-        "visible_carried": 37,
-        "hidden_available": 500,
-        "projected_ticket": {
-          "1": {
-            "player": "Kirill Kaprizov",
-            "team": "MIN",
-            "group": "1",
-            "final_score": 0.674
-          },
-          "2": {
-            "player": "Tage Thompson",
-            "team": "BUF",
-            "group": "2",
-            "final_score": 0.519
-          },
-          "3": {
-            "player": "Jonatan Berggren",
-            "team": "STL",
-            "group": "3",
-            "final_score": 0.181
-          }
-        },
+        "est_ev": 1.0608,
+        "ev_delta": 0.0,
+        "beat_now_pct": 0.0,
+        "visible_carried": 41,
+        "hidden_available": 496,
         "unlisted_scorers": [
           {
             "player": "Joel Farabee",
@@ -1173,20 +1058,20 @@
             "injury_status": null
           }
         ],
-        "is_current": false
+        "is_current": true
       },
       {
-        "wave": 3,
+        "wave": 2,
         "start_time_et": "6:00 PM ET",
         "matchups": [
           "BUF @ FLA",
           "PIT @ NSH"
         ],
-        "est_ev": 1.0622,
-        "ev_delta": 0.0014,
-        "beat_now_pct": 23.3,
-        "visible_carried": 35,
-        "hidden_available": 462,
+        "est_ev": 1.0614,
+        "ev_delta": 0.0006,
+        "beat_now_pct": 16.3,
+        "visible_carried": 39,
+        "hidden_available": 458,
         "projected_ticket": {
           "1": {
             "player": "Kirill Kaprizov",
@@ -1209,6 +1094,13 @@
         },
         "unlisted_scorers": [
           {
+            "player": "Brady Tkachuk",
+            "team": "FLA",
+            "final_score": 0.442,
+            "p_goal_pct": 35.7,
+            "injury_status": null
+          },
+          {
             "player": "Jack Quinn",
             "team": "BUF",
             "final_score": 0.441,
@@ -1228,19 +1120,12 @@
             "final_score": 0.391,
             "p_goal_pct": 32.4,
             "injury_status": null
-          },
-          {
-            "player": "Ryan O'Reilly",
-            "team": "NSH",
-            "final_score": 0.339,
-            "p_goal_pct": 28.8,
-            "injury_status": null
           }
         ],
         "is_current": false
       },
       {
-        "wave": 4,
+        "wave": 3,
         "start_time_et": "7:00 PM ET",
         "matchups": [
           "WSH @ BOS",
@@ -1251,11 +1136,11 @@
           "NJD @ STL",
           "VGK @ WPG"
         ],
-        "est_ev": 1.0399,
-        "ev_delta": -0.0209,
+        "est_ev": 1.0396,
+        "ev_delta": -0.0212,
         "beat_now_pct": 0.0,
-        "visible_carried": 28,
-        "hidden_available": 387,
+        "visible_carried": 34,
+        "hidden_available": 381,
         "projected_ticket": {
           "1": {
             "player": "Kirill Kaprizov",
@@ -1264,10 +1149,10 @@
             "final_score": 0.674
           },
           "2": {
-            "player": "Cole Caufield",
-            "team": "MTL",
+            "player": "Alex Tuch",
+            "team": "WSH",
             "group": "2",
-            "final_score": 0.482
+            "final_score": 0.483
           },
           "3": {
             "player": "Jonatan Berggren",
@@ -1285,13 +1170,6 @@
             "injury_status": null
           },
           {
-            "player": "Alex Tuch",
-            "team": "WSH",
-            "final_score": 0.483,
-            "p_goal_pct": 38.3,
-            "injury_status": null
-          },
-          {
             "player": "William Nylander",
             "team": "TOR",
             "final_score": 0.468,
@@ -1304,21 +1182,28 @@
             "final_score": 0.437,
             "p_goal_pct": 35.4,
             "injury_status": null
+          },
+          {
+            "player": "Lucas Raymond",
+            "team": "DET",
+            "final_score": 0.437,
+            "p_goal_pct": 35.4,
+            "injury_status": null
           }
         ],
         "is_current": false
       },
       {
-        "wave": 5,
+        "wave": 4,
         "start_time_et": "9:00 PM ET",
         "matchups": [
           "ANA @ UTA"
         ],
-        "est_ev": 0.8784,
-        "ev_delta": -0.1824,
+        "est_ev": 0.8777,
+        "ev_delta": -0.1831,
         "beat_now_pct": 0.0,
         "visible_carried": 10,
-        "hidden_available": 115,
+        "hidden_available": 114,
         "projected_ticket": {
           "1": {
             "player": "Kirill Kaprizov",
@@ -1372,17 +1257,17 @@
         "is_current": false
       },
       {
-        "wave": 6,
+        "wave": 5,
         "start_time_et": "10:00 PM ET",
         "matchups": [
           "MIN @ VAN",
           "SEA @ SJS"
         ],
-        "est_ev": 0.8875,
-        "ev_delta": -0.1733,
+        "est_ev": 0.88,
+        "ev_delta": -0.1808,
         "beat_now_pct": 0.0,
         "visible_carried": 7,
-        "hidden_available": 78,
+        "hidden_available": 77,
         "projected_ticket": {
           "1": {
             "player": "Kirill Kaprizov",
@@ -1469,7 +1354,7 @@
           "v_defer_best": 1.0624,
           "ev_delta": 0.0016
         },
-        "picks_locked": false,
+        "picks_locked": true,
         "hits_of_3": null,
         "picks": {
           "1": {
@@ -2385,16 +2270,16 @@
       "is_today": true,
       "start_time_utc": "2026-11-21T18:00:00Z",
       "start_time_et": "1:00 PM ET",
-      "game_state": "FUT",
+      "game_state": "LIVE",
       "game_type": 2,
       "away": "EDM",
       "home": "CAR",
-      "away_score": null,
-      "home_score": null,
-      "away_prob": 39.9,
-      "home_prob": 60.1,
+      "away_score": 0,
+      "home_score": 0,
+      "away_prob": 40.0,
+      "home_prob": 60.0,
       "favored": "CAR",
-      "fav_prob": 60.1,
+      "fav_prob": 60.0,
       "away_streak": -1,
       "home_streak": -1,
       "away_b2b": false,
@@ -2410,29 +2295,30 @@
       "away_top3_pts": 136,
       "home_top3_pts": 71,
       "away_goalie": {
-        "name": "Tristan Jarry",
-        "confirmation": "Expected",
-        "sv_pct": 0.909
+        "name": "Devon Levi",
+        "confirmation": "Confirmed",
+        "sv_pct": 0.903
       },
       "home_goalie": {
         "name": "Pyotr Kochetkov",
-        "confirmation": "Expected",
+        "confirmation": "Confirmed",
         "sv_pct": 0.92
       },
       "away_injuries": [
+        "Ryan Nugent-Hopkins (Out)",
         "Alec Regula (IR)",
         "Matt Savoie (IR)",
         "Mattias Janmark (IR)"
       ],
       "home_injuries": [],
       "bookie": "Pinnacle",
-      "away_odds": 2.84,
-      "home_odds": 1.48,
+      "away_odds": 3.01,
+      "home_odds": 1.44,
       "away_edge": {
-        "odds": 2.84,
-        "edge_pct": 13.41,
-        "quarter_kelly_pct": 1.82,
-        "rec_bet": 18.22
+        "odds": 3.01,
+        "edge_pct": 20.51,
+        "quarter_kelly_pct": 2.55,
+        "rec_bet": 25.51
       },
       "home_edge": null
     },
@@ -2486,8 +2372,8 @@
         "Connor Zary (Out)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.4,
-      "home_odds": 1.65,
+      "away_odds": 2.36,
+      "home_odds": 1.66,
       "away_edge": null,
       "home_edge": null
     },
@@ -2542,8 +2428,8 @@
         "Jonah Gadjovich (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.23,
-      "home_odds": 1.74,
+      "away_odds": 2.27,
+      "home_odds": 1.71,
       "away_edge": null,
       "home_edge": null
     },
@@ -2595,8 +2481,8 @@
       ],
       "home_injuries": [],
       "bookie": "Pinnacle",
-      "away_odds": 2.2,
-      "home_odds": 1.75,
+      "away_odds": 2.19,
+      "home_odds": 1.76,
       "away_edge": null,
       "home_edge": null
     },
@@ -2632,7 +2518,7 @@
       "home_top3_pts": 62,
       "away_goalie": {
         "name": "Charlie Lindgren",
-        "confirmation": "Likely",
+        "confirmation": "Confirmed",
         "sv_pct": 0.865
       },
       "home_goalie": {
@@ -2648,14 +2534,14 @@
         "James Hagens (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.15,
-      "home_odds": 1.79,
+      "away_odds": 2.18,
+      "home_odds": 1.76,
       "away_edge": null,
       "home_edge": {
-        "odds": 1.79,
-        "edge_pct": 9.86,
-        "quarter_kelly_pct": 3.12,
-        "rec_bet": 31.2
+        "odds": 1.76,
+        "edge_pct": 8.02,
+        "quarter_kelly_pct": 2.64,
+        "rec_bet": 26.38
       }
     },
     {
@@ -2750,7 +2636,7 @@
       "home_top3_pts": 64,
       "away_goalie": {
         "name": "Dan Vladar",
-        "confirmation": "Likely",
+        "confirmation": "Confirmed",
         "sv_pct": 0.874
       },
       "home_goalie": {
@@ -2768,14 +2654,14 @@
         "Ivan Demidov (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.36,
-      "home_odds": 1.67,
+      "away_odds": 2.37,
+      "home_odds": 1.66,
       "away_edge": null,
       "home_edge": {
-        "odds": 1.67,
-        "edge_pct": 7.53,
-        "quarter_kelly_pct": 2.81,
-        "rec_bet": 28.08
+        "odds": 1.66,
+        "edge_pct": 6.88,
+        "quarter_kelly_pct": 2.61,
+        "rec_bet": 26.07
       }
     },
     {
@@ -2810,7 +2696,7 @@
       "home_top3_pts": 67,
       "away_goalie": {
         "name": "Anton Forsberg",
-        "confirmation": "Expected",
+        "confirmation": "Likely",
         "sv_pct": 0.908
       },
       "home_goalie": {
@@ -2827,8 +2713,8 @@
         "William Eklund (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.54,
-      "home_odds": 1.58,
+      "away_odds": 2.56,
+      "home_odds": 1.57,
       "away_edge": null,
       "home_edge": null
     },
@@ -2873,6 +2759,7 @@
         "sv_pct": 0.862
       },
       "away_injuries": [
+        "Ryan Pulock (Out)",
         "Alexander Romanov (IR)"
       ],
       "home_injuries": [
@@ -2880,14 +2767,14 @@
         "Simon Edvinsson (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 1.79,
-      "home_odds": 2.15,
+      "away_odds": 1.78,
+      "home_odds": 2.16,
       "away_edge": null,
       "home_edge": {
-        "odds": 2.15,
-        "edge_pct": 4.33,
-        "quarter_kelly_pct": 0.94,
-        "rec_bet": 9.41
+        "odds": 2.16,
+        "edge_pct": 4.81,
+        "quarter_kelly_pct": 1.04,
+        "rec_bet": 10.37
       }
     },
     {
@@ -2991,8 +2878,8 @@
       "home_injuries": [
         "Dylan DeMelo (IR)",
         "Isak Rosen (IR)",
-        "Elias Salomonsson (IR)",
-        "Vladislav Namestnikov (IR)"
+        "Vladislav Namestnikov (IR)",
+        "Nick Bjugstad (IR)"
       ],
       "bookie": "Pinnacle",
       "away_odds": 1.76,
@@ -3037,7 +2924,7 @@
       },
       "home_goalie": {
         "name": "Sebastian Cossa",
-        "confirmation": "Expected",
+        "confirmation": "Likely",
         "sv_pct": 0.879
       },
       "away_injuries": [
@@ -3093,19 +2980,21 @@
       },
       "home_goalie": {
         "name": "Leevi Merilainen",
-        "confirmation": "Expected",
+        "confirmation": "Likely",
         "sv_pct": 0.889
       },
       "away_injuries": [
         "Olli Maatta (IR)"
       ],
       "home_injuries": [
+        "Elias Pettersson (Out)",
+        "Brendan Gallagher (IR)",
         "Guillaume Brisebois (IR)",
         "Mackenzie MacEachern (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 1.33,
-      "home_odds": 3.65,
+      "away_odds": 1.32,
+      "home_odds": 3.67,
       "away_edge": null,
       "home_edge": null
     },
@@ -3160,10 +3049,15 @@
         "Quentin Musty (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.01,
-      "home_odds": 1.9,
+      "away_odds": 1.98,
+      "home_odds": 1.93,
       "away_edge": null,
-      "home_edge": null
+      "home_edge": {
+        "odds": 1.93,
+        "edge_pct": 3.33,
+        "quarter_kelly_pct": 0.89,
+        "rec_bet": 8.94
+      }
     },
     {
       "id": 2026020373,
@@ -3197,7 +3091,7 @@
       "home_top3_pts": 65,
       "away_goalie": {
         "name": "Pyotr Kochetkov",
-        "confirmation": "Expected",
+        "confirmation": "Confirmed",
         "sv_pct": 0.92
       },
       "home_goalie": null,
@@ -3282,10 +3176,10 @@
       "home": "STL",
       "away_score": null,
       "home_score": null,
-      "away_prob": 61.9,
-      "home_prob": 38.1,
+      "away_prob": 62.0,
+      "home_prob": 38.0,
       "favored": "EDM",
-      "fav_prob": 61.9,
+      "fav_prob": 62.0,
       "away_streak": -1,
       "home_streak": 2,
       "away_b2b": true,
@@ -3301,9 +3195,9 @@
       "away_top3_pts": 136,
       "home_top3_pts": 54,
       "away_goalie": {
-        "name": "Tristan Jarry",
-        "confirmation": "Expected",
-        "sv_pct": 0.909
+        "name": "Devon Levi",
+        "confirmation": "Confirmed",
+        "sv_pct": 0.903
       },
       "home_goalie": {
         "name": "Joel Hofer",
@@ -3311,6 +3205,7 @@
         "sv_pct": 0.923
       },
       "away_injuries": [
+        "Ryan Nugent-Hopkins (Out)",
         "Alec Regula (IR)",
         "Matt Savoie (IR)",
         "Mattias Janmark (IR)"
@@ -3372,7 +3267,8 @@
       "home_injuries": [
         "Oskar Back (IR)",
         "Kyle Capobianco (IR)",
-        "Lian Bichsel (IR)"
+        "Lian Bichsel (IR)",
+        "Matt Duchene (IR)"
       ],
       "bookie": "DraftKings",
       "away_odds": 2.95,
@@ -3417,7 +3313,7 @@
       },
       "home_goalie": {
         "name": "Leevi Merilainen",
-        "confirmation": "Expected",
+        "confirmation": "Likely",
         "sv_pct": 0.889
       },
       "away_injuries": [
@@ -3425,6 +3321,8 @@
         "Bowen Byram (IR)"
       ],
       "home_injuries": [
+        "Elias Pettersson (Out)",
+        "Brendan Gallagher (IR)",
         "Guillaume Brisebois (IR)",
         "Mackenzie MacEachern (IR)"
       ],
@@ -3496,7 +3394,7 @@
       "streak": -1,
       "last_won": 0,
       "gsax": 6.8,
-      "starter_sv_pct": 0.906,
+      "starter_sv_pct": 0.903,
       "top3_pts": 136,
       "top3_xgoals": 28.1,
       "ga_gp": 2.62,
@@ -3795,7 +3693,7 @@
     },
     {
       "team": "DET",
-      "ai_power": 8.6,
+      "ai_power": 8.59,
       "elo": 1484.2,
       "avg_win_prob": 46.6,
       "gp": 22,
@@ -3846,7 +3744,7 @@
     },
     {
       "team": "LAK",
-      "ai_power": 8.45,
+      "ai_power": 8.44,
       "elo": 1483.5,
       "avg_win_prob": 45.4,
       "gp": 20,
