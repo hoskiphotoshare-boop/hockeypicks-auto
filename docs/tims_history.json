@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-21 11:01 AM ET",
+      "captured_et": "2026-11-21 12:01 PM ET",
       "model_n_half": 30.66,
       "groups": {
         "1": [
@@ -17,7 +17,7 @@
             "base_pred": 0.498,
             "live_gp": 24,
             "live_goals": 18,
-            "def_multiplier": 1.117,
+            "def_multiplier": 1.116,
             "final_score": 0.674
           },
           {
@@ -61,7 +61,7 @@
             "base_pred": 0.487,
             "live_gp": 24,
             "live_goals": 13,
-            "def_multiplier": 1.117,
+            "def_multiplier": 1.116,
             "final_score": 0.569
           },
           {
@@ -83,8 +83,8 @@
             "base_pred": 0.47,
             "live_gp": 22,
             "live_goals": 10,
-            "def_multiplier": 1.042,
-            "final_score": 0.483
+            "def_multiplier": 1.043,
+            "final_score": 0.484
           },
           {
             "player": "Macklin Celebrini",
@@ -98,17 +98,6 @@
             "final_score": 0.476
           },
           {
-            "player": "Steven Stamkos",
-            "team": "NSH",
-            "opponent": "PIT",
-            "position": "F",
-            "base_pred": 0.373,
-            "live_gp": 22,
-            "live_goals": 12,
-            "def_multiplier": 1.061,
-            "final_score": 0.464
-          },
-          {
             "player": "Sam Reinhart",
             "team": "FLA",
             "opponent": "BUF",
@@ -118,6 +107,17 @@
             "live_goals": 12,
             "def_multiplier": 1.029,
             "final_score": 0.464
+          },
+          {
+            "player": "Steven Stamkos",
+            "team": "NSH",
+            "opponent": "PIT",
+            "position": "F",
+            "base_pred": 0.373,
+            "live_gp": 22,
+            "live_goals": 12,
+            "def_multiplier": 1.061,
+            "final_score": 0.463
           },
           {
             "player": "Jack Hughes",
@@ -196,7 +196,7 @@
             "live_gp": 23,
             "live_goals": 11,
             "def_multiplier": 1.029,
-            "final_score": 0.443
+            "final_score": 0.442
           },
           {
             "player": "Filip Forsberg",
@@ -497,7 +497,7 @@
           "base_pred": 0.498,
           "live_gp": 24,
           "live_goals": 18,
-          "def_multiplier": 1.117,
+          "def_multiplier": 1.116,
           "final_score": 0.674
         },
         "2": {
@@ -533,8 +533,8 @@
         "lock_et": "1:00 PM ET",
         "recommended_wave_et": "3:30 PM ET",
         "v_now": 1.0608,
-        "v_defer_best": 1.0623,
-        "ev_delta": 0.0015
+        "v_defer_best": 1.0624,
+        "ev_delta": 0.0016
       },
       "picks_locked": false,
       "locked_et": ""
@@ -1998,8 +1998,8 @@
           "lock_et": "1:00 PM ET",
           "recommended_wave_et": "3:30 PM ET",
           "v_now": 1.0608,
-          "v_defer_best": 1.0623,
-          "ev_delta": 0.0015
+          "v_defer_best": 1.0624,
+          "ev_delta": 0.0016
         },
         "picks_locked": false,
         "hits_of_3": null,
