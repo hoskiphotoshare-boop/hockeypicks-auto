@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-20 21:31:31 UTC",
-    "updated_et": "2026-11-20 04:31 PM ET",
+    "updated_utc": "2026-11-21 03:01:34 UTC",
+    "updated_et": "2026-11-20 10:01 PM ET",
     "today_date": "2026-11-20",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -19,12 +19,12 @@
       "live_loop_cap": 3,
       "last_source": "api",
       "requests_last": 1,
-      "requests_used": 126,
-      "requests_remaining": 374
+      "requests_used": 127,
+      "requests_remaining": 373
     },
     "availability": {
       "injury_source": "espn",
-      "injury_count": 116,
+      "injury_count": 115,
       "goalie_source": "empty_slate",
       "goalie_count": 0
     },
@@ -1082,7 +1082,7 @@
         "Connor Zary (Out)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.3,
+      "away_odds": 2.31,
       "home_odds": 1.68,
       "away_edge": null,
       "home_edge": null
@@ -1175,13 +1175,13 @@
       ],
       "home_injuries": [],
       "bookie": "Pinnacle",
-      "away_odds": 2.15,
-      "home_odds": 1.77,
+      "away_odds": 2.19,
+      "home_odds": 1.75,
       "away_edge": {
-        "odds": 2.15,
-        "edge_pct": 2.6,
-        "quarter_kelly_pct": 0.57,
-        "rec_bet": 5.65
+        "odds": 2.19,
+        "edge_pct": 4.51,
+        "quarter_kelly_pct": 0.95,
+        "rec_bet": 9.47
       },
       "home_edge": null
     },
@@ -1329,14 +1329,14 @@
         "Ivan Demidov (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 2.38,
-      "home_odds": 1.64,
+      "away_odds": 2.39,
+      "home_odds": 1.63,
       "away_edge": null,
       "home_edge": {
-        "odds": 1.64,
-        "edge_pct": 5.37,
-        "quarter_kelly_pct": 2.1,
-        "rec_bet": 20.97
+        "odds": 1.63,
+        "edge_pct": 4.73,
+        "quarter_kelly_pct": 1.88,
+        "rec_bet": 18.75
       }
     },
     {
@@ -1524,8 +1524,8 @@
         "Vladislav Namestnikov (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 1.75,
-      "home_odds": 2.18,
+      "away_odds": 1.74,
+      "home_odds": 2.2,
       "away_edge": null,
       "home_edge": null
     },
@@ -1617,8 +1617,8 @@
         "Mackenzie MacEachern (IR)"
       ],
       "bookie": "Pinnacle",
-      "away_odds": 1.36,
-      "home_odds": 3.38,
+      "away_odds": 1.35,
+      "home_odds": 3.41,
       "away_edge": null,
       "home_edge": null
     },
