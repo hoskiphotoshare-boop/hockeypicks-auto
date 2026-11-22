@@ -1266,6 +1266,9 @@ def extract_cached_odds_lookup(
             continue
 
         entry: dict[str, Any] = {"bookie": g.get("bookie") or "Sharp"}
+        cached_books = g.get("book_odds")
+        if isinstance(cached_books, dict) and cached_books:
+            entry["books"] = cached_books
         if home_odds > 1.0:
             entry[home_abbr] = home_odds
         if away_odds > 1.0:
@@ -1318,24 +1321,35 @@ def _fetch_nhl_odds_lookup(
             continue
 
         bookies = game.get("bookmakers", [])
-        sharp = next((b for b in bookies if b.get("key") == "pinnacle"), None) or (bookies[0] if bookies else None)
-        if not sharp:
-            continue
-        for market in sharp.get("markets", []):
-            if market.get("key") != "h2h":
+        books: dict[str, dict[str, float]] = {}
+        for book in bookies:
+            title = str(book.get("title") or book.get("key") or "").strip()
+            if not title:
                 continue
-            h_odds, a_odds = 0.0, 0.0
-            for outcome in market.get("outcomes", []):
-                if outcome.get("name") == h_full:
-                    h_odds = float(outcome.get("price", 0.0) or 0.0)
-                elif outcome.get("name") == a_full:
-                    a_odds = float(outcome.get("price", 0.0) or 0.0)
-            if h_odds > 1.0 and a_odds > 1.0:
-                odds_map[(away_abbr, home_abbr)] = {
-                    home_abbr: h_odds,
-                    away_abbr: a_odds,
-                    "bookie": sharp.get("title", "Sharp"),
-                }
+            for market in book.get("markets", []):
+                if market.get("key") != "h2h":
+                    continue
+                h_odds, a_odds = 0.0, 0.0
+                for outcome in market.get("outcomes", []):
+                    if outcome.get("name") == h_full:
+                        h_odds = float(outcome.get("price", 0.0) or 0.0)
+                    elif outcome.get("name") == a_full:
+                        a_odds = float(outcome.get("price", 0.0) or 0.0)
+                if h_odds > 1.0 and a_odds > 1.0:
+                    books[title] = {"home": h_odds, "away": a_odds}
+        if not books:
+            continue
+
+        # Default line keeps the historical Pinnacle-first preference (falling back to
+        # the first book returned) so existing edges and cached-odds reuse stay stable.
+        default_title = next((t for t in books if t.lower() == "pinnacle"), "") or next(iter(books))
+        default_line = books[default_title]
+        odds_map[(away_abbr, home_abbr)] = {
+            home_abbr: default_line["home"],
+            away_abbr: default_line["away"],
+            "bookie": default_title,
+            "books": books,
+        }
 
     if meta_out is not None:
         meta_out.update(
@@ -1443,6 +1457,7 @@ def predict_upcoming_games(
                 "away_injuries": [r["player"] + f" ({r['status']})" for r in (avail_a.get("out_skaters") or [])[:4]],
                 "home_injuries": [r["player"] + f" ({r['status']})" for r in (avail_h.get("out_skaters") or [])[:4]],
                 "bookie": game_odds.get("bookie"),
+                "book_odds": game_odds.get("books") or {},
                 "away_odds": round(float(game_odds[away]), 3) if game_odds.get(away) else None,
                 "home_odds": round(float(game_odds[home]), 3) if game_odds.get(home) else None,
                 "away_edge": away_edge,
