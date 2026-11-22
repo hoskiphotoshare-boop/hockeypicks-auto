@@ -717,6 +717,10 @@ function hpBuildWaveCache_(payload, dateStr, nowMs, prevCache, source) {
   var waveGroups = {};
   var hasLiveGames = false;
   var liveLabels = [];
+  // The feed can still report PRE/FUT for several minutes after puck drop. Treat
+  // any game whose scheduled start has passed (and is not final) as in-play so
+  // the 35-minute refresh cadence starts even before the state flips to LIVE.
+  var liveWindowMs = 3.5 * 60 * 60 * 1000;
 
   for (var gIdx = 0; gIdx < games.length; gIdx++) {
     var g = games[gIdx] || {};
@@ -724,8 +728,10 @@ function hpBuildWaveCache_(payload, dateStr, nowMs, prevCache, source) {
     var startUtc = g.start_time_utc;
     var startMs = hpParseUtcMs_(startUtc);
     var matchup = (g.away || "?") + "@" + (g.home || "?");
+    var inPlayByClock = startMs !== null && nowMs >= startMs && nowMs < (startMs + liveWindowMs) &&
+      state !== "FINAL" && state !== "OFF";
 
-    if ((state === "LIVE" || state === "CRIT") && (startMs === null || startMs <= nowMs)) {
+    if ((state === "LIVE" || state === "CRIT" || inPlayByClock) && (startMs === null || startMs <= nowMs)) {
       hasLiveGames = true;
       if (liveLabels.length < 3) {
         liveLabels.push(matchup);

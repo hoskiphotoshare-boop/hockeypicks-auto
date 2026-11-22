@@ -113,6 +113,7 @@ def compute_tims_deferral_advice(
     schedule_games: list[dict[str, Any]],
     defer_threshold: float = 0.020,
     mc_trials: int = 300,
+    now_utc: datetime | None = None,
 ) -> dict[str, Any]:
     """
     Evaluate whether to select current Tims picks now or selectively defer to a future wave.
@@ -129,6 +130,10 @@ def compute_tims_deferral_advice(
         for k, v in sorted(tims_groups.items(), key=lambda kv: int(kv[0]))
         if v
     }
+    now = now_utc or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    now_ts = now.astimezone(timezone.utc).timestamp()
     if not ordered_groups:
         return {
             "status": "no_tims_pool",
@@ -149,46 +154,63 @@ def compute_tims_deferral_advice(
             "waves": [],
         }
 
-    # Build chronological waves from unstarted today games (or tomorrow's slate after today's finish)
     tims_teams = {
         normalize_team_abbrev(p.get("team"))
         for lst in ordered_groups.values()
         for p in lst
         if p.get("team")
     }
-    unstarted = [
-        g
-        for g in (schedule_games or [])
-        if g.get("is_today", True) and str(g.get("game_state", "FUT")) in ("FUT", "PRE")
-    ]
-    if not unstarted and tims_teams:
-        unstarted = [
+
+    # Build chronological waves from every game on the slate, including ones
+    # that already started, so wave numbers stay stable all evening. The feed
+    # often keeps reporting PRE for several minutes after puck drop, so the
+    # clock — not game_state alone — decides which wave is current.
+    def _build_waves(games: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        waves_map: dict[tuple[float, str], dict[str, Any]] = {}
+        for g in games:
+            ts = _parse_utc_ts(g.get("start_time_utc"))
+            if ts is None:
+                continue
+            et_lbl = str(g.get("start_time_et") or "TBD")
+            key = (ts, et_lbl)
+            w = waves_map.setdefault(
+                key,
+                {"start_ts": ts, "start_time_et": et_lbl, "matchups": [], "teams": set()},
+            )
+            away = normalize_team_abbrev(g.get("away"))
+            home = normalize_team_abbrev(g.get("home"))
+            w["matchups"].append(f"{away} @ {home}")
+            w["teams"].add(away)
+            w["teams"].add(home)
+        return [waves_map[k] for k in sorted(waves_map.keys(), key=lambda kv: kv[0])]
+
+    today_waves = _build_waves(
+        [
             g
             for g in (schedule_games or [])
-            if str(g.get("game_state", "FUT")) in ("FUT", "PRE")
-            and (
-                normalize_team_abbrev(g.get("away")) in tims_teams
-                or normalize_team_abbrev(g.get("home")) in tims_teams
-            )
+            if g.get("is_today", True)
+            and str(g.get("game_state", "FUT")).upper() != "OFF"
         ]
-    waves_map: dict[tuple[float, str], dict[str, Any]] = {}
-    for g in unstarted:
-        ts = _parse_utc_ts(g.get("start_time_utc"))
-        if ts is None:
-            continue
-        et_lbl = str(g.get("start_time_et") or "TBD")
-        key = (ts, et_lbl)
-        w = waves_map.setdefault(
-            key,
-            {"start_ts": ts, "start_time_et": et_lbl, "matchups": [], "teams": set()},
-        )
-        away = normalize_team_abbrev(g.get("away"))
-        home = normalize_team_abbrev(g.get("home"))
-        w["matchups"].append(f"{away} @ {home}")
-        w["teams"].add(away)
-        w["teams"].add(home)
+    )
+    started_count = sum(1 for w in today_waves if w["start_ts"] <= now_ts)
+    sorted_waves = today_waves
 
-    sorted_waves = [waves_map[k] for k in sorted(waves_map.keys(), key=lambda kv: kv[0])]
+    if started_count >= len(today_waves) and tims_teams:
+        # Today is done (or every wave has dropped). Show tomorrow's slate.
+        sorted_waves = _build_waves(
+            [
+                g
+                for g in (schedule_games or [])
+                if not g.get("is_today", True)
+                and str(g.get("game_state", "FUT")).upper() in ("FUT", "PRE")
+                and (
+                    normalize_team_abbrev(g.get("away")) in tims_teams
+                    or normalize_team_abbrev(g.get("home")) in tims_teams
+                )
+            ]
+        )
+        started_count = 0
+
     if not sorted_waves:
         cur_best = build_group_ticket(
             ordered_groups,
@@ -221,23 +243,49 @@ def compute_tims_deferral_advice(
         for t in w["teams"]:
             team_wave_idx[t] = idx
 
-    # Best immediately available pick in each group (filtered to unstarted teams when matched)
-    unstarted_teams = {t for w in sorted_waves for t in w["teams"]}
+    first_active_idx = min(started_count, len(sorted_waves) - 1)
+    active_waves = sorted_waves[first_active_idx:]
+    first_active_wave = active_waves[0]
+
+    def _past_wave_record(idx: int, w: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "wave": idx + 1,
+            "start_time_et": w["start_time_et"],
+            "matchups": w["matchups"],
+            "est_ev": 0.0,
+            "ev_delta": 0.0,
+            "beat_now_pct": 0.0,
+            "visible_carried": 0,
+            "hidden_available": 0,
+            "unlisted_scorers": [],
+            "is_current": False,
+            "is_past": True,
+        }
+
+    past_waves = [
+        _past_wave_record(idx, w) for idx, w in enumerate(sorted_waves[:first_active_idx])
+    ]
+
+    # Best immediately available pick in each group (filtered to waves that
+    # have not dropped yet).
+    active_teams = {t for w in active_waves for t in w["teams"]}
     wave_labels = [str(w.get("start_time_et", "--")) for w in sorted_waves]
     cur_best: dict[str, dict[str, Any]] = build_group_ticket(
         ordered_groups,
         team_wave_idx=team_wave_idx,
         wave_labels=wave_labels,
-        allowed_teams=unstarted_teams,
+        allowed_teams=active_teams,
     )
     first_wave_utc = datetime.fromtimestamp(
-        float(sorted_waves[0]["start_ts"]), tz=timezone.utc
+        float(first_active_wave["start_ts"]), tz=timezone.utc
     ).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
     v_now = sum(effective_goal_prob(p) for p in cur_best.values())
-    locked_if_defer_1 = sum(1 for p in cur_best.values() if int(p.get("wave_idx", 0)) == 1)
+    locked_if_defer_1 = sum(
+        1 for p in cur_best.values() if int(p.get("wave_idx", 0)) == first_active_idx + 1
+    )
 
-    if len(sorted_waves) == 1:
-        w0 = sorted_waves[0]
+    if len(active_waves) == 1:
+        w0 = first_active_wave
         total_visible = sum(len(lst) for lst in ordered_groups.values())
         return {
             "status": "single_wave",
@@ -250,14 +298,15 @@ def compute_tims_deferral_advice(
             "first_wave_utc": first_wave_utc,
             "selection_lock_et": w0["start_time_et"],
             "selection_lock_utc": first_wave_utc,
-            "selection_wave": 1,
+            "selection_wave": first_active_idx + 1,
             "v_now": round(v_now, 4),
             "v_defer_best": round(v_now, 4),
             "ev_delta": 0.0,
             "hidden_upside_players": [],
-            "waves": [
+            "waves": past_waves
+            + [
                 {
-                    "wave": 1,
+                    "wave": first_active_idx + 1,
                     "start_time_et": w0["start_time_et"],
                     "matchups": w0["matchups"],
                     "est_ev": round(v_now, 4),
@@ -267,6 +316,7 @@ def compute_tims_deferral_advice(
                     "hidden_available": 0,
                     "unlisted_scorers": [],
                     "is_current": True,
+                    "is_past": False,
                 }
             ],
         }
@@ -308,7 +358,7 @@ def compute_tims_deferral_advice(
         if s.get("injury_out"):
             continue
         t_norm = normalize_team_abbrev(s.get("team"))
-        if t_norm not in unstarted_teams:
+        if t_norm not in active_teams:
             continue
         p_name = str(s.get("player", ""))
         if not p_name:
@@ -348,7 +398,10 @@ def compute_tims_deferral_advice(
     g1_score = float(cur_best.get("1", {}).get("final_score", 0.0))
     g2_score = float(cur_best.get("2", {}).get("final_score", 0.0))
     hidden_later_upside = [
-        h for h in hidden_pool if h["wave_idx"] >= 1 and h["final_score"] >= max(0.18, g2_score * 0.90)
+        h
+        for h in hidden_pool
+        if h["wave_idx"] >= first_active_idx
+        and h["final_score"] >= max(0.18, g2_score * 0.90)
     ][:6]
 
     # Prospective late entrants inherit the contest's tier, so bucket them by
@@ -365,13 +418,13 @@ def compute_tims_deferral_advice(
     rng = np.random.default_rng(42)
     wave_summaries: list[dict[str, Any]] = [
         {
-            "wave": 1,
-            "start_time_et": sorted_waves[0]["start_time_et"],
-            "matchups": sorted_waves[0]["matchups"],
+            "wave": first_active_idx + 1,
+            "start_time_et": first_active_wave["start_time_et"],
+            "matchups": first_active_wave["matchups"],
             "est_ev": round(v_now, 4),
             "ev_delta": 0.0,
             "beat_now_pct": 0.0,
-            "visible_carried": sum(1 for p in tims_flat if p["wave_idx"] >= 0),
+            "visible_carried": sum(1 for p in tims_flat if p["wave_idx"] >= first_active_idx),
             "hidden_available": len(hidden_pool),
             "unlisted_scorers": [
                 {
@@ -382,14 +435,15 @@ def compute_tims_deferral_advice(
                     "injury_status": h.get("injury_status"),
                 }
                 for h in hidden_pool
-                if h["wave_idx"] == 0
+                if h["wave_idx"] == first_active_idx
             ][:4],
             "is_current": True,
+            "is_past": False,
         }
     ]
 
     best_future_wave: dict[str, Any] | None = None
-    for k in range(1, len(sorted_waves)):
+    for k in range(first_active_idx + 1, len(sorted_waves)):
         carried = [p for p in tims_flat if p["wave_idx"] >= k]
         rem_hidden = [h for h in hidden_pool if h["wave_idx"] >= k]
         wave_unlisted = [
@@ -478,6 +532,7 @@ def compute_tims_deferral_advice(
             "projected_ticket": projected_ticket,
             "unlisted_scorers": wave_unlisted,
             "is_current": False,
+            "is_past": False,
         }
         wave_summaries.append(w_rec)
         if best_future_wave is None or est_ev > best_future_wave["est_ev"]:
@@ -491,14 +546,14 @@ def compute_tims_deferral_advice(
         target_et = best_future_wave["start_time_et"]
         headline = f"Selective Defer — Wait Until Before {target_et}"
         detail = (
-            f"Waiting past {sorted_waves[0]['start_time_et']} projects +{ev_delta:.3f} xG "
+            f"Waiting past {first_active_wave['start_time_et']} projects +{ev_delta:.3f} xG "
             f"({best_future_wave['beat_now_pct']:.0f}% of simulations) if late-game additions "
             f"upgrade the remaining group ticket."
         )
     elif best_future_wave is not None and ev_delta > 0.0:
         decision = "BORDERLINE_WATCH"
         target_et = best_future_wave["start_time_et"]
-        headline = f"Select Now — Lock Current Ticket Before {sorted_waves[0]['start_time_et']}"
+        headline = f"Select Now — Lock Current Ticket Before {first_active_wave['start_time_et']}"
         detail = (
             f"Current best ticket ({v_now:.3f} xG) is near-optimal; deferring to {target_et} projects only "
             f"+{ev_delta:.3f} xG ({best_future_wave['beat_now_pct']:.0f}% of sims) even if unlisted late "
@@ -506,9 +561,9 @@ def compute_tims_deferral_advice(
         )
     else:
         decision = "SELECT_NOW"
-        headline = f"Select Current Best Now (Before {sorted_waves[0]['start_time_et']})"
+        headline = f"Select Current Best Now (Before {first_active_wave['start_time_et']})"
         detail = (
-            f"Deferring past {sorted_waves[0]['start_time_et']} loses {abs(ev_delta):.3f} xG by shrinking the top-tier pool"
+            f"Deferring past {first_active_wave['start_time_et']} loses {abs(ev_delta):.3f} xG by shrinking the top-tier pool"
             if best_future_wave is not None
             else "Current pool captures maximum available scoring value."
         )
@@ -520,7 +575,7 @@ def compute_tims_deferral_advice(
     # records the ticket that is actually in effect at the advised time.
     deferred = best_future_wave is not None and ev_delta > defer_threshold
     selection = cur_best
-    lock_idx = (int(best_future_wave["wave"]) - 1) if deferred else 0
+    lock_idx = (int(best_future_wave["wave"]) - 1) if deferred else first_active_idx
     selection_lock_et = sorted_waves[lock_idx]["start_time_et"]
     selection_lock_utc = datetime.fromtimestamp(
         float(sorted_waves[lock_idx]["start_ts"]), tz=timezone.utc
@@ -534,7 +589,7 @@ def compute_tims_deferral_advice(
         "headline": headline,
         "detail": detail,
         "defer_threshold": defer_threshold,
-        "recommended_wave_et": best_future_wave["start_time_et"] if best_future_wave else sorted_waves[0]["start_time_et"],
+        "recommended_wave_et": best_future_wave["start_time_et"] if best_future_wave else first_active_wave["start_time_et"],
         "v_now": round(v_now, 4),
         "v_defer_best": round(v_defer_best, 4),
         "ev_delta": ev_delta,
@@ -549,5 +604,5 @@ def compute_tims_deferral_advice(
         "hidden_upside_players": hidden_later_upside,
         "g1_best_score": round(g1_score, 3),
         "g2_best_score": round(g2_score, 3),
-        "waves": wave_summaries,
+        "waves": past_waves + wave_summaries,
     }

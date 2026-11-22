@@ -291,13 +291,20 @@ def is_live_refresh_due(
         return False, ""
 
     live_games: list[dict[str, Any]] = []
+    live_window = timedelta(hours=3.5)
     for game in payload.get("games") or []:
-        if str(game.get("game_state") or "").upper() not in LIVE_GAME_STATES:
+        state = str(game.get("game_state") or "").upper()
+        if state in ("FINAL", "OFF"):
             continue
         start_dt = parse_game_start_utc(game)
         if start_dt is not None and start_dt > now:
             continue
-        live_games.append(game)
+        # The feed can lag puck drop by several minutes and keep reporting
+        # PRE/FUT after the game has started. Trust the clock so the live
+        # refresh cadence begins even before game_state flips to LIVE.
+        started_by_clock = start_dt is not None and now < start_dt + live_window
+        if state in LIVE_GAME_STATES or started_by_clock:
+            live_games.append(game)
 
     if not live_games:
         return False, ""

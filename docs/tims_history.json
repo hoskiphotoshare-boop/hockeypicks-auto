@@ -503,19 +503,8 @@
       },
       "settled": false,
       "results": null,
-      "timing": {
-        "decision": "BORDERLINE_WATCH",
-        "basis": "now",
-        "first_wave_utc": "2026-11-22T17:30:00Z",
-        "lock_utc": "2026-11-22T17:30:00Z",
-        "lock_et": "12:30 PM ET",
-        "recommended_wave_et": "7:00 PM ET",
-        "v_now": 1.0178,
-        "v_defer_best": 1.0187,
-        "ev_delta": 0.0009
-      },
-      "picks_locked": true,
-      "locked_et": "2026-11-22 12:11 PM ET"
+      "picks_locked": false,
+      "locked_et": ""
     },
     {
       "date": "2026-11-21",
@@ -2592,7 +2581,7 @@
           "v_defer_best": 1.0187,
           "ev_delta": 0.0009
         },
-        "picks_locked": true,
+        "picks_locked": false,
         "hits_of_3": null,
         "picks": {
           "1": {

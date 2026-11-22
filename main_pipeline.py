@@ -602,6 +602,7 @@ def run_inference(
         tims_groups=skater_scores["tims_groups"],
         slate_candidates=skater_scores.get("all_slate_scorers", skater_scores["slate_top_scorers"]),
         schedule_games=schedule_info.get("games", []),
+        now_utc=context["now_et"].astimezone(timezone.utc),
     )
     print(
         f"  Tims Timing Advisor [{tims_timing_advice.get('decision', 'N/A')}]: "

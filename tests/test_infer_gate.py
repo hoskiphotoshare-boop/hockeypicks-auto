@@ -370,17 +370,19 @@ class TestInferGate(unittest.TestCase):
             )
             self.assertFalse(refreshed_ok)
 
-            # At or after lock_utc -> skips pre-lock rule (game post-start handles +3m)
+            # At/after lock_utc the pre-lock rule no longer applies; the game is
+            # now in its post-start window, so the clock-based live rule takes over.
             payload["meta"]["updated_utc"] = "2026-11-19 21:35:00 UTC"
             with open(json_path, "w", encoding="utf-8") as f:
                 json.dump(payload, f)
-            after_ok, _ = evaluate_gate(
+            after_ok, after_reason = evaluate_gate(
                 json_path,
                 event_name="schedule",
                 cron="",
                 now_utc=datetime(2026, 11, 20, 0, 0, tzinfo=timezone.utc),
             )
-            self.assertFalse(after_ok)
+            self.assertTrue(after_ok)
+            self.assertIn("Live game refresh due", after_reason)
 
     def test_live_game_refresh_window(self):
         payload = {
@@ -459,6 +461,51 @@ class TestInferGate(unittest.TestCase):
                     now_utc=datetime(2026, 11, 20, 0, 45, tzinfo=timezone.utc),
                 )
                 self.assertFalse(ok_nonlive, msg=f"state={state} should not trigger live refresh")
+
+    def test_live_refresh_starts_by_clock_when_feed_lags_puck_drop(self):
+        """Regression: feed may still say PRE after the game started; the gate
+        must begin the 35-minute refresh cadence off the scheduled start."""
+        payload = {
+            "meta": {
+                "status": "live",
+                "updated_utc": "2026-11-22 17:35:00 UTC",
+            },
+            "games": [
+                {
+                    "away": "CAR",
+                    "home": "NYR",
+                    "date": "2026-11-22",
+                    "start_time_et": "12:30 PM ET",
+                    "start_time_utc": "2026-11-22T17:30:00Z",
+                    "game_state": "PRE",
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            json_path = os.path.join(tmpdir, "data.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+
+            due, reason = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 22, 18, 10, tzinfo=timezone.utc),
+            )
+            self.assertTrue(due)
+            self.assertIn("Live game refresh due", reason)
+
+            # A FINAL game that started hours ago must not keep the loop alive.
+            payload["games"][0]["game_state"] = "FINAL"
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(payload, f)
+            due_final, _ = evaluate_gate(
+                json_path,
+                event_name="schedule",
+                cron="",
+                now_utc=datetime(2026, 11, 22, 18, 10, tzinfo=timezone.utc),
+            )
+            self.assertFalse(due_final)
 
 
 if __name__ == "__main__":

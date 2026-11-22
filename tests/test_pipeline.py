@@ -6,7 +6,7 @@ import json
 import os
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 import pandas as pd
@@ -1016,6 +1016,7 @@ class TestSkaterAndTeamMath(unittest.TestCase):
             tims_groups=groups_single,
             slate_candidates=[],
             schedule_games=schedule_single,
+            now_utc=datetime(2026, 11, 16, 23, 0, tzinfo=timezone.utc),
         )
         self.assertEqual(res_single["decision"], "SELECT_NOW")
         self.assertEqual(res_single["current_best"]["1"]["player"], "Cole Caufield")
@@ -1083,6 +1084,7 @@ class TestSkaterAndTeamMath(unittest.TestCase):
             tims_groups=groups_weak_now,
             slate_candidates=slate_candidates,
             schedule_games=schedule_multi,
+            now_utc=datetime(2026, 11, 16, 23, 0, tzinfo=timezone.utc),
         )
         self.assertEqual(res_defer["decision"], "SELECT_DEFER")
         self.assertGreater(res_defer["ev_delta"], 0.02)
@@ -1115,6 +1117,7 @@ class TestSkaterAndTeamMath(unittest.TestCase):
             tims_groups=groups_strong_now,
             slate_candidates=weak_hidden,
             schedule_games=schedule_multi,
+            now_utc=datetime(2026, 11, 16, 23, 0, tzinfo=timezone.utc),
         )
         self.assertEqual(res_now["decision"], "SELECT_NOW")
         self.assertLess(res_now["ev_delta"], 0.0)

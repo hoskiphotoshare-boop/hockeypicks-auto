@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.tims_timing import (
     DTD_PLAY_PROB,
@@ -11,6 +11,9 @@ from src.tims_timing import (
     compute_tims_deferral_advice,
     poisson_goal_prob,
 )
+
+
+NOW = datetime(2026, 11, 16, 23, 0, tzinfo=timezone.utc)
 
 
 def _game(away: str, home: str, start_utc: str, label: str, state: str = "FUT") -> dict:
@@ -92,6 +95,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=groups,
             slate_candidates=slate,
             schedule_games=schedule,
+            now_utc=NOW,
         )
         self.assertEqual(res["decision"], "SELECT_DEFER")
         self.assertEqual(res["lock_basis"], "deferred")
@@ -111,6 +115,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=groups,
             slate_candidates=slate,
             schedule_games=schedule,
+            now_utc=datetime(2026, 11, 17, 0, 30, tzinfo=timezone.utc),
         )
         self.assertEqual(res["decision"], "SELECT_NOW")
         for pick in res["selection"].values():
@@ -127,6 +132,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=groups,
             slate_candidates=[],
             schedule_games=schedule,
+            now_utc=NOW,
         )
         self.assertEqual(res["decision"], "SELECT_NOW")
         self.assertEqual(res["lock_basis"], "now")
@@ -168,6 +174,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=groups,
             slate_candidates=slate,
             schedule_games=schedule,
+            now_utc=NOW,
         )
         self.assertEqual(res["decision"], "SELECT_NOW")
         self.assertLessEqual(res["ev_delta"], 0.0)
@@ -206,6 +213,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=groups,
             slate_candidates=slate,
             schedule_games=schedule,
+            now_utc=NOW,
         )
         self.assertEqual(res["decision"], "SELECT_DEFER")
         self.assertEqual(res["lock_basis"], "deferred")
@@ -214,6 +222,46 @@ class TestTimsTiming(unittest.TestCase):
         # The displayed ticket is still the best one available now.
         self.assertEqual(res["selection"], res["current_best"])
         self.assertEqual(res["current_best"]["2"]["player"], "G2 Early")
+
+    def test_passed_wave_is_not_current_even_when_feed_still_says_pre(self):
+        """Regression: the NHL feed can lag puck drop, so a wave whose start
+        time has passed must drop out even if game_state is still PRE."""
+        schedule = [
+            _game("CAR", "NYR", "2026-11-22T17:30:00Z", "12:30 PM ET", state="PRE"),
+            _game("BUF", "TBL", "2026-11-22T22:00:00Z", "5:00 PM ET"),
+            _game("EDM", "STL", "2026-11-23T00:00:00Z", "7:00 PM ET"),
+        ]
+        groups = {
+            "1": [
+                {"player": "CAR Star", "team": "CAR", "opponent": "NYR", "final_score": 0.40},
+                {"player": "BUF Star", "team": "BUF", "opponent": "TBL", "final_score": 0.35},
+                {"player": "EDM Star", "team": "EDM", "opponent": "STL", "final_score": 0.36},
+            ],
+            "2": [
+                {"player": "NYR Mid", "team": "NYR", "opponent": "CAR", "final_score": 0.25},
+                {"player": "TBL Mid", "team": "TBL", "opponent": "BUF", "final_score": 0.24},
+                {"player": "STL Mid", "team": "STL", "opponent": "EDM", "final_score": 0.23},
+            ],
+            "3": [
+                {"player": "CAR Low", "team": "CAR", "opponent": "NYR", "final_score": 0.15},
+                {"player": "TBL Low", "team": "TBL", "opponent": "BUF", "final_score": 0.14},
+                {"player": "EDM Low", "team": "EDM", "opponent": "STL", "final_score": 0.13},
+            ],
+        }
+        res = compute_tims_deferral_advice(
+            tims_groups=groups,
+            slate_candidates=[],
+            schedule_games=schedule,
+            now_utc=datetime(2026, 11, 22, 20, 15, tzinfo=timezone.utc),
+        )
+        waves = {w["wave"]: w for w in res["waves"]}
+        self.assertTrue(waves[1]["is_past"])
+        self.assertFalse(waves[1]["is_current"])
+        self.assertTrue(waves[2]["is_current"])
+        self.assertEqual(res["selection_lock_et"], "5:00 PM ET")
+        self.assertIn("5:00 PM ET", res["headline"])
+        for pick in res["selection"].values():
+            self.assertIn(pick["team"], {"BUF", "TBL", "EDM", "STL"})
 
     def test_borderline_watch_headline_cites_lock_wave_not_target_wave(self):
         """BORDERLINE_WATCH is select-now, so the card must show the real deadline."""
@@ -246,6 +294,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=groups,
             slate_candidates=slate,
             schedule_games=schedule,
+            now_utc=NOW,
         )
         self.assertEqual(res["decision"], "BORDERLINE_WATCH")
         self.assertEqual(res["lock_basis"], "now")
@@ -281,6 +330,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=dtd_only,
             slate_candidates=[],
             schedule_games=schedule,
+            now_utc=NOW,
         )
         expected_v = round(DTD_PLAY_PROB * poisson_goal_prob(0.40), 4)
         self.assertEqual(res["v_now"], expected_v)
@@ -295,6 +345,7 @@ class TestTimsTiming(unittest.TestCase):
             tims_groups=groups,
             slate_candidates=[],
             schedule_games=schedule,
+            now_utc=datetime(2026, 11, 17, 1, 0, tzinfo=timezone.utc),
         )
         self.assertEqual(res["status"], "all_started")
         pick = res["selection"]["1"]
