@@ -9,8 +9,8 @@
  * Designed as pure top-level Google Apps Script (V8) without CommonJS wrappers.
  *
  * Setup:
- *   Call `setupHockeypicksTriggers("<fine-grained-PAT-with-actions-write>")` once
- *   (or hit `?action=hockeypicks_setup&token=<PAT>` on the Web App endpoint).
+ *   Call `setupHockeypicksTriggers("<fine-grained-PAT-with-actions-write>")` once,
+ *   or POST {"action":"hockeypicks_setup","token":"<PAT>"} to the Web App endpoint.
  */
 
 var HP_CONFIG = {
@@ -463,7 +463,7 @@ function getHockeypicksDispatcherStatus() {
 }
 
 /**
- * Web App request router for hockeypicks_* actions inside doGet(e).
+ * Web App request router for hockeypicks_* actions (GET query params or POST JSON body).
  */
 function handleHockeypicksDoGet(e) {
   var params = (e && e.parameter) || e || {};
