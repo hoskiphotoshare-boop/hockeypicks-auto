@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-22 12:11 PM ET",
+      "captured_et": "2026-11-22 03:21 PM ET",
       "model_n_half": 30.53,
       "groups": {
         "1": [
@@ -62,7 +62,7 @@
             "live_gp": 25,
             "live_goals": 13,
             "def_multiplier": 1.017,
-            "final_score": 0.492
+            "final_score": 0.491
           },
           {
             "player": "Nikita Kucherov",
@@ -95,7 +95,7 @@
             "live_gp": 22,
             "live_goals": 10,
             "def_multiplier": 1.06,
-            "final_score": 0.42
+            "final_score": 0.419
           },
           {
             "player": "Brayden Point",
@@ -144,17 +144,6 @@
             "final_score": 0.472
           },
           {
-            "player": "Sebastian Aho",
-            "team": "CAR",
-            "opponent": "NYR",
-            "position": "F",
-            "base_pred": 0.419,
-            "live_gp": 23,
-            "live_goals": 13,
-            "def_multiplier": 0.97,
-            "final_score": 0.467
-          },
-          {
             "player": "Jack Quinn",
             "team": "BUF",
             "opponent": "TBL",
@@ -166,15 +155,15 @@
             "final_score": 0.435
           },
           {
-            "player": "Alexis Lafreni\u00e8re",
-            "team": "NYR",
-            "opponent": "CAR",
+            "player": "Jimmy Snuggerud",
+            "team": "STL",
+            "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.419,
-            "live_gp": 22,
-            "live_goals": 10,
-            "def_multiplier": 0.912,
-            "final_score": 0.394
+            "base_pred": 0.365,
+            "live_gp": 23,
+            "live_goals": 13,
+            "def_multiplier": 0.954,
+            "final_score": 0.42
           },
           {
             "player": "Rickard Rakell",
@@ -208,6 +197,17 @@
             "live_goals": 8,
             "def_multiplier": 1.06,
             "final_score": 0.371
+          },
+          {
+            "player": "Dylan Holloway",
+            "team": "STL",
+            "opponent": "EDM",
+            "position": "F",
+            "base_pred": 0.312,
+            "live_gp": 23,
+            "live_goals": 6,
+            "def_multiplier": 0.954,
+            "final_score": 0.279
           },
           {
             "player": "Tyler Seguin",
@@ -265,17 +265,6 @@
             "final_score": 0.153
           },
           {
-            "player": "Shayne Gostisbehere",
-            "team": "CAR",
-            "opponent": "NYR",
-            "position": "D",
-            "base_pred": 0.166,
-            "live_gp": 23,
-            "live_goals": 3,
-            "def_multiplier": 0.97,
-            "final_score": 0.151
-          },
-          {
             "player": "Sam Rinzel",
             "team": "CHI",
             "opponent": "VAN",
@@ -311,17 +300,6 @@
             "final_score": 0.158
           },
           {
-            "player": "Eric Robinson",
-            "team": "CAR",
-            "opponent": "NYR",
-            "position": "F",
-            "base_pred": 0.184,
-            "live_gp": 22,
-            "live_goals": 2,
-            "def_multiplier": 0.97,
-            "final_score": 0.147
-          },
-          {
             "player": "Jeff Viel",
             "team": "TBL",
             "opponent": "BUF",
@@ -331,17 +309,6 @@
             "live_goals": 0,
             "def_multiplier": 1.025,
             "final_score": 0.143
-          },
-          {
-            "player": "Sean Walker",
-            "team": "CAR",
-            "opponent": "NYR",
-            "position": "D",
-            "base_pred": 0.112,
-            "live_gp": 23,
-            "live_goals": 4,
-            "def_multiplier": 0.97,
-            "final_score": 0.133
           },
           {
             "player": "Olen Zellweger",
@@ -366,6 +333,17 @@
             "final_score": 0.129
           },
           {
+            "player": "Victor Hedman",
+            "team": "TBL",
+            "opponent": "BUF",
+            "position": "D",
+            "base_pred": 0.086,
+            "live_gp": 21,
+            "live_goals": 4,
+            "def_multiplier": 1.025,
+            "final_score": 0.123
+          },
+          {
             "player": "Andrei Kuzmenko",
             "team": "PIT",
             "opponent": "DAL",
@@ -388,15 +366,15 @@
             "final_score": 0.117
           },
           {
-            "player": "William Carrier",
-            "team": "CAR",
-            "opponent": "NYR",
+            "player": "Sam Steel",
+            "team": "DAL",
+            "opponent": "PIT",
             "position": "F",
-            "base_pred": 0.15,
-            "live_gp": 23,
+            "base_pred": 0.122,
+            "live_gp": 19,
             "live_goals": 1,
-            "def_multiplier": 0.97,
-            "final_score": 0.115
+            "def_multiplier": 1.06,
+            "final_score": 0.107
           },
           {
             "player": "Jason Dickinson",
@@ -408,17 +386,6 @@
             "live_goals": 2,
             "def_multiplier": 1.017,
             "final_score": 0.105
-          },
-          {
-            "player": "Jalen Chatfield",
-            "team": "CAR",
-            "opponent": "NYR",
-            "position": "D",
-            "base_pred": 0.088,
-            "live_gp": 23,
-            "live_goals": 3,
-            "def_multiplier": 0.97,
-            "final_score": 0.098
           },
           {
             "player": "Artyom Levshunov",
@@ -454,6 +421,17 @@
             "final_score": 0.087
           },
           {
+            "player": "Zeev Buium",
+            "team": "VAN",
+            "opponent": "CHI",
+            "position": "D",
+            "base_pred": 0.101,
+            "live_gp": 25,
+            "live_goals": 1,
+            "def_multiplier": 1.064,
+            "final_score": 0.084
+          },
+          {
             "player": "Trent Frederic",
             "team": "EDM",
             "opponent": "STL",
@@ -463,6 +441,17 @@
             "live_goals": 1,
             "def_multiplier": 1.017,
             "final_score": 0.067
+          },
+          {
+            "player": "Cam Fowler",
+            "team": "STL",
+            "opponent": "EDM",
+            "position": "D",
+            "base_pred": 0.065,
+            "live_gp": 23,
+            "live_goals": 0,
+            "def_multiplier": 0.954,
+            "final_score": 0.041
           }
         ]
       },
@@ -503,6 +492,17 @@
       },
       "settled": false,
       "results": null,
+      "timing": {
+        "decision": "BORDERLINE_WATCH",
+        "basis": "now",
+        "first_wave_utc": "2026-11-22T22:00:00Z",
+        "lock_utc": "2026-11-22T22:00:00Z",
+        "lock_et": "5:00 PM ET",
+        "recommended_wave_et": "7:00 PM ET",
+        "v_now": 1.0178,
+        "v_defer_best": 1.0217,
+        "ev_delta": 0.0039
+      },
       "picks_locked": false,
       "locked_et": ""
     },
@@ -2573,13 +2573,13 @@
         "timing": {
           "decision": "BORDERLINE_WATCH",
           "basis": "now",
-          "first_wave_utc": "2026-11-22T17:30:00Z",
-          "lock_utc": "2026-11-22T17:30:00Z",
-          "lock_et": "12:30 PM ET",
+          "first_wave_utc": "2026-11-22T22:00:00Z",
+          "lock_utc": "2026-11-22T22:00:00Z",
+          "lock_et": "5:00 PM ET",
           "recommended_wave_et": "7:00 PM ET",
           "v_now": 1.0178,
-          "v_defer_best": 1.0187,
-          "ev_delta": 0.0009
+          "v_defer_best": 1.0217,
+          "ev_delta": 0.0039
         },
         "picks_locked": false,
         "hits_of_3": null,
