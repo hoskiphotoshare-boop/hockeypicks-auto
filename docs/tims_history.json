@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-22 10:18 AM ET",
+      "captured_et": "2026-11-22 11:01 AM ET",
       "model_n_half": 30.53,
       "groups": {
         "1": [
@@ -73,7 +73,7 @@
             "live_gp": 22,
             "live_goals": 9,
             "def_multiplier": 1.025,
-            "final_score": 0.455
+            "final_score": 0.454
           },
           {
             "player": "Wyatt Johnston",
@@ -116,7 +116,7 @@
             "base_pred": 0.254,
             "live_gp": 25,
             "live_goals": 8,
-            "def_multiplier": 1.063,
+            "def_multiplier": 1.064,
             "final_score": 0.297
           },
           {
@@ -127,7 +127,7 @@
             "base_pred": 0.257,
             "live_gp": 23,
             "live_goals": 5,
-            "def_multiplier": 1.097,
+            "def_multiplier": 1.098,
             "final_score": 0.267
           }
         ],
@@ -140,8 +140,8 @@
             "base_pred": 0.378,
             "live_gp": 21,
             "live_goals": 11,
-            "def_multiplier": 1.097,
-            "final_score": 0.471
+            "def_multiplier": 1.098,
+            "final_score": 0.472
           },
           {
             "player": "Sebastian Aho",
@@ -163,7 +163,7 @@
             "live_gp": 23,
             "live_goals": 12,
             "def_multiplier": 0.954,
-            "final_score": 0.436
+            "final_score": 0.435
           },
           {
             "player": "Alexis Lafreni\u00e8re",
@@ -184,7 +184,7 @@
             "base_pred": 0.427,
             "live_gp": 22,
             "live_goals": 8,
-            "def_multiplier": 0.961,
+            "def_multiplier": 0.96,
             "final_score": 0.387
           },
           {
@@ -195,7 +195,7 @@
             "base_pred": 0.39,
             "live_gp": 23,
             "live_goals": 7,
-            "def_multiplier": 1.063,
+            "def_multiplier": 1.064,
             "final_score": 0.38
           },
           {
@@ -261,7 +261,7 @@
             "base_pred": 0.132,
             "live_gp": 24,
             "live_goals": 4,
-            "def_multiplier": 1.063,
+            "def_multiplier": 1.064,
             "final_score": 0.153
           },
           {
@@ -283,7 +283,7 @@
             "base_pred": 0.148,
             "live_gp": 22,
             "live_goals": 2,
-            "def_multiplier": 1.097,
+            "def_multiplier": 1.098,
             "final_score": 0.14
           },
           {
@@ -294,8 +294,8 @@
             "base_pred": 0.123,
             "live_gp": 19,
             "live_goals": 2,
-            "def_multiplier": 1.097,
-            "final_score": 0.129
+            "def_multiplier": 1.098,
+            "final_score": 0.13
           }
         ],
         "3": [
@@ -307,7 +307,7 @@
             "base_pred": 0.16,
             "live_gp": 17,
             "live_goals": 3,
-            "def_multiplier": 0.961,
+            "def_multiplier": 0.96,
             "final_score": 0.158
           },
           {
@@ -330,7 +330,7 @@
             "live_gp": 0,
             "live_goals": 0,
             "def_multiplier": 1.025,
-            "final_score": 0.144
+            "final_score": 0.143
           },
           {
             "player": "Sean Walker",
@@ -362,7 +362,7 @@
             "base_pred": 0.126,
             "live_gp": 16,
             "live_goals": 2,
-            "def_multiplier": 1.063,
+            "def_multiplier": 1.064,
             "final_score": 0.129
           },
           {
@@ -373,7 +373,7 @@
             "base_pred": 0.14,
             "live_gp": 13,
             "live_goals": 1,
-            "def_multiplier": 0.961,
+            "def_multiplier": 0.96,
             "final_score": 0.122
           },
           {
@@ -384,7 +384,7 @@
             "base_pred": 0.132,
             "live_gp": 10,
             "live_goals": 0,
-            "def_multiplier": 1.097,
+            "def_multiplier": 1.098,
             "final_score": 0.117
           },
           {
@@ -428,8 +428,8 @@
             "base_pred": 0.113,
             "live_gp": 23,
             "live_goals": 1,
-            "def_multiplier": 1.097,
-            "final_score": 0.097
+            "def_multiplier": 1.098,
+            "final_score": 0.098
           },
           {
             "player": "Filip Hronek",
@@ -439,7 +439,7 @@
             "base_pred": 0.116,
             "live_gp": 25,
             "live_goals": 1,
-            "def_multiplier": 1.063,
+            "def_multiplier": 1.064,
             "final_score": 0.094
           },
           {
@@ -486,8 +486,8 @@
           "base_pred": 0.378,
           "live_gp": 21,
           "live_goals": 11,
-          "def_multiplier": 1.097,
-          "final_score": 0.471
+          "def_multiplier": 1.098,
+          "final_score": 0.472
         },
         "3": {
           "player": "Hendrix Lapierre",
@@ -497,7 +497,7 @@
           "base_pred": 0.16,
           "live_gp": 17,
           "live_goals": 3,
-          "def_multiplier": 0.961,
+          "def_multiplier": 0.96,
           "final_score": 0.158
         }
       },
@@ -510,8 +510,8 @@
         "lock_utc": "2026-11-22T17:30:00Z",
         "lock_et": "12:30 PM ET",
         "recommended_wave_et": "7:00 PM ET",
-        "v_now": 1.0172,
-        "v_defer_best": 1.0181,
+        "v_now": 1.0178,
+        "v_defer_best": 1.0187,
         "ev_delta": 0.0009
       },
       "picks_locked": false,
@@ -2588,8 +2588,8 @@
           "lock_utc": "2026-11-22T17:30:00Z",
           "lock_et": "12:30 PM ET",
           "recommended_wave_et": "7:00 PM ET",
-          "v_now": 1.0172,
-          "v_defer_best": 1.0181,
+          "v_now": 1.0178,
+          "v_defer_best": 1.0187,
           "ev_delta": 0.0009
         },
         "picks_locked": false,
@@ -2604,7 +2604,7 @@
           "2": {
             "player": "Frank Nazar",
             "team": "CHI",
-            "score": 0.471,
+            "score": 0.472,
             "scored": null
           },
           "3": {
