@@ -39,7 +39,7 @@ except ImportError:  # pragma: no cover
 from src.data_sync import TEAM_FULL_TO_ABBREV, normalize_team_abbrev
 
 FRANCHISE_PRIOR_MAP: dict[str, str] = {"UTA": "ARI"}
-ODDS_API_BOOKMAKERS = "pinnacle,betonlineag,draftkings,fanduel,betmgm"
+ODDS_API_BOOKMAKERS = "pinnacle,lowvig,betonlineag,draftkings,fanduel,betmgm,betrivers,espnbet,bovada,playnow_ca"
 
 
 TEAM_EXCLUDE_COLS = {
@@ -1266,6 +1266,8 @@ def extract_cached_odds_lookup(
             continue
 
         entry: dict[str, Any] = {"bookie": g.get("bookie") or "Sharp"}
+        if g.get("bookie_key"):
+            entry["bookie_key"] = g.get("bookie_key")
         cached_books = g.get("book_odds")
         if isinstance(cached_books, dict) and cached_books:
             entry["books"] = cached_books
@@ -1321,10 +1323,11 @@ def _fetch_nhl_odds_lookup(
             continue
 
         bookies = game.get("bookmakers", [])
-        books: dict[str, dict[str, float]] = {}
+        books: dict[str, dict[str, Any]] = {}
         for book in bookies:
-            title = str(book.get("title") or book.get("key") or "").strip()
-            if not title:
+            b_key = str(book.get("key") or "").strip().lower()
+            b_title = str(book.get("title") or b_key or "").strip()
+            if not b_key or not b_title:
                 continue
             for market in book.get("markets", []):
                 if market.get("key") != "h2h":
@@ -1336,18 +1339,19 @@ def _fetch_nhl_odds_lookup(
                     elif outcome.get("name") == a_full:
                         a_odds = float(outcome.get("price", 0.0) or 0.0)
                 if h_odds > 1.0 and a_odds > 1.0:
-                    books[title] = {"home": h_odds, "away": a_odds}
+                    books[b_key] = {"title": b_title, "home": h_odds, "away": a_odds}
         if not books:
             continue
 
         # Default line keeps the historical Pinnacle-first preference (falling back to
         # the first book returned) so existing edges and cached-odds reuse stay stable.
-        default_title = next((t for t in books if t.lower() == "pinnacle"), "") or next(iter(books))
-        default_line = books[default_title]
+        default_key = "pinnacle" if "pinnacle" in books else next(iter(books))
+        default_line = books[default_key]
         odds_map[(away_abbr, home_abbr)] = {
             home_abbr: default_line["home"],
             away_abbr: default_line["away"],
-            "bookie": default_title,
+            "bookie": default_line["title"],
+            "bookie_key": default_key,
             "books": books,
         }
 
@@ -1458,6 +1462,7 @@ def predict_upcoming_games(
                 "home_injuries": [r["player"] + f" ({r['status']})" for r in (avail_h.get("out_skaters") or [])[:4]],
                 "bookie": game_odds.get("bookie"),
                 "book_odds": game_odds.get("books") or {},
+                "bookie_key": game_odds.get("bookie_key"),
                 "away_odds": round(float(game_odds[away]), 3) if game_odds.get(away) else None,
                 "home_odds": round(float(game_odds[home]), 3) if game_odds.get(home) else None,
                 "away_edge": away_edge,

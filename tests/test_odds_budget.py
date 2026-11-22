@@ -214,13 +214,16 @@ class TestOddsBudget(unittest.TestCase):
         # Prefers Pinnacle when available, falls back to FanDuel when Pinnacle is missing.
         self.assertEqual(odds[("EDM", "TOR")]["bookie"], "Pinnacle")
         self.assertEqual(odds[("EDM", "TOR")]["TOR"], 2.10)
-        self.assertEqual(odds[("EDM", "TOR")]["books"]["Pinnacle"]["home"], 2.10)
-        self.assertEqual(odds[("EDM", "TOR")]["books"]["Pinnacle"]["away"], 1.85)
-        self.assertEqual(odds[("EDM", "TOR")]["books"]["FanDuel"]["home"], 2.05)
-        self.assertEqual(odds[("EDM", "TOR")]["books"]["FanDuel"]["away"], 1.80)
+        self.assertEqual(odds[("EDM", "TOR")]["bookie_key"], "pinnacle")
+        self.assertEqual(odds[("EDM", "TOR")]["books"]["pinnacle"]["title"], "Pinnacle")
+        self.assertEqual(odds[("EDM", "TOR")]["books"]["pinnacle"]["home"], 2.10)
+        self.assertEqual(odds[("EDM", "TOR")]["books"]["pinnacle"]["away"], 1.85)
+        self.assertEqual(odds[("EDM", "TOR")]["books"]["fanduel"]["home"], 2.05)
+        self.assertEqual(odds[("EDM", "TOR")]["books"]["fanduel"]["away"], 1.80)
         self.assertEqual(odds[("BOS", "MTL")]["bookie"], "FanDuel")
         self.assertEqual(odds[("BOS", "MTL")]["BOS"], 1.68)
-        self.assertEqual(list(odds[("BOS", "MTL")]["books"]), ["FanDuel"])
+        self.assertEqual(list(odds[("BOS", "MTL")]["books"]), ["fanduel"])
+        self.assertEqual(odds[("BOS", "MTL")]["bookie_key"], "fanduel")
 
         self.assertTrue(meta["api_ok"])
         self.assertEqual(meta["requests_last"], 1)
@@ -238,7 +241,8 @@ class TestOddsBudget(unittest.TestCase):
                     "bookie": "Pinnacle",
                     "away_odds": 1.75,
                     "home_odds": 2.15,
-                    "book_odds": {"Pinnacle": {"home": 2.15, "away": 1.75}},
+                    "book_odds": {"pinnacle": {"title": "Pinnacle", "home": 2.15, "away": 1.75}},
+                    "bookie_key": "pinnacle",
                     "away_edge": None,
                     "home_edge": None,
                 },
@@ -255,7 +259,8 @@ class TestOddsBudget(unittest.TestCase):
         cached = extract_cached_odds_lookup(legacy_and_new)
         self.assertEqual(cached[("2026-11-19", "EDM", "TOR")]["TOR"], 2.15)
         self.assertEqual(cached[("2026-11-19", "EDM", "TOR")]["EDM"], 1.75)
-        self.assertEqual(cached[("2026-11-19", "EDM", "TOR")]["books"]["Pinnacle"]["home"], 2.15)
+        self.assertEqual(cached[("2026-11-19", "EDM", "TOR")]["books"]["pinnacle"]["home"], 2.15)
+        self.assertEqual(cached[("2026-11-19", "EDM", "TOR")]["bookie_key"], "pinnacle")
         self.assertEqual(cached[("2026-11-19", "BOS", "MTL")]["MTL"], 2.40)
 
         bundle = {"model": _DummyGameClf(), "feature_names": ["Elo_diff", "Is_B2B_Home", "Is_B2B_Away"], "optimal_T": 1.0}
