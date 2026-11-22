@@ -466,17 +466,23 @@ function getHockeypicksDispatcherStatus() {
  * Web App request router for hockeypicks_* actions inside doGet(e).
  */
 function handleHockeypicksDoGet(e) {
-  var params = (e && e.parameter) || {};
+  var params = (e && e.parameter) || e || {};
   var action = params.action || "hockeypicks_status";
   var result;
 
   if (action === "hockeypicks_status") {
     result = getHockeypicksDispatcherStatus();
   } else if (action === "hockeypicks_setup") {
-    result = {
-      setup: setupHockeypicksTriggers(params.token || ""),
-      status: getHockeypicksDispatcherStatus()
-    };
+    if (!params.__via_post) {
+      result = { ok: false, error: "hockeypicks_setup requires POST with a JSON body (never send the token in the URL)." };
+    } else if (!String(params.token || "").trim()) {
+      result = { ok: false, error: "A non-empty token is required to rotate the GitHub token." };
+    } else {
+      result = {
+        setup: setupHockeypicksTriggers(params.token || ""),
+        status: getHockeypicksDispatcherStatus()
+      };
+    }
   } else if (action === "hockeypicks_tick") {
     result = hockeypicksCronTick();
   } else if (action === "hockeypicks_sync_waves") {
@@ -974,4 +980,20 @@ function hpDispatchWorkflow_(workflowFile, inputs, token) {
     statusCode: code,
     error: "HTTP " + code + ": " + resp.getContentText().slice(0, 400)
   };
+}
+
+
+/**
+ * Web App POST router: accepts a JSON body so the GitHub token never travels in the URL.
+ */
+function doPost(e) {
+  var params = {};
+  try {
+    var body = (e && e.postData && e.postData.contents) || "{}";
+    params = JSON.parse(body) || {};
+  } catch (err) {
+    params = {};
+  }
+  params.__via_post = true;
+  return handleHockeypicksDoGet(params);
 }
