@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-22 12:57 AM ET",
+      "captured_et": "2026-11-22 01:29 AM ET",
       "model_n_half": 30.32,
       "groups": {
         "1": [
@@ -28,8 +28,8 @@
             "base_pred": 0.455,
             "live_gp": 22,
             "live_goals": 13,
-            "def_multiplier": 1.024,
-            "final_score": 0.517
+            "def_multiplier": 1.027,
+            "final_score": 0.518
           },
           {
             "player": "Tage Thompson",
@@ -50,8 +50,8 @@
             "base_pred": 0.481,
             "live_gp": 22,
             "live_goals": 10,
-            "def_multiplier": 1.058,
-            "final_score": 0.494
+            "def_multiplier": 1.061,
+            "final_score": 0.495
           },
           {
             "player": "Connor McDavid",
@@ -72,8 +72,8 @@
             "base_pred": 0.471,
             "live_gp": 22,
             "live_goals": 9,
-            "def_multiplier": 1.024,
-            "final_score": 0.453
+            "def_multiplier": 1.027,
+            "final_score": 0.455
           },
           {
             "player": "Wyatt Johnston",
@@ -83,8 +83,8 @@
             "base_pred": 0.432,
             "live_gp": 20,
             "live_goals": 7,
-            "def_multiplier": 1.058,
-            "final_score": 0.424
+            "def_multiplier": 1.061,
+            "final_score": 0.425
           },
           {
             "player": "Mikko Rantanen",
@@ -94,8 +94,8 @@
             "base_pred": 0.363,
             "live_gp": 22,
             "live_goals": 10,
-            "def_multiplier": 1.058,
-            "final_score": 0.417
+            "def_multiplier": 1.061,
+            "final_score": 0.418
           },
           {
             "player": "Brayden Point",
@@ -105,8 +105,8 @@
             "base_pred": 0.388,
             "live_gp": 19,
             "live_goals": 5,
-            "def_multiplier": 1.024,
-            "final_score": 0.358
+            "def_multiplier": 1.027,
+            "final_score": 0.359
           },
           {
             "player": "Brock Boeser",
@@ -114,10 +114,10 @@
             "opponent": "CHI",
             "position": "F",
             "base_pred": 0.256,
-            "live_gp": 24,
+            "live_gp": 25,
             "live_goals": 8,
-            "def_multiplier": 1.061,
-            "final_score": 0.302
+            "def_multiplier": 1.062,
+            "final_score": 0.298
           },
           {
             "player": "Tyler Bertuzzi",
@@ -127,8 +127,8 @@
             "base_pred": 0.265,
             "live_gp": 23,
             "live_goals": 5,
-            "def_multiplier": 1.115,
-            "final_score": 0.277
+            "def_multiplier": 1.1,
+            "final_score": 0.273
           }
         ],
         "2": [
@@ -140,8 +140,8 @@
             "base_pred": 0.37,
             "live_gp": 21,
             "live_goals": 11,
-            "def_multiplier": 1.115,
-            "final_score": 0.474
+            "def_multiplier": 1.1,
+            "final_score": 0.467
           },
           {
             "player": "Sebastian Aho",
@@ -174,7 +174,7 @@
             "live_gp": 22,
             "live_goals": 10,
             "def_multiplier": 0.911,
-            "final_score": 0.391
+            "final_score": 0.39
           },
           {
             "player": "Rickard Rakell",
@@ -193,10 +193,10 @@
             "opponent": "CHI",
             "position": "F",
             "base_pred": 0.385,
-            "live_gp": 22,
+            "live_gp": 23,
             "live_goals": 7,
-            "def_multiplier": 1.061,
-            "final_score": 0.382
+            "def_multiplier": 1.062,
+            "final_score": 0.374
           },
           {
             "player": "Roope Hintz",
@@ -206,8 +206,8 @@
             "base_pred": 0.34,
             "live_gp": 22,
             "live_goals": 8,
-            "def_multiplier": 1.058,
-            "final_score": 0.368
+            "def_multiplier": 1.061,
+            "final_score": 0.369
           },
           {
             "player": "Tyler Seguin",
@@ -217,7 +217,7 @@
             "base_pred": 0.254,
             "live_gp": 22,
             "live_goals": 3,
-            "def_multiplier": 1.058,
+            "def_multiplier": 1.061,
             "final_score": 0.223
           },
           {
@@ -239,7 +239,7 @@
             "base_pred": 0.172,
             "live_gp": 17,
             "live_goals": 5,
-            "def_multiplier": 1.058,
+            "def_multiplier": 1.061,
             "final_score": 0.217
           },
           {
@@ -251,7 +251,7 @@
             "live_gp": 23,
             "live_goals": 4,
             "def_multiplier": 0.953,
-            "final_score": 0.171
+            "final_score": 0.17
           },
           {
             "player": "Paul Cotter",
@@ -259,10 +259,10 @@
             "opponent": "CHI",
             "position": "F",
             "base_pred": 0.134,
-            "live_gp": 23,
+            "live_gp": 24,
             "live_goals": 4,
-            "def_multiplier": 1.061,
-            "final_score": 0.156
+            "def_multiplier": 1.062,
+            "final_score": 0.153
           },
           {
             "player": "Shayne Gostisbehere",
@@ -283,8 +283,8 @@
             "base_pred": 0.154,
             "live_gp": 22,
             "live_goals": 2,
-            "def_multiplier": 1.115,
-            "final_score": 0.147
+            "def_multiplier": 1.1,
+            "final_score": 0.145
           },
           {
             "player": "Teuvo Teravainen",
@@ -294,8 +294,8 @@
             "base_pred": 0.125,
             "live_gp": 19,
             "live_goals": 2,
-            "def_multiplier": 1.115,
-            "final_score": 0.133
+            "def_multiplier": 1.1,
+            "final_score": 0.131
           }
         ],
         "3": [
@@ -329,8 +329,8 @@
             "base_pred": 0.14,
             "live_gp": 0,
             "live_goals": 0,
-            "def_multiplier": 1.024,
-            "final_score": 0.143
+            "def_multiplier": 1.027,
+            "final_score": 0.144
           },
           {
             "player": "Olen Zellweger",
@@ -360,10 +360,10 @@
             "opponent": "CHI",
             "position": "F",
             "base_pred": 0.123,
-            "live_gp": 15,
+            "live_gp": 16,
             "live_goals": 2,
-            "def_multiplier": 1.061,
-            "final_score": 0.132
+            "def_multiplier": 1.062,
+            "final_score": 0.128
           },
           {
             "player": "Andrei Kuzmenko",
@@ -377,17 +377,6 @@
             "final_score": 0.12
           },
           {
-            "player": "Andrew Mangiapane",
-            "team": "CHI",
-            "opponent": "VAN",
-            "position": "F",
-            "base_pred": 0.126,
-            "live_gp": 10,
-            "live_goals": 0,
-            "def_multiplier": 1.115,
-            "final_score": 0.114
-          },
-          {
             "player": "William Carrier",
             "team": "CAR",
             "opponent": "NYR",
@@ -397,6 +386,17 @@
             "live_goals": 1,
             "def_multiplier": 0.969,
             "final_score": 0.113
+          },
+          {
+            "player": "Andrew Mangiapane",
+            "team": "CHI",
+            "opponent": "VAN",
+            "position": "F",
+            "base_pred": 0.126,
+            "live_gp": 10,
+            "live_goals": 0,
+            "def_multiplier": 1.1,
+            "final_score": 0.112
           },
           {
             "player": "Jason Dickinson",
@@ -428,8 +428,8 @@
             "base_pred": 0.112,
             "live_gp": 23,
             "live_goals": 1,
-            "def_multiplier": 1.115,
-            "final_score": 0.098
+            "def_multiplier": 1.1,
+            "final_score": 0.097
           },
           {
             "player": "Filip Hronek",
@@ -437,10 +437,10 @@
             "opponent": "CHI",
             "position": "D",
             "base_pred": 0.113,
-            "live_gp": 24,
+            "live_gp": 25,
             "live_goals": 1,
-            "def_multiplier": 1.061,
-            "final_score": 0.092
+            "def_multiplier": 1.062,
+            "final_score": 0.091
           },
           {
             "player": "Scott Sabourin",
@@ -450,7 +450,7 @@
             "base_pred": 0.08,
             "live_gp": 8,
             "live_goals": 1,
-            "def_multiplier": 1.024,
+            "def_multiplier": 1.027,
             "final_score": 0.087
           },
           {
@@ -486,8 +486,8 @@
           "base_pred": 0.37,
           "live_gp": 21,
           "live_goals": 11,
-          "def_multiplier": 1.115,
-          "final_score": 0.474
+          "def_multiplier": 1.1,
+          "final_score": 0.467
         },
         "3": {
           "player": "Hendrix Lapierre",
@@ -510,9 +510,9 @@
         "lock_utc": "2026-11-22T17:30:00Z",
         "lock_et": "12:30 PM ET",
         "recommended_wave_et": "7:00 PM ET",
-        "v_now": 1.0194,
-        "v_defer_best": 1.0205,
-        "ev_delta": 0.0011
+        "v_now": 1.015,
+        "v_defer_best": 1.0158,
+        "ev_delta": 0.0008
       },
       "picks_locked": false,
       "locked_et": ""
@@ -2588,9 +2588,9 @@
           "lock_utc": "2026-11-22T17:30:00Z",
           "lock_et": "12:30 PM ET",
           "recommended_wave_et": "7:00 PM ET",
-          "v_now": 1.0194,
-          "v_defer_best": 1.0205,
-          "ev_delta": 0.0011
+          "v_now": 1.015,
+          "v_defer_best": 1.0158,
+          "ev_delta": 0.0008
         },
         "picks_locked": false,
         "hits_of_3": null,
@@ -2604,7 +2604,7 @@
           "2": {
             "player": "Frank Nazar",
             "team": "CHI",
-            "score": 0.474,
+            "score": 0.467,
             "scored": null
           },
           "3": {
