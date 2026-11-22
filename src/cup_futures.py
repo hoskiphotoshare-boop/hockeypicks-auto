@@ -253,10 +253,10 @@ def fetch_cup_futures_odds(
 
     url = (
         f"https://api.the-odds-api.com/v4/sports/icehockey_nhl_championship_winner/odds/"
-        f"?apiKey={odds_api_key}&bookmakers={FUTURES_ODDS_BOOKMAKERS}&markets=outrights&oddsFormat=decimal"
+        f"?bookmakers={FUTURES_ODDS_BOOKMAKERS}&markets=outrights&oddsFormat=decimal"
     )
     try:
-        res = session.get(url, timeout=15)
+        res = session.get(url, timeout=15, headers={"x-api-key": odds_api_key})
         raw_headers = getattr(res, "headers", None) or {}
         headers = {str(k).lower(): v for k, v in raw_headers.items()} if hasattr(raw_headers, "items") else {}
         if meta_out is not None:

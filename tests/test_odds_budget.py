@@ -39,9 +39,11 @@ class _FakeOddsSession:
     def __init__(self, responses):
         self._responses = list(responses)
         self.urls: list[str] = []
+        self.last_headers: dict = {}
 
-    def get(self, url: str, timeout: int = 15):
+    def get(self, url: str, timeout: int = 15, headers: dict | None = None):
         self.urls.append(url)
+        self.last_headers = headers or {}
         if not self._responses:
             return _FakeOddsResponse([], status_code=200)
         return self._responses.pop(0)
@@ -210,6 +212,8 @@ class TestOddsBudget(unittest.TestCase):
         self.assertEqual(len(session.urls), 1)
         self.assertIn(f"bookmakers={ODDS_API_BOOKMAKERS}", session.urls[0])
         self.assertNotIn("regions=", session.urls[0])
+        self.assertNotIn("apiKey=", session.urls[0])
+        self.assertEqual(session.last_headers.get("x-api-key"), "test-key")
 
         # Prefers Pinnacle when available, falls back to FanDuel when Pinnacle is missing.
         self.assertEqual(odds[("EDM", "TOR")]["bookie"], "Pinnacle")

@@ -46,9 +46,11 @@ class _FakeOutrightsSession:
     def __init__(self, resp):
         self._resp = resp
         self.urls: list[str] = []
+        self.last_headers: dict = {}
 
-    def get(self, url: str, timeout: int = 15):
+    def get(self, url: str, timeout: int = 15, headers: dict | None = None):
         self.urls.append(url)
+        self.last_headers = headers or {}
         return self._resp
 
 
@@ -220,6 +222,8 @@ class TestCupFutures(unittest.TestCase):
         self.assertIn("icehockey_nhl_championship_winner/odds", session.urls[0])
         self.assertIn(f"bookmakers={FUTURES_ODDS_BOOKMAKERS}", session.urls[0])
         self.assertNotIn("regions=", session.urls[0])
+        self.assertNotIn("apiKey=", session.urls[0])
+        self.assertEqual(session.last_headers.get("x-api-key"), "test-key")
         self.assertEqual(res["devig_source"], "pinnacle")
         self.assertAlmostEqual(sum(res["market_probs"].values()), 1.0, places=6)
         self.assertEqual(res["best_odds"]["UTA"], 28.0)
