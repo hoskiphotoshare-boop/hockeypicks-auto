@@ -54,7 +54,7 @@ FUTURES_FEATURES: list[str] = [
     "Blended_GD_GP_diff",
 ]
 
-FUTURES_ODDS_BOOKMAKERS = "pinnacle,fanduel,draftkings,betmgm,betrivers"
+FUTURES_ODDS_BOOKMAKERS = "pinnacle,betonlineag,draftkings,fanduel,betmgm"
 
 NHL_DIVISIONS: dict[str, tuple[str, str]] = {
     # Eastern — Atlantic

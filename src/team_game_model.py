@@ -39,7 +39,7 @@ except ImportError:  # pragma: no cover
 from src.data_sync import TEAM_FULL_TO_ABBREV, normalize_team_abbrev
 
 FRANCHISE_PRIOR_MAP: dict[str, str] = {"UTA": "ARI"}
-ODDS_API_BOOKMAKERS = "pinnacle,fanduel,draftkings,betmgm,betrivers"
+ODDS_API_BOOKMAKERS = "pinnacle,betonlineag,draftkings,fanduel,betmgm"
 
 
 TEAM_EXCLUDE_COLS = {
