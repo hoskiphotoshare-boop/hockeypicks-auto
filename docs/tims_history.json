@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-22 12:35 AM ET",
+      "captured_et": "2026-11-22 12:57 AM ET",
       "model_n_half": 30.32,
       "groups": {
         "1": [
@@ -1040,8 +1040,81 @@
           "final_score": 0.181
         }
       },
-      "settled": false,
-      "results": null,
+      "settled": true,
+      "results": {
+        "hits_of_3": 2,
+        "total_picks": 3,
+        "group_hits": {
+          "1": {
+            "player": "Kirill Kaprizov",
+            "team": "MIN",
+            "goals": 0,
+            "scored": false
+          },
+          "2": {
+            "player": "Tage Thompson",
+            "team": "BUF",
+            "goals": 1,
+            "scored": true
+          },
+          "3": {
+            "player": "Jonatan Berggren",
+            "team": "STL",
+            "goals": 2,
+            "scored": true
+          }
+        },
+        "group_random_probs": {
+          "1": 0.4615,
+          "2": 0.2667,
+          "3": 0.2
+        },
+        "player_goals": {
+          "Kirill Kaprizov": 0,
+          "Cutter Gauthier": 0,
+          "Leon Draisaitl": 1,
+          "Kyle Connor": 1,
+          "Matt Boldy": 1,
+          "Auston Matthews": 1,
+          "David Pastrnak": 1,
+          "Macklin Celebrini": 1,
+          "Sam Reinhart": 0,
+          "Steven Stamkos": 0,
+          "Jack Hughes": 0,
+          "Connor McDavid": 0,
+          "Clayton Keller": 0,
+          "Tage Thompson": 1,
+          "Cole Caufield": 0,
+          "Frank Nazar": 0,
+          "Brady Tkachuk": 0,
+          "Filip Forsberg": 1,
+          "Mark Stone": 0,
+          "Sam Bennett": 3,
+          "Brock Boeser": 0,
+          "Charlie Coyle": 0,
+          "Kailer Yamamoto": 0,
+          "Jordan Staal": 0,
+          "Andrew Copp": 0,
+          "Vince Dunn": 0,
+          "Alex Iafallo": 0,
+          "Noah Cates": 1,
+          "Jonatan Berggren": 2,
+          "Travis Sanheim": 0,
+          "Eric Robinson": 0,
+          "Dakota Joshua": 0,
+          "Nathan Walker": 0,
+          "Simon Nemec": 0,
+          "Amadeus Lombardi": 0,
+          "Michael Rasmussen": 0,
+          "Sean Walker": 1,
+          "Andre Lee": 0,
+          "Mattias Samuelsson": 0,
+          "Dmitry Orlov": 0,
+          "Ben Meyers": 0,
+          "Alexander Nikishin": 1,
+          "Ryan Lomberg": 0
+        }
+      },
       "timing": {
         "decision": "BORDERLINE_WATCH",
         "basis": "now",
@@ -1054,7 +1127,8 @@
         "ev_delta": 0.0016
       },
       "picks_locked": true,
-      "locked_et": "2026-11-21 12:01 PM ET"
+      "locked_et": "2026-11-21 12:01 PM ET",
+      "settled_et": "2026-11-22 12:57 AM ET"
     },
     {
       "date": "2026-11-19",
@@ -2488,19 +2562,19 @@
   ],
   "summary": {
     "total_days_logged": 6,
-    "settled_days": 4,
-    "pending_days": 2,
-    "ai_hits": 2,
-    "ai_possible": 12,
-    "ai_hit_rate_pct": 16.7,
-    "random_expected_pct": 24.2,
-    "hit_1plus_days": 2,
-    "hit_2plus_days": 0,
+    "settled_days": 5,
+    "pending_days": 1,
+    "ai_hits": 4,
+    "ai_possible": 15,
+    "ai_hit_rate_pct": 26.7,
+    "random_expected_pct": 25.5,
+    "hit_1plus_days": 3,
+    "hit_2plus_days": 1,
     "sweep_3_days": 0,
     "group_hit_rates": {
       "1": 0.0,
-      "2": 25.0,
-      "3": 25.0
+      "2": 40.0,
+      "3": 40.0
     },
     "recent_days": [
       {
@@ -2544,7 +2618,7 @@
       {
         "date": "2026-11-21",
         "mode": "Regular Season",
-        "settled": false,
+        "settled": true,
         "timing": {
           "decision": "BORDERLINE_WATCH",
           "basis": "now",
@@ -2557,25 +2631,25 @@
           "ev_delta": 0.0016
         },
         "picks_locked": true,
-        "hits_of_3": null,
+        "hits_of_3": 2,
         "picks": {
           "1": {
             "player": "Kirill Kaprizov",
             "team": "MIN",
             "score": 0.674,
-            "scored": null
+            "scored": false
           },
           "2": {
             "player": "Tage Thompson",
             "team": "BUF",
             "score": 0.519,
-            "scored": null
+            "scored": true
           },
           "3": {
             "player": "Jonatan Berggren",
             "team": "STL",
             "score": 0.181,
-            "scored": null
+            "scored": true
           }
         }
       },
