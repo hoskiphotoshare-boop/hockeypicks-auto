@@ -490,8 +490,78 @@
           "final_score": 0.158
         }
       },
-      "settled": false,
-      "results": null,
+      "settled": true,
+      "results": {
+        "hits_of_3": 2,
+        "total_picks": 3,
+        "group_hits": {
+          "1": {
+            "player": "Leon Draisaitl",
+            "team": "EDM",
+            "goals": 1,
+            "scored": true
+          },
+          "2": {
+            "player": "Frank Nazar",
+            "team": "CHI",
+            "goals": 1,
+            "scored": true
+          },
+          "3": {
+            "player": "Hendrix Lapierre",
+            "team": "PIT",
+            "goals": 0,
+            "scored": false
+          }
+        },
+        "group_random_probs": {
+          "1": 0.3636,
+          "2": 0.2857,
+          "3": 0.0667
+        },
+        "player_goals": {
+          "Leon Draisaitl": 1,
+          "Jake Guentzel": 0,
+          "Tage Thompson": 2,
+          "Jason Robertson": 0,
+          "Connor McDavid": 0,
+          "Nikita Kucherov": 1,
+          "Wyatt Johnston": 0,
+          "Mikko Rantanen": 0,
+          "Brayden Point": 0,
+          "Brock Boeser": 0,
+          "Tyler Bertuzzi": 1,
+          "Frank Nazar": 1,
+          "Jack Quinn": 1,
+          "Jimmy Snuggerud": 1,
+          "Rickard Rakell": 0,
+          "Jake DeBrusk": 1,
+          "Roope Hintz": 0,
+          "Dylan Holloway": 0,
+          "Tyler Seguin": 0,
+          "Josh Doan": 0,
+          "Miro Heiskanen": 0,
+          "Joshua Norris": 0,
+          "Paul Cotter": 0,
+          "Sam Rinzel": 0,
+          "Teuvo Teravainen": 0,
+          "Hendrix Lapierre": 0,
+          "Jeff Viel": 0,
+          "Olen Zellweger": 0,
+          "Arshdeep Bains": 0,
+          "Victor Hedman": 0,
+          "Andrei Kuzmenko": 0,
+          "Andrew Mangiapane": 0,
+          "Sam Steel": 0,
+          "Jason Dickinson": 0,
+          "Artyom Levshunov": 0,
+          "Filip Hronek": 0,
+          "Scott Sabourin": 0,
+          "Zeev Buium": 1,
+          "Trent Frederic": 0,
+          "Cam Fowler": 0
+        }
+      },
       "timing": {
         "decision": "BORDERLINE_WATCH",
         "basis": "now",
@@ -504,7 +574,8 @@
         "ev_delta": 0.004
       },
       "picks_locked": true,
-      "locked_et": "2026-11-22 04:41 PM ET"
+      "locked_et": "2026-11-22 04:41 PM ET",
+      "settled_et": "2026-11-22 11:13 PM ET"
     },
     {
       "date": "2026-11-21",
@@ -2551,25 +2622,25 @@
   ],
   "summary": {
     "total_days_logged": 6,
-    "settled_days": 5,
-    "pending_days": 1,
-    "ai_hits": 4,
-    "ai_possible": 15,
-    "ai_hit_rate_pct": 26.7,
-    "random_expected_pct": 25.5,
-    "hit_1plus_days": 3,
-    "hit_2plus_days": 1,
+    "settled_days": 6,
+    "pending_days": 0,
+    "ai_hits": 6,
+    "ai_possible": 18,
+    "ai_hit_rate_pct": 33.3,
+    "random_expected_pct": 25.2,
+    "hit_1plus_days": 4,
+    "hit_2plus_days": 2,
     "sweep_3_days": 0,
     "group_hit_rates": {
-      "1": 0.0,
-      "2": 40.0,
-      "3": 40.0
+      "1": 16.7,
+      "2": 50.0,
+      "3": 33.3
     },
     "recent_days": [
       {
         "date": "2026-11-22",
         "mode": "Regular Season",
-        "settled": false,
+        "settled": true,
         "timing": {
           "decision": "BORDERLINE_WATCH",
           "basis": "now",
@@ -2582,25 +2653,25 @@
           "ev_delta": 0.004
         },
         "picks_locked": true,
-        "hits_of_3": null,
+        "hits_of_3": 2,
         "picks": {
           "1": {
             "player": "Leon Draisaitl",
             "team": "EDM",
             "score": 0.685,
-            "scored": null
+            "scored": true
           },
           "2": {
             "player": "Frank Nazar",
             "team": "CHI",
             "score": 0.478,
-            "scored": null
+            "scored": true
           },
           "3": {
             "player": "Hendrix Lapierre",
             "team": "PIT",
             "score": 0.158,
-            "scored": null
+            "scored": false
           }
         }
       },
