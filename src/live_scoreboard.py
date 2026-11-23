@@ -18,7 +18,7 @@ from src.data_sync import (
 )
 from src.tims_tracker import _extract_boxscore_goal_entries
 
-SCORING_STATES = ("LIVE", "CRIT", "FINAL")
+SCORING_STATES = ("LIVE", "CRIT", "FINAL", "OFF")  # NHL uses OFF for completed games
 MAX_BOXSCORES = 20
 
 
