@@ -125,6 +125,7 @@ def build_dashboard_payload(
     odds_enabled: bool,
     tims_history: dict[str, Any] | None = None,
     tims_timing_advice: dict[str, Any] | None = None,
+    tims_scoreboard: list[dict[str, Any]] | None = None,
     availability_summary: dict[str, Any] | None = None,
     odds_usage: dict[str, Any] | None = None,
     run_mode: str = "full",
@@ -167,6 +168,7 @@ def build_dashboard_payload(
         "tims_timing": tims_timing_advice or {},
         "tims_history": tims_history
         or {"total_days_logged": 0, "settled_days": 0, "pending_days": 0, "recent_days": []},
+        "tims_scoreboard": tims_scoreboard or [],
         "slate_top_scorers": skater_scores["slate_top_scorers"],
         "games": game_predictions,
         "power_rankings": power_rankings,

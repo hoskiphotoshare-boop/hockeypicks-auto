@@ -1,0 +1,337 @@
+{
+  "days": {
+    "2026-11-22": {
+      "players": {
+        "leon draisaitl|EDM": {
+          "player": "Leon Draisaitl",
+          "team": "EDM",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "jake guentzel|TBL": {
+          "player": "Jake Guentzel",
+          "team": "TBL",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "tage thompson|BUF": {
+          "player": "Tage Thompson",
+          "team": "BUF",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "jason robertson|DAL": {
+          "player": "Jason Robertson",
+          "team": "DAL",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "connor mcdavid|EDM": {
+          "player": "Connor McDavid",
+          "team": "EDM",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "nikita kucherov|TBL": {
+          "player": "Nikita Kucherov",
+          "team": "TBL",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "wyatt johnston|DAL": {
+          "player": "Wyatt Johnston",
+          "team": "DAL",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "mikko rantanen|DAL": {
+          "player": "Mikko Rantanen",
+          "team": "DAL",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "brayden point|TBL": {
+          "player": "Brayden Point",
+          "team": "TBL",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "brock boeser|VAN": {
+          "player": "Brock Boeser",
+          "team": "VAN",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "tyler bertuzzi|CHI": {
+          "player": "Tyler Bertuzzi",
+          "team": "CHI",
+          "group": "1",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "frank nazar|CHI": {
+          "player": "Frank Nazar",
+          "team": "CHI",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "sebastian aho|CAR": {
+          "player": "Sebastian Aho",
+          "team": "CAR",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 12:11 PM ET"
+        },
+        "jack quinn|BUF": {
+          "player": "Jack Quinn",
+          "team": "BUF",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "alexis lafreniere|NYR": {
+          "player": "Alexis Lafreni\u00e8re",
+          "team": "NYR",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 12:11 PM ET"
+        },
+        "rickard rakell|PIT": {
+          "player": "Rickard Rakell",
+          "team": "PIT",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "jake debrusk|VAN": {
+          "player": "Jake DeBrusk",
+          "team": "VAN",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "roope hintz|DAL": {
+          "player": "Roope Hintz",
+          "team": "DAL",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "tyler seguin|DAL": {
+          "player": "Tyler Seguin",
+          "team": "DAL",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "josh doan|BUF": {
+          "player": "Josh Doan",
+          "team": "BUF",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "miro heiskanen|DAL": {
+          "player": "Miro Heiskanen",
+          "team": "DAL",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "joshua norris|BUF": {
+          "player": "Joshua Norris",
+          "team": "BUF",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "paul cotter|VAN": {
+          "player": "Paul Cotter",
+          "team": "VAN",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "shayne gostisbehere|CAR": {
+          "player": "Shayne Gostisbehere",
+          "team": "CAR",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 12:11 PM ET"
+        },
+        "sam rinzel|CHI": {
+          "player": "Sam Rinzel",
+          "team": "CHI",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "teuvo teravainen|CHI": {
+          "player": "Teuvo Teravainen",
+          "team": "CHI",
+          "group": "2",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "hendrix lapierre|PIT": {
+          "player": "Hendrix Lapierre",
+          "team": "PIT",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "eric robinson|CAR": {
+          "player": "Eric Robinson",
+          "team": "CAR",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 12:11 PM ET"
+        },
+        "jeff viel|TBL": {
+          "player": "Jeff Viel",
+          "team": "TBL",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "sean walker|CAR": {
+          "player": "Sean Walker",
+          "team": "CAR",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 12:11 PM ET"
+        },
+        "olen zellweger|BUF": {
+          "player": "Olen Zellweger",
+          "team": "BUF",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "arshdeep bains|VAN": {
+          "player": "Arshdeep Bains",
+          "team": "VAN",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "andrei kuzmenko|PIT": {
+          "player": "Andrei Kuzmenko",
+          "team": "PIT",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "andrew mangiapane|CHI": {
+          "player": "Andrew Mangiapane",
+          "team": "CHI",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "william carrier|CAR": {
+          "player": "William Carrier",
+          "team": "CAR",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 12:11 PM ET"
+        },
+        "jason dickinson|EDM": {
+          "player": "Jason Dickinson",
+          "team": "EDM",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "jalen chatfield|CAR": {
+          "player": "Jalen Chatfield",
+          "team": "CAR",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 12:11 PM ET"
+        },
+        "artyom levshunov|CHI": {
+          "player": "Artyom Levshunov",
+          "team": "CHI",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "filip hronek|VAN": {
+          "player": "Filip Hronek",
+          "team": "VAN",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "scott sabourin|TBL": {
+          "player": "Scott Sabourin",
+          "team": "TBL",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "trent frederic|EDM": {
+          "player": "Trent Frederic",
+          "team": "EDM",
+          "group": "3",
+          "first_seen_et": "2026-11-22 12:11 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "jimmy snuggerud|STL": {
+          "player": "Jimmy Snuggerud",
+          "team": "STL",
+          "group": "2",
+          "first_seen_et": "2026-11-22 03:21 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "dylan holloway|STL": {
+          "player": "Dylan Holloway",
+          "team": "STL",
+          "group": "2",
+          "first_seen_et": "2026-11-22 03:21 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "victor hedman|TBL": {
+          "player": "Victor Hedman",
+          "team": "TBL",
+          "group": "3",
+          "first_seen_et": "2026-11-22 03:21 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "sam steel|DAL": {
+          "player": "Sam Steel",
+          "team": "DAL",
+          "group": "3",
+          "first_seen_et": "2026-11-22 03:21 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "zeev buium|VAN": {
+          "player": "Zeev Buium",
+          "team": "VAN",
+          "group": "3",
+          "first_seen_et": "2026-11-22 03:21 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        },
+        "cam fowler|STL": {
+          "player": "Cam Fowler",
+          "team": "STL",
+          "group": "3",
+          "first_seen_et": "2026-11-22 03:21 PM ET",
+          "last_seen_et": "2026-11-22 03:21 PM ET"
+        }
+      }
+    }
+  }
+}

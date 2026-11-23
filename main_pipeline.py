@@ -54,6 +54,13 @@ from src.team_game_model import (
     train_pairwise_game_model,
 )
 
+from src.live_scoreboard import build_tims_scoreboard
+from src.tims_boards import (
+    board_players_for,
+    load_tims_boards,
+    save_tims_boards,
+    update_board_day,
+)
 from src.tims_timing import compute_tims_deferral_advice
 from src.tims_tracker import (
     load_tims_history,
@@ -640,6 +647,29 @@ def run_inference(
         f"AI Hit Rate: {history_summary['ai_hit_rate_pct']}% vs Random: {history_summary['random_expected_pct']}%"
     )
 
+    # Keep every player who appeared on any wave's Tims board, then score the
+    # day's boxscores against that union so late goal scorers stay visible.
+    boards_path = os.path.join(docs_dir, "tims_boards.json")
+    boards = load_tims_boards(boards_path)
+    update_board_day(
+        boards,
+        context["today_str"],
+        skater_scores["tims_groups"],
+        now_et_str,
+    )
+    save_tims_boards(boards, boards_path)
+    tims_scoreboard = build_tims_scoreboard(
+        schedule_info.get("games", []),
+        board_players_for(boards, context["today_str"]),
+        session=session,
+        allow_network=not skip_network,
+    )
+    if tims_scoreboard:
+        print(
+            "Tims Scoreboard -> "
+            + ", ".join(f"{row['player']} ({row['goals']}G)" for row in tims_scoreboard[:5])
+        )
+
     payload = build_dashboard_payload(
         context=context,
         sync_stats=sync_stats,
@@ -657,6 +687,7 @@ def run_inference(
         odds_usage=odds_usage,
         tims_history=history_summary,
         tims_timing_advice=tims_timing_advice,
+        tims_scoreboard=tims_scoreboard,
         availability_summary={
             "injury_source": injury_status,
             "injury_count": len(injury_records),
