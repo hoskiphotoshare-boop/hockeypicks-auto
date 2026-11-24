@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 
-from src.live_scoreboard import build_tims_scoreboard
+from src.live_scoreboard import build_tims_scoreboard, choose_scoreboard_slate
 from src.tims_boards import board_players_for, update_board_day
 
 
@@ -144,6 +144,101 @@ class TestLiveScoreboard(unittest.TestCase):
 
         with mock.patch("src.live_scoreboard._fetch_with_retries", side_effect=fake_fetch):
             self.assertEqual(build_tims_scoreboard(self._games(), self._board()), [])
+
+    def test_date_str_selects_games_that_are_not_is_today(self):
+        previous = [
+            {
+                "id": 201,
+                "date": "2026-11-21",
+                "is_today": False,
+                "away": "CAR",
+                "home": "NYR",
+                "start_time_utc": "2026-11-21T17:30:00Z",
+                "start_time_et": "12:30 PM ET",
+                "game_state": "FINAL",
+            }
+        ]
+        today = [
+            {
+                "id": 301,
+                "date": "2026-11-22",
+                "is_today": True,
+                "away": "BUF",
+                "home": "TBL",
+                "start_time_utc": "2026-11-22T22:00:00Z",
+                "start_time_et": "5:00 PM ET",
+                "game_state": "FUT",
+            }
+        ]
+        boxes = {
+            201: _box([("S. Aho", 2)]),
+            301: _box([("T. Thompson", 1)]),
+        }
+
+        def fake_fetch(_session, url, **_kwargs):
+            return _FakeResponse(boxes[int(url.split("/gamecenter/")[1].split("/")[0])])
+
+        with mock.patch("src.live_scoreboard._fetch_with_retries", side_effect=fake_fetch):
+            rows = build_tims_scoreboard(
+                previous + today, self._board(), date_str="2026-11-21"
+            )
+
+        self.assertEqual([row["player"] for row in rows], ["Sebastian Aho"])
+        self.assertEqual(rows[0]["game_state"], "FINAL")
+        self.assertEqual(rows[0]["wave_et"], "12:30 PM ET")
+
+
+class TestChooseScoreboardSlate(unittest.TestCase):
+    @staticmethod
+    def _game(state: str, date: str) -> dict:
+        return {"id": 1, "date": date, "game_state": state}
+
+    def test_stays_on_today_once_any_today_game_started(self):
+        slate, previous = choose_scoreboard_slate(
+            [self._game("FUT", "2026-11-22"), self._game("LIVE", "2026-11-22")],
+            [self._game("FINAL", "2026-11-21")],
+        )
+        self.assertFalse(previous)
+        self.assertEqual([g["game_state"] for g in slate], ["FUT", "LIVE"])
+
+    def test_carries_previous_while_today_has_not_started(self):
+        previous_games = [self._game("FINAL", "2026-11-21")]
+        slate, previous = choose_scoreboard_slate(
+            [self._game("FUT", "2026-11-22")], previous_games
+        )
+        self.assertTrue(previous)
+        self.assertEqual(slate, previous_games)
+
+    def test_carries_previous_when_today_has_no_games(self):
+        previous_games = [self._game("OFF", "2026-11-21")]
+        slate, previous = choose_scoreboard_slate([], previous_games)
+        self.assertTrue(previous)
+        self.assertEqual(slate, previous_games)
+
+    def test_today_when_previous_has_no_games(self):
+        today = [self._game("FUT", "2026-11-22")]
+        slate, previous = choose_scoreboard_slate(today, [])
+        self.assertFalse(previous)
+        self.assertEqual(slate, today)
+
+    def test_today_when_today_game_already_final(self):
+        today = [self._game("FINAL", "2026-11-22")]
+        slate, previous = choose_scoreboard_slate(
+            today, [self._game("FINAL", "2026-11-21")]
+        )
+        self.assertFalse(previous)
+        self.assertEqual(slate, today)
+
+    def test_treats_pregame_and_unknown_states_as_not_started(self):
+        slate, previous = choose_scoreboard_slate(
+            [self._game("PRE", "2026-11-22"), self._game("", "2026-11-22")],
+            [self._game("FINAL", "2026-11-21")],
+        )
+        self.assertTrue(previous)
+        self.assertEqual([g["game_state"] for g in slate], ["FINAL"])
+
+    def test_handles_none_inputs(self):
+        self.assertEqual(choose_scoreboard_slate(None, None), ([], False))
 
 
 if __name__ == "__main__":

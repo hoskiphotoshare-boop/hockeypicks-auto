@@ -8,7 +8,7 @@ import json
 import os
 import sys
 from contextlib import redirect_stdout
-from datetime import timezone
+from datetime import date, timedelta, timezone
 from typing import Any
 
 import pandas as pd
@@ -54,7 +54,7 @@ from src.team_game_model import (
     train_pairwise_game_model,
 )
 
-from src.live_scoreboard import build_tims_scoreboard
+from src.live_scoreboard import build_tims_scoreboard, choose_scoreboard_slate
 from src.tims_boards import (
     board_players_for,
     load_tims_boards,
@@ -377,6 +377,7 @@ def run_inference(
         schedule_info = {
             "games": [],
             "today_games": [],
+            "previous_games": [],
             "daily_matchups": {},
             "active_game_type": 2,
             "active_mode": "Regular Season",
@@ -658,12 +659,33 @@ def run_inference(
         now_et_str,
     )
     save_tims_boards(boards, boards_path)
+    slate, is_previous_day = choose_scoreboard_slate(
+        schedule_info.get("today_games") or [],
+        schedule_info.get("previous_games") or [],
+    )
+    today_str = str(context["today_str"])
+    yesterday_str = str(context.get("yesterday_str") or "")
+    if not yesterday_str:
+        yesterday_str = (date.fromisoformat(today_str) - timedelta(days=1)).isoformat()
+    scoreboard_date = yesterday_str if is_previous_day else today_str
     tims_scoreboard = build_tims_scoreboard(
-        schedule_info.get("games", []),
-        board_players_for(boards, context["today_str"]),
+        slate,
+        board_players_for(boards, scoreboard_date),
         session=session,
         allow_network=not skip_network,
+        date_str=scoreboard_date,
     )
+    tims_scoreboard_meta = {
+        "date": scoreboard_date,
+        "previous_day": bool(is_previous_day),
+        "all_final": bool(tims_scoreboard)
+        and all(
+            str(row.get("game_state") or "").upper() in ("FINAL", "OFF")
+            for row in tims_scoreboard
+        ),
+        "scorers": len(tims_scoreboard),
+        "goals": sum(int(row.get("goals", 0) or 0) for row in tims_scoreboard),
+    }
     if tims_scoreboard:
         print(
             "Tims Scoreboard -> "
@@ -688,6 +710,7 @@ def run_inference(
         tims_history=history_summary,
         tims_timing_advice=tims_timing_advice,
         tims_scoreboard=tims_scoreboard,
+        tims_scoreboard_meta=tims_scoreboard_meta,
         availability_summary={
             "injury_source": injury_status,
             "injury_count": len(injury_records),

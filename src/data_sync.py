@@ -120,6 +120,7 @@ def get_nhl_season_context(now_et: datetime | None = None) -> dict[str, Any]:
     return {
         "now_et": now_et,
         "today_str": now_et.strftime("%Y-%m-%d"),
+        "yesterday_str": (now_et - timedelta(days=1)).strftime("%Y-%m-%d"),
         "tomorrow_str": (now_et + timedelta(days=1)).strftime("%Y-%m-%d"),
         "start_year": start_year,
         "nhl_season": nhl_season,
@@ -438,8 +439,12 @@ def fetch_nhl_schedule(
 ) -> dict[str, Any]:
     """Fetch today and tomorrow NHL games safely across list-typed gameWeek entries."""
     http = session or create_http_session()
-    dates_to_check = [context["today_str"], context["tomorrow_str"]]
+    yesterday_str = context.get("yesterday_str")
+    today_str = context["today_str"]
+    tomorrow_str = context["tomorrow_str"]
+    dates_to_check = [d for d in (yesterday_str, today_str, tomorrow_str) if d]
     games_out: list[dict[str, Any]] = []
+    previous_games: list[dict[str, Any]] = []
     seen_ids: set[Any] = set()
 
     for date_str in dates_to_check:
@@ -459,25 +464,27 @@ def fetch_nhl_schedule(
                 away = normalize_team_abbrev(game.get("awayTeam", {}).get("abbrev"))
                 home = normalize_team_abbrev(game.get("homeTeam", {}).get("abbrev"))
                 game_type = int(game.get("gameType") or 2)
-                games_out.append(
-                    {
-                        "id": gid,
-                        "date": date_str,
-                        "is_today": date_str == context["today_str"],
-                        "away": away,
-                        "home": home,
-                        "game_type": game_type,
-                        "game_state": game.get("gameState", "FUT"),
-                        "start_time_utc": game.get("startTimeUTC"),
-                        "start_time_et": _format_start_et(game.get("startTimeUTC")),
-                        "away_score": game.get("awayTeam", {}).get("score"),
-                        "home_score": game.get("homeTeam", {}).get("score"),
-                        "series_status": game.get("seriesStatus") or None,
-                    }
-                )
+                entry = {
+                    "id": gid,
+                    "date": date_str,
+                    "is_today": date_str == today_str,
+                    "away": away,
+                    "home": home,
+                    "game_type": game_type,
+                    "game_state": game.get("gameState", "FUT"),
+                    "start_time_utc": game.get("startTimeUTC"),
+                    "start_time_et": _format_start_et(game.get("startTimeUTC")),
+                    "away_score": game.get("awayTeam", {}).get("score"),
+                    "home_score": game.get("homeTeam", {}).get("score"),
+                    "series_status": game.get("seriesStatus") or None,
+                }
+                if date_str == yesterday_str:
+                    previous_games.append(entry)
+                else:
+                    games_out.append(entry)
 
     today_games = [g for g in games_out if g["is_today"]]
-    tomorrow_games = [g for g in games_out if not g["is_today"]]
+    tomorrow_games = [g for g in games_out if g.get("date") == tomorrow_str]
     upcoming_today = [g for g in today_games if g.get("game_state") in ("FUT", "PRE")]
     slate_games = today_games if upcoming_today else (tomorrow_games or today_games or games_out)
 
@@ -494,6 +501,7 @@ def fetch_nhl_schedule(
     return {
         "games": games_out,
         "today_games": today_games,
+        "previous_games": previous_games,
         "daily_matchups": daily_matchups,
         "active_game_type": active_game_type,
         "active_mode": active_mode,

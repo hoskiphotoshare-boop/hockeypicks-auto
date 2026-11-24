@@ -49,20 +49,56 @@ def _wave_map(today_games: list[dict[str, Any]]) -> dict[str, tuple[int, str]]:
     return team_wave
 
 
+def choose_scoreboard_slate(
+    today_games: list[dict[str, Any]] | None,
+    previous_games: list[dict[str, Any]] | None,
+) -> tuple[list[dict[str, Any]], bool]:
+    """Choose which day's slate the Tims scoreboard should display.
+
+    Returns ``(slate_games, is_previous_day)``. If any of today's games is
+    already in a scoring state (LIVE/CRIT/FINAL/OFF) we stay on today. Otherwise,
+    if the previous day still has a game in a scoring state, we keep showing the
+    previous day's slate. On an off-day with no scoring games either way we fall
+    back to today's (possibly empty) slate.
+    """
+    today_list = list(today_games or [])
+    previous_list = list(previous_games or [])
+
+    today_scoring = any(
+        str(g.get("game_state") or "").upper() in SCORING_STATES for g in today_list
+    )
+    if today_scoring:
+        return today_list, False
+
+    previous_scoring = any(
+        str(g.get("game_state") or "").upper() in SCORING_STATES for g in previous_list
+    )
+    if previous_scoring:
+        return previous_list, True
+
+    return today_list, False
+
+
 def build_tims_scoreboard(
     schedule_games: list[dict[str, Any]],
     board_players: list[dict[str, Any]],
     *,
     session: Any | None = None,
     allow_network: bool = True,
+    date_str: str | None = None,
 ) -> list[dict[str, Any]]:
-    """Return today's goal scorers who were on any Tims wave board."""
+    """Return goal scorers who were on any Tims wave board for the chosen slate."""
     if not allow_network or not board_players:
         return []
 
     http = session or create_http_session()
-    today_games = [g for g in (schedule_games or []) if g.get("is_today", True)]
-    team_wave = _wave_map(today_games)
+    if date_str is None:
+        selected_games = [g for g in (schedule_games or []) if g.get("is_today", True)]
+    else:
+        selected_games = [
+            g for g in (schedule_games or []) if str(g.get("date")) == str(date_str)
+        ]
+    team_wave = _wave_map(selected_games)
 
     board_entries: list[dict[str, Any]] = []
     for player in board_players:
@@ -85,7 +121,7 @@ def build_tims_scoreboard(
     scorers: dict[str, dict[str, Any]] = {}
     scoring_games = [
         g
-        for g in today_games
+        for g in selected_games
         if str(g.get("game_state") or "").upper() in SCORING_STATES and int(g.get("id") or 0) > 0
     ]
     for game in scoring_games[:MAX_BOXSCORES]:
