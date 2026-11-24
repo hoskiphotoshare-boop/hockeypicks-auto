@@ -29,6 +29,68 @@ def _injury(player, team="TOR", position="C", status="Out", is_out=True, is_dtd=
     }
 
 
+class TestStarAvailability(unittest.TestCase):
+    """Top-3 star damping, including day-to-day (partial availability) weighting."""
+
+    def _df(self):
+        rows = [{"name": f"F{i}", "team": "TOR", "position": "C", "base_pred": 1.0 - i * 0.05} for i in range(10)]
+        rows += [{"name": f"D{i}", "team": "TOR", "position": "D", "base_pred": 0.6 - i * 0.05} for i in range(4)]
+        return pd.DataFrame(rows)
+
+    def _apply(self, injuries):
+        profiles = {"TOR": dict(_base_profile())}
+        apply_live_availability_to_profiles(
+            profiles=profiles,
+            starting_goalies={},
+            injury_records=injuries,
+            skater_baseline_df=self._df(),
+        )
+        return profiles["TOR"]
+
+    def test_top3_out_damps_star_features(self):
+        st = self._apply([_injury("F0")])
+        # orig top3 = 1.0 + 0.95 + 0.90 = 2.85; replacements F3..F5 = 2.70
+        # ratio 2.70/2.85 -> eff 0.5 + 0.5*ratio
+        eff = 0.5 + 0.5 * (2.70 / 2.85)
+        self.assertAlmostEqual(st["Top3_Points_per_game"], 2.5 * eff, places=4)
+        self.assertAlmostEqual(st["Top3_xGoals_per_game"], 1.1 * eff, places=4)
+
+    def test_top3_dtd_is_partial_and_less_severe_than_out(self):
+        dtd = self._apply([_injury("F0", status="DTD", is_out=False, is_dtd=True)])
+        out = self._apply([_injury("F0")])
+        # DTD blends "plays" (ratio 1.0) and "sits" (ratio 2.70/2.85).
+        ratio_sit = 2.70 / 2.85
+        eff_dtd = 0.5 + 0.5 * (0.5 * (1.0 + ratio_sit))
+        eff_out = 0.5 + 0.5 * ratio_sit
+        self.assertAlmostEqual(dtd["Top3_Points_per_game"], 2.5 * eff_dtd, places=4)
+        self.assertGreater(dtd["Top3_Points_per_game"], out["Top3_Points_per_game"])
+        self.assertLess(dtd["Top3_Points_per_game"], 2.5)
+
+    def test_out_plus_dtd_combines(self):
+        st = self._apply([_injury("F0"), _injury("F1", status="DTD", is_out=False, is_dtd=True)])
+        ratio_hard = 2.70 / 2.85          # F0 out
+        ratio_both = 2.55 / 2.85          # F0 + F1 out
+        eff = 0.5 + 0.5 * (0.5 * (ratio_hard + ratio_both))
+        self.assertAlmostEqual(st["Top3_Points_per_game"], 2.5 * eff, places=4)
+
+    def test_out_wins_over_dtd_for_same_player(self):
+        both = self._apply([_injury("F0", status="Out", is_out=True, is_dtd=True)])
+        out_only = self._apply([_injury("F0")])
+        self.assertAlmostEqual(both["Top3_Points_per_game"], out_only["Top3_Points_per_game"], places=6)
+
+    def test_dtd_outside_top3_leaves_star_features_untouched(self):
+        st = self._apply([_injury("F3", status="DTD", is_out=False, is_dtd=True)])
+        self.assertEqual(st["Top3_Points_per_game"], 2.5)
+        self.assertEqual(st["Top3_xGoals_per_game"], 1.1)
+        # Mid-tier still sees F3 (outside the base_pred top-3).
+        self.assertNotEqual(st["Prior_xGoalsPct"], 0.52)
+
+    def test_no_injuries_leaves_star_features_untouched(self):
+        st = self._apply([])
+        self.assertEqual(st["Top3_Points_per_game"], 2.5)
+        self.assertEqual(st["Top3_xGoals_per_game"], 1.1)
+
+
 class TestAvailabilityMidTier(unittest.TestCase):
     def test_flag_can_disable_mid_tier_adjustment(self):
         import src.availability as availability

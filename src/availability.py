@@ -472,32 +472,50 @@ def apply_live_availability_to_profiles(
                     "sv_pct": round(float(g_info.get("sv_pct") or st.get("Starter_SavePct", 0.900)), 3),
                 }
 
-            # 2. Injured Top-3 Star-Power Damping (healthy Top-3 vs season Top-3, clamped [0.65, 1.0])
+            # 2. Injured Top-3 star-power damping.
+            #    Hard outs remove the player and promote the next healthy skater.
+            #    Day-to-day players are modeled as 50% available by blending the
+            #    "plays" and "sits" ratios, so DTD is always less severe than out.
+            #    Ratio is clamped [0.65, 1.0].
             top_sk = skater_top_by_team.get(team, [])
-            if len(top_sk) >= 3 and out_skaters:
+            if len(top_sk) >= 3 and (out_skaters or dtd_skaters):
                 orig_top3_sum = sum(x["val"] for x in top_sk[:3])
-                healthy_sk = [
-                    x
-                    for x in top_sk
-                    if not (
-                        (
-                            inj := injury_matcher.match(
-                                name=x["name"],
-                                team=team,
-                                position=x["position"],
-                                require_same_team=True,
-                                require_compatible_pos=True,
-                            )
-                        )
-                        and inj.get("is_out")
+                hard_keys: set[str] = set()
+                soft_keys: set[str] = set()
+                for x in top_sk:
+                    inj = injury_matcher.match(
+                        name=x["name"],
+                        team=team,
+                        position=x["position"],
+                        require_same_team=True,
+                        require_compatible_pos=True,
                     )
-                ]
-                if orig_top3_sum > 1e-6 and len(healthy_sk) < len(top_sk):
-                    new_top3_sum = sum(x["val"] for x in healthy_sk[:3])
-                    ratio = float(min(1.0, max(0.65, new_top3_sum / orig_top3_sum)))
-                    if ratio < 0.999:
+                    if inj is None:
+                        continue
+                    key = clean_name(x.get("name", ""))
+                    if inj.get("is_out"):
+                        hard_keys.add(key)
+                    elif inj.get("is_dtd"):
+                        soft_keys.add(key)
+                soft_keys -= hard_keys
+
+                def _top3_ratio(excluded: set[str]) -> float:
+                    healthy = [
+                        x
+                        for x in top_sk
+                        if clean_name(x.get("name", "")) not in excluded
+                    ]
+                    return sum(x["val"] for x in healthy[:3]) / orig_top3_sum
+
+                if orig_top3_sum > 1e-6 and (hard_keys or soft_keys):
+                    ratio_hard = min(1.0, max(0.65, _top3_ratio(hard_keys)))
+                    ratio_both = min(1.0, max(0.65, _top3_ratio(hard_keys | soft_keys)))
+                    # DTD: expected value of a player who may play (full) or sit
+                    # (replacement), blended 50/50. No DTD -> unchanged behavior.
+                    ratio_eff = 0.5 * (ratio_hard + ratio_both) if soft_keys else ratio_hard
+                    eff_scale = 0.5 + 0.5 * ratio_eff
+                    if eff_scale < 0.999:
                         # Blend 50% of missing star drop with team baseline (teammates step into PP1/top line)
-                        eff_scale = 0.5 + 0.5 * ratio
                         st["Top3_Points_per_game"] = float(st.get("Top3_Points_per_game", 0.0)) * eff_scale
                         st["Top3_xGoals_per_game"] = float(st.get("Top3_xGoals_per_game", 0.0)) * eff_scale
 
