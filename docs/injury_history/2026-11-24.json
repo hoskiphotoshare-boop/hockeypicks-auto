@@ -1,0 +1,1079 @@
+{
+  "date": "2026-11-24",
+  "captured_utc": "2026-11-24T21:20:27.143273+00:00",
+  "source": "espn-cbs",
+  "count": 119,
+  "records": [
+    {
+      "player": "Leo Carlsson",
+      "team": "ANA",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Beckett Sennecke",
+      "team": "ANA",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Sennecke (upper body) was placed on injured reserve Saturday."
+    },
+    {
+      "player": "Ryan Poehling",
+      "team": "ANA",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Poehling (knee) is on the Ducks' current road trip and has resumed skating, Derek Lee of The Hockey News reports Thursday."
+    },
+    {
+      "player": "A.J. Greer",
+      "team": "ANA",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Greer (upper body) was placed on injured reserve Monday."
+    },
+    {
+      "player": "James Hagens",
+      "team": "BOS",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Hagens (back) is wearing a non-contact sweater ahead of Tuesday's practice, Steve Conroy of the Boston Herald reports."
+    },
+    {
+      "player": "Tyson Kozak",
+      "team": "BUF",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Kozak (undisclosed) did not practice Tuesday and is considered day-to-day, per Paul Hamilton of WGR Sports Radio 550."
+    },
+    {
+      "player": "Konsta Helenius",
+      "team": "BUF",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Justin Danforth",
+      "team": "BUF",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Danforth (upper body) was placed on injured reserve Thursday, per the NHL media site."
+    },
+    {
+      "player": "Matt Grzelcyk",
+      "team": "BUF",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Grzelcyk (lower body) suffered a \"flare-up\" and could be out for at least \"a few days,\" head coach Lindy Ruff told Rachel Lenzi of The Buffalo News on Tuesday."
+    },
+    {
+      "player": "Morgan Frost",
+      "team": "CGY",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Frost sustained an upper-body injury during Monday's 2-1 loss to the Senators, and head coach Ryan Huska did not have an update on the center's status after the game, Flames TV host Brendan Parker reports."
+    },
+    {
+      "player": "Martin Pospisil",
+      "team": "CGY",
+      "position": "C",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Pospisil (upper body) didn't travel with his teammates for the start of Calgary's five-game road trip, per Eric Francis of Sportsnet on Monday."
+    },
+    {
+      "player": "Jonathan Huberdeau",
+      "team": "CGY",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Huberdeau (hip) had three assists in AHL Calgary's 4-3 win over Coachella Valley on Wednesday."
+    },
+    {
+      "player": "Kevin Bahl",
+      "team": "CGY",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Bahl will undergo surgery for a ruptured Achilles tendon and won't play again in the 2026-27 season, the Flames announced Sunday."
+    },
+    {
+      "player": "Nikolaj Ehlers",
+      "team": "CAR",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
+      "player": "Connor Bedard",
+      "team": "CHI",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Bedard underwent successful shoulder surgery Monday and is expected to make a full recovery in approximately four months, the Blackhawks announced."
+    },
+    {
+      "player": "Anton Frondell",
+      "team": "CHI",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Wyatt Kaiser",
+      "team": "CHI",
+      "position": "D",
+      "status": "Susp",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Kaiser was suspended for three games by the NHL Department of Player Safety on Sunday for an illegal check to the head against Calgary's Martin Pospisil (upper body) on Saturday."
+    },
+    {
+      "player": "Bowen Byram",
+      "team": "CHI",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Byram (upper body) didn't accompany his teammates on Chicago's three-game road trip, per Mark Lazerus of The Athletic on Saturday."
+    },
+    {
+      "player": "Cale Makar",
+      "team": "COL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Makar (lower body) was on the ice in a regular sweater ahead of Wednesday's clash with Montreal, Evan Rawal of the Denver Gazette reports."
+    },
+    {
+      "player": "Gavin Brindley",
+      "team": "COL",
+      "position": "C",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
+      "player": "Nathan MacKinnon",
+      "team": "COL",
+      "position": "C",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "MacKinnon (lower body) has been evaluated by a specialist and is expected to miss the next 12 weeks, Aarif Deen of Colorado Hockey Now reports Saturday."
+    },
+    {
+      "player": "Josh Manson",
+      "team": "COL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Zachary L'Heureux",
+      "team": "COL",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-lt"
+    },
+    {
+      "player": "Sean Monahan",
+      "team": "CBJ",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Mathieu Olivier",
+      "team": "CBJ",
+      "position": "RW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Tyler Myers",
+      "team": "DAL",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Myers (upper body) has a chance to return in Wednesday's home clash against the Predators, per Robert Tiffin of NHL.com."
+    },
+    {
+      "player": "Oskar Back",
+      "team": "DAL",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Back (finger) is expected to return within the next week, Robert Tiffin of NHL.com reports Thursday."
+    },
+    {
+      "player": "Kyle Capobianco",
+      "team": "DAL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Capobianco (leg) was moved to long-term injured reserve Saturday."
+    },
+    {
+      "player": "Lian Bichsel",
+      "team": "DAL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Bichsel (lower body) was placed on injured reserve Saturday."
+    },
+    {
+      "player": "Sam Montembeault",
+      "team": "DET",
+      "position": "G",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Montembeault (lower body), Kirby Dach, Michael Hage, a 2027 first-round pick, a 2029 first-round pick, a 2027 second-round pick and a 2028 fourth-round pick were traded to the Red Wings from the Canadiens on Sunday in exchange for Dylan Larkin, a 2028 second-round pick and a 2027 third-round pick."
+    },
+    {
+      "player": "William Wallinder",
+      "team": "DET",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Simon Edvinsson",
+      "team": "DET",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Edvinsson (contract dispute) is on the Red Wings' injured, non-roster list, per the NHL media site Wednesday."
+    },
+    {
+      "player": "Zach Hyman",
+      "team": "EDM",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Hyman (migraine) won't play against Vegas on Tuesday, per Oilers play-by-play announcer Jack Michaels."
+    },
+    {
+      "player": "Alec Regula",
+      "team": "EDM",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Regula (undisclosed) was designated for long-term injured reserve Thursday."
+    },
+    {
+      "player": "Matt Savoie",
+      "team": "EDM",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Savoie (lower body) was shifted to long-term injured reserve Thursday."
+    },
+    {
+      "player": "Frederik Andersen",
+      "team": "EDM",
+      "position": "G",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Andersen (knee) isn't expected back until \"maybe\" December, head coach Mike Babcock told NHL.com on Tuesday."
+    },
+    {
+      "player": "Mattias Janmark",
+      "team": "EDM",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Janmark (undisclosed) does not have a timetable for his return from injury."
+    },
+    {
+      "player": "Brad Marchand",
+      "team": "FLA",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Marchand (knee) is close to returning to the lineup, but he won't play against Buffalo on Saturday, per Jameson Olive of the Panthers' official site."
+    },
+    {
+      "player": "Aleksander Barkov",
+      "team": "FLA",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Barkov (knee) won't play against Buffalo on Saturday, but he could return within Florida's next three games, Jameson Olive of the Panthers' official site reports."
+    },
+    {
+      "player": "Jonah Gadjovich",
+      "team": "FLA",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Gadjovich (neck) took the ice Thursday in a non-contact sweater, George Richards of Florida Hockey Now reports."
+    },
+    {
+      "player": "Erik Gustafsson",
+      "team": "LAK",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Gustafsson (upper body) was placed on injured reserve Monday, per the NHL media site."
+    },
+    {
+      "player": "Jakub Dvorak",
+      "team": "LAK",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-nr"
+    },
+    {
+      "player": "Quinn Hughes",
+      "team": "MIN",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Olli Maatta",
+      "team": "MIN",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Mike Matheson",
+      "team": "MTL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Matheson (lower body) was placed on long-term injured reserve Tuesday, Renaud Lavoie of TVA Sports reports."
+    },
+    {
+      "player": "Ivan Demidov",
+      "team": "MTL",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "General manager Kent Hughes said Monday that Demidov (ankle) will not travel with the team for Wednesday's game in Colorado, Renaud Lavoie of TVA Sports reports."
+    },
+    {
+      "player": "Josh Anderson",
+      "team": "MTL",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Anderson (lower body) will be out for approximately 3-4 weeks, per Renaud Lavoie of TVA Sports on Sunday."
+    },
+    {
+      "player": "Chris Kreider",
+      "team": "MTL",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Bryce Pickford",
+      "team": "MTL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-nr"
+    },
+    {
+      "player": "Lucas Condotta",
+      "team": "MTL",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-nr"
+    },
+    {
+      "player": "Anthony Mantha",
+      "team": "NJD",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Mantha (neck) is expected to miss about one month after undergoing surgery, per Kristy Flannery of The Hockey News."
+    },
+    {
+      "player": "Johnathan Kovacevic",
+      "team": "NJD",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Kovacevic (ankle) is expected to be sidelined for 4-6 weeks, per Kristy Flannery of The Hockey News."
+    },
+    {
+      "player": "Seamus Casey",
+      "team": "NJD",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Casey (knee) was moved to long-term injured reserve on Friday, per PuckPedia."
+    },
+    {
+      "player": "Kyle Palmieri",
+      "team": "NYI",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Ryan Pulock",
+      "team": "NYI",
+      "position": "D",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Pulock (shoulder) is expected to miss 1-2 weeks, Andrew Gross of Newsday reports Tuesday."
+    },
+    {
+      "player": "Alexander Romanov",
+      "team": "NYI",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Pavel Dorofeyev",
+      "team": "NYR",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Dorofeyev (lower body) will join the Rangers for their two-game road trip, Mollie Walker of the New York Post reports Tuesday."
+    },
+    {
+      "player": "Oliver Bjorkstrand",
+      "team": "NYR",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Bjorkstrand (upper body) is expected to be sidelined for 2-3 months, Peter Baugh of The Athletic reports Saturday."
+    },
+    {
+      "player": "Alberts Smits",
+      "team": "NYR",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Smits (upper body) is expected to miss 2-3 months, Peter Baugh of The Athletic reported Saturday."
+    },
+    {
+      "player": "Joe Veleno",
+      "team": "NYR",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Veleno (lower body) skated on his own before Friday's practice session, Colin Stephenson of Newsday reports."
+    },
+    {
+      "player": "Igor Shesterkin",
+      "team": "NYR",
+      "position": "G",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Shesterkin will require surgery and a lengthy rehab process to address his season-ending right knee injury, Vince Z. Mercogliano of The Athletic reports Sunday."
+    },
+    {
+      "player": "Aidan Thompson",
+      "team": "NYR",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-nr"
+    },
+    {
+      "player": "Adam Sykora",
+      "team": "NYR",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Hayden Hodgson",
+      "team": "OTT",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Andre Burakovsky",
+      "team": "OTT",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Burakovsky (lower body) was on the ice Friday doing some individual drills, Bruce Garrioch of Postmedia reports."
+    },
+    {
+      "player": "Warren Foegele",
+      "team": "OTT",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Head coach Travis Green said Monday that Foegele (knee) hasn't yet resumed skating, Bruce Garrioch of Postmedia reports."
+    },
+    {
+      "player": "William Eklund",
+      "team": "OTT",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Eklund had surgery to repair a torn ankle tendon and will be out 10-12 weeks, Bruce Garrioch of Postmedia reports Thursday."
+    },
+    {
+      "player": "Nikita Grebenkin",
+      "team": "PHI",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Grebenkin (back) underwent successful surgery and is expected to miss at least four months."
+    },
+    {
+      "player": "Evgeni Malkin",
+      "team": "PIT",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Declan Carlile",
+      "team": "PIT",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Bryan Rust",
+      "team": "PIT",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Rust (lower body) is skating in a non-contact sweater Friday, Seth Rorabaugh of Tribune-Review Sports reports."
+    },
+    {
+      "player": "Nick Robertson",
+      "team": "PIT",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Elmer Soderblom",
+      "team": "PIT",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Soderblom (upper body) is week-to-week, per Penguins PR on Monday."
+    },
+    {
+      "player": "Ryan Graves",
+      "team": "PIT",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Graves (lower body) is out indefinitely and was placed on injured reserve Sunday."
+    },
+    {
+      "player": "Jacob Trouba",
+      "team": "SJS",
+      "position": "D",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
+      "player": "Kiefer Sherwood",
+      "team": "SJS",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Sherwood (upper body) was placed on injured reserve Monday."
+    },
+    {
+      "player": "Igor Chernyshov",
+      "team": "SJS",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Head coach Ryan Warsofsky said Sunday that Chernyshov (upper body) is not close to returning to game action, per Curtis Pashelka of The San Jose Mercury News."
+    },
+    {
+      "player": "Quentin Musty",
+      "team": "SJS",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Head coach Ryan Warsofsky said Sunday that Musty (upper body) isn't close to returning, Curtis Pashelka of The San Jose Mercury News reports."
+    },
+    {
+      "player": "Kyle Keyser",
+      "team": "SJS",
+      "position": "G",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Keyser (upper body) was placed on non-roster injured reserve by the Sharks on Monday, Curtis Pashelka of The San Jose Mercury News reports."
+    },
+    {
+      "player": "Jake O'Brien",
+      "team": "SEA",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "The Kraken indicated Thursday that O'Brien (lower body) remains week-to-week, Mike Benton of the Kraken Audio Network reports."
+    },
+    {
+      "player": "Jared McCann",
+      "team": "SEA",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "McCann (lower body) will be out for approximately 10 weeks, the team announced Sunday."
+    },
+    {
+      "player": "Connor McMichael",
+      "team": "STL",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "McMichael (lower body) isn't expected to play against the Islanders on Wednesday, according to Lou Korac of NHL.com."
+    },
+    {
+      "player": "Brandon Carlo",
+      "team": "STL",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Pavel Buchnevich",
+      "team": "STL",
+      "position": "LW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Jimmy Snuggerud",
+      "team": "STL",
+      "position": "RW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Snuggerud (undisclosed) is questionable for Wednesday's game against the Islanders, per Lou Korac of NHL.com."
+    },
+    {
+      "player": "Torey Krug",
+      "team": "STL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Krug (ankle) was placed on long-term injured reserve by the Blues on Monday, per PuckPedia."
+    },
+    {
+      "player": "Dillon Dube",
+      "team": "STL",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Tyler Tucker",
+      "team": "STL",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Tucker had arthroscopic knee surgery and will be re-assessed in six weeks, the team announced Wednesday."
+    },
+    {
+      "player": "Conor Geekie",
+      "team": "TBL",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Geekie (shoulder) underwent surgery Monday and is expected to miss 4-5 months."
+    },
+    {
+      "player": "Zemgus Girgensons",
+      "team": "TBL",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Brandon Hagel",
+      "team": "TBL",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Hagel (lower body) was placed on injured reserve by the Lightning on Thursday, retroactive to Nov. 15, Eduardo A. Encina of the Tampa Bay Times reports."
+    },
+    {
+      "player": "Jack Roslovic",
+      "team": "TOR",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Colton Sissons",
+      "team": "TOR",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Sissons (lower body) is day-to-day, per David Alter of The Hockey News on Sunday."
+    },
+    {
+      "player": "Kirill Marchenko",
+      "team": "TOR",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Marchenko (lower body) is day-to-day, according to David Alter of The Hockey News on Saturday."
+    },
+    {
+      "player": "Cole McWard",
+      "team": "TOR",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "McWard (lower body) is considered day-to-day, per David Alter of The Hockey News on Saturday."
+    },
+    {
+      "player": "Nick Blankenburg",
+      "team": "TOR",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Blankenburg (upper body) is day-to-day, according to David Alter of The Hockey News on Saturday."
+    },
+    {
+      "player": "Miles Wood",
+      "team": "TOR",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Wood (undisclosed) was transferred to long-term injured reserve Wednesday, David Alter of The Hockey News reports."
+    },
+    {
+      "player": "Marshall Rifai",
+      "team": "TOR",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Max Domi",
+      "team": "TOR",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Domi (back) was transferred from the non-roster list to long-term injured reserve Wednesday, per PuckPedia."
+    },
+    {
+      "player": "Cade Webber",
+      "team": "TOR",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-nr"
+    },
+    {
+      "player": "Elvis Merzlikins",
+      "team": "TOR",
+      "position": "G",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Merzlikins is expected to miss 4-6 months to begin the 2026-27 regular season while recovering from a shoulder injury, per Luke Fox of Sportsnet."
+    },
+    {
+      "player": "William Villeneuve",
+      "team": "TOR",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-nr"
+    },
+    {
+      "player": "John Marino",
+      "team": "UTA",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Marino (upper body) likely won't return during Utah's four-game road trip, per Brogan Houston of the Deseret News on Monday."
+    },
+    {
+      "player": "Michael Carcone",
+      "team": "UTA",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Carcone (upper body) will be out of action for 3-4 months, Catherine Bogart of the Mammoth's official site reports Monday."
+    },
+    {
+      "player": "Nick Schmaltz",
+      "team": "UTA",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Nate Schmidt",
+      "team": "UTA",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "The Mammoth announced Thursday that Schmidt (upper body) is considered week-to-week, Cole Bagley of KSL Sports reports."
+    },
+    {
+      "player": "Maveric Lamoureux",
+      "team": "UTA",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Elias Pettersson",
+      "team": "VAN",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Brendan Gallagher",
+      "team": "VAN",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Gallagher (lower body) was placed on injured reserve Saturday."
+    },
+    {
+      "player": "Guillaume Brisebois",
+      "team": "VAN",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Mackenzie MacEachern",
+      "team": "VAN",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir-nr"
+    },
+    {
+      "player": "Thatcher Demko",
+      "team": "VAN",
+      "position": "G",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Co-president of hockey operations Henrik Sedin said Monday that he hopes Demko (hip) will be ready to return before Christmas, Kevin Woodley of NHL.com reports."
+    },
+    {
+      "player": "Vincent Desharnais",
+      "team": "WSH",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Desharnais (appendectomy) was a full participant in Tuesday's practice and has been upgraded to day-to-day, Tarik El-Bashir of Monumental Sports Network reports."
+    },
+    {
+      "player": "Rasmus Sandin",
+      "team": "WSH",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Sandin (knee) has been cleared to start taking contact, Sammi Silber of The District Standard reports Tuesday."
+    },
+    {
+      "player": "Jordan Kyrou",
+      "team": "WSH",
+      "position": "RW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
+      "player": "Dylan DeMelo",
+      "team": "WPG",
+      "position": "D",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "DeMelo (lower body) is expected to be out of action for 4-6 weeks, Mitchell Clinton of the Jets' official site reports Thursday."
+    },
+    {
+      "player": "Isak Rosen",
+      "team": "WPG",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Vladislav Namestnikov",
+      "team": "WPG",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Nick Bjugstad",
+      "team": "WPG",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Bjugstad (pectoral), Dawson Mercer, Nico Daws, Alexander Command and a pair of draft picks were traded to the Jets from the Devils on Friday in exchange for Connor Hellebuyck."
+    }
+  ]
+}
