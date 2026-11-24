@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24",
-  "captured_utc": "2026-11-24T21:31:21.740871+00:00",
+  "captured_utc": "2026-11-24T23:31:52.218578+00:00",
   "teams": {
     "ANA": [
       {
@@ -3694,6 +3694,12 @@
         "team": "STL"
       },
       {
+        "id": 8484230,
+        "name": "Otto Stenberg",
+        "position": "C",
+        "team": "STL"
+      },
+      {
         "id": 8480459,
         "name": "Pius Suter",
         "position": "C",
@@ -3738,6 +3744,12 @@
       {
         "id": 8475764,
         "name": "Cam Fowler",
+        "position": "D",
+        "team": "STL"
+      },
+      {
+        "id": 8484790,
+        "name": "Adam Jiricek",
         "position": "D",
         "team": "STL"
       },

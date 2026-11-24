@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24",
-  "captured_utc": "2026-11-24T21:31:20.470780+00:00",
+  "captured_utc": "2026-11-24T23:31:50.769310+00:00",
   "source": "espn-cbs",
   "count": 120,
   "records": [
@@ -212,18 +212,18 @@
       "note": "ir-lt"
     },
     {
-      "player": "Sean Monahan",
-      "team": "CBJ",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
       "player": "Mathieu Olivier",
       "team": "CBJ",
       "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Sean Monahan",
+      "team": "CBJ",
+      "position": "C",
       "status": "DTD",
       "is_out": false,
       "is_dtd": true,
@@ -746,19 +746,19 @@
       "player": "Connor McMichael",
       "team": "STL",
       "position": "LW",
-      "status": "Out",
+      "status": "IR",
       "is_out": true,
       "is_dtd": false,
-      "note": "McMichael (lower body) isn't expected to play against the Islanders on Wednesday, according to Lou Korac of NHL.com."
+      "note": "ir"
     },
     {
       "player": "Brandon Carlo",
       "team": "STL",
       "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
     },
     {
       "player": "Pavel Buchnevich",
