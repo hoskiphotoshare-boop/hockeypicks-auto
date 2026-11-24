@@ -16,6 +16,7 @@ import pandas as pd
 from src.data_sync import (
     build_player_value_table,
     build_roster_aware_star_table,
+    build_roster_membership_moves,
     create_http_session,
     fetch_live_club_skaters,
     fetch_nhl_schedule,
@@ -618,6 +619,26 @@ def run_inference(
             if "Causal_Elo" in ctx:
                 profiles[team]["Elo"] = float(ctx["Causal_Elo"])
 
+    roster_names: dict[str, Any] = {"teams": {}}
+    if rosters and player_values:
+        try:
+            _membership = build_roster_membership_moves(
+                rosters,
+                archive_dir,
+                max(mp_years) if mp_years else int(context.get("start_year") or 2026),
+                player_values,
+                injury_records,
+            )
+            for _t, _info in _membership.items():
+                roster_names["teams"][_t] = _info
+        except Exception as exc:  # pragma: no cover
+            print(f"Warning: roster membership diff failed: {exc}")
+    for _t, _info in ((roster_moves or {}).get("teams") or {}).items():
+        roster_names["teams"][_t] = {
+            "in": list(_info.get("in") or [])[:5],
+            "out": list(_info.get("out") or [])[:5],
+        }
+
     roster_deltas = apply_roster_stars_to_profiles(profiles, roster_stars) or {}
     for _team, _delta in roster_deltas.items():
         if abs(float(_delta)) >= 0.2:
@@ -674,7 +695,7 @@ def run_inference(
         odds_meta_out=odds_meta_out,
         profiles_unadjusted=profiles_unadjusted,
         team_churn=team_churn,
-        roster_moves=roster_moves,
+        roster_moves=roster_names,
     )
 
     if effective_odds_key and odds_meta_out.get("api_ok"):
