@@ -8,12 +8,14 @@ import json
 import os
 import sys
 from contextlib import redirect_stdout
-from datetime import date, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 import pandas as pd
 
 from src.data_sync import (
+    build_player_value_table,
+    build_roster_aware_star_table,
     create_http_session,
     fetch_live_club_skaters,
     fetch_nhl_schedule,
@@ -21,6 +23,15 @@ from src.data_sync import (
     get_nhl_season_context,
     sync_game_logs,
     sync_moneypuck_data,
+)
+from src.transactions import (
+    compute_team_churn,
+    diff_rosters,
+    fetch_espn_transactions,
+    fetch_team_rosters,
+    load_latest_roster_history,
+    load_roster_snapshot,
+    write_roster_history,
 )
 from src.report_builder import (
     build_dashboard_payload,
@@ -43,6 +54,7 @@ from src.availability import (
     write_injury_history,
 )
 from src.team_game_model import (
+    apply_roster_stars_to_profiles,
     build_live_team_profiles,
     build_team_star_goalie_history,
     compute_power_rankings_and_defense,
@@ -184,6 +196,50 @@ def run_training(
         f"(New: {log_stats['downloaded']} | Cached: {log_stats['cached']})"
     )
 
+    mp_years = [
+        y for y in context.get("historical_mp_years", [])
+        if os.path.exists(os.path.join(archive_dir, f"{y}_regular_skaters.csv"))
+    ]
+    player_values = build_player_value_table(archive_dir, mp_years) if mp_years else {}
+
+    rosters = None
+    recent_trades: list[dict[str, Any]] = []
+    roster_moves: dict[str, Any] = {}
+    if not skip_network and session is not None:
+        _snap = None
+        try:
+            _snap = load_roster_snapshot(docs_dir, context["today_str"])
+            rosters = (_snap or {}).get("teams") or None
+        except Exception:
+            rosters = None
+        if rosters is None:
+            try:
+                rosters = fetch_team_rosters(context["nhl_season"], session=session)
+            except Exception as exc:  # pragma: no cover
+                print(f"Warning: roster fetch failed: {exc}")
+                rosters = None
+            if rosters and not _snap:
+                try:
+                    write_roster_history(rosters, docs_dir, context["today_str"], captured_utc=datetime.now(timezone.utc).isoformat())
+                except Exception as exc:  # pragma: no cover
+                    print(f"Warning: roster archive write failed: {exc}")
+        try:
+            all_tx = fetch_espn_transactions(pages=2, session=session)
+            today_date = date.fromisoformat(context["today_str"])
+            for tx in all_tx:
+                if not tx.get("is_trade"):
+                    continue
+                try:
+                    tx_date = date.fromisoformat(str(tx.get("date", ""))[:10])
+                except ValueError:
+                    continue
+                if 0 <= (today_date - tx_date).days <= 7:
+                    recent_trades.append(tx)
+        except Exception as exc:  # pragma: no cover
+            print(f"Warning: transaction fetch failed: {exc}")
+
+    roster_stars = build_roster_aware_star_table(rosters, player_values) if (rosters and player_values) else None
+
     print("\n[Train 3/4] Training Pairwise Team Matchup Model & Calibrating Temperature T...")
     df_team_hist, df_stars, df_goalies = build_team_star_goalie_history(
         archive_dir, context["historical_mp_years"]
@@ -207,6 +263,7 @@ def run_training(
         latest_team_context=latest_team_context,
         base_features=pairwise_bundle["base_features"],
         playoff_teams_df=None,
+        roster_stars=roster_stars,
     )
     profiles_playoffs = None
     pt_path = os.path.join(archive_dir, f"{active_mp_year}_playoffs_teams.csv")
@@ -219,6 +276,7 @@ def run_training(
             latest_team_context=latest_team_context,
             base_features=pairwise_bundle["base_features"],
             playoff_teams_df=pd.read_csv(pt_path),
+            roster_stars=roster_stars,
         )
 
     active_goalies_by_team = load_active_goalie_lookup(archive_dir, active_mp_year)
@@ -324,6 +382,10 @@ def run_training(
         "active_goalies": active_goalies_by_team,
         "df_pool": df_pool,
         "baseline_label": baseline_label,
+        "roster_stars": roster_stars,
+        "player_values": player_values,
+        "roster_moves": roster_moves,
+        "recent_trades": recent_trades,
     }
 
 
@@ -397,6 +459,71 @@ def run_inference(
             write_injury_history(injury_records, docs_dir, context["today_str"])
         except Exception as exc:  # pragma: no cover
             print(f"Warning: injury archive write failed: {exc}")
+
+    archive_dir = os.path.join(data_dir, "moneypuck")
+    mp_years = [
+        y for y in context.get("historical_mp_years", [])
+        if os.path.exists(os.path.join(archive_dir, f"{y}_regular_skaters.csv"))
+    ]
+    player_values = build_player_value_table(archive_dir, mp_years) if mp_years else {}
+
+    rosters = None
+    recent_trades: list[dict[str, Any]] = []
+    roster_moves: dict[str, Any] = {}
+    roster_stars = None
+    team_churn: dict[str, float] = {}
+    # Test doubles expose .urls; skip live roster/tx fetches for them.
+    _live_session = (not skip_network) and not hasattr(session, "urls")
+    if _live_session:
+        _snap = None
+        try:
+            _snap = load_roster_snapshot(docs_dir, context["today_str"])
+            rosters = (_snap or {}).get("teams") or None
+        except Exception:
+            rosters = None
+        if rosters is None:
+            try:
+                rosters = fetch_team_rosters(context["nhl_season"], session=session)
+            except Exception as exc:  # pragma: no cover
+                print(f"Warning: roster fetch failed: {exc}")
+                rosters = None
+        try:
+            all_tx = fetch_espn_transactions(pages=2, session=session)
+            today_date = date.fromisoformat(context["today_str"])
+            for tx in all_tx:
+                if not tx.get("is_trade"):
+                    continue
+                try:
+                    tx_date = date.fromisoformat(str(tx.get("date", ""))[:10])
+                except ValueError:
+                    continue
+                if 0 <= (today_date - tx_date).days <= 7:
+                    recent_trades.append(tx)
+        except Exception as exc:  # pragma: no cover
+            print(f"Warning: transaction fetch failed: {exc}")
+
+        if rosters:
+            try:
+                prev = load_latest_roster_history(docs_dir, before_date=context["today_str"])
+                if prev is not None:
+                    roster_moves = diff_rosters(prev, rosters)
+            except Exception as exc:  # pragma: no cover
+                print(f"Warning: roster diff failed: {exc}")
+            try:
+                if not _snap:
+                    write_roster_history(rosters, docs_dir, context["today_str"], captured_utc=datetime.now(timezone.utc).isoformat())
+            except Exception as exc:  # pragma: no cover
+                print(f"Warning: roster archive write failed: {exc}")
+
+        if rosters and player_values:
+            roster_stars = build_roster_aware_star_table(rosters, player_values)
+
+        if roster_moves and player_values:
+            team_churn = compute_team_churn(
+                roster_moves,
+                player_values,
+                recent_trades=recent_trades,
+            )
 
     daily_matchups = dict(schedule_info["daily_matchups"])
     if df_tims is not None and not df_tims.empty:
@@ -491,6 +618,8 @@ def run_inference(
             if "Causal_Elo" in ctx:
                 profiles[team]["Elo"] = float(ctx["Causal_Elo"])
 
+    apply_roster_stars_to_profiles(profiles, roster_stars)
+
     profiles_unadjusted = {k: dict(v) for k, v in profiles.items()}
     team_availability = apply_live_availability_to_profiles(
         profiles=profiles,
@@ -541,6 +670,7 @@ def run_inference(
         cached_odds=cached_odds,
         odds_meta_out=odds_meta_out,
         profiles_unadjusted=profiles_unadjusted,
+        team_churn=team_churn,
     )
 
     if effective_odds_key and odds_meta_out.get("api_ok"):

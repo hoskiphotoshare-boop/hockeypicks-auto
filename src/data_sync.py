@@ -841,6 +841,239 @@ class PlayerMatcher:
         return None
 
 
+def build_player_value_table(archive_dir: str, years: list[int]) -> dict[str, dict[str, Any]]:
+    """Aggregate per-player MoneyPuck value rates across all team rows.
+
+    Returns a dict keyed by ``clean_name(name)`` with display name plus current
+    (``max(years)``) and prior (``max(years)-1``) per-game rates and GP.
+    """
+    if not years:
+        return {}
+
+    years_sorted = sorted(int(y) for y in years)
+    current_year = years_sorted[-1]
+    prior_year = current_year - 1
+
+    per_year: dict[int, dict[str, dict[str, float]]] = {}
+    for year in years_sorted:
+        path = os.path.join(archive_dir, f"{year}_regular_skaters.csv")
+        if not os.path.exists(path) or os.path.getsize(path) == 0:
+            continue
+        try:
+            df = pd.read_csv(path)
+        except Exception:
+            continue
+        if df.empty:
+            continue
+        if "situation" in df.columns:
+            df = df[df["situation"].astype(str).str.strip().str.lower() == "all"].copy()
+        if df.empty:
+            continue
+
+        name_col = "name" if "name" in df.columns else ("playerName" if "playerName" in df.columns else None)
+        if name_col is None:
+            continue
+
+        for _, row in df.iterrows():
+            raw_name = row.get(name_col)
+            if not isinstance(raw_name, str) or not str(raw_name).strip():
+                continue
+            key = clean_name(raw_name)
+            if not key:
+                continue
+            gp = float(pd.to_numeric(row.get("games_played", 0.0), errors="coerce") or 0.0)
+            if gp <= 0.0:
+                gp = 0.0
+            points = float(pd.to_numeric(row.get("I_F_points", 0.0), errors="coerce") or 0.0)
+            xgoals = float(pd.to_numeric(row.get("I_F_xGoals", 0.0), errors="coerce") or 0.0)
+            icetime = float(pd.to_numeric(row.get("icetime", 0.0), errors="coerce") or 0.0)
+
+            agg = per_year.setdefault(year, {}).setdefault(
+                key,
+                {"name": str(raw_name).strip(), "gp": 0.0, "points": 0.0, "xgoals": 0.0, "icetime": 0.0},
+            )
+            agg["gp"] += gp
+            agg["points"] += points
+            agg["xgoals"] += xgoals
+            agg["icetime"] += icetime
+            if not agg.get("name"):
+                agg["name"] = str(raw_name).strip()
+
+    def _rates(agg: dict[str, float] | None) -> dict[str, Any]:
+        if not agg:
+            return {}
+        gp = float(agg.get("gp", 0.0) or 0.0)
+        denom = gp if gp > 0.0 else 1.0
+        return {
+            "gp": float(agg.get("gp", 0.0) or 0.0),
+            "points": float(agg.get("points", 0.0) or 0.0),
+            "xgoals": float(agg.get("xgoals", 0.0) or 0.0),
+            "icetime": float(agg.get("icetime", 0.0) or 0.0),
+            "points_pg": float(agg.get("points", 0.0) or 0.0) / denom,
+            "xgoals_pg": float(agg.get("xgoals", 0.0) or 0.0) / denom,
+            "icetime_pg": float(agg.get("icetime", 0.0) or 0.0) / denom,
+            "points_per_game": float(agg.get("points", 0.0) or 0.0) / denom,
+            "xgoals_per_game": float(agg.get("xgoals", 0.0) or 0.0) / denom,
+        }
+
+    all_keys: set[str] = set()
+    for y in years_sorted:
+        all_keys |= set(per_year.get(y, {}).keys())
+
+    result: dict[str, dict[str, Any]] = {}
+    for key in all_keys:
+        cur_agg = per_year.get(current_year, {}).get(key)
+        prior_agg = per_year.get(prior_year, {}).get(key)
+        cur_rates = _rates(cur_agg)
+        prior_rates = _rates(prior_agg)
+        display = (cur_agg or prior_agg or {}).get("name", key)
+
+        entry: dict[str, Any] = {
+            "name": display,
+            "display_name": display,
+            "player_key": key,
+            "current": cur_rates,
+            "prior": prior_rates,
+        }
+
+        for prefix, rates in (("cur", cur_rates), ("prior", prior_rates)):
+            if rates:
+                entry[f"gp_{prefix}"] = rates["gp"]
+                entry[f"points_{prefix}"] = rates["points"]
+                entry[f"xgoals_{prefix}"] = rates["xgoals"]
+                entry[f"icetime_{prefix}"] = rates["icetime"]
+                entry[f"points_pg_{prefix}"] = rates["points_pg"]
+                entry[f"xgoals_pg_{prefix}"] = rates["xgoals_pg"]
+                entry[f"icetime_pg_{prefix}"] = rates["icetime_pg"]
+
+        entry.setdefault("gp_cur", (cur_rates or {}).get("gp", 0.0))
+        entry.setdefault("gp_prior", (prior_rates or {}).get("gp", 0.0))
+        entry.setdefault("points_pg_cur", (cur_rates or {}).get("points_pg", 0.0))
+        entry.setdefault("points_pg_prior", (prior_rates or {}).get("points_pg", 0.0))
+        entry.setdefault("xgoals_pg_cur", (cur_rates or {}).get("xgoals_pg", 0.0))
+        entry.setdefault("xgoals_pg_prior", (prior_rates or {}).get("xgoals_pg", 0.0))
+
+        result[key] = entry
+
+    return result
+
+
+def build_roster_aware_star_table(
+    rosters: dict[str, Any],
+    player_values: dict[str, dict[str, Any]],
+    *,
+    prior_weight_gp: float = 20.0,
+) -> dict[str, dict[str, Any]]:
+    """Build per-team Top-3 star aggregates from live rosters + player values."""
+    if not rosters or not player_values:
+        return {}
+
+    entries = []
+    for key, val in player_values.items():
+        if not isinstance(val, dict):
+            continue
+        display = val.get("name") or val.get("display_name") or key
+        entries.append(
+            {
+                "player_id": int(val.get("player_id", 0) or 0),
+                "name": str(display),
+                "name_clean": key,
+                "team": "",
+                "position": "",
+                "payload": (key, val),
+            }
+        )
+    matcher = PlayerMatcher(entries) if entries else None
+
+    result: dict[str, dict[str, Any]] = {}
+    for team, roster in rosters.items():
+        if not isinstance(roster, list) or not roster:
+            continue
+        team_norm = normalize_team_abbrev(team)
+        matched: list[dict[str, Any]] = []
+
+        for p in roster:
+            if isinstance(p, dict):
+                pname = str(p.get("name") or p.get("player") or "").strip()
+                pos = str(p.get("position") or p.get("positionCode") or "").strip()
+                pid = p.get("id", p.get("player_id", 0))
+            else:
+                pname = str(p).strip()
+                pos = ""
+                pid = 0
+
+            if not pname:
+                continue
+
+            key = clean_name(pname)
+            pv = player_values.get(key)
+            if pv is None and matcher is not None:
+                m = matcher.match(
+                    name=pname,
+                    team=team_norm,
+                    position=pos,
+                    player_id=int(pid or 0),
+                    allow_initial_fallback=True,
+                )
+                if isinstance(m, tuple) and len(m) == 2:
+                    key, pv = m
+
+            if not isinstance(pv, dict):
+                continue
+
+            cur = pv.get("current") if isinstance(pv.get("current"), dict) else {}
+            prior = pv.get("prior") if isinstance(pv.get("prior"), dict) else {}
+
+            gp_cur = float(cur.get("gp", pv.get("gp_cur", 0.0)) or 0.0)
+            gp_prior = float(prior.get("gp", pv.get("gp_prior", 0.0)) or 0.0)
+
+            cur_pts = float(cur.get("points_pg", cur.get("points_per_game", pv.get("points_pg_cur", 0.0))) or 0.0)
+            prior_pts = float(prior.get("points_pg", prior.get("points_per_game", pv.get("points_pg_prior", 0.0))) or 0.0)
+            cur_xg = float(cur.get("xgoals_pg", cur.get("xgoals_per_game", pv.get("xgoals_pg_cur", 0.0))) or 0.0)
+            prior_xg = float(prior.get("xgoals_pg", prior.get("xgoals_per_game", pv.get("xgoals_pg_prior", 0.0))) or 0.0)
+
+            if gp_cur > 0.0 and gp_prior > 0.0:
+                w = gp_cur / (gp_cur + float(prior_weight_gp))
+                blended_pts = (1.0 - w) * prior_pts + w * cur_pts
+                blended_xg = (1.0 - w) * prior_xg + w * cur_xg
+            elif gp_cur > 0.0:
+                blended_pts = cur_pts
+                blended_xg = cur_xg
+            elif gp_prior > 0.0:
+                blended_pts = prior_pts
+                blended_xg = prior_xg
+            else:
+                blended_pts = 0.0
+                blended_xg = 0.0
+
+            matched.append(
+                {
+                    "name": pname,
+                    "key": key,
+                    "blended_pts_pg": blended_pts,
+                    "blended_xg_pg": blended_xg,
+                }
+            )
+
+        if not matched:
+            continue
+
+        matched.sort(key=lambda x: x["blended_pts_pg"], reverse=True)
+        top3 = matched[:3]
+        t3_pts_pg = float(sum(x["blended_pts_pg"] for x in top3))
+        t3_xg_pg = float(sum(x["blended_xg_pg"] for x in top3))
+        team_gp = 1.0
+
+        result[team_norm] = {
+            "Top3_Points_per_game": t3_pts_pg,
+            "Top3_xGoals_per_game": t3_xg_pg,
+            "Top3_Points": t3_pts_pg * team_gp,
+            "Top3_xGoals": t3_xg_pg * team_gp,
+        }
+
+    return result
+
+
 def fetch_live_club_skaters(
     teams: set[str] | list[str],
     nhl_season: str,

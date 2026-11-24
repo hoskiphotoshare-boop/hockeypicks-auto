@@ -26,7 +26,7 @@ EVENING_END = dt_time(21, 45)
 LATE_START = dt_time(22, 15)
 LATE_END = dt_time(23, 40)
 
-COMMIT_PATHS = ("docs/data.json", "docs/latest_run.html", "docs/tims_history.json", "docs/tims_boards.json", "docs/injury_history/", "models/")
+COMMIT_PATHS = ("docs/data.json", "docs/latest_run.html", "docs/tims_history.json", "docs/tims_boards.json", "docs/injury_history/", "docs/roster_history/", "models/")
 DEFAULT_INTERVAL_SECONDS = 300
 DEFAULT_LIVE_ODDS_CAP = 3
 
@@ -125,6 +125,7 @@ def commit_and_push() -> None:
     _git("config", "user.name", "github-actions[bot]")
     _git("config", "user.email", "github-actions[bot]@users.noreply.github.com")
     os.makedirs("docs/injury_history", exist_ok=True)
+    os.makedirs("docs/roster_history", exist_ok=True)
     _git("add", *COMMIT_PATHS)
 
     if _git("diff", "--staged", "--quiet") == 0:

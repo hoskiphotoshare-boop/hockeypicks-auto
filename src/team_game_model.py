@@ -1038,6 +1038,34 @@ def load_pairwise_bundle(path: str) -> dict[str, Any]:
     return joblib.load(path)
 
 
+
+def _apply_roster_star_to_stat(stat: dict[str, Any], roster_star: dict[str, Any] | None) -> None:
+    """Override a live profile's Top-3 rates with roster-aware per-game values."""
+    if not isinstance(stat, dict) or not isinstance(roster_star, dict):
+        return
+    pg = float(roster_star.get("Top3_Points_per_game", stat.get("Top3_Points_per_game", 0.0)) or 0.0)
+    xg = float(roster_star.get("Top3_xGoals_per_game", stat.get("Top3_xGoals_per_game", 0.0)) or 0.0)
+    gp = max(1, int(stat.get("games_played", 0) or 1))
+    stat["Top3_Points_per_game"] = pg
+    stat["Top3_xGoals_per_game"] = xg
+    stat["Top3_Points"] = pg * gp
+    stat["Top3_xGoals"] = xg * gp
+
+
+def apply_roster_stars_to_profiles(
+    profiles: dict[str, dict[str, Any]],
+    roster_stars: dict[str, dict[str, Any]] | None,
+) -> None:
+    """Apply roster-aware Top-3 overrides to an existing profiles dict in place."""
+    if not roster_stars or not isinstance(profiles, dict):
+        return
+    for team, rs in roster_stars.items():
+        stat = profiles.get(team)
+        if stat:
+            _apply_roster_star_to_stat(stat, rs)
+
+
+
 def build_live_team_profiles(
     df_team_hist: pd.DataFrame,
     df_stars: pd.DataFrame,
@@ -1046,6 +1074,7 @@ def build_live_team_profiles(
     latest_team_context: dict[str, dict[str, Any]],
     base_features: list[str],
     playoff_teams_df: pd.DataFrame | None = None,
+    roster_stars: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[dict[str, dict[str, Any]], pd.DataFrame]:
     """Assemble current 32-team shrunk causal profiles for inference and defense multipliers."""
     df_norm = normalize_team_frame_per_game(df_team_hist)
@@ -1174,6 +1203,8 @@ def build_live_team_profiles(
         stat["Rolling10_WinPct"] = float(ctx.get("Rolling10_WinPct", 0.5))
         stat["Rolling10_GoalDiff"] = float(ctx.get("Rolling10_GoalDiff", 0.0))
         stat["games_played"] = int(row.get("games_played", 0) or 0)
+        if roster_stars and team in roster_stars:
+            _apply_roster_star_to_stat(stat, roster_stars.get(team))
         stat["goalsAgainst"] = float(row.get("goalsAgainst", 0.0) or 0.0)
         stat["xGoalsAgainst"] = float(row.get("xGoalsAgainst", 0.0) or 0.0)
         stat["highDangerxGoalsAgainst"] = float(row.get("highDangerxGoalsAgainst", 0.0) or 0.0)
@@ -1341,6 +1372,16 @@ def _fatigue_metrics_for_date(
 
     return out
 
+
+
+def _shrink_prob_for_churn(home_prob: float, churn_home: float, churn_away: float) -> float:
+    """Shrink a home win probability toward 0.5 for major roster churn (max 25%)."""
+    churn = max(float(churn_home or 0.0), float(churn_away or 0.0))
+    churn = min(1.0, max(0.0, churn))
+    if churn <= 0.0:
+        return float(home_prob)
+    factor = 1.0 - 0.25 * churn
+    return 0.5 + (float(home_prob) - 0.5) * factor
 
 def _pairwise_win_prob(
     team_a: str,
@@ -1699,8 +1740,11 @@ def predict_upcoming_games(
     cached_odds: dict[tuple[str, str, str], dict[str, Any]] | None = None,
     odds_meta_out: dict[str, Any] | None = None,
     profiles_unadjusted: dict[str, dict[str, Any]] | None = None,
+    team_churn: dict[str, float] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Generate single-game win probabilities and optional active playoff series projections."""
+    churn_map: dict[str, float] = dict(team_churn or {})
+
     odds_map = (
         _fetch_nhl_odds_lookup(odds_api_key, session, meta_out=odds_meta_out)
         if (odds_api_key and session)
@@ -1752,6 +1796,13 @@ def predict_upcoming_games(
             )
         away_prob_unadjusted = 1.0 - shadow_home_prob
 
+        churn_h = float((churn_map or {}).get(home, 0.0) or 0.0)
+        churn_a = float((churn_map or {}).get(away, 0.0) or 0.0)
+        home_prob = _shrink_prob_for_churn(home_prob, churn_h, churn_a)
+        shadow_home_prob = _shrink_prob_for_churn(shadow_home_prob, churn_h, churn_a)
+        away_prob = 1.0 - home_prob
+        away_prob_unadjusted = 1.0 - shadow_home_prob
+
         avail_h = (team_availability or {}).get(home, {})
         avail_a = (team_availability or {}).get(away, {})
         home_depth_eff = avail_h.get("depth_eff", 1.0)
@@ -1785,6 +1836,8 @@ def predict_upcoming_games(
                 "away_prob_unadjusted": round(away_prob_unadjusted * 100.0, 1),
                 "home_depth_eff": round(float(home_depth_eff), 4),
                 "away_depth_eff": round(float(away_depth_eff), 4),
+                "home_roster_churn": round(float(churn_h), 3),
+                "away_roster_churn": round(float(churn_a), 3),
                 "favored": home if home_prob >= away_prob else away,
                 "fav_prob": round(max(home_prob, away_prob) * 100.0, 1),
                 "away_streak": int(st_a.get("Streak", 0)),
