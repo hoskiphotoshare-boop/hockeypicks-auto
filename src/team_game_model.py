@@ -507,19 +507,31 @@ def build_team_star_goalie_history(
             df_s = reg_skaters[reg_skaters["situation"] == "all"].copy() if "situation" in reg_skaters.columns else reg_skaters.copy()
             df_s["team"] = df_s["team"].apply(normalize_team_abbrev)
             for team, grp in df_s.groupby("team"):
-                top3 = grp.sort_values("I_F_points", ascending=False).head(3)
                 t_str = str(team)
-                t_gp = team_gp_map.get(t_str, max(1.0, float(grp["games_played"].max() if "games_played" in grp.columns else 1.0)))
-                top3_pts = float(top3["I_F_points"].sum())
-                top3_xg = float(top3["I_F_xGoals"].sum()) if "I_F_xGoals" in top3.columns else 0.0
+                gp = pd.to_numeric(grp.get("games_played", 1.0), errors="coerce").fillna(0.0)
+                pts = pd.to_numeric(grp.get("I_F_points", 0.0), errors="coerce").fillna(0.0)
+                xg = pd.to_numeric(grp.get("I_F_xGoals", 0.0), errors="coerce").fillna(0.0)
+                safe_gp = gp.where(gp > 0.0)
+                work = grp.assign(
+                    _ppg=(pts / safe_gp).fillna(0.0),
+                    _xgpg=(xg / safe_gp).fillna(0.0),
+                    _gp=gp,
+                )
+                # Per-game definition (aligned with the live roster-aware table). Avoid
+                # tiny samples when the team has enough established skaters.
+                eligible = work[work["_gp"] >= 10.0] if int((work["_gp"] >= 10.0).sum()) >= 3 else work
+                top3 = eligible.sort_values("_ppg", ascending=False).head(3)
+                depth_pool = eligible.drop(top3.index)
                 stars_rows.append(
                     {
                         "season": year,
                         "team": t_str,
-                        "Top3_Points": top3_pts,
-                        "Top3_xGoals": top3_xg,
-                        "Top3_Points_per_game": top3_pts / t_gp,
-                        "Top3_xGoals_per_game": top3_xg / t_gp,
+                        "Top3_Points": float(top3["I_F_points"].sum()),
+                        "Top3_xGoals": float(top3["I_F_xGoals"].sum()) if "I_F_xGoals" in top3.columns else 0.0,
+                        "Top3_Points_per_game": float(top3["_ppg"].sum()),
+                        "Top3_xGoals_per_game": float(top3["_xgpg"].sum()),
+                        "Depth_Points_per_game": float(depth_pool["_ppg"].sum()),
+                        "Depth_xGoals_per_game": float(depth_pool["_xgpg"].sum()),
                     }
                 )
 
@@ -706,6 +718,12 @@ FATIGUE_BINARY_FEATURES: list[str] = [
 
 ENABLE_FATIGUE_FEATURES: bool = False
 
+# Roster depth candidates (gated; evaluated before joining the schema).
+DEPTH_PAIRWISE_FEATURES: list[str] = [
+    "Depth_Points_per_game_diff",
+    "Depth_xGoals_per_game_diff",
+]
+
 CAUSAL_PAIRWISE_FEATURES: list[str] = BASE_PAIRWISE_FEATURES + (
     FATIGUE_PAIRWISE_FEATURES if ENABLE_FATIGUE_FEATURES else []
 )
@@ -856,6 +874,8 @@ def _build_causal_training_frame(
                 "Prior_xGD_diff": (p_xgf_A - p_xga_A) - (p_xgf_B - p_xga_B),
                 "Prior_GD_diff": (p_gf_A - p_ga_A) - (p_gf_B - p_ga_B),
                 "Top3_Points_per_game_diff": p_top3_A - p_top3_B,
+                "Depth_Points_per_game_diff": float(getattr(r, "Depth_Points_per_game_A", 0.0) or 0.0) - float(getattr(r, "Depth_Points_per_game_B", 0.0) or 0.0),
+                "Depth_xGoals_per_game_diff": float(getattr(r, "Depth_xGoals_per_game_A", 0.0) or 0.0) - float(getattr(r, "Depth_xGoals_per_game_B", 0.0) or 0.0),
                 "Team_GSAx_per_game_diff": p_gsax_A - p_gsax_B,
                 "Starter_SavePct_diff": p_sv_A - p_sv_B,
                 "Blended_WinPct_diff": ((1.0 - wA) * prior_win_A + wA * c_win_A) - ((1.0 - wB) * prior_win_B + wB * c_win_B),
@@ -1050,19 +1070,27 @@ def _apply_roster_star_to_stat(stat: dict[str, Any], roster_star: dict[str, Any]
     stat["Top3_xGoals_per_game"] = xg
     stat["Top3_Points"] = pg * gp
     stat["Top3_xGoals"] = xg * gp
+    for key in ("Depth_Points_per_game", "Depth_xGoals_per_game"):
+        if key in roster_star:
+            stat[key] = float(roster_star.get(key, stat.get(key, 0.0)) or 0.0)
 
 
 def apply_roster_stars_to_profiles(
     profiles: dict[str, dict[str, Any]],
     roster_stars: dict[str, dict[str, Any]] | None,
-) -> None:
-    """Apply roster-aware Top-3 overrides to an existing profiles dict in place."""
+) -> dict[str, float]:
+    """Apply roster-aware Top-3 overrides in place; return per-team Top-3 deltas."""
+    deltas: dict[str, float] = {}
     if not roster_stars or not isinstance(profiles, dict):
-        return
+        return deltas
     for team, rs in roster_stars.items():
         stat = profiles.get(team)
-        if stat:
-            _apply_roster_star_to_stat(stat, rs)
+        if not stat:
+            continue
+        before = float(stat.get("Top3_Points_per_game", 0.0) or 0.0)
+        _apply_roster_star_to_stat(stat, rs)
+        deltas[str(team)] = float(stat.get("Top3_Points_per_game", 0.0) or 0.0) - before
+    return deltas
 
 
 
@@ -1162,6 +1190,15 @@ def build_live_team_profiles(
             stat["Top3_xGoals"] = 0.0
             stat["Top3_Points_per_game"] = _lookup_prior_table(st_idx, prior_year, team, "Top3_Points_per_game", 0.0)
             stat["Top3_xGoals_per_game"] = _lookup_prior_table(st_idx, prior_year, team, "Top3_xGoals_per_game", 0.0)
+
+        if not stars_curr.empty and "Depth_Points_per_game" in getattr(stars_curr, "columns", []):
+            c_depth = float(stars_curr.loc[team, "Depth_Points_per_game"])
+            p_depth = _lookup_prior_table(st_idx, prior_year, team, "Depth_Points_per_game", c_depth)
+            stat["Depth_Points_per_game"] = (1.0 - w_mp) * p_depth + w_mp * c_depth
+            if "Depth_xGoals_per_game" in getattr(stars_curr, "columns", []):
+                c_dxg = float(stars_curr.loc[team, "Depth_xGoals_per_game"])
+                p_dxg = _lookup_prior_table(st_idx, prior_year, team, "Depth_xGoals_per_game", c_dxg)
+                stat["Depth_xGoals_per_game"] = (1.0 - w_mp) * p_dxg + w_mp * c_dxg
 
         if not goalies_curr.empty and team in goalies_curr.index:
             gsax = float(goalies_curr.loc[team, "Team_GSAx"])

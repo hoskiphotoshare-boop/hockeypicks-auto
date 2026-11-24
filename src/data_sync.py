@@ -1060,6 +1060,7 @@ def build_roster_aware_star_table(
 
         matched.sort(key=lambda x: x["blended_pts_pg"], reverse=True)
         top3 = matched[:3]
+        depth = matched[3:]
         t3_pts_pg = float(sum(x["blended_pts_pg"] for x in top3))
         t3_xg_pg = float(sum(x["blended_xg_pg"] for x in top3))
         team_gp = 1.0
@@ -1069,6 +1070,8 @@ def build_roster_aware_star_table(
             "Top3_xGoals_per_game": t3_xg_pg,
             "Top3_Points": t3_pts_pg * team_gp,
             "Top3_xGoals": t3_xg_pg * team_gp,
+            "Depth_Points_per_game": float(sum(x["blended_pts_pg"] for x in depth)),
+            "Depth_xGoals_per_game": float(sum(x["blended_xg_pg"] for x in depth)),
         }
 
     return result

@@ -22,6 +22,7 @@ if ROOT not in sys.path:
 from src.data_sync import get_nhl_season_context, sync_game_logs
 from src.team_game_model import (
     BASE_PAIRWISE_FEATURES,
+    DEPTH_PAIRWISE_FEATURES,
     FATIGUE_BINARY_FEATURES,
     _build_causal_training_frame,
     apply_temperature,
@@ -177,7 +178,8 @@ def main():
     extra = ["TZ_Shift_diff", "RoadTrip_Length_diff"]
     all_fatigue = retained + extra
     binary = list(FATIGUE_BINARY_FEATURES)
-    all_features = base_features + extra + binary
+    depth = list(DEPTH_PAIRWISE_FEATURES)
+    all_features = base_features + extra + binary + depth
 
     df_games, X_pair, y_pair, seasons = _build_causal_training_frame(
         df_team_norm, df_stars, df_goalies, df_master_logs, feature_names=all_features
@@ -196,6 +198,8 @@ def main():
         "Games_Last5_ge3_diff": base_features[:21] + ["Games_Last5_ge3_diff"],
         "Rest_x_Games7_ge4_diff": base_features[:21] + ["Rest_x_Games7_ge4_diff"],
         "bin3": base_features[:21] + binary,
+        "Depth_Points_per_game_diff": base_features[:21] + ["Depth_Points_per_game_diff"],
+        "Depth_both": base_features[:21] + depth,
     }
     # base_features[:21] == BASE_PAIRWISE_FEATURES
     baseline_features = list(BASE_PAIRWISE_FEATURES)

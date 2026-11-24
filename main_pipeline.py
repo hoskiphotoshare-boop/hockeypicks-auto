@@ -618,7 +618,10 @@ def run_inference(
             if "Causal_Elo" in ctx:
                 profiles[team]["Elo"] = float(ctx["Causal_Elo"])
 
-    apply_roster_stars_to_profiles(profiles, roster_stars)
+    roster_deltas = apply_roster_stars_to_profiles(profiles, roster_stars) or {}
+    for _team, _delta in roster_deltas.items():
+        if abs(float(_delta)) >= 0.2:
+            team_churn[_team] = max(team_churn.get(_team, 0.0), min(1.0, abs(float(_delta))))
 
     profiles_unadjusted = {k: dict(v) for k, v in profiles.items()}
     team_availability = apply_live_availability_to_profiles(

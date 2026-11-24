@@ -174,6 +174,7 @@ class TestTransactions(unittest.TestCase):
             "Lucas Raymond": {"cur_gp": 21, "cur_pg": 1.0, "pr_gp": 82, "pr_pg": 0.9},
             "Alex DeBrincat": {"cur_gp": 21, "cur_pg": 0.762, "pr_gp": 82, "pr_pg": 0.8},
             "Kirby Dach": {"cur_gp": 20, "cur_pg": 0.4, "pr_gp": 60, "pr_pg": 0.5},
+            "Depth Guy": {"cur_gp": 20, "cur_pg": 0.2, "pr_gp": 82, "pr_pg": 0.2},
         }
         values = {}
         for name, v in keys.items():
@@ -184,7 +185,7 @@ class TestTransactions(unittest.TestCase):
             }
         rosters = {
             "MTL": [_player(i, n, "MTL") for i, n in enumerate(["Dylan Larkin", "Cole Caufield", "Nick Suzuki", "Juraj Slafkovsky"])],
-            "DET": [_player(i + 10, n, "DET") for i, n in enumerate(["Lucas Raymond", "Alex DeBrincat", "Kirby Dach"])],
+            "DET": [_player(i + 10, n, "DET") for i, n in enumerate(["Lucas Raymond", "Alex DeBrincat", "Kirby Dach", "Depth Guy"])],
         }
         table = build_roster_aware_star_table(rosters, values, prior_weight_gp=20.0)
         # MTL top-3 = Larkin + Caufield + Suzuki
@@ -205,6 +206,8 @@ class TestTransactions(unittest.TestCase):
         table2 = build_roster_aware_star_table(rosters2, values, prior_weight_gp=20.0)
         self.assertLess(table2["MTL"]["Top3_Points_per_game"], table["MTL"]["Top3_Points_per_game"])
         self.assertGreater(table2["DET"]["Top3_Points_per_game"], table["DET"]["Top3_Points_per_game"])
+        self.assertGreater(table["MTL"]["Depth_Points_per_game"], 0.0)
+        self.assertAlmostEqual(table["DET"]["Depth_Points_per_game"], 0.2, places=3)
 
     def test_apply_roster_stars_scales_totals(self):
         profiles = {
@@ -216,17 +219,23 @@ class TestTransactions(unittest.TestCase):
                 "Top3_xGoals": 22.0,
             }
         }
-        apply_roster_stars_to_profiles(
+        deltas = apply_roster_stars_to_profiles(
             profiles, {"TOR": {"Top3_Points_per_game": 3.0, "Top3_xGoals_per_game": 1.2}}
         )
+        self.assertAlmostEqual(deltas["TOR"], 0.5, places=6)
         self.assertEqual(profiles["TOR"]["Top3_Points_per_game"], 3.0)
         self.assertEqual(profiles["TOR"]["Top3_xGoals_per_game"], 1.2)
         self.assertEqual(profiles["TOR"]["Top3_Points"], 60.0)
         self.assertEqual(profiles["TOR"]["Top3_xGoals"], 24.0)
         # missing team / None -> no crash
         apply_roster_stars_to_profiles(profiles, {"MTL": {"Top3_Points_per_game": 9.0}})
-        apply_roster_stars_to_profiles(profiles, None)
+        self.assertEqual(apply_roster_stars_to_profiles(profiles, None), {})
         self.assertEqual(profiles["TOR"]["Top3_Points"], 60.0)
+
+    def test_apply_roster_stars_reports_negative_delta(self):
+        profiles = {"TOR": {"games_played": 20, "Top3_Points_per_game": 3.1, "Top3_xGoals_per_game": 1.2}}
+        deltas = apply_roster_stars_to_profiles(profiles, {"TOR": {"Top3_Points_per_game": 2.8}})
+        self.assertAlmostEqual(deltas["TOR"], -0.3, places=6)
 
     def test_shrink_prob_for_churn(self):
         self.assertAlmostEqual(_shrink_prob_for_churn(0.70, 0.0, 0.0), 0.70)
