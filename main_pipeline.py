@@ -674,6 +674,7 @@ def run_inference(
         odds_meta_out=odds_meta_out,
         profiles_unadjusted=profiles_unadjusted,
         team_churn=team_churn,
+        roster_moves=roster_moves,
     )
 
     if effective_odds_key and odds_meta_out.get("api_ok"):

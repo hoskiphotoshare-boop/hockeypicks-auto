@@ -1420,6 +1420,14 @@ def _shrink_prob_for_churn(home_prob: float, churn_home: float, churn_away: floa
     factor = 1.0 - 0.25 * churn
     return 0.5 + (float(home_prob) - 0.5) * factor
 
+
+def _roster_move_names(roster_moves: dict[str, Any] | None, team: str) -> tuple[list[str], list[str]]:
+    """Return (players_in, players_out) for a team from a diff_rosters payload."""
+    info = ((roster_moves or {}).get("teams") or {}).get(team) or {}
+    ins = [str(x) for x in (info.get("in") or []) if x][:5]
+    outs = [str(x) for x in (info.get("out") or []) if x][:5]
+    return ins, outs
+
 def _pairwise_win_prob(
     team_a: str,
     team_b: str,
@@ -1778,6 +1786,7 @@ def predict_upcoming_games(
     odds_meta_out: dict[str, Any] | None = None,
     profiles_unadjusted: dict[str, dict[str, Any]] | None = None,
     team_churn: dict[str, float] | None = None,
+    roster_moves: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Generate single-game win probabilities and optional active playoff series projections."""
     churn_map: dict[str, float] = dict(team_churn or {})
@@ -1835,6 +1844,8 @@ def predict_upcoming_games(
 
         churn_h = float((churn_map or {}).get(home, 0.0) or 0.0)
         churn_a = float((churn_map or {}).get(away, 0.0) or 0.0)
+        home_in, home_out = _roster_move_names(roster_moves, home)
+        away_in, away_out = _roster_move_names(roster_moves, away)
         home_prob = _shrink_prob_for_churn(home_prob, churn_h, churn_a)
         shadow_home_prob = _shrink_prob_for_churn(shadow_home_prob, churn_h, churn_a)
         away_prob = 1.0 - home_prob
@@ -1875,6 +1886,10 @@ def predict_upcoming_games(
                 "away_depth_eff": round(float(away_depth_eff), 4),
                 "home_roster_churn": round(float(churn_h), 3),
                 "away_roster_churn": round(float(churn_a), 3),
+                "home_roster_in": home_in,
+                "home_roster_out": home_out,
+                "away_roster_in": away_in,
+                "away_roster_out": away_out,
                 "favored": home if home_prob >= away_prob else away,
                 "fav_prob": round(max(home_prob, away_prob) * 100.0, 1),
                 "away_streak": int(st_a.get("Streak", 0)),
