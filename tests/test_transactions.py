@@ -16,6 +16,7 @@ from src.team_game_model import (
     apply_roster_stars_to_profiles,
 )
 from src.transactions import (
+    compute_name_churn,
     compute_team_churn,
     diff_rosters,
     fetch_espn_transactions,
@@ -244,6 +245,27 @@ class TestTransactions(unittest.TestCase):
         self.assertAlmostEqual(_shrink_prob_for_churn(0.30, 1.0, 0.0), 0.35)
         # clamps churn to [0, 1]
         self.assertAlmostEqual(_shrink_prob_for_churn(0.70, 5.0, 0.0), 0.65)
+
+    def test_compute_name_churn_from_named_moves(self):
+        values = {
+            clean_name("Dylan Larkin"): {
+                "current": {"gp": 10.0, "points_pg": 0.6},
+                "prior": {"gp": 82.0, "points_pg": 1.0},
+            },
+            clean_name("Kirby Dach"): {
+                "current": {"gp": 20.0, "points_pg": 0.4},
+                "prior": {"gp": 60.0, "points_pg": 0.5},
+            },
+        }
+        churn = compute_name_churn(
+            {
+                "MTL": {"in": ["Dylan Larkin"], "out": ["Kirby Dach"]},
+                "DET": {"in": ["Kirby Dach"], "out": ["Dylan Larkin"]},
+            },
+            values,
+        )
+        self.assertAlmostEqual(churn["MTL"], 0.8667 - 0.45, places=3)
+        self.assertAlmostEqual(churn["DET"], 0.8667 - 0.45, places=3)
 
 
 if __name__ == "__main__":

@@ -272,6 +272,31 @@ def diff_rosters(prev: Any, curr: Any) -> dict[str, Any]:
     return result
 
 
+
+def compute_name_churn(
+    roster_names: dict[str, Any] | None,
+    player_values: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, float]:
+    """Per-team churn (0-1) from named roster in/out lists.
+
+    Works even when the saved profiles are already roster-aware (the top-3
+    delta is then zero), which is the case on a full-run day.
+    """
+    net: dict[str, float] = {}
+    for team, info in (roster_names or {}).items():
+        if not isinstance(info, dict) or not isinstance(team, str):
+            continue
+        for name in info.get("in") or []:
+            net[team] = net.get(team, 0.0) + _blended_player_value(
+                (player_values or {}).get(clean_name(str(name)), {})
+            )
+        for name in info.get("out") or []:
+            net[team] = net.get(team, 0.0) - _blended_player_value(
+                (player_values or {}).get(clean_name(str(name)), {})
+            )
+    return {team: min(1.0, abs(value)) for team, value in net.items() if value}
+
+
 def _trade_descriptions(recent_trades: list[dict[str, Any]] | None) -> list[str]:
     out: list[str] = []
     for tr in recent_trades or []:

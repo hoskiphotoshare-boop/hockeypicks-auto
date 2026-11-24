@@ -1084,42 +1084,85 @@ def build_roster_membership_moves(
     year: int,
     player_values: dict[str, dict[str, Any]] | None = None,
     injury_records: list[dict[str, Any]] | None = None,
+    recent_trades: list[dict[str, Any]] | None = None,
     *,
     min_value: float = 0.15,
 ) -> dict[str, dict[str, list[str]]]:
-    """Day-one roster moves: current roster vs the team's season-attributed skaters.
+    """Roster moves from current/prior season attribution vs the live roster.
 
-    Works without a prior roster snapshot (e.g. the Larkin trade on deployment
-    day). Injured players are excluded from the "out" list, and low-value
-    callups/rookies are filtered out.
+    Works on deployment day (no prior roster snapshot). Current-season attribution
+    already reflects a trade once MoneyPuck updates it, so a recent-trade match
+    against the prior season is also used; offseason signings are not reported
+    unless they appear in a recent trade description.
     """
     if not rosters:
         return {}
-    path = os.path.join(archive_dir, f"{year}_regular_skaters.csv")
-    if not os.path.exists(path) or os.path.getsize(path) == 0:
-        return {}
-    try:
-        df = pd.read_csv(path)
-    except Exception:
-        return {}
-    if df.empty or "name" not in df.columns or "team" not in df.columns:
-        return {}
-    if "situation" in df.columns:
-        df = df[df["situation"].astype(str).str.strip().str.lower() == "all"].copy()
-    if df.empty:
+
+    def _load_attr(y: int) -> dict[str, dict[str, dict[str, Any]]]:
+        path = os.path.join(archive_dir, f"{y}_regular_skaters.csv")
+        if not os.path.exists(path) or os.path.getsize(path) == 0:
+            return {}
+        try:
+            df = pd.read_csv(path)
+        except Exception:
+            return {}
+        if df.empty or "name" not in df.columns or "team" not in df.columns:
+            return {}
+        if "situation" in df.columns:
+            df = df[df["situation"].astype(str).str.strip().str.lower() == "all"].copy()
+        out: dict[str, dict[str, dict[str, Any]]] = {}
+        for _, row in df.iterrows():
+            name = str(row.get("name") or "").strip()
+            team = normalize_team_abbrev(row.get("team"))
+            if not name or team == "UNK":
+                continue
+            gp = float(pd.to_numeric(row.get("games_played", 0.0), errors="coerce") or 0.0)
+            pts = float(pd.to_numeric(row.get("I_F_points", 0.0), errors="coerce") or 0.0)
+            if gp <= 0.0:
+                continue
+            out.setdefault(team, {})[clean_name(name)] = {"name": name, "ppg": pts / gp}
+        return out
+
+    attr_cur = _load_attr(int(year))
+    attr_prior = _load_attr(int(year) - 1)
+    if not attr_cur and not attr_prior:
         return {}
 
-    attributed: dict[str, dict[str, dict[str, Any]]] = {}
-    for _, row in df.iterrows():
-        name = str(row.get("name") or "").strip()
-        team = normalize_team_abbrev(row.get("team"))
-        if not name or team == "UNK":
-            continue
-        gp = float(pd.to_numeric(row.get("games_played", 0.0), errors="coerce") or 0.0)
-        pts = float(pd.to_numeric(row.get("I_F_points", 0.0), errors="coerce") or 0.0)
-        if gp <= 0.0:
-            continue
-        attributed.setdefault(team, {})[clean_name(name)] = {"name": name, "ppg": pts / gp}
+    roster_by_key: dict[str, str] = {}
+    for team, roster in rosters.items():
+        team_norm = normalize_team_abbrev(team)
+        for p in roster or []:
+            if isinstance(p, dict):
+                nm = str(p.get("name") or "").strip()
+                if nm:
+                    roster_by_key[clean_name(nm)] = team_norm
+
+    flat_cur: dict[str, tuple[str, dict[str, Any]]] = {}
+    for team, players in attr_cur.items():
+        for key, info in players.items():
+            flat_cur[key] = (team, info)
+    flat_prior: dict[str, tuple[str, dict[str, Any]]] = {}
+    for team, players in attr_prior.items():
+        for key, info in players.items():
+            flat_prior[key] = (team, info)
+
+    def _find(index: dict[str, Any], key: str) -> tuple[str, Any] | None:
+        if key in index:
+            return key, index[key]
+        if len(key) >= 8:
+            for other in index:
+                if other.startswith(key) or key.startswith(other):
+                    return other, index[other]
+        return None
+
+    trade_text = " ".join(
+        clean_name(str(tr.get("description") or ""))
+        for tr in (recent_trades or [])
+        if isinstance(tr, dict) and tr.get("is_trade")
+    )
+
+    def _mentioned(key: str) -> bool:
+        return bool(trade_text) and bool(key) and key in trade_text
 
     injured: dict[str, set[str]] = {}
     for rec in injury_records or []:
@@ -1132,8 +1175,8 @@ def build_roster_membership_moves(
         if team != "UNK" and key:
             injured.setdefault(team, set()).add(key)
 
-    def _value(player_key: str, fallback: float = 0.0) -> float:
-        pv = (player_values or {}).get(player_key) or {}
+    def _value(key: str, fallback: float = 0.0) -> float:
+        pv = (player_values or {}).get(key) or {}
         cur = pv.get("current") if isinstance(pv.get("current"), dict) else {}
         prior = pv.get("prior") if isinstance(pv.get("prior"), dict) else {}
         gp_cur = float(cur.get("gp", pv.get("gp_cur", 0.0)) or 0.0)
@@ -1149,30 +1192,6 @@ def build_roster_membership_moves(
             return prior_pg
         return fallback
 
-    roster_by_key: dict[str, str] = {}
-    for team, roster in rosters.items():
-        team_norm = normalize_team_abbrev(team)
-        for p in roster or []:
-            if isinstance(p, dict):
-                nm = str(p.get("name") or "").strip()
-                if nm:
-                    roster_by_key[clean_name(nm)] = team_norm
-
-    attr_index: dict[str, tuple[str, dict[str, Any]]] = {}
-    for team_key, players in attributed.items():
-        for key, info in players.items():
-            attr_index[key] = (team_key, info)
-
-    def _lookup(index: dict[str, Any], key: str) -> Any:
-        if key in index:
-            return index[key]
-        # tolerate MoneyPuck truncation (e.g. "Juraj Slafkovsk" vs "Juraj Slafkovsky")
-        if len(key) >= 8:
-            for other in index:
-                if other.startswith(key) or key.startswith(other):
-                    return index[other]
-        return None
-
     moves: dict[str, dict[str, list[str]]] = {}
     for team, roster in rosters.items():
         if not isinstance(roster, list) or not roster:
@@ -1185,36 +1204,56 @@ def build_roster_membership_moves(
             nm = str(p.get("name") or "").strip()
             if nm:
                 roster_names[clean_name(nm)] = nm
-        team_attr = attributed.get(team_norm, {})
         team_inj = injured.get(team_norm, set())
 
         incoming: list[str] = []
         for key, display in roster_names.items():
-            found = _lookup(attr_index, key)
-            if not found:
-                continue  # rookies / no season attribution
-            owner_team, info = found
-            if owner_team == team_norm:
+            cur = _find(flat_cur, key)
+            prior = _find(flat_prior, key)
+            owner_cur = cur[1][0] if cur else None
+            owner_prior = prior[1][0] if prior else None
+            if owner_cur == team_norm:
+                # Already attributed to this team, but a recent trade from another
+                # team still counts as an arrival for the card.
+                if not (owner_prior and owner_prior != team_norm and _mentioned(key)):
+                    continue
+                is_move = True
+            else:
+                is_move = bool(owner_cur and owner_cur != team_norm)
+                if not is_move and owner_prior and owner_prior != team_norm and _mentioned(key):
+                    is_move = True
+            if not is_move:
                 continue
+            info = (cur[1][1] if cur else None) or (prior[1][1] if prior else {})
             if _value(key, float(info.get("ppg", 0.0) or 0.0)) < min_value:
                 continue
             incoming.append(display)
 
         outgoing: list[str] = []
-        for key, info in team_attr.items():
+        candidates: dict[str, dict[str, Any]] = {}
+        for source in (attr_prior.get(team_norm, {}), attr_cur.get(team_norm, {})):
+            for key, info in source.items():
+                candidates[key] = info
+        for key, info in candidates.items():
             if key in team_inj:
                 continue
-            owner = _lookup(roster_by_key, key)
-            if not owner or owner == team_norm:
+            found = _find(roster_by_key, key)
+            if not found:
                 continue  # AHL / no longer in the NHL
+            owner_team = found[1]
+            if owner_team == team_norm:
+                continue
+            cur = _find(flat_cur, key)
+            attributed_here_now = bool(cur and cur[1][0] == team_norm)
+            if not attributed_here_now and not _mentioned(key):
+                continue  # prior-season move, not a recent trade
             if _value(key, float(info.get("ppg", 0.0) or 0.0)) < min_value:
                 continue
             outgoing.append(str(info.get("name") or key.title()))
 
         if incoming or outgoing:
-            moves[team_norm] = {"in": sorted(incoming)[:5], "out": sorted(outgoing)[:5]}
+            moves[team_norm] = {"in": sorted(set(incoming))[:5], "out": sorted(set(outgoing))[:5]}
     return moves
-
 
 def fetch_live_club_skaters(
     teams: set[str] | list[str],

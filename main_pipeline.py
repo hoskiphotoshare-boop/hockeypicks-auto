@@ -30,6 +30,7 @@ from src.transactions import (
     diff_rosters,
     fetch_espn_transactions,
     fetch_team_rosters,
+    compute_name_churn,
     load_latest_roster_history,
     load_roster_snapshot,
     write_roster_history,
@@ -628,6 +629,7 @@ def run_inference(
                 max(mp_years) if mp_years else int(context.get("start_year") or 2026),
                 player_values,
                 injury_records,
+                recent_trades,
             )
             for _t, _info in _membership.items():
                 roster_names["teams"][_t] = _info
@@ -639,9 +641,12 @@ def run_inference(
             "out": list(_info.get("out") or [])[:5],
         }
 
+    for _team, _churn in compute_name_churn(roster_names.get("teams") or {}, player_values).items():
+        team_churn[_team] = max(team_churn.get(_team, 0.0), _churn)
+
     roster_deltas = apply_roster_stars_to_profiles(profiles, roster_stars) or {}
     for _team, _delta in roster_deltas.items():
-        if abs(float(_delta)) >= 0.2:
+        if abs(float(_delta)) >= 0.1:
             team_churn[_team] = max(team_churn.get(_team, 0.0), min(1.0, abs(float(_delta))))
 
     profiles_unadjusted = {k: dict(v) for k, v in profiles.items()}
