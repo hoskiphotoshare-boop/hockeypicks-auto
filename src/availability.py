@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -409,6 +412,7 @@ def apply_live_availability_to_profiles(
         out_skaters = [r for r in t_inj if r.get("is_out") and str(r.get("position", "")).upper() != "G"]
         dtd_skaters = [r for r in t_inj if r.get("is_dtd") and str(r.get("position", "")).upper() != "G"]
 
+        eff_mid = 1.0
         starter_record = None
         if team in profiles:
             st = profiles[team]
@@ -568,6 +572,7 @@ def apply_live_availability_to_profiles(
 
         team_summary[team] = {
             "goalie": starter_record,
+            "depth_eff": round(float(eff_mid), 4),
             "out_skaters": [
                 {"player": r["player"], "position": r["position"], "status": r["status"]}
                 for r in out_skaters
@@ -580,3 +585,49 @@ def apply_live_availability_to_profiles(
         }
 
     return team_summary
+
+
+def write_injury_history(
+    records: list[dict[str, Any]],
+    base_dir: str | os.PathLike[str],
+    date_str: str | None = None,
+    captured_utc: str | None = None,
+) -> str | None:
+    """Persist a daily snapshot of the injury feed under ``<base_dir>/injury_history/``.
+
+    Overwrites the day's file so repeated runs keep the latest pre-game state.
+    Returns the written path, or ``None`` when there is nothing to archive.
+    """
+    if not records:
+        return None
+    base_path = Path(base_dir)
+    out_dir = base_path if base_path.name == "injury_history" else base_path / "injury_history"
+    day = str(date_str or datetime.now(timezone.utc).date().isoformat())
+    normalized: list[dict[str, Any]] = []
+    for rec in records:
+        if not isinstance(rec, dict):
+            continue
+        normalized.append(
+            {
+                "player": str(rec.get("player", rec.get("name", ""))),
+                "team": str(rec.get("team", "")),
+                "position": str(rec.get("position", "")),
+                "status": str(rec.get("status", "")),
+                "is_out": bool(rec.get("is_out", False)),
+                "is_dtd": bool(rec.get("is_dtd", False)),
+                "note": str(rec.get("note", rec.get("comment", rec.get("shortComment", ""))) or ""),
+            }
+        )
+    if not normalized:
+        return None
+    out_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "date": day,
+        "captured_utc": captured_utc or datetime.now(timezone.utc).isoformat(),
+        "source": "espn-cbs",
+        "count": len(normalized),
+        "records": normalized,
+    }
+    path = out_dir / f"{day}.json"
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return str(path)

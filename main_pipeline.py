@@ -40,6 +40,7 @@ from src.availability import (
     apply_live_availability_to_profiles,
     fetch_nhl_injuries,
     fetch_starting_goalies,
+    write_injury_history,
 )
 from src.team_game_model import (
     build_live_team_profiles,
@@ -391,6 +392,12 @@ def run_inference(
         injury_records, injury_status = fetch_nhl_injuries(session=session, allow_network=True)
         starting_goalies, goalie_status = fetch_starting_goalies(context["today_str"], session=session, allow_network=True)
 
+    if injury_records:
+        try:
+            write_injury_history(injury_records, docs_dir, context["today_str"])
+        except Exception as exc:  # pragma: no cover
+            print(f"Warning: injury archive write failed: {exc}")
+
     daily_matchups = dict(schedule_info["daily_matchups"])
     if df_tims is not None and not df_tims.empty:
         for _, row in df_tims.iterrows():
@@ -484,6 +491,7 @@ def run_inference(
             if "Causal_Elo" in ctx:
                 profiles[team]["Elo"] = float(ctx["Causal_Elo"])
 
+    profiles_unadjusted = {k: dict(v) for k, v in profiles.items()}
     team_availability = apply_live_availability_to_profiles(
         profiles=profiles,
         starting_goalies=starting_goalies,
@@ -532,6 +540,7 @@ def run_inference(
         team_availability=team_availability,
         cached_odds=cached_odds,
         odds_meta_out=odds_meta_out,
+        profiles_unadjusted=profiles_unadjusted,
     )
 
     if effective_odds_key and odds_meta_out.get("api_ok"):

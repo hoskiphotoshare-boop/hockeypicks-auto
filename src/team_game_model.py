@@ -749,6 +749,8 @@ def _build_causal_training_frame(
         "Games_Last7",
         "Travel_Last7",
         "Rest_x_Travel",
+        "TZ_Shift",
+        "RoadTrip_Length",
         "Causal_GP",
         "Causal_WinPct",
         "Causal_GD_GP",
@@ -784,7 +786,10 @@ def _build_causal_training_frame(
     for r in df_games.itertuples(index=False):
         sy = int(r.season_year)
         prior_candidates = [s for s in available_seasons if s < sy]
-        yp = prior_candidates[-1] if prior_candidates else earliest_season
+        # For the earliest season there is no prior MoneyPuck table; use earliest_season - 1
+        # so _lookup_prior_table misses and returns its defaults instead of leaking the
+        # same season's rates.
+        yp = prior_candidates[-1] if prior_candidates else earliest_season - 1
         tA = str(r.Team_A)
         tB = str(r.Opponent)
         eA, eB = pregame_elo.get((str(r.Date), tA), (1500.0, 1500.0))
@@ -847,6 +852,8 @@ def _build_causal_training_frame(
                 "Games_Last7_diff": float(getattr(r, "Games_Last7_A", 0.0) or 0.0) - float(getattr(r, "Games_Last7_B", 0.0) or 0.0),
                 "Travel_Last7_diff": (float(getattr(r, "Travel_Last7_A", 0.0) or 0.0) / 1000.0) - (float(getattr(r, "Travel_Last7_B", 0.0) or 0.0) / 1000.0),
                 "Rest_x_Travel_diff": float(getattr(r, "Rest_x_Travel_A", 0.0) or 0.0) - float(getattr(r, "Rest_x_Travel_B", 0.0) or 0.0),
+                "TZ_Shift_diff": float(getattr(r, "TZ_Shift_A", 0.0) or 0.0) - float(getattr(r, "TZ_Shift_B", 0.0) or 0.0),
+                "RoadTrip_Length_diff": float(getattr(r, "RoadTrip_Length_A", 0.0) or 0.0) - float(getattr(r, "RoadTrip_Length_B", 0.0) or 0.0),
             }
         )
 
@@ -1645,6 +1652,7 @@ def predict_upcoming_games(
     team_availability: dict[str, dict[str, Any]] | None = None,
     cached_odds: dict[tuple[str, str, str], dict[str, Any]] | None = None,
     odds_meta_out: dict[str, Any] | None = None,
+    profiles_unadjusted: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Generate single-game win probabilities and optional active playoff series projections."""
     odds_map = (
@@ -1682,6 +1690,26 @@ def predict_upcoming_games(
             venue_team=g["home"],
         )
         away_prob = 1.0 - home_prob
+
+        if profiles_unadjusted is None:
+            shadow_home_prob = home_prob
+        else:
+            shadow_home_prob = _pairwise_win_prob(
+                home,
+                away,
+                profiles_unadjusted,
+                bundle,
+                game_date=g_date,
+                extra_dates_a=extra_h,
+                extra_dates_b=extra_a,
+                venue_team=g["home"],
+            )
+        away_prob_unadjusted = 1.0 - shadow_home_prob
+
+        avail_h = (team_availability or {}).get(home, {})
+        avail_a = (team_availability or {}).get(away, {})
+        home_depth_eff = avail_h.get("depth_eff", 1.0)
+        away_depth_eff = avail_a.get("depth_eff", 1.0)
         st_h = profiles.get(home, {})
         st_a = profiles.get(away, {})
         b2b_h, rest_h, f3in4_h = _schedule_fatigue_for_date(st_h, g_date, extra_dates=extra_h)
@@ -1690,8 +1718,7 @@ def predict_upcoming_games(
         game_odds = odds_map.get((away, home)) or (cached_odds or {}).get((str(g_date or ""), away, home)) or {}
         home_edge = evaluate_kelly_edge(home_prob, game_odds.get(home), min_edge_pct=2.0)
         away_edge = evaluate_kelly_edge(away_prob, game_odds.get(away), min_edge_pct=2.0)
-        avail_a = (team_availability or {}).get(away, {})
-        avail_h = (team_availability or {}).get(home, {})
+        # (availability already resolved above)
 
         predictions.append(
             {
@@ -1708,6 +1735,10 @@ def predict_upcoming_games(
                 "home_score": g.get("home_score"),
                 "away_prob": round(away_prob * 100.0, 1),
                 "home_prob": round(home_prob * 100.0, 1),
+                "home_prob_unadjusted": round(shadow_home_prob * 100.0, 1),
+                "away_prob_unadjusted": round(away_prob_unadjusted * 100.0, 1),
+                "home_depth_eff": round(float(home_depth_eff), 4),
+                "away_depth_eff": round(float(away_depth_eff), 4),
                 "favored": home if home_prob >= away_prob else away,
                 "fav_prob": round(max(home_prob, away_prob) * 100.0, 1),
                 "away_streak": int(st_a.get("Streak", 0)),

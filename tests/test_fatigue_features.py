@@ -143,3 +143,12 @@ class TestFatigueFeatures(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestLookupPriorTableLeakGuard(unittest.TestCase):
+    def test_missing_season_returns_default(self):
+        from src.team_game_model import _lookup_prior_table
+
+        idx = pd.DataFrame({"x": [1.0, 2.0]}, index=pd.MultiIndex.from_tuples([(2022, "TOR"), (2023, "TOR")], names=["season", "team"]))
+        self.assertEqual(_lookup_prior_table(idx, 2021, "TOR", "x", default=0.5), 0.5)
+        self.assertEqual(_lookup_prior_table(idx, 2024, "BOS", "x", default=0.5), 0.5)
