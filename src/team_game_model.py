@@ -37,6 +37,7 @@ except ImportError:  # pragma: no cover
     HAS_GAME_ML = False
 
 from src.data_sync import TEAM_FULL_TO_ABBREV, normalize_team_abbrev
+from src.team_geo import haversine_miles, team_coords, travel_miles, tz_shift_hours
 
 FRANCHISE_PRIOR_MAP: dict[str, str] = {"UTA": "ARI"}
 ODDS_API_BOOKMAKERS = "pinnacle,hardrockbet,betonlineag,draftkings,fanduel,betmgm,betrivers,espnbet,bovada,playnow_ca"
@@ -194,13 +195,25 @@ def normalize_team_frame_per_game(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def _row_venue(row) -> str:
+    try:
+        if int(row.get("Is_Home", 0) or 0) == 1:
+            return str(row.get("Team", "") or "").strip().upper()
+    except Exception:
+        pass
+    opp = row.get("Opp", None)
+    if opp is None:
+        opp = row.get("Opponent", None)
+    return str(opp or "").strip().upper()
+
+
 def add_causal_game_log_features(df_logs: pd.DataFrame) -> pd.DataFrame:
     """Add strictly pre-game rest days, B2B/3-in-4 flags, cumulative & EWMA form per (Season, Team)."""
     if df_logs.empty:
         return df_logs.copy()
     parts: list[pd.DataFrame] = []
     for _, grp in df_logs.groupby(["Season", "Team"], sort=False):
-        g = grp.sort_values("Date").copy()
+        g = grp.sort_values("Date").copy().reset_index(drop=True)
         dates = pd.to_datetime(g["Date"], errors="coerce")
         diff_days = dates.diff().dt.days
         rest_days = (diff_days - 1.0).clip(lower=0.0, upper=7.0).fillna(3.0)
@@ -242,6 +255,83 @@ def add_causal_game_log_features(df_logs: pd.DataFrame) -> pd.DataFrame:
         g["Rolling10_GoalDiff"] = gd_sum / (w10_cnt + 5.0)
         g["EWMA_WinPct"] = won.shift(1).ewm(halflife=15, min_periods=1).mean().fillna(0.5)
         g["EWMA_GD"] = gd.shift(1).ewm(halflife=15, min_periods=1).mean().fillna(0.0)
+
+        # Fatigue: venues
+        venues = [_row_venue(row) for _, row in g.iterrows()]
+        if "Is_Home" in g.columns:
+            is_home_list = [int(x or 0) for x in pd.to_numeric(g["Is_Home"], errors="coerce").fillna(0.0).tolist()]
+        else:
+            is_home_list = [0 for _ in range(len(g))]
+
+        games_last7: list[float] = []
+        travel_last7: list[float] = []
+        tz_shift: list[float] = []
+        road_trip: list[float] = []
+        rest_x_travel: list[float] = []
+
+        for i in range(len(g)):
+            cur_date = pd.to_datetime(g["Date"].iloc[i], errors="coerce")
+            tonight_venue = venues[i]
+            prior_indices = list(range(i))
+            # prior dates
+            prior_dates = [pd.to_datetime(g["Date"].iloc[j], errors="coerce") for j in prior_indices]
+            prior_dates_valid = [ (j, d) for j, d in zip(prior_indices, prior_dates) if pd.notna(d) and pd.notna(cur_date) ]
+            # Games_Last7: prior games with 1 <= (cur - d).days <= 7
+            gl7 = 0
+            for j, d in prior_dates_valid:
+                delta = int((cur_date - d).days)
+                if 1 <= delta <= 7:
+                    gl7 += 1
+            games_last7.append(float(gl7))
+
+            # recent prior within 7 days (for travel chain)
+            recent_prior = [(j, d) for j, d in prior_dates_valid if 1 <= int((cur_date - d).days) <= 7]
+            # travel sum across consecutive venue pairs among recent_prior
+            travel = 0.0
+            for k in range(1, len(recent_prior)):
+                v_prev = venues[recent_prior[k-1][0]]
+                v_curr = venues[recent_prior[k][0]]
+                travel += travel_miles(v_prev, v_curr)
+            # last prior venue (most recent prior game overall)
+            last_prior_venue = None
+            if prior_dates_valid:
+                # most recent by date (already sorted), last in list
+                last_prior_venue = venues[prior_dates_valid[-1][0]]
+            # plus last prior venue -> tonight
+            if last_prior_venue:
+                travel += travel_miles(last_prior_venue, tonight_venue)
+            travel_last7.append(float(travel))
+
+            # TZ_Shift
+            if last_prior_venue and tonight_venue:
+                tzv = abs(tz_shift_hours(last_prior_venue, tonight_venue, cur_date))
+            else:
+                tzv = 0.0
+            tz_shift.append(float(tzv))
+
+            # RoadTrip_Length: trailing consecutive away games ending at last prior game
+            road = 0
+            if prior_dates_valid:
+                # iterate prior games reverse
+                for j in range(i - 1, -1, -1):
+                    # away if Is_Home != 1
+                    if int(is_home_list[j] or 0) == 1:
+                        break
+                    road += 1
+                    if road >= 7:
+                        break
+            road_trip.append(float(min(road, 7)))
+
+            # Rest_Days for this row already computed (rest_days series). Use it.
+            rd = float(rest_days.iloc[i]) if i < len(rest_days) else 0.0
+            rest_x_travel.append(float(rd * (travel / 1000.0)))
+
+        g["Games_Last7"] = games_last7
+        g["Travel_Last7"] = travel_last7
+        g["TZ_Shift"] = tz_shift
+        g["RoadTrip_Length"] = road_trip
+        g["Rest_x_Travel"] = rest_x_travel
+
         parts.append(g)
     return pd.concat(parts, ignore_index=True) if parts else df_logs.copy()
 
@@ -337,13 +427,26 @@ def extract_latest_team_form(df_logs: pd.DataFrame) -> dict[str, dict[str, Any]]
         next_streak = (prev_streak + 1 if prev_streak > 0 else 1) if last_won == 1 else (
             prev_streak - 1 if prev_streak < 0 else -1
         )
-        recent_dates = [str(d) for d in grp["Date"].tail(4).tolist() if d]
+        recent = grp.tail(10)
+        recent_dates = [str(d) for d in recent["Date"].tolist() if d is not None and str(d).strip() != ""]
+        recent_is_home = [int(x or 0) for x in pd.to_numeric(recent.get("Is_Home", 0.0), errors="coerce").fillna(0.0).tolist()] if "Is_Home" in recent.columns else [0 for _ in recent_dates]
+        recent_venues = []
+        for _, rrow in recent.iterrows():
+            if int(rrow.get("Is_Home", 0) or 0) == 1:
+                recent_venues.append(str(rrow.get("Team", "") or "").strip().upper())
+            else:
+                opp = rrow.get("Opp", None)
+                if opp is None:
+                    opp = rrow.get("Opponent", None)
+                recent_venues.append(str(opp or "").strip().upper())
         t_str = str(team)
         form_map[t_str] = {
             "Last_Game_Won": last_won,
             "Current_Streak": next_streak,
             "Last_Game_Date": str(last_row.get("Date", "") or ""),
             "Recent_Game_Dates": recent_dates,
+            "Recent_Game_Venues": recent_venues,
+            "Recent_Is_Home": recent_is_home,
             "Rolling10_WinPct": round((wins + 2.5) / (n_games + 5.0), 4),
             "Rolling10_GoalDiff": round(gd / (n_games + 5.0), 4),
             "Causal_GP": int(n_full),
@@ -549,7 +652,7 @@ def _merge_side_metrics(
     return merged.drop(columns=[c for c in ("season", "team", "season_dup", "team_dup") if c in merged.columns])
 
 
-CAUSAL_PAIRWISE_FEATURES: list[str] = [
+BASE_PAIRWISE_FEATURES: list[str] = [
     "Elo_diff",
     "Prior_xGoalsPct_diff",
     "Prior_FenwickPct_diff",
@@ -572,6 +675,29 @@ CAUSAL_PAIRWISE_FEATURES: list[str] = [
     "Rest_Days_diff",
     "Is_3in4_diff",
 ]
+
+# Fatigue experiment. The holdout on the 2026 season regressed versus the 21-feature
+# baseline (Brier 0.2288 -> 0.2299, AUC 0.6778 -> 0.6710 with 3 features), so these
+# stay OFF by default. Re-run `scripts/eval_fatigue_features.py` on a larger sample
+# before flipping ENABLE_FATIGUE_FEATURES; the columns are still computed and stored.
+FATIGUE_PAIRWISE_FEATURES: list[str] = [
+    "Games_Last7_diff",
+    "Travel_Last7_diff",
+    "Rest_x_Travel_diff",
+]
+
+ENABLE_FATIGUE_FEATURES: bool = False
+
+CAUSAL_PAIRWISE_FEATURES: list[str] = BASE_PAIRWISE_FEATURES + (
+    FATIGUE_PAIRWISE_FEATURES if ENABLE_FATIGUE_FEATURES else []
+)
+
+
+def pairwise_feature_names(*, include_fatigue: bool | None = None) -> list[str]:
+    """Return the active pairwise feature schema (fatigue opt-in)."""
+    if include_fatigue is None:
+        include_fatigue = ENABLE_FATIGUE_FEATURES
+    return BASE_PAIRWISE_FEATURES + (FATIGUE_PAIRWISE_FEATURES if include_fatigue else [])
 
 
 def _lookup_prior_table(
@@ -599,6 +725,8 @@ def _build_causal_training_frame(
     df_stars: pd.DataFrame,
     df_goalies: pd.DataFrame,
     df_master_logs: pd.DataFrame,
+    *,
+    feature_names: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray]:
     """Assemble strictly leak-free pre-game pairwise features using prior-season MoneyPuck + causal logs & Elo."""
     logs_enriched = add_causal_game_log_features(df_master_logs)
@@ -618,6 +746,9 @@ def _build_causal_training_frame(
         "Is_B2B",
         "Rest_Days",
         "Is_3in4",
+        "Games_Last7",
+        "Travel_Last7",
+        "Rest_x_Travel",
         "Causal_GP",
         "Causal_WinPct",
         "Causal_GD_GP",
@@ -713,10 +844,13 @@ def _build_causal_training_frame(
                 "Is_B2B_diff": b2b_A - b2b_B,
                 "Rest_Days_diff": float(getattr(r, "Rest_Days_A", 2.0) or 0.0) - float(getattr(r, "Rest_Days_B", 2.0) or 0.0),
                 "Is_3in4_diff": float(getattr(r, "Is_3in4_A", 0.0) or 0.0) - float(getattr(r, "Is_3in4_B", 0.0) or 0.0),
+                "Games_Last7_diff": float(getattr(r, "Games_Last7_A", 0.0) or 0.0) - float(getattr(r, "Games_Last7_B", 0.0) or 0.0),
+                "Travel_Last7_diff": (float(getattr(r, "Travel_Last7_A", 0.0) or 0.0) / 1000.0) - (float(getattr(r, "Travel_Last7_B", 0.0) or 0.0) / 1000.0),
+                "Rest_x_Travel_diff": float(getattr(r, "Rest_x_Travel_A", 0.0) or 0.0) - float(getattr(r, "Rest_x_Travel_B", 0.0) or 0.0),
             }
         )
 
-    X_pair = pd.DataFrame(rows)[CAUSAL_PAIRWISE_FEATURES].fillna(0.0)
+    X_pair = pd.DataFrame(rows)[list(feature_names or CAUSAL_PAIRWISE_FEATURES)].fillna(0.0)
     y_pair = df_games["Won"].astype(int).to_numpy()
     seasons = df_games["season_year"].astype(int).to_numpy()
     return df_games, X_pair, y_pair, seasons
@@ -1003,6 +1137,8 @@ def build_live_team_profiles(
         stat["Streak"] = int(ctx.get("Current_Streak", 0))
         stat["Last_Game_Date"] = str(ctx.get("Last_Game_Date", "") or "")
         stat["Recent_Game_Dates"] = list(ctx.get("Recent_Game_Dates") or ([stat["Last_Game_Date"]] if stat["Last_Game_Date"] else []))
+        stat["Recent_Game_Venues"] = list(ctx.get("Recent_Game_Venues") or [])
+        stat["Recent_Is_Home"] = list(ctx.get("Recent_Is_Home") or [])
         stat["Rolling10_WinPct"] = float(ctx.get("Rolling10_WinPct", 0.5))
         stat["Rolling10_GoalDiff"] = float(ctx.get("Rolling10_GoalDiff", 0.0))
         stat["games_played"] = int(row.get("games_played", 0) or 0)
@@ -1062,6 +1198,109 @@ def _rest_metrics_for_date(
     return is_b2b, rest_days
 
 
+def _fatigue_metrics_for_date(
+    stat: dict[str, Any],
+    game_date: str | None,
+    extra_dates: list[str] | set[str] | None = None,
+    venue_team: str | None = None,
+) -> dict[str, float]:
+    """Return the 5 raw fatigue metrics for an upcoming game from a live team profile."""
+    out = {
+        "Games_Last7": 0.0,
+        "Travel_Last7": 0.0,
+        "TZ_Shift": 0.0,
+        "RoadTrip_Length": 0.0,
+        "Rest_x_Travel": 0.0,
+    }
+    if not game_date:
+        return out
+    g_dt = pd.to_datetime(game_date, errors="coerce")
+    if pd.isna(g_dt):
+        return out
+
+    dates_list = list(stat.get("Recent_Game_Dates") or [])
+    venues_list = list(stat.get("Recent_Game_Venues") or [])
+    is_home_list = list(stat.get("Recent_Is_Home") or [])
+
+    # Build completed (date, venue, is_home) list, aligned.
+    completed: list[tuple[pd.Timestamp, str | None, Any]] = []
+    if venues_list:
+        n = min(len(dates_list), len(venues_list))
+        dd = dates_list[-n:] if n > 0 else []
+        vv = venues_list[-n:] if n > 0 else []
+        hh = is_home_list[-n:] if len(is_home_list) >= n else [None] * n
+        for d, v, h in zip(dd, vv, hh):
+            dt = pd.to_datetime(str(d).strip(), errors="coerce") if d is not None else pd.NaT
+            if pd.notna(dt):
+                completed.append((dt, (str(v).strip().upper() if v else None), h))
+    else:
+        for d in dates_list:
+            dt = pd.to_datetime(str(d).strip(), errors="coerce") if d is not None else pd.NaT
+            if pd.notna(dt):
+                completed.append((dt, None, None))
+
+    if not completed and stat.get("Last_Game_Date"):
+        dt = pd.to_datetime(str(stat["Last_Game_Date"]).strip(), errors="coerce")
+        if pd.notna(dt):
+            completed.append((dt, None, None))
+
+    completed.sort(key=lambda x: x[0])
+    prior_completed = [x for x in completed if x[0] < g_dt]
+
+    extra_prior_dts: list[pd.Timestamp] = []
+    for raw in extra_dates or []:
+        dt = pd.to_datetime(str(raw).strip(), errors="coerce") if raw is not None else pd.NaT
+        if pd.notna(dt) and dt < g_dt:
+            extra_prior_dts.append(dt)
+
+    all_prior_dts = sorted(set([x[0] for x in prior_completed] + extra_prior_dts))
+    games_last7 = sum(1 for d in all_prior_dts if 1 <= int((g_dt - d).days) <= 7)
+    out["Games_Last7"] = float(games_last7)
+
+    # Travel among prior completed games within 7 days.
+    recent_completed = [x for x in prior_completed if 1 <= int((g_dt - x[0]).days) <= 7]
+    travel = 0.0
+    for k in range(1, len(recent_completed)):
+        v_prev = recent_completed[k - 1][1]
+        v_curr = recent_completed[k][1]
+        if v_prev and v_curr:
+            travel += travel_miles(v_prev, v_curr)
+    last_prior_venue = prior_completed[-1][1] if prior_completed else None
+    if last_prior_venue and venue_team:
+        travel += travel_miles(last_prior_venue, venue_team)
+    out["Travel_Last7"] = float(travel)
+
+    if last_prior_venue and venue_team:
+        out["TZ_Shift"] = float(abs(tz_shift_hours(last_prior_venue, venue_team, game_date)))
+
+    # Road trip: trailing consecutive away games ending at last prior completed game.
+    road = 0
+    for dt, v, h in reversed(prior_completed):
+        is_home = False
+        if h is None:
+            break
+        try:
+            is_home = int(h or 0) == 1 or str(h).strip().lower() in ("true", "1", "1.0")
+        except Exception:
+            is_home = False
+        if is_home:
+            break
+        road += 1
+        if road >= 7:
+            break
+    out["RoadTrip_Length"] = float(min(road, 7))
+
+    # Rest days (schedule-aware, including extra dates).
+    if all_prior_dts:
+        diff_days = int((g_dt - all_prior_dts[-1]).days)
+        rest_days = float(max(0, min(7, diff_days - 1)))
+    else:
+        rest_days = 2.0
+    out["Rest_x_Travel"] = float(rest_days * (travel / 1000.0))
+
+    return out
+
+
 def _pairwise_win_prob(
     team_a: str,
     team_b: str,
@@ -1070,12 +1309,20 @@ def _pairwise_win_prob(
     game_date: str | None = None,
     extra_dates_a: list[str] | set[str] | None = None,
     extra_dates_b: list[str] | set[str] | None = None,
+    venue_team: str | None = None,
 ) -> float:
     if team_a not in profiles or team_b not in profiles:
         return 0.5
     stat_a, stat_b = profiles[team_a], profiles[team_b]
     b2b_a, rest_a, f3in4_a = _schedule_fatigue_for_date(stat_a, game_date, extra_dates=extra_dates_a)
     b2b_b, rest_b, f3in4_b = _schedule_fatigue_for_date(stat_b, game_date, extra_dates=extra_dates_b)
+
+    if game_date and venue_team:
+        metrics_a = _fatigue_metrics_for_date(stat_a, game_date, extra_dates=extra_dates_a, venue_team=venue_team)
+        metrics_b = _fatigue_metrics_for_date(stat_b, game_date, extra_dates=extra_dates_b, venue_team=venue_team)
+    else:
+        metrics_a = None
+        metrics_b = None
 
     feature_names: list[str] = bundle["feature_names"]
     row_dict: dict[str, list[float]] = {}
@@ -1090,6 +1337,26 @@ def _pairwise_win_prob(
             row_dict[feat] = [rest_a - rest_b]
         elif feat == "Is_3in4_diff":
             row_dict[feat] = [f3in4_a - f3in4_b]
+        elif feat == "Games_Last7_diff":
+            va = metrics_a["Games_Last7"] if metrics_a else 0.0
+            vb = metrics_b["Games_Last7"] if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
+        elif feat == "Travel_Last7_diff":
+            va = (metrics_a["Travel_Last7"] / 1000.0) if metrics_a else 0.0
+            vb = (metrics_b["Travel_Last7"] / 1000.0) if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
+        elif feat == "TZ_Shift_diff":
+            va = metrics_a["TZ_Shift"] if metrics_a else 0.0
+            vb = metrics_b["TZ_Shift"] if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
+        elif feat == "RoadTrip_Length_diff":
+            va = metrics_a["RoadTrip_Length"] if metrics_a else 0.0
+            vb = metrics_b["RoadTrip_Length"] if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
+        elif feat == "Rest_x_Travel_diff":
+            va = metrics_a["Rest_x_Travel"] if metrics_a else 0.0
+            vb = metrics_b["Rest_x_Travel"] if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
         else:
             base_key = feat[:-5] if feat.endswith("_diff") else feat
             row_dict[feat] = [float(stat_a.get(base_key, 0.0)) - float(stat_b.get(base_key, 0.0))]
@@ -1412,6 +1679,7 @@ def predict_upcoming_games(
             game_date=g_date,
             extra_dates_a=extra_h,
             extra_dates_b=extra_a,
+            venue_team=g["home"],
         )
         away_prob = 1.0 - home_prob
         st_h = profiles.get(home, {})

@@ -18,6 +18,7 @@ from src.data_sync import (
     TEAM_FULL_TO_ABBREV,
     PlayerMatcher,
     _fetch_with_retries,
+    _normalize_pos_group,
     clean_name,
     create_http_session,
     normalize_team_abbrev,
@@ -64,6 +65,12 @@ CBS_TEAM_CITY_TO_ABBREV = {
 }
 
 _OUT_STATUS_TOKENS = ("injured reserve", "ltir", "ir-lt", "ir-nr", "out", "suspend")
+
+# Mid-tier depth-loss adjustment. On by default: it is a gentle, bounded scaling of
+# the team rates (floor 0.90) for depth injuries the top-3 star path cannot see.
+# It has no historical injury archive to backtest against, so flip this off if the
+# live calibration drifts; every input is pre-game and from the existing injury feed.
+ENABLE_MID_TIER_INJURY_ADJUSTMENT: bool = True
 _DTD_STATUS_TOKENS = ("day-to-day", "day to day", "gtd", "game-time", "questionable", "probable")
 
 
@@ -329,6 +336,72 @@ def apply_live_availability_to_profiles(
                     for _, r in top_rows.iterrows()
                 ]
 
+    # Pre-index per-team mid-tier skater values (separate from star Top-3 path)
+    team_mid_skaters: dict[str, list[dict[str, Any]]] = {}
+    if skater_baseline_df is not None and not skater_baseline_df.empty and "team" in skater_baseline_df.columns:
+        work = skater_baseline_df.copy()
+        work["team"] = work["team"].apply(normalize_team_abbrev)
+        if "name" not in work.columns:
+            if "player" in work.columns:
+                work["name"] = work["player"]
+            else:
+                work["name"] = work.index.astype(str)
+        # Value metric selection
+        val_series = None
+        if "gameScore" in work.columns:
+            s = pd.to_numeric(work["gameScore"], errors="coerce")
+            if s.notna().any():
+                val_series = s
+        if val_series is None and "icetime" in work.columns:
+            ic = pd.to_numeric(work["icetime"], errors="coerce")
+            if "games_played" in work.columns:
+                gp = pd.to_numeric(work["games_played"], errors="coerce")
+                gp_safe = gp.replace(0, pd.NA)
+                derived = ic / gp_safe
+                if derived.notna().any():
+                    val_series = derived.fillna(ic)
+                else:
+                    val_series = ic
+            else:
+                val_series = ic
+        if val_series is None:
+            for c in ("base_pred", "base_pred_regular", "base_pred_playoffs"):
+                if c in work.columns:
+                    s = pd.to_numeric(work[c], errors="coerce")
+                    if s.notna().any():
+                        val_series = s
+                        break
+        if val_series is None:
+            val_series = pd.Series(0.0, index=work.index)
+        work["_val"] = pd.to_numeric(val_series, errors="coerce").fillna(0.0).clip(lower=0.0)
+
+        if "position" in work.columns:
+            work = work[work["position"].astype(str).str.strip().str.upper() != "G"].copy()
+
+        for t_key, grp in work.groupby("team"):
+            sorted_grp = grp.sort_values("_val", ascending=False, kind="mergesort")
+            f_rank = 0
+            d_rank = 0
+            skaters: list[dict[str, Any]] = []
+            for _, r in sorted_grp.iterrows():
+                pos = str(r.get("position", ""))
+                posg = _normalize_pos_group(pos)
+                if posg == "D":
+                    rw = 0.9 if d_rank < 4 else 0.5
+                    d_rank += 1
+                else:
+                    rw = 1.0 if f_rank < 6 else 0.6
+                    f_rank += 1
+                skaters.append(
+                    {
+                        "name": str(r.get("name", "")),
+                        "position": pos,
+                        "value": float(r.get("_val", 0.0)),
+                        "role_weight": float(rw),
+                    }
+                )
+            team_mid_skaters[str(t_key)] = skaters
+
     all_teams = sorted(set(profiles.keys()) | set(starting_goalies.keys()) | set(injuries_by_team.keys()))
     for team in all_teams:
         g_info = starting_goalies.get(team)
@@ -424,6 +497,75 @@ def apply_live_availability_to_profiles(
                         st["Top3_Points_per_game"] = float(st.get("Top3_Points_per_game", 0.0)) * eff_scale
                         st["Top3_xGoals_per_game"] = float(st.get("Top3_xGoals_per_game", 0.0)) * eff_scale
 
+            # 3. Mid-tier depth loss (gentler, separate from star path)
+            ranked_mid = team_mid_skaters.get(team, [])
+            top_sk = skater_top_by_team.get(team, [])
+            star_top3_names = {clean_name(x.get("name", "")) for x in (top_sk[:3] if top_sk else [])}
+            for s in ranked_mid:
+                s["is_star_top3"] = clean_name(s.get("name", "")) in star_top3_names
+            mid_skaters = [s for s in ranked_mid if not s.get("is_star_top3")]
+            total_mid_value = sum(s["value"] * s["role_weight"] for s in mid_skaters)
+            missing_weighted = 0.0
+            for s in mid_skaters:
+                inj = injury_matcher.match(
+                    name=s["name"],
+                    team=team,
+                    position=s["position"],
+                    allow_initial_fallback=True,
+                    require_same_team=True,
+                    require_compatible_pos=True,
+                )
+                if inj is not None:
+                    if inj.get("is_out"):
+                        sev = 1.0
+                    elif inj.get("is_dtd"):
+                        sev = 0.5
+                    else:
+                        sev = 0.0
+                    if sev > 0:
+                        missing_weighted += s["value"] * s["role_weight"] * sev
+            if not ENABLE_MID_TIER_INJURY_ADJUSTMENT or total_mid_value <= 0:
+                eff_mid = 1.0
+            else:
+                depth_ratio = 1.0 - (missing_weighted / total_mid_value)
+                depth_ratio = min(1.0, max(0.0, depth_ratio))
+                eff_mid = 0.5 + 0.5 * depth_ratio
+                eff_mid = min(1.0, max(0.90, eff_mid))
+            if eff_mid < 0.999999:
+                for key in ("Prior_xGoalsPct", "Prior_FenwickPct"):
+                    if key in st:
+                        try:
+                            val = float(st[key])
+                        except (TypeError, ValueError):
+                            continue
+                        new_val = val * eff_mid
+                        new_val = min(0.70, max(0.30, new_val))
+                        st[key] = new_val
+
+        # Identify injured skaters that belong to the team's Top-3 (owned by star path)
+        star_top3_names = {
+            clean_name(x.get("name", "")) for x in (skater_top_by_team.get(team, [])[:3])
+        }
+        top3_injury_keys = set()
+        for s in team_mid_skaters.get(team, []):
+            if clean_name(s.get("name", "")) not in star_top3_names:
+                continue
+            inj = injury_matcher.match(
+                name=s["name"],
+                team=team,
+                position=s["position"],
+                allow_initial_fallback=True,
+                require_same_team=True,
+                require_compatible_pos=True,
+            )
+            if inj is not None:
+                top3_injury_keys.add(f"{inj.get('player')}|{inj.get('team')}")
+        mid_tier_out_list = [
+            {"player": r["player"], "position": r["position"], "status": r["status"]}
+            for r in (out_skaters + dtd_skaters)
+            if f"{r.get('player')}|{r.get('team')}" not in top3_injury_keys
+        ]
+
         team_summary[team] = {
             "goalie": starter_record,
             "out_skaters": [
@@ -434,6 +576,7 @@ def apply_live_availability_to_profiles(
                 {"player": r["player"], "position": r["position"], "status": r["status"]}
                 for r in dtd_skaters
             ],
+            "mid_tier_out": mid_tier_out_list,
         }
 
     return team_summary
