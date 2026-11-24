@@ -347,7 +347,7 @@
           "team": "MIN",
           "group": "1",
           "first_seen_et": "2026-11-23 12:02 AM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "kyle connor|WPG": {
           "player": "Kyle Connor",
@@ -361,7 +361,7 @@
           "team": "MIN",
           "group": "1",
           "first_seen_et": "2026-11-23 12:02 AM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "auston matthews|TOR": {
           "player": "Auston Matthews",
@@ -389,7 +389,7 @@
           "team": "SJS",
           "group": "1",
           "first_seen_et": "2026-11-23 12:02 AM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "bo horvat|NYI": {
           "player": "Bo Horvat",
@@ -417,7 +417,7 @@
           "team": "MIN",
           "group": "2",
           "first_seen_et": "2026-11-23 12:02 AM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "mark scheifele|WPG": {
           "player": "Mark Scheifele",
@@ -501,7 +501,7 @@
           "team": "SJS",
           "group": "2",
           "first_seen_et": "2026-11-23 12:02 AM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "nikita nesterenko|ANA": {
           "player": "Nikita Nesterenko",
@@ -578,14 +578,14 @@
           "team": "MIN",
           "group": "3",
           "first_seen_et": "2026-11-23 12:02 AM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "yakov trenin|MIN": {
           "player": "Yakov Trenin",
           "team": "MIN",
           "group": "3",
           "first_seen_et": "2026-11-23 12:02 AM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "maxim tsyplakov|CGY": {
           "player": "Maxim Tsyplakov",
@@ -613,7 +613,7 @@
           "team": "SJS",
           "group": "2",
           "first_seen_et": "2026-11-23 07:04 PM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         },
         "trevor moore|LAK": {
           "player": "Trevor Moore",
@@ -662,7 +662,7 @@
           "team": "SJS",
           "group": "3",
           "first_seen_et": "2026-11-23 07:04 PM ET",
-          "last_seen_et": "2026-11-23 09:21 PM ET"
+          "last_seen_et": "2026-11-23 09:44 PM ET"
         }
       }
     }
