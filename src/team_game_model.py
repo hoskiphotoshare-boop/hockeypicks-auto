@@ -264,6 +264,7 @@ def add_causal_game_log_features(df_logs: pd.DataFrame) -> pd.DataFrame:
             is_home_list = [0 for _ in range(len(g))]
 
         games_last7: list[float] = []
+        games_last5: list[float] = []
         travel_last7: list[float] = []
         tz_shift: list[float] = []
         road_trip: list[float] = []
@@ -283,6 +284,9 @@ def add_causal_game_log_features(df_logs: pd.DataFrame) -> pd.DataFrame:
                 if 1 <= delta <= 7:
                     gl7 += 1
             games_last7.append(float(gl7))
+            games_last5.append(
+                float(sum(1 for _, d in prior_dates_valid if 1 <= int((cur_date - d).days) <= 5))
+            )
 
             # recent prior within 7 days (for travel chain)
             recent_prior = [(j, d) for j, d in prior_dates_valid if 1 <= int((cur_date - d).days) <= 7]
@@ -327,10 +331,17 @@ def add_causal_game_log_features(df_logs: pd.DataFrame) -> pd.DataFrame:
             rest_x_travel.append(float(rd * (travel / 1000.0)))
 
         g["Games_Last7"] = games_last7
+        g["Games_Last5"] = games_last5
         g["Travel_Last7"] = travel_last7
         g["TZ_Shift"] = tz_shift
         g["RoadTrip_Length"] = road_trip
         g["Rest_x_Travel"] = rest_x_travel
+        # Binary/threshold variants + rest interaction for the walk-forward experiment.
+        gl7 = pd.to_numeric(g["Games_Last7"], errors="coerce").fillna(0.0)
+        gl5 = pd.to_numeric(g["Games_Last5"], errors="coerce").fillna(0.0)
+        g["Games_Last7_ge4"] = (gl7 >= 4.0).astype(float)
+        g["Games_Last5_ge3"] = (gl5 >= 3.0).astype(float)
+        g["Rest_x_Games7_ge4"] = pd.to_numeric(g["Rest_Days"], errors="coerce").fillna(0.0) * g["Games_Last7_ge4"]
 
         parts.append(g)
     return pd.concat(parts, ignore_index=True) if parts else df_logs.copy()
@@ -686,6 +697,13 @@ FATIGUE_PAIRWISE_FEATURES: list[str] = [
     "Rest_x_Travel_diff",
 ]
 
+# Threshold/interaction variants tested in the 2026 walk-forward extension.
+FATIGUE_BINARY_FEATURES: list[str] = [
+    "Games_Last7_ge4_diff",
+    "Games_Last5_ge3_diff",
+    "Rest_x_Games7_ge4_diff",
+]
+
 ENABLE_FATIGUE_FEATURES: bool = False
 
 CAUSAL_PAIRWISE_FEATURES: list[str] = BASE_PAIRWISE_FEATURES + (
@@ -747,10 +765,14 @@ def _build_causal_training_frame(
         "Rest_Days",
         "Is_3in4",
         "Games_Last7",
+        "Games_Last5",
         "Travel_Last7",
         "Rest_x_Travel",
         "TZ_Shift",
         "RoadTrip_Length",
+        "Games_Last7_ge4",
+        "Games_Last5_ge3",
+        "Rest_x_Games7_ge4",
         "Causal_GP",
         "Causal_WinPct",
         "Causal_GD_GP",
@@ -852,6 +874,9 @@ def _build_causal_training_frame(
                 "Games_Last7_diff": float(getattr(r, "Games_Last7_A", 0.0) or 0.0) - float(getattr(r, "Games_Last7_B", 0.0) or 0.0),
                 "Travel_Last7_diff": (float(getattr(r, "Travel_Last7_A", 0.0) or 0.0) / 1000.0) - (float(getattr(r, "Travel_Last7_B", 0.0) or 0.0) / 1000.0),
                 "Rest_x_Travel_diff": float(getattr(r, "Rest_x_Travel_A", 0.0) or 0.0) - float(getattr(r, "Rest_x_Travel_B", 0.0) or 0.0),
+                "Games_Last7_ge4_diff": float(getattr(r, "Games_Last7_ge4_A", 0.0) or 0.0) - float(getattr(r, "Games_Last7_ge4_B", 0.0) or 0.0),
+                "Games_Last5_ge3_diff": float(getattr(r, "Games_Last5_ge3_A", 0.0) or 0.0) - float(getattr(r, "Games_Last5_ge3_B", 0.0) or 0.0),
+                "Rest_x_Games7_ge4_diff": float(getattr(r, "Rest_x_Games7_ge4_A", 0.0) or 0.0) - float(getattr(r, "Rest_x_Games7_ge4_B", 0.0) or 0.0),
                 "TZ_Shift_diff": float(getattr(r, "TZ_Shift_A", 0.0) or 0.0) - float(getattr(r, "TZ_Shift_B", 0.0) or 0.0),
                 "RoadTrip_Length_diff": float(getattr(r, "RoadTrip_Length_A", 0.0) or 0.0) - float(getattr(r, "RoadTrip_Length_B", 0.0) or 0.0),
             }
@@ -1214,10 +1239,14 @@ def _fatigue_metrics_for_date(
     """Return the 5 raw fatigue metrics for an upcoming game from a live team profile."""
     out = {
         "Games_Last7": 0.0,
+        "Games_Last5": 0.0,
         "Travel_Last7": 0.0,
         "TZ_Shift": 0.0,
         "RoadTrip_Length": 0.0,
         "Rest_x_Travel": 0.0,
+        "Games_Last7_ge4": 0.0,
+        "Games_Last5_ge3": 0.0,
+        "Rest_x_Games7_ge4": 0.0,
     }
     if not game_date:
         return out
@@ -1263,6 +1292,10 @@ def _fatigue_metrics_for_date(
     all_prior_dts = sorted(set([x[0] for x in prior_completed] + extra_prior_dts))
     games_last7 = sum(1 for d in all_prior_dts if 1 <= int((g_dt - d).days) <= 7)
     out["Games_Last7"] = float(games_last7)
+    games_last5 = sum(1 for d in all_prior_dts if 1 <= int((g_dt - d).days) <= 5)
+    out["Games_Last5"] = float(games_last5)
+    out["Games_Last7_ge4"] = 1.0 if games_last7 >= 4 else 0.0
+    out["Games_Last5_ge3"] = 1.0 if games_last5 >= 3 else 0.0
 
     # Travel among prior completed games within 7 days.
     recent_completed = [x for x in prior_completed if 1 <= int((g_dt - x[0]).days) <= 7]
@@ -1304,6 +1337,7 @@ def _fatigue_metrics_for_date(
     else:
         rest_days = 2.0
     out["Rest_x_Travel"] = float(rest_days * (travel / 1000.0))
+    out["Rest_x_Games7_ge4"] = float(rest_days * out["Games_Last7_ge4"])
 
     return out
 
@@ -1363,6 +1397,18 @@ def _pairwise_win_prob(
         elif feat == "Rest_x_Travel_diff":
             va = metrics_a["Rest_x_Travel"] if metrics_a else 0.0
             vb = metrics_b["Rest_x_Travel"] if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
+        elif feat == "Games_Last7_ge4_diff":
+            va = metrics_a["Games_Last7_ge4"] if metrics_a else 0.0
+            vb = metrics_b["Games_Last7_ge4"] if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
+        elif feat == "Games_Last5_ge3_diff":
+            va = metrics_a["Games_Last5_ge3"] if metrics_a else 0.0
+            vb = metrics_b["Games_Last5_ge3"] if metrics_b else 0.0
+            row_dict[feat] = [va - vb]
+        elif feat == "Rest_x_Games7_ge4_diff":
+            va = metrics_a["Rest_x_Games7_ge4"] if metrics_a else 0.0
+            vb = metrics_b["Rest_x_Games7_ge4"] if metrics_b else 0.0
             row_dict[feat] = [va - vb]
         else:
             base_key = feat[:-5] if feat.endswith("_diff") else feat

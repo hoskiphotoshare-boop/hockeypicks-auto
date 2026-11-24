@@ -8,6 +8,7 @@ from src.team_game_model import (
     BASE_PAIRWISE_FEATURES,
     CAUSAL_PAIRWISE_FEATURES,
     ENABLE_FATIGUE_FEATURES,
+    FATIGUE_BINARY_FEATURES,
     FATIGUE_PAIRWISE_FEATURES,
     _fatigue_metrics_for_date,
     _pairwise_win_prob,
@@ -33,6 +34,12 @@ class TestSchemaGate(unittest.TestCase):
         self.assertEqual(full, BASE_PAIRWISE_FEATURES + FATIGUE_PAIRWISE_FEATURES)
         for feat in FATIGUE_PAIRWISE_FEATURES:
             self.assertNotIn(feat, BASE_PAIRWISE_FEATURES)
+
+    def test_binary_fatigue_features_are_not_in_default_schema(self):
+        self.assertEqual(len(FATIGUE_BINARY_FEATURES), 3)
+        for feat in FATIGUE_BINARY_FEATURES:
+            self.assertNotIn(feat, BASE_PAIRWISE_FEATURES)
+            self.assertNotIn(feat, pairwise_feature_names(include_fatigue=True))
 
 
 class TestFatigueFeatures(unittest.TestCase):
@@ -107,6 +114,46 @@ class TestFatigueFeatures(unittest.TestCase):
         self.assertAlmostEqual(live["RoadTrip_Length"], float(trow["RoadTrip_Length"]), places=3)
         self.assertAlmostEqual(live["Rest_x_Travel"], float(trow["Rest_x_Travel"]), places=3)
 
+    def test_binary_thresholds_and_rest_interaction(self):
+        rows = []
+        for d in ("2026-01-01", "2026-01-02", "2026-01-03", "2026-01-05", "2026-01-07"):
+            rows.append(
+                {
+                    "Season": "20262027",
+                    "Team": "EDM",
+                    "Date": d,
+                    "Won": 1,
+                    "Team_Score": 3,
+                    "Opp_Score": 2,
+                    "Is_Home": 1,
+                    "Opp": "CGY",
+                    "Opponent": "CGY",
+                }
+            )
+        enriched = add_causal_game_log_features(pd.DataFrame(rows))
+        row = enriched[enriched["Date"] == "2026-01-07"].iloc[0]
+        # Priors on 01,02,03,05 -> deltas 6,5,4,2 -> last7=4, last5=3, rest=1.
+        self.assertEqual(row["Games_Last7"], 4.0)
+        self.assertEqual(row["Games_Last5"], 3.0)
+        self.assertEqual(row["Games_Last7_ge4"], 1.0)
+        self.assertEqual(row["Games_Last5_ge3"], 1.0)
+        self.assertEqual(row["Rest_Days"], 1.0)
+        self.assertEqual(row["Rest_x_Games7_ge4"], 1.0)
+
+    def test_live_metrics_include_binary_thresholds(self):
+        stat = {
+            "Last_Game_Date": "2026-01-05",
+            "Recent_Game_Dates": ["2026-01-01", "2026-01-02", "2026-01-03", "2026-01-05"],
+            "Recent_Game_Venues": ["EDM", "EDM", "EDM", "EDM"],
+            "Recent_Is_Home": [1, 1, 1, 1],
+        }
+        m = _fatigue_metrics_for_date(stat, "2026-01-07")
+        self.assertEqual(m["Games_Last7"], 4.0)
+        self.assertEqual(m["Games_Last5"], 3.0)
+        self.assertEqual(m["Games_Last7_ge4"], 1.0)
+        self.assertEqual(m["Games_Last5_ge3"], 1.0)
+        self.assertEqual(m["Rest_x_Games7_ge4"], 1.0)
+
     def test_neutral_power_ranking_behavior(self):
         class Recorder:
             def __init__(self):
@@ -121,15 +168,18 @@ class TestFatigueFeatures(unittest.TestCase):
             "TOR": {"Last_Game_Date": "2026-01-09", "Recent_Game_Dates": [], "Recent_Game_Venues": [], "Recent_Is_Home": []},
         }
         rec = Recorder()
-        bundle = {"model": rec, "feature_names": ["Games_Last7_diff"], "optimal_T": 1.0, "lr_model": None, "lr_weight": 0.0}
+        feats = ["Games_Last7_diff"] + list(FATIGUE_BINARY_FEATURES)
+        bundle = {"model": rec, "feature_names": feats, "optimal_T": 1.0, "lr_model": None, "lr_weight": 0.0}
         # no game_date/venue -> neutral
         _pairwise_win_prob("EDM", "TOR", profiles, bundle)
-        self.assertEqual(float(rec.last["Games_Last7_diff"].iloc[0]), 0.0)
+        for feat in feats:
+            self.assertEqual(float(rec.last[feat].iloc[0]), 0.0)
         # game_date but no venue -> neutral
         rec2 = Recorder()
-        bundle2 = {"model": rec2, "feature_names": ["Games_Last7_diff"], "optimal_T": 1.0, "lr_model": None, "lr_weight": 0.0}
+        bundle2 = {"model": rec2, "feature_names": feats, "optimal_T": 1.0, "lr_model": None, "lr_weight": 0.0}
         _pairwise_win_prob("EDM", "TOR", profiles, bundle2, game_date="2026-01-11")
-        self.assertEqual(float(rec2.last["Games_Last7_diff"].iloc[0]), 0.0)
+        for feat in feats:
+            self.assertEqual(float(rec2.last[feat].iloc[0]), 0.0)
 
     def test_unknown_team_fallback(self):
         self.assertIsNone(team_coords("ZZZ"))

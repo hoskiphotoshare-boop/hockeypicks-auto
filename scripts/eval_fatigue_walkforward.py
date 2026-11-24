@@ -22,6 +22,7 @@ if ROOT not in sys.path:
 from src.data_sync import get_nhl_season_context, sync_game_logs
 from src.team_game_model import (
     BASE_PAIRWISE_FEATURES,
+    FATIGUE_BINARY_FEATURES,
     _build_causal_training_frame,
     apply_temperature,
     build_team_star_goalie_history,
@@ -175,7 +176,8 @@ def main():
     retained = ["Games_Last7_diff", "Travel_Last7_diff", "Rest_x_Travel_diff"]
     extra = ["TZ_Shift_diff", "RoadTrip_Length_diff"]
     all_fatigue = retained + extra
-    all_features = base_features + extra
+    binary = list(FATIGUE_BINARY_FEATURES)
+    all_features = base_features + extra + binary
 
     df_games, X_pair, y_pair, seasons = _build_causal_training_frame(
         df_team_norm, df_stars, df_goalies, df_master_logs, feature_names=all_features
@@ -190,6 +192,10 @@ def main():
         "Rest_x_Travel_diff": base_features[:21] + ["Rest_x_Travel_diff"],
         "all3": base_features[:21] + retained,
         "all5": base_features[:21] + all_fatigue,
+        "Games_Last7_ge4_diff": base_features[:21] + ["Games_Last7_ge4_diff"],
+        "Games_Last5_ge3_diff": base_features[:21] + ["Games_Last5_ge3_diff"],
+        "Rest_x_Games7_ge4_diff": base_features[:21] + ["Rest_x_Games7_ge4_diff"],
+        "bin3": base_features[:21] + binary,
     }
     # base_features[:21] == BASE_PAIRWISE_FEATURES
     baseline_features = list(BASE_PAIRWISE_FEATURES)
@@ -370,9 +376,12 @@ def main():
 
     # Recommendation
     passing = [v for v in variant_defs if variant_summary[v]["rule_pass"]]
+    best_variant = None
     if passing:
+        best_variant = max(passing, key=lambda v: variant_summary[v]["pooled_delta_auc"])
         print("\nPre-registered rule PASSES for:", ", ".join(passing))
-        print("Recommendation: enable", passing[0])
+        print(f"Best passing variant by pooled dAUC: {best_variant}")
+        print("Note: the rule is a sign test; review the bootstrap CIs and keep ENABLE_FATIGUE_FEATURES=False unless a CI lower bound is above zero.")
     else:
         print("\nPre-registered rule does NOT pass for any variant.")
         print("Recommendation: keep fatigue disabled.")
@@ -386,7 +395,7 @@ def main():
         "variants": variant_summary,
         "sensitivity_2023_2026": sens_summary,
         "passing_variants": passing,
-        "recommendation": (passing[0] if passing else None),
+        "recommendation": best_variant,
     }
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, default=str)
