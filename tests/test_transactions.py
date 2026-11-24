@@ -18,6 +18,8 @@ from src.team_game_model import (
 from src.transactions import (
     compute_name_churn,
     compute_team_churn,
+    load_roster_moves_index,
+    write_roster_moves_index,
     diff_rosters,
     fetch_espn_transactions,
     load_latest_roster_history,
@@ -266,6 +268,25 @@ class TestTransactions(unittest.TestCase):
         )
         self.assertAlmostEqual(churn["MTL"], 0.8667 - 0.45, places=3)
         self.assertAlmostEqual(churn["DET"], 0.8667 - 0.45, places=3)
+
+    def test_roster_moves_index_roundtrip(self):
+        names = {
+            "teams": {
+                "MTL": {"in": ["Dylan Larkin"], "out": ["Kirby Dach"]},
+                "DET": {"in": ["Kirby Dach"], "out": ["Dylan Larkin"]},
+            }
+        }
+        churn = {"MTL": 0.42, "DET": 0.42}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "models", "roster_moves_index.json")
+            write_roster_moves_index(path, names, churn)
+            loaded = load_roster_moves_index(path)
+            self.assertEqual(loaded["teams"]["MTL"]["in"], ["Dylan Larkin"])
+            self.assertEqual(loaded["teams"]["DET"]["out"], ["Dylan Larkin"])
+            self.assertAlmostEqual(loaded["churn"]["MTL"], 0.42)
+            self.assertTrue(loaded["generated_utc"])
+            # Missing file is a silent no-op, not a crash.
+            self.assertEqual(load_roster_moves_index(os.path.join(tmp, "nope.json")), {})
 
 
 if __name__ == "__main__":

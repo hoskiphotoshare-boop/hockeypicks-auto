@@ -1,0 +1,62 @@
+{
+  "churn": {
+    "CAR": 0.22448979591836735,
+    "COL": 0.22448979591836735,
+    "DET": 0.40602181128496917,
+    "FLA": 0.2210759027266028,
+    "MTL": 0.40602181128496917,
+    "NYR": 0.31116038433111604,
+    "VAN": 0.09008448160451324
+  },
+  "generated_utc": "2026-11-24T23:41:14.721899+00:00",
+  "teams": {
+    "CAR": {
+      "in": [],
+      "out": [
+        "Mike Reilly"
+      ]
+    },
+    "COL": {
+      "in": [
+        "Mike Reilly"
+      ],
+      "out": []
+    },
+    "DET": {
+      "in": [
+        "Kirby Dach"
+      ],
+      "out": [
+        "Dylan Larkin"
+      ]
+    },
+    "FLA": {
+      "in": [],
+      "out": [
+        "Cole Reinhardt"
+      ]
+    },
+    "MTL": {
+      "in": [
+        "Dylan Larkin"
+      ],
+      "out": [
+        "Kirby Dach"
+      ]
+    },
+    "NYR": {
+      "in": [
+        "Max Sasson"
+      ],
+      "out": []
+    },
+    "VAN": {
+      "in": [
+        "Cole Reinhardt"
+      ],
+      "out": [
+        "Max Sasson"
+      ]
+    }
+  }
+}

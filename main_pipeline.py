@@ -32,8 +32,10 @@ from src.transactions import (
     fetch_team_rosters,
     compute_name_churn,
     load_latest_roster_history,
+    load_roster_moves_index,
     load_roster_snapshot,
     write_roster_history,
+    write_roster_moves_index,
 )
 from src.report_builder import (
     build_dashboard_payload,
@@ -648,6 +650,30 @@ def run_inference(
     for _team, _delta in roster_deltas.items():
         if abs(float(_delta)) >= 0.1:
             team_churn[_team] = max(team_churn.get(_team, 0.0), min(1.0, abs(float(_delta))))
+
+    # Infer-only runs have no MoneyPuck archive, so they reuse the index the
+    # last full run committed. Full runs always rewrite it (even empty) so the
+    # card clears when a move ages out.
+    _index_path = os.path.join(models_dir, "roster_moves_index.json")
+    if mp_years:
+        try:
+            write_roster_moves_index(_index_path, roster_names, team_churn)
+        except Exception as exc:  # pragma: no cover
+            print(f"Warning: roster moves index write failed: {exc}")
+    else:
+        _index = load_roster_moves_index(_index_path)
+        for _t, _info in (_index.get("teams") or {}).items():
+            if _t not in roster_names["teams"] and isinstance(_info, dict):
+                roster_names["teams"][_t] = {
+                    "in": list(_info.get("in") or [])[:5],
+                    "out": list(_info.get("out") or [])[:5],
+                }
+        for _t, _value in (_index.get("churn") or {}).items():
+            try:
+                team_churn[_t] = max(team_churn.get(_t, 0.0), float(_value))
+            except (TypeError, ValueError):
+                continue
+
 
     profiles_unadjusted = {k: dict(v) for k, v in profiles.items()}
     team_availability = apply_live_availability_to_profiles(

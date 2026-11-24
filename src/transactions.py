@@ -380,3 +380,43 @@ def compute_team_churn(
     for team in all_teams:
         result[team] = min(1.0, abs(net.get(team, 0.0)) / 1.0)
     return result
+
+def write_roster_moves_index(
+    path: str,
+    roster_names: dict[str, Any] | None,
+    churn: dict[str, float] | None,
+) -> None:
+    """Persist named roster moves + churn so infer-only runs (no data archive) can show them."""
+    payload = {
+        "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "teams": {
+            str(team): {
+                "in": list((info or {}).get("in") or [])[:5],
+                "out": list((info or {}).get("out") or [])[:5],
+            }
+            for team, info in ((roster_names or {}).get("teams") or {}).items()
+            if isinstance(info, dict)
+        },
+        "churn": {
+            str(team): float(value)
+            for team, value in (churn or {}).items()
+            if value
+        },
+    }
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    tmp = f"{path}.tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, indent=2, sort_keys=True)
+    os.replace(tmp, path)
+
+
+def load_roster_moves_index(path: str) -> dict[str, Any]:
+    """Load the persisted roster-moves index (empty dict when missing/invalid)."""
+    if not os.path.exists(path):
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except Exception:
+        return {}
+    return data if isinstance(data, dict) else {}
