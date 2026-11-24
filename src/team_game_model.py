@@ -401,6 +401,21 @@ def compute_causal_elo_history(
     return pregame_map, elo
 
 
+def context_spans_multiple_seasons(df_logs: pd.DataFrame | None) -> bool:
+    """True when the logs frame covers >1 season.
+
+    `Causal_Elo` is trained on the full multi-season history: it regresses each
+    team toward 1500 between seasons (carryover 0.65). Recomputing it from a
+    current-season-only frame (what an infer-only run downloads) restarts every
+    team at 1500 and skews the model's highest-importance feature.
+    """
+    if df_logs is None or getattr(df_logs, "empty", True):
+        return False
+    if "Season" not in df_logs.columns:
+        return False
+    return len({str(s)[:4] for s in df_logs["Season"].astype(str)}) > 1
+
+
 def extract_latest_team_form(df_logs: pd.DataFrame) -> dict[str, dict[str, Any]]:
     """Compute each team's live entering-tonight rolling form, Elo, & recent dates."""
     form_map: dict[str, dict[str, Any]] = {}

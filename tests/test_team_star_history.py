@@ -8,7 +8,11 @@ import unittest
 
 import pandas as pd
 
-from src.team_game_model import build_team_star_goalie_history
+from src.team_game_model import (
+    build_team_star_goalie_history,
+    context_spans_multiple_seasons,
+    extract_latest_team_form,
+)
 
 
 class TestStarHistoryDefinition(unittest.TestCase):
@@ -36,6 +40,44 @@ class TestStarHistoryDefinition(unittest.TestCase):
         # depth = remaining skaters' per-game rates: D 0.2 + E 0.1
         self.assertAlmostEqual(row["Depth_Points_per_game"], 0.3, places=6)
         self.assertAlmostEqual(row["Depth_xGoals_per_game"], 0.15, places=6)
+
+
+class TestEloContextGuard(unittest.TestCase):
+    """`Causal_Elo` overrides are only valid on a multi-season frame."""
+
+    @staticmethod
+    def _logs(seasons):
+        rows = []
+        for i, season in enumerate(seasons):
+            for j in range(4):
+                home, away = ("TOR", "MTL") if j % 2 == 0 else ("MTL", "TOR")
+                tor_won = 1 if (home == "TOR") == (i == 0) else 0
+                rows.append(
+                    {
+                        "Date": f"{season}-11-{10 + j:02d}",
+                        "Season": str(season),
+                        "Team": home,
+                        "Opponent": away,
+                        "Is_Home": 1,
+                        "Won": 1 if home == "TOR" and tor_won == 1 else 0,
+                        "Team_Score": 5 if home == "TOR" and tor_won == 1 else 2,
+                        "Opp_Score": 2 if home == "TOR" and tor_won == 1 else 4,
+                        "Current_Streak": 0,
+                    }
+                )
+        return pd.DataFrame(rows)
+
+    def test_helper_detects_season_span(self):
+        self.assertFalse(context_spans_multiple_seasons(None))
+        self.assertFalse(context_spans_multiple_seasons(pd.DataFrame()))
+        self.assertFalse(context_spans_multiple_seasons(self._logs([2026])))
+        self.assertFalse(context_spans_multiple_seasons(pd.DataFrame([{"Date": "x", "Team": "TOR"}])))
+        self.assertTrue(context_spans_multiple_seasons(self._logs([2025, 2026])))
+
+    def test_season_only_elo_differs_from_full_history(self):
+        full = extract_latest_team_form(self._logs([2025, 2026]))["TOR"]["Causal_Elo"]
+        current = extract_latest_team_form(self._logs([2026]))["TOR"]["Causal_Elo"]
+        self.assertGreater(abs(full - current), 3.0)
 
 
 if __name__ == "__main__":

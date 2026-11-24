@@ -60,6 +60,7 @@ from src.availability import (
 from src.team_game_model import (
     apply_roster_stars_to_profiles,
     build_live_team_profiles,
+    context_spans_multiple_seasons,
     build_team_star_goalie_history,
     compute_power_rankings_and_defense,
     extract_cached_odds_lookup,
@@ -537,6 +538,7 @@ def run_inference(
             if t and opp != "UNK" and t not in daily_matchups:
                 daily_matchups[t] = opp
 
+    elo_context_is_full_history = True  # trained_state context spans seasons
     if trained_state is not None:
         sync_stats = trained_state["sync_stats"]
         log_stats = trained_state["log_stats"]
@@ -563,6 +565,7 @@ def run_inference(
             seasons_filter=[context["nhl_season"]],
         )
         latest_team_context = extract_latest_team_form(df_curr_logs)
+        elo_context_is_full_history = context_spans_multiple_seasons(df_curr_logs)
         prior_total = int(inf_meta.get("log_stats", {}).get("total_rows", 0))
         log_stats = {
             **current_log_stats,
@@ -608,6 +611,11 @@ def run_inference(
         if is_playoffs
         else {k: dict(v) for k, v in profiles_regular.items()}
     )
+    # `Causal_Elo` is trained on the full multi-season history, but an infer-only
+    # run only downloads the current season. Recomputing Elo from that partial
+    # frame starts every team at 1500 and skews the highest-importance feature
+    # (up to ~50 Elo / 1-3 pp). In that case keep the last full run's Elo from
+    # the profile snapshot; rolling form/streak are still refreshed below.
     for team, ctx in latest_team_context.items():
         if team in profiles:
             profiles[team]["Last_Game_Won"] = int(ctx.get("Last_Game_Won", profiles[team].get("Last_Game_Won", 0)))
@@ -616,10 +624,11 @@ def run_inference(
                 profiles[team]["Last_Game_Date"] = str(ctx["Last_Game_Date"])
             if ctx.get("Recent_Game_Dates"):
                 profiles[team]["Recent_Game_Dates"] = list(ctx["Recent_Game_Dates"])
-            for k in ("Rolling10_WinPct", "Rolling10_GoalDiff", "EWMA_WinPct", "EWMA_GD", "Causal_Elo"):
+            for k in ("Rolling10_WinPct", "Rolling10_GoalDiff", "EWMA_WinPct", "EWMA_GD"):
                 if k in ctx:
                     profiles[team][k] = float(ctx[k])
-            if "Causal_Elo" in ctx:
+            if elo_context_is_full_history and "Causal_Elo" in ctx:
+                profiles[team]["Causal_Elo"] = float(ctx["Causal_Elo"])
                 profiles[team]["Elo"] = float(ctx["Causal_Elo"])
 
     roster_names: dict[str, Any] = {"teams": {}}
