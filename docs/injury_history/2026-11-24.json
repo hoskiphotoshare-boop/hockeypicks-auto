@@ -1,8 +1,8 @@
 {
   "date": "2026-11-24",
-  "captured_utc": "2026-11-24T21:20:27.143273+00:00",
+  "captured_utc": "2026-11-24T21:31:20.470780+00:00",
   "source": "espn-cbs",
-  "count": 119,
+  "count": 120,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -264,6 +264,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Bichsel (lower body) was placed on injured reserve Saturday."
+    },
+    {
+      "player": "Matt Duchene",
+      "team": "DAL",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Duchene will be out for approximately three months after undergoing surgery to repair a core injury, the team announced Monday."
     },
     {
       "player": "Sam Montembeault",
