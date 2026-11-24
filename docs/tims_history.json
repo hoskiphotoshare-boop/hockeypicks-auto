@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-24 12:21 AM ET",
+      "captured_et": "2026-11-24 10:18 AM ET",
       "model_n_half": 30.72,
       "groups": {
         "1": [
@@ -14,76 +14,76 @@
             "team": "EDM",
             "opponent": "VGK",
             "position": "F",
-            "base_pred": 0.492,
+            "base_pred": 0.489,
             "live_gp": 26,
             "live_goals": 23,
             "def_multiplier": 0.964,
-            "final_score": 0.642
+            "final_score": 0.641
           },
           {
             "player": "Connor McDavid",
             "team": "EDM",
             "opponent": "VGK",
             "position": "F",
-            "base_pred": 0.455,
+            "base_pred": 0.448,
             "live_gp": 26,
             "live_goals": 13,
             "def_multiplier": 0.964,
-            "final_score": 0.454
-          },
-          {
-            "player": "Vasily Podkolzin",
-            "team": "EDM",
-            "opponent": "VGK",
-            "position": "F",
-            "base_pred": 0.331,
-            "live_gp": 26,
-            "live_goals": 13,
-            "def_multiplier": 0.964,
-            "final_score": 0.383
+            "final_score": 0.451
           },
           {
             "player": "Victor Olofsson",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.315,
+            "base_pred": 0.312,
             "live_gp": 12,
             "live_goals": 8,
-            "def_multiplier": 0.954,
-            "final_score": 0.382
+            "def_multiplier": 0.955,
+            "final_score": 0.38
+          },
+          {
+            "player": "Vasily Podkolzin",
+            "team": "EDM",
+            "opponent": "VGK",
+            "position": "F",
+            "base_pred": 0.325,
+            "live_gp": 26,
+            "live_goals": 13,
+            "def_multiplier": 0.964,
+            "final_score": 0.379
           },
           {
             "player": "Tomas Hertl",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.326,
+            "base_pred": 0.32,
             "live_gp": 25,
             "live_goals": 10,
-            "def_multiplier": 0.954,
-            "final_score": 0.345
-          },
-          {
-            "player": "Mark Stone",
-            "team": "VGK",
-            "opponent": "EDM",
-            "position": "F",
-            "base_pred": 0.318,
-            "live_gp": 25,
-            "live_goals": 11,
-            "def_multiplier": 0.954,
-            "final_score": 0.344
+            "def_multiplier": 0.955,
+            "final_score": 0.342
           },
           {
             "player": "Jack Eichel",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.351,
+            "base_pred": 0.353,
             "live_gp": 25,
             "live_goals": 9,
-            "def_multiplier": 0.954,
+            "def_multiplier": 0.955,
+            "final_score": 0.342
+          },
+          {
+            "player": "Mark Stone",
+            "team": "VGK",
+            "opponent": "EDM",
+            "position": "F",
+            "base_pred": 0.312,
+            "live_gp": 25,
+            "live_goals": 11,
+            "def_multiplier": 0.955,
             "final_score": 0.341
           },
           {
@@ -91,32 +91,32 @@
             "team": "EDM",
             "opponent": "VGK",
             "position": "D",
-            "base_pred": 0.267,
+            "base_pred": 0.263,
             "live_gp": 26,
             "live_goals": 12,
             "def_multiplier": 0.964,
-            "final_score": 0.337
+            "final_score": 0.334
           },
           {
             "player": "Ryan Nugent-Hopkins",
             "team": "EDM",
             "opponent": "VGK",
             "position": "F",
-            "base_pred": 0.327,
+            "base_pred": 0.325,
             "live_gp": 12,
             "live_goals": 4,
             "def_multiplier": 0.964,
-            "final_score": 0.32
+            "final_score": 0.319
           },
           {
             "player": "Mitchell Marner",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.402,
+            "base_pred": 0.401,
             "live_gp": 23,
             "live_goals": 4,
-            "def_multiplier": 0.954,
+            "def_multiplier": 0.955,
             "final_score": 0.299
           }
         ],
@@ -126,21 +126,21 @@
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.291,
+            "base_pred": 0.289,
             "live_gp": 25,
             "live_goals": 8,
-            "def_multiplier": 0.954,
-            "final_score": 0.287
+            "def_multiplier": 0.955,
+            "final_score": 0.285
           },
           {
             "player": "Trevor Connelly",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.264,
+            "base_pred": 0.263,
             "live_gp": 25,
             "live_goals": 7,
-            "def_multiplier": 0.954,
+            "def_multiplier": 0.955,
             "final_score": 0.258
           },
           {
@@ -159,33 +159,33 @@
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.219,
+            "base_pred": 0.223,
             "live_gp": 25,
             "live_goals": 6,
-            "def_multiplier": 0.954,
-            "final_score": 0.218
+            "def_multiplier": 0.955,
+            "final_score": 0.221
           },
           {
             "player": "Ivan Barbashev",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.244,
+            "base_pred": 0.246,
             "live_gp": 25,
             "live_goals": 5,
-            "def_multiplier": 0.954,
-            "final_score": 0.213
+            "def_multiplier": 0.955,
+            "final_score": 0.214
           },
           {
             "player": "Braeden Bowman",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.194,
+            "base_pred": 0.19,
             "live_gp": 25,
             "live_goals": 5,
-            "def_multiplier": 0.954,
-            "final_score": 0.189
+            "def_multiplier": 0.955,
+            "final_score": 0.186
           },
           {
             "player": "Colton Dach",
@@ -203,22 +203,22 @@
             "team": "EDM",
             "opponent": "VGK",
             "position": "F",
-            "base_pred": 0.104,
+            "base_pred": 0.106,
             "live_gp": 26,
             "live_goals": 4,
             "def_multiplier": 0.964,
-            "final_score": 0.117
+            "final_score": 0.118
           },
           {
             "player": "Shea Theodore",
             "team": "VGK",
             "opponent": "EDM",
             "position": "D",
-            "base_pred": 0.138,
+            "base_pred": 0.135,
             "live_gp": 25,
             "live_goals": 2,
-            "def_multiplier": 0.954,
-            "final_score": 0.11
+            "def_multiplier": 0.955,
+            "final_score": 0.108
           }
         ],
         "3": [
@@ -227,10 +227,10 @@
             "team": "VGK",
             "opponent": "EDM",
             "position": "D",
-            "base_pred": 0.126,
+            "base_pred": 0.127,
             "live_gp": 25,
             "live_goals": 3,
-            "def_multiplier": 0.954,
+            "def_multiplier": 0.955,
             "final_score": 0.12
           },
           {
@@ -238,11 +238,11 @@
             "team": "EDM",
             "opponent": "VGK",
             "position": "F",
-            "base_pred": 0.108,
+            "base_pred": 0.106,
             "live_gp": 17,
             "live_goals": 2,
             "def_multiplier": 0.964,
-            "final_score": 0.105
+            "final_score": 0.104
           },
           {
             "player": "Mattias Ekholm",
@@ -253,28 +253,28 @@
             "live_gp": 24,
             "live_goals": 3,
             "def_multiplier": 0.964,
-            "final_score": 0.097
+            "final_score": 0.098
           },
           {
             "player": "Marc Gatcomb",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.117,
+            "base_pred": 0.118,
             "live_gp": 23,
             "live_goals": 1,
-            "def_multiplier": 0.954,
-            "final_score": 0.087
+            "def_multiplier": 0.955,
+            "final_score": 0.088
           },
           {
             "player": "Nic Dowd",
             "team": "VGK",
             "opponent": "EDM",
             "position": "F",
-            "base_pred": 0.102,
+            "base_pred": 0.103,
             "live_gp": 25,
             "live_goals": 0,
-            "def_multiplier": 0.954,
+            "def_multiplier": 0.955,
             "final_score": 0.056
           },
           {
@@ -282,11 +282,11 @@
             "team": "EDM",
             "opponent": "VGK",
             "position": "D",
-            "base_pred": 0.067,
+            "base_pred": 0.068,
             "live_gp": 26,
             "live_goals": 1,
             "def_multiplier": 0.964,
-            "final_score": 0.054
+            "final_score": 0.055
           },
           {
             "player": "Shakir Mukhamadullin",
@@ -304,10 +304,10 @@
             "team": "VGK",
             "opponent": "EDM",
             "position": "D",
-            "base_pred": 0.047,
+            "base_pred": 0.046,
             "live_gp": 25,
             "live_goals": 1,
-            "def_multiplier": 0.954,
+            "def_multiplier": 0.955,
             "final_score": 0.044
           },
           {
@@ -315,11 +315,11 @@
             "team": "VGK",
             "opponent": "EDM",
             "position": "D",
-            "base_pred": 0.058,
+            "base_pred": 0.06,
             "live_gp": 17,
             "live_goals": 0,
-            "def_multiplier": 0.954,
-            "final_score": 0.041
+            "def_multiplier": 0.955,
+            "final_score": 0.042
           }
         ]
       },
@@ -329,32 +329,32 @@
           "team": "EDM",
           "opponent": "VGK",
           "position": "F",
-          "base_pred": 0.492,
+          "base_pred": 0.489,
           "live_gp": 26,
           "live_goals": 23,
           "def_multiplier": 0.964,
-          "final_score": 0.642
+          "final_score": 0.641
         },
         "2": {
           "player": "Brett Howden",
           "team": "VGK",
           "opponent": "EDM",
           "position": "F",
-          "base_pred": 0.291,
+          "base_pred": 0.289,
           "live_gp": 25,
           "live_goals": 8,
-          "def_multiplier": 0.954,
-          "final_score": 0.287
+          "def_multiplier": 0.955,
+          "final_score": 0.285
         },
         "3": {
           "player": "Rasmus Andersson",
           "team": "VGK",
           "opponent": "EDM",
           "position": "D",
-          "base_pred": 0.126,
+          "base_pred": 0.127,
           "live_gp": 25,
           "live_goals": 3,
-          "def_multiplier": 0.954,
+          "def_multiplier": 0.955,
           "final_score": 0.12
         }
       },
@@ -367,8 +367,8 @@
         "lock_utc": "2026-11-25T01:00:00Z",
         "lock_et": "8:00 PM ET",
         "recommended_wave_et": null,
-        "v_now": 0.8363,
-        "v_defer_best": 0.8363,
+        "v_now": 0.8343,
+        "v_defer_best": 0.8343,
         "ev_delta": 0.0
       },
       "picks_locked": false,
@@ -853,8 +853,77 @@
           "final_score": 0.18
         }
       },
-      "settled": false,
-      "results": null,
+      "settled": true,
+      "results": {
+        "hits_of_3": 1,
+        "total_picks": 3,
+        "group_hits": {
+          "1": {
+            "player": "Cutter Gauthier",
+            "team": "ANA",
+            "goals": 1,
+            "scored": true
+          },
+          "2": {
+            "player": "Nicholas Suzuki",
+            "team": "MTL",
+            "goals": 0,
+            "scored": false
+          },
+          "3": {
+            "player": "Nikita Nesterenko",
+            "team": "ANA",
+            "goals": 0,
+            "scored": false
+          }
+        },
+        "group_random_probs": {
+          "1": 0.2222,
+          "2": 0.1333,
+          "3": 0.0667
+        },
+        "player_goals": {
+          "Cutter Gauthier": 1,
+          "Kirill Kaprizov": 1,
+          "Kyle Connor": 0,
+          "Matt Boldy": 0,
+          "Auston Matthews": 0,
+          "Jack Hughes": 0,
+          "Cole Caufield": 0,
+          "Macklin Celebrini": 0,
+          "Bo Horvat": 0,
+          "Nicholas Suzuki": 0,
+          "Drake Batherson": 0,
+          "Joel Eriksson Ek": 2,
+          "Mark Scheifele": 0,
+          "Nico Hischier": 0,
+          "Mathew Barzal": 1,
+          "Matty Beniers": 0,
+          "Luke Evangelista": 0,
+          "Kyle Palmieri": 0,
+          "Jesper Bratt": 0,
+          "Aydar Suniev": 0,
+          "Fabian Zetterlund": 0,
+          "Ryan Winterton": 0,
+          "Phillip Danault": 0,
+          "Adam Gaudette": 0,
+          "Nikita Nesterenko": 0,
+          "Ondrej Palat": 0,
+          "Adam Klapka": 0,
+          "Damon Severson": 0,
+          "Teddy Blueger": 0,
+          "Thomas Chabot": 0,
+          "Zack MacEwen": 0,
+          "Morgan Barron": 1,
+          "Ben Hutton": 0,
+          "Jackson LaCombe": 0,
+          "Nick Foligno": 0,
+          "Yakov Trenin": 0,
+          "Maxim Tsyplakov": 0,
+          "Isac Lundestr\u00f6m": 0,
+          "Luca Del Bel Belluz": 0
+        }
+      },
       "timing": {
         "decision": "BORDERLINE_WATCH",
         "basis": "now",
@@ -867,7 +936,8 @@
         "ev_delta": 0.0043
       },
       "picks_locked": true,
-      "locked_et": "2026-11-23 06:40 PM ET"
+      "locked_et": "2026-11-23 06:40 PM ET",
+      "settled_et": "2026-11-24 10:18 AM ET"
     },
     {
       "date": "2026-11-22",
@@ -3491,19 +3561,19 @@
   ],
   "summary": {
     "total_days_logged": 8,
-    "settled_days": 6,
-    "pending_days": 2,
-    "ai_hits": 6,
-    "ai_possible": 18,
+    "settled_days": 7,
+    "pending_days": 1,
+    "ai_hits": 7,
+    "ai_possible": 21,
     "ai_hit_rate_pct": 33.3,
-    "random_expected_pct": 25.2,
-    "hit_1plus_days": 4,
+    "random_expected_pct": 23.6,
+    "hit_1plus_days": 5,
     "hit_2plus_days": 2,
     "sweep_3_days": 0,
     "group_hit_rates": {
-      "1": 16.7,
-      "2": 50.0,
-      "3": 33.3
+      "1": 28.6,
+      "2": 42.9,
+      "3": 28.6
     },
     "recent_days": [
       {
@@ -3517,8 +3587,8 @@
           "lock_utc": "2026-11-25T01:00:00Z",
           "lock_et": "8:00 PM ET",
           "recommended_wave_et": null,
-          "v_now": 0.8363,
-          "v_defer_best": 0.8363,
+          "v_now": 0.8343,
+          "v_defer_best": 0.8343,
           "ev_delta": 0.0
         },
         "picks_locked": false,
@@ -3527,13 +3597,13 @@
           "1": {
             "player": "Leon Draisaitl",
             "team": "EDM",
-            "score": 0.642,
+            "score": 0.641,
             "scored": null
           },
           "2": {
             "player": "Brett Howden",
             "team": "VGK",
-            "score": 0.287,
+            "score": 0.285,
             "scored": null
           },
           "3": {
@@ -3547,7 +3617,7 @@
       {
         "date": "2026-11-23",
         "mode": "Regular Season",
-        "settled": false,
+        "settled": true,
         "timing": {
           "decision": "BORDERLINE_WATCH",
           "basis": "now",
@@ -3560,25 +3630,25 @@
           "ev_delta": 0.0043
         },
         "picks_locked": true,
-        "hits_of_3": null,
+        "hits_of_3": 1,
         "picks": {
           "1": {
             "player": "Cutter Gauthier",
             "team": "ANA",
             "score": 0.66,
-            "scored": null
+            "scored": true
           },
           "2": {
             "player": "Nicholas Suzuki",
             "team": "MTL",
             "score": 0.477,
-            "scored": null
+            "scored": false
           },
           "3": {
             "player": "Nikita Nesterenko",
             "team": "ANA",
             "score": 0.18,
-            "scored": null
+            "scored": false
           }
         }
       },
