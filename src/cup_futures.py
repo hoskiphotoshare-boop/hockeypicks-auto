@@ -21,6 +21,8 @@ import scipy.optimize
 from src.data_sync import (
     TEAM_FULL_TO_ABBREV,
     _fetch_with_retries,
+    build_player_value_table,
+    build_roster_aware_star_table,
     create_http_session,
     get_nhl_season_context,
     normalize_team_abbrev,
@@ -943,6 +945,28 @@ def run_futures_pipeline(
         archive_dir, context["historical_mp_years"]
     )
     futures_bundle = train_futures_game_model(df_team_hist, df_stars, df_goalies, df_master_logs)
+    roster_stars = None
+    if not skip_network and session is not None:
+        rosters = None
+        try:
+            from src.transactions import fetch_team_rosters, load_roster_snapshot
+
+            snap = load_roster_snapshot(docs_dir, context["today_str"])
+            rosters = (snap or {}).get("teams") or None
+            if rosters is None:
+                rosters = fetch_team_rosters(context["nhl_season"], session=session)
+        except Exception as exc:  # pragma: no cover
+            print(f"Warning: futures roster fetch failed: {exc}")
+            rosters = None
+        if rosters:
+            mp_years = [
+                y for y in context.get("historical_mp_years", [])
+                if os.path.exists(os.path.join(archive_dir, f"{y}_regular_skaters.csv"))
+            ]
+            player_values = build_player_value_table(archive_dir, mp_years) if mp_years else {}
+            if player_values:
+                roster_stars = build_roster_aware_star_table(rosters, player_values)
+
     save_pairwise_bundle(futures_bundle, os.path.join(models_dir, "futures_game_bundle.joblib"))
     print(
         f"Futures Pairwise Model -> {futures_bundle['metrics']['games_trained']} games | "
@@ -960,6 +984,7 @@ def run_futures_pipeline(
         latest_team_context=latest_team_context,
         base_features=futures_bundle["base_features"],
         playoff_teams_df=playoff_df,
+        roster_stars=roster_stars,
     )
     active_goalies = load_active_goalie_lookup(archive_dir, active_mp_year)
     _rankings, _ = compute_power_rankings_and_defense(profiles, futures_bundle)
