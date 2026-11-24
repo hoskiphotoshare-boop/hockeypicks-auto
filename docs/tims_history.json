@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-24 06:42 PM ET",
+      "captured_et": "2026-11-24 06:50 PM ET",
       "model_n_half": 30.72,
       "groups": {
         "1": [
@@ -17,8 +17,8 @@
             "base_pred": 0.489,
             "live_gp": 26,
             "live_goals": 23,
-            "def_multiplier": 0.965,
-            "final_score": 0.641
+            "def_multiplier": 0.963,
+            "final_score": 0.64
           },
           {
             "player": "Connor McDavid",
@@ -28,8 +28,8 @@
             "base_pred": 0.448,
             "live_gp": 26,
             "live_goals": 13,
-            "def_multiplier": 0.965,
-            "final_score": 0.451
+            "def_multiplier": 0.963,
+            "final_score": 0.45
           },
           {
             "player": "Victor Olofsson",
@@ -50,8 +50,8 @@
             "base_pred": 0.325,
             "live_gp": 26,
             "live_goals": 13,
-            "def_multiplier": 0.965,
-            "final_score": 0.38
+            "def_multiplier": 0.963,
+            "final_score": 0.379
           },
           {
             "player": "Mark Stone",
@@ -94,7 +94,7 @@
             "base_pred": 0.263,
             "live_gp": 26,
             "live_goals": 12,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.334
           },
           {
@@ -105,7 +105,7 @@
             "base_pred": 0.325,
             "live_gp": 12,
             "live_goals": 4,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.319
           },
           {
@@ -151,7 +151,7 @@
             "base_pred": 0.238,
             "live_gp": 26,
             "live_goals": 7,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.236
           },
           {
@@ -195,7 +195,7 @@
             "base_pred": 0.128,
             "live_gp": 20,
             "live_goals": 5,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.164
           },
           {
@@ -206,7 +206,7 @@
             "base_pred": 0.106,
             "live_gp": 26,
             "live_goals": 4,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.118
           },
           {
@@ -218,7 +218,7 @@
             "live_gp": 25,
             "live_goals": 2,
             "def_multiplier": 0.956,
-            "final_score": 0.109
+            "final_score": 0.108
           }
         ],
         "3": [
@@ -241,7 +241,7 @@
             "base_pred": 0.106,
             "live_gp": 17,
             "live_goals": 2,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.104
           },
           {
@@ -252,7 +252,7 @@
             "base_pred": 0.088,
             "live_gp": 24,
             "live_goals": 3,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.098
           },
           {
@@ -285,7 +285,7 @@
             "base_pred": 0.068,
             "live_gp": 26,
             "live_goals": 1,
-            "def_multiplier": 0.965,
+            "def_multiplier": 0.963,
             "final_score": 0.055
           },
           {
@@ -296,8 +296,8 @@
             "base_pred": 0.048,
             "live_gp": 21,
             "live_goals": 1,
-            "def_multiplier": 0.965,
-            "final_score": 0.047
+            "def_multiplier": 0.963,
+            "final_score": 0.046
           },
           {
             "player": "Jeremy Lauzon",
@@ -332,8 +332,8 @@
           "base_pred": 0.489,
           "live_gp": 26,
           "live_goals": 23,
-          "def_multiplier": 0.965,
-          "final_score": 0.641
+          "def_multiplier": 0.963,
+          "final_score": 0.64
         },
         "2": {
           "player": "Brett Howden",
@@ -367,8 +367,8 @@
         "lock_utc": "2026-11-25T01:00:00Z",
         "lock_et": "8:00 PM ET",
         "recommended_wave_et": null,
-        "v_now": 0.8351,
-        "v_defer_best": 0.8351,
+        "v_now": 0.8345,
+        "v_defer_best": 0.8345,
         "ev_delta": 0.0
       },
       "picks_locked": false,
@@ -3587,8 +3587,8 @@
           "lock_utc": "2026-11-25T01:00:00Z",
           "lock_et": "8:00 PM ET",
           "recommended_wave_et": null,
-          "v_now": 0.8351,
-          "v_defer_best": 0.8351,
+          "v_now": 0.8345,
+          "v_defer_best": 0.8345,
           "ev_delta": 0.0
         },
         "picks_locked": false,
@@ -3597,7 +3597,7 @@
           "1": {
             "player": "Leon Draisaitl",
             "team": "EDM",
-            "score": 0.641,
+            "score": 0.64,
             "scored": null
           },
           "2": {
