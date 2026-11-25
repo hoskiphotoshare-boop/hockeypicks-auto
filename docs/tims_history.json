@@ -358,8 +358,66 @@
           "final_score": 0.12
         }
       },
-      "settled": false,
-      "results": null,
+      "settled": true,
+      "results": {
+        "hits_of_3": 0,
+        "total_picks": 3,
+        "group_hits": {
+          "1": {
+            "player": "Leon Draisaitl",
+            "team": "EDM",
+            "goals": 0,
+            "scored": false
+          },
+          "2": {
+            "player": "Brett Howden",
+            "team": "VGK",
+            "goals": 0,
+            "scored": false
+          },
+          "3": {
+            "player": "Rasmus Andersson",
+            "team": "VGK",
+            "goals": 0,
+            "scored": false
+          }
+        },
+        "group_random_probs": {
+          "1": 0.3,
+          "2": 0.2222,
+          "3": 0.1111
+        },
+        "player_goals": {
+          "Leon Draisaitl": 0,
+          "Connor McDavid": 1,
+          "Victor Olofsson": 0,
+          "Vasily Podkolzin": 1,
+          "Mark Stone": 0,
+          "Tomas Hertl": 0,
+          "Jack Eichel": 2,
+          "Evan Bouchard": 0,
+          "Ryan Nugent-Hopkins": 0,
+          "Mitchell Marner": 0,
+          "Brett Howden": 0,
+          "Trevor Connelly": 2,
+          "Kasperi Kapanen": 0,
+          "William Karlsson": 0,
+          "Ivan Barbashev": 0,
+          "Braeden Bowman": 0,
+          "Colton Dach": 1,
+          "Mathieu Joseph": 0,
+          "Shea Theodore": 0,
+          "Rasmus Andersson": 0,
+          "Jason Dickinson": 0,
+          "Mattias Ekholm": 0,
+          "Marc Gatcomb": 0,
+          "Nic Dowd": 1,
+          "Ryan Shea": 0,
+          "Shakir Mukhamadullin": 0,
+          "Jeremy Lauzon": 0,
+          "Dylan Coghlan": 0
+        }
+      },
       "timing": {
         "decision": "SELECT_NOW",
         "basis": "now",
@@ -372,7 +430,8 @@
         "ev_delta": 0.0
       },
       "picks_locked": false,
-      "locked_et": ""
+      "locked_et": "",
+      "settled_et": "2026-11-24 11:15 PM ET"
     },
     {
       "date": "2026-11-23",
@@ -3561,25 +3620,25 @@
   ],
   "summary": {
     "total_days_logged": 8,
-    "settled_days": 7,
-    "pending_days": 1,
+    "settled_days": 8,
+    "pending_days": 0,
     "ai_hits": 7,
-    "ai_possible": 21,
-    "ai_hit_rate_pct": 33.3,
-    "random_expected_pct": 23.6,
+    "ai_possible": 24,
+    "ai_hit_rate_pct": 29.2,
+    "random_expected_pct": 23.3,
     "hit_1plus_days": 5,
     "hit_2plus_days": 2,
     "sweep_3_days": 0,
     "group_hit_rates": {
-      "1": 28.6,
-      "2": 42.9,
-      "3": 28.6
+      "1": 25.0,
+      "2": 37.5,
+      "3": 25.0
     },
     "recent_days": [
       {
         "date": "2026-11-24",
         "mode": "Regular Season",
-        "settled": false,
+        "settled": true,
         "timing": {
           "decision": "SELECT_NOW",
           "basis": "now",
@@ -3592,25 +3651,25 @@
           "ev_delta": 0.0
         },
         "picks_locked": false,
-        "hits_of_3": null,
+        "hits_of_3": 0,
         "picks": {
           "1": {
             "player": "Leon Draisaitl",
             "team": "EDM",
             "score": 0.64,
-            "scored": null
+            "scored": false
           },
           "2": {
             "player": "Brett Howden",
             "team": "VGK",
             "score": 0.286,
-            "scored": null
+            "scored": false
           },
           "3": {
             "player": "Rasmus Andersson",
             "team": "VGK",
             "score": 0.12,
-            "scored": null
+            "scored": false
           }
         }
       },
