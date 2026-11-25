@@ -1,6 +1,545 @@
 {
   "days": [
     {
+      "date": "2026-11-25",
+      "season": "20262027",
+      "game_type": 2,
+      "mode": "Regular Season",
+      "captured_et": "2026-11-25 12:03 AM ET",
+      "model_n_half": 30.72,
+      "groups": {
+        "1": [
+          {
+            "player": "Cutter Gauthier",
+            "team": "ANA",
+            "opponent": "SJS",
+            "position": "F",
+            "base_pred": 0.45,
+            "live_gp": 24,
+            "live_goals": 22,
+            "def_multiplier": 1.044,
+            "final_score": 0.68
+          },
+          {
+            "player": "Kyle Connor",
+            "team": "WPG",
+            "opponent": "BOS",
+            "position": "F",
+            "base_pred": 0.491,
+            "live_gp": 25,
+            "live_goals": 19,
+            "def_multiplier": 0.971,
+            "final_score": 0.591
+          },
+          {
+            "player": "Kirill Kaprizov",
+            "team": "MIN",
+            "opponent": "UTA",
+            "position": "F",
+            "base_pred": 0.497,
+            "live_gp": 26,
+            "live_goals": 19,
+            "def_multiplier": 0.969,
+            "final_score": 0.581
+          },
+          {
+            "player": "Tage Thompson",
+            "team": "BUF",
+            "opponent": "NYR",
+            "position": "F",
+            "base_pred": 0.433,
+            "live_gp": 24,
+            "live_goals": 17,
+            "def_multiplier": 0.985,
+            "final_score": 0.542
+          },
+          {
+            "player": "Matt Boldy",
+            "team": "MIN",
+            "opponent": "UTA",
+            "position": "F",
+            "base_pred": 0.541,
+            "live_gp": 26,
+            "live_goals": 14,
+            "def_multiplier": 0.969,
+            "final_score": 0.522
+          },
+          {
+            "player": "David Pastrnak",
+            "team": "BOS",
+            "opponent": "WPG",
+            "position": "F",
+            "base_pred": 0.481,
+            "live_gp": 23,
+            "live_goals": 11,
+            "def_multiplier": 1.017,
+            "final_score": 0.488
+          },
+          {
+            "player": "Macklin Celebrini",
+            "team": "SJS",
+            "opponent": "ANA",
+            "position": "F",
+            "base_pred": 0.507,
+            "live_gp": 24,
+            "live_goals": 10,
+            "def_multiplier": 1.026,
+            "final_score": 0.481
+          },
+          {
+            "player": "Alex DeBrincat",
+            "team": "DET",
+            "opponent": "VAN",
+            "position": "F",
+            "base_pred": 0.459,
+            "live_gp": 23,
+            "live_goals": 8,
+            "def_multiplier": 1.112,
+            "final_score": 0.46
+          },
+          {
+            "player": "Jack Hughes",
+            "team": "NJD",
+            "opponent": "CBJ",
+            "position": "F",
+            "base_pred": 0.452,
+            "live_gp": 24,
+            "live_goals": 10,
+            "def_multiplier": 1.04,
+            "final_score": 0.455
+          },
+          {
+            "player": "Jake Guentzel",
+            "team": "TBL",
+            "opponent": "CAR",
+            "position": "F",
+            "base_pred": 0.457,
+            "live_gp": 23,
+            "live_goals": 13,
+            "def_multiplier": 0.914,
+            "final_score": 0.454
+          },
+          {
+            "player": "Jason Robertson",
+            "team": "DAL",
+            "opponent": "NSH",
+            "position": "F",
+            "base_pred": 0.465,
+            "live_gp": 23,
+            "live_goals": 10,
+            "def_multiplier": 0.972,
+            "final_score": 0.436
+          },
+          {
+            "player": "Cole Caufield",
+            "team": "MTL",
+            "opponent": "COL",
+            "position": "F",
+            "base_pred": 0.413,
+            "live_gp": 25,
+            "live_goals": 12,
+            "def_multiplier": 0.953,
+            "final_score": 0.425
+          },
+          {
+            "player": "Wyatt Johnston",
+            "team": "DAL",
+            "opponent": "NSH",
+            "position": "F",
+            "base_pred": 0.421,
+            "live_gp": 21,
+            "live_goals": 7,
+            "def_multiplier": 0.972,
+            "final_score": 0.376
+          }
+        ],
+        "2": [
+          {
+            "player": "Artturi Lehkonen",
+            "team": "COL",
+            "opponent": "MTL",
+            "position": "F",
+            "base_pred": 0.315,
+            "live_gp": 23,
+            "live_goals": 15,
+            "def_multiplier": 1.017,
+            "final_score": 0.451
+          },
+          {
+            "player": "Lucas Raymond",
+            "team": "DET",
+            "opponent": "VAN",
+            "position": "F",
+            "base_pred": 0.413,
+            "live_gp": 23,
+            "live_goals": 9,
+            "def_multiplier": 1.112,
+            "final_score": 0.45
+          },
+          {
+            "player": "Sam Reinhart",
+            "team": "FLA",
+            "opponent": "OTT",
+            "position": "F",
+            "base_pred": 0.408,
+            "live_gp": 24,
+            "live_goals": 12,
+            "def_multiplier": 0.963,
+            "final_score": 0.429
+          },
+          {
+            "player": "Rickard Rakell",
+            "team": "PIT",
+            "opponent": "CGY",
+            "position": "F",
+            "base_pred": 0.42,
+            "live_gp": 23,
+            "live_goals": 8,
+            "def_multiplier": 1.021,
+            "final_score": 0.4
+          },
+          {
+            "player": "Viktor Arvidsson",
+            "team": "DET",
+            "opponent": "VAN",
+            "position": "F",
+            "base_pred": 0.362,
+            "live_gp": 23,
+            "live_goals": 8,
+            "def_multiplier": 1.112,
+            "final_score": 0.397
+          },
+          {
+            "player": "Mikael Granlund",
+            "team": "ANA",
+            "opponent": "SJS",
+            "position": "F",
+            "base_pred": 0.325,
+            "live_gp": 24,
+            "live_goals": 8,
+            "def_multiplier": 1.044,
+            "final_score": 0.345
+          },
+          {
+            "player": "Joel Farabee",
+            "team": "CGY",
+            "opponent": "PIT",
+            "position": "F",
+            "base_pred": 0.342,
+            "live_gp": 25,
+            "live_goals": 7,
+            "def_multiplier": 1.058,
+            "final_score": 0.335
+          },
+          {
+            "player": "Mika Zibanejad",
+            "team": "NYR",
+            "opponent": "BUF",
+            "position": "F",
+            "base_pred": 0.346,
+            "live_gp": 23,
+            "live_goals": 6,
+            "def_multiplier": 1.019,
+            "final_score": 0.321
+          },
+          {
+            "player": "Simon Holmstrom",
+            "team": "NYI",
+            "opponent": "STL",
+            "position": "F",
+            "base_pred": 0.237,
+            "live_gp": 23,
+            "live_goals": 10,
+            "def_multiplier": 1.019,
+            "final_score": 0.314
+          },
+          {
+            "player": "Matvei Michkov",
+            "team": "PHI",
+            "opponent": "WSH",
+            "position": "F",
+            "base_pred": 0.221,
+            "live_gp": 26,
+            "live_goals": 11,
+            "def_multiplier": 1.048,
+            "final_score": 0.312
+          },
+          {
+            "player": "Alex Newhook",
+            "team": "MTL",
+            "opponent": "COL",
+            "position": "F",
+            "base_pred": 0.223,
+            "live_gp": 25,
+            "live_goals": 7,
+            "def_multiplier": 0.953,
+            "final_score": 0.228
+          },
+          {
+            "player": "Zayne Parekh",
+            "team": "CGY",
+            "opponent": "PIT",
+            "position": "D",
+            "base_pred": 0.207,
+            "live_gp": 25,
+            "live_goals": 2,
+            "def_multiplier": 1.058,
+            "final_score": 0.167
+          },
+          {
+            "player": "Jeff Malott",
+            "team": "ANA",
+            "opponent": "SJS",
+            "position": "F",
+            "base_pred": 0.14,
+            "live_gp": 24,
+            "live_goals": 4,
+            "def_multiplier": 1.044,
+            "final_score": 0.159
+          },
+          {
+            "player": "Ilya Protas",
+            "team": "WSH",
+            "opponent": "PHI",
+            "position": "F",
+            "base_pred": 0.169,
+            "live_gp": 21,
+            "live_goals": 2,
+            "def_multiplier": 1.023,
+            "final_score": 0.149
+          },
+          {
+            "player": "Alex Iafallo",
+            "team": "WPG",
+            "opponent": "BOS",
+            "position": "F",
+            "base_pred": 0.133,
+            "live_gp": 25,
+            "live_goals": 4,
+            "def_multiplier": 0.971,
+            "final_score": 0.139
+          }
+        ],
+        "3": [
+          {
+            "player": "Ross Colton",
+            "team": "NSH",
+            "opponent": "DAL",
+            "position": "F",
+            "base_pred": 0.203,
+            "live_gp": 23,
+            "live_goals": 5,
+            "def_multiplier": 0.959,
+            "final_score": 0.2
+          },
+          {
+            "player": "Sandis Vilmanis",
+            "team": "FLA",
+            "opponent": "OTT",
+            "position": "F",
+            "base_pred": 0.182,
+            "live_gp": 21,
+            "live_goals": 4,
+            "def_multiplier": 0.963,
+            "final_score": 0.178
+          },
+          {
+            "player": "Tristan Luneau",
+            "team": "ANA",
+            "opponent": "SJS",
+            "position": "D",
+            "base_pred": 0.145,
+            "live_gp": 25,
+            "live_goals": 4,
+            "def_multiplier": 1.044,
+            "final_score": 0.158
+          },
+          {
+            "player": "Phillip Danault",
+            "team": "MTL",
+            "opponent": "COL",
+            "position": "F",
+            "base_pred": 0.151,
+            "live_gp": 25,
+            "live_goals": 3,
+            "def_multiplier": 0.953,
+            "final_score": 0.137
+          },
+          {
+            "player": "Jake Evans",
+            "team": "MTL",
+            "opponent": "COL",
+            "position": "F",
+            "base_pred": 0.137,
+            "live_gp": 25,
+            "live_goals": 4,
+            "def_multiplier": 0.953,
+            "final_score": 0.136
+          },
+          {
+            "player": "Brayden Yager",
+            "team": "WPG",
+            "opponent": "BOS",
+            "position": "F",
+            "base_pred": 0.145,
+            "live_gp": 10,
+            "live_goals": 1,
+            "def_multiplier": 0.971,
+            "final_score": 0.133
+          },
+          {
+            "player": "Alexander Nikishin",
+            "team": "CAR",
+            "opponent": "TBL",
+            "position": "D",
+            "base_pred": 0.077,
+            "live_gp": 5,
+            "live_goals": 3,
+            "def_multiplier": 0.96,
+            "final_score": 0.129
+          },
+          {
+            "player": "Adam Lowry",
+            "team": "WPG",
+            "opponent": "BOS",
+            "position": "F",
+            "base_pred": 0.126,
+            "live_gp": 25,
+            "live_goals": 3,
+            "def_multiplier": 0.971,
+            "final_score": 0.12
+          },
+          {
+            "player": "Jack McBain",
+            "team": "UTA",
+            "opponent": "MIN",
+            "position": "F",
+            "base_pred": 0.13,
+            "live_gp": 25,
+            "live_goals": 3,
+            "def_multiplier": 0.923,
+            "final_score": 0.118
+          },
+          {
+            "player": "Justin Faulk",
+            "team": "DET",
+            "opponent": "VAN",
+            "position": "D",
+            "base_pred": 0.09,
+            "live_gp": 23,
+            "live_goals": 3,
+            "def_multiplier": 1.112,
+            "final_score": 0.116
+          },
+          {
+            "player": "Zack Ostapchuk",
+            "team": "SJS",
+            "opponent": "ANA",
+            "position": "F",
+            "base_pred": 0.102,
+            "live_gp": 24,
+            "live_goals": 2,
+            "def_multiplier": 1.026,
+            "final_score": 0.098
+          },
+          {
+            "player": "Dmitry Orlov",
+            "team": "SJS",
+            "opponent": "ANA",
+            "position": "D",
+            "base_pred": 0.082,
+            "live_gp": 26,
+            "live_goals": 3,
+            "def_multiplier": 1.026,
+            "final_score": 0.097
+          },
+          {
+            "player": "Zeev Buium",
+            "team": "VAN",
+            "opponent": "DET",
+            "position": "D",
+            "base_pred": 0.106,
+            "live_gp": 26,
+            "live_goals": 2,
+            "def_multiplier": 0.997,
+            "final_score": 0.095
+          },
+          {
+            "player": "Peyton Krebs",
+            "team": "BUF",
+            "opponent": "NYR",
+            "position": "F",
+            "base_pred": 0.123,
+            "live_gp": 24,
+            "live_goals": 1,
+            "def_multiplier": 0.985,
+            "final_score": 0.094
+          },
+          {
+            "player": "Ty Mueller",
+            "team": "VAN",
+            "opponent": "DET",
+            "position": "F",
+            "base_pred": 0.06,
+            "live_gp": 2,
+            "live_goals": 0,
+            "def_multiplier": 0.997,
+            "final_score": 0.059
+          }
+        ]
+      },
+      "ai_picks": {
+        "1": {
+          "player": "Cutter Gauthier",
+          "team": "ANA",
+          "opponent": "SJS",
+          "position": "F",
+          "base_pred": 0.45,
+          "live_gp": 24,
+          "live_goals": 22,
+          "def_multiplier": 1.044,
+          "final_score": 0.68
+        },
+        "2": {
+          "player": "Artturi Lehkonen",
+          "team": "COL",
+          "opponent": "MTL",
+          "position": "F",
+          "base_pred": 0.315,
+          "live_gp": 23,
+          "live_goals": 15,
+          "def_multiplier": 1.017,
+          "final_score": 0.451
+        },
+        "3": {
+          "player": "Ross Colton",
+          "team": "NSH",
+          "opponent": "DAL",
+          "position": "F",
+          "base_pred": 0.203,
+          "live_gp": 23,
+          "live_goals": 5,
+          "def_multiplier": 0.959,
+          "final_score": 0.2
+        }
+      },
+      "settled": false,
+      "results": null,
+      "timing": {
+        "decision": "BORDERLINE_WATCH",
+        "basis": "now",
+        "first_wave_utc": "2026-11-26T00:00:00Z",
+        "lock_utc": "2026-11-26T00:00:00Z",
+        "lock_et": "7:00 PM ET",
+        "recommended_wave_et": "8:00 PM ET",
+        "v_now": 1.0377,
+        "v_defer_best": 1.0404,
+        "ev_delta": 0.0027
+      },
+      "picks_locked": false,
+      "locked_et": ""
+    },
+    {
       "date": "2026-11-24",
       "season": "20262027",
       "game_type": 2,
@@ -3619,9 +4158,9 @@
     }
   ],
   "summary": {
-    "total_days_logged": 8,
+    "total_days_logged": 9,
     "settled_days": 8,
-    "pending_days": 0,
+    "pending_days": 1,
     "ai_hits": 7,
     "ai_possible": 24,
     "ai_hit_rate_pct": 29.2,
@@ -3635,6 +4174,44 @@
       "3": 25.0
     },
     "recent_days": [
+      {
+        "date": "2026-11-25",
+        "mode": "Regular Season",
+        "settled": false,
+        "timing": {
+          "decision": "BORDERLINE_WATCH",
+          "basis": "now",
+          "first_wave_utc": "2026-11-26T00:00:00Z",
+          "lock_utc": "2026-11-26T00:00:00Z",
+          "lock_et": "7:00 PM ET",
+          "recommended_wave_et": "8:00 PM ET",
+          "v_now": 1.0377,
+          "v_defer_best": 1.0404,
+          "ev_delta": 0.0027
+        },
+        "picks_locked": false,
+        "hits_of_3": null,
+        "picks": {
+          "1": {
+            "player": "Cutter Gauthier",
+            "team": "ANA",
+            "score": 0.68,
+            "scored": null
+          },
+          "2": {
+            "player": "Artturi Lehkonen",
+            "team": "COL",
+            "score": 0.451,
+            "scored": null
+          },
+          "3": {
+            "player": "Ross Colton",
+            "team": "NSH",
+            "score": 0.2,
+            "scored": null
+          }
+        }
+      },
       {
         "date": "2026-11-24",
         "mode": "Regular Season",
@@ -3850,34 +4427,6 @@
             "team": "COL",
             "score": 0.138,
             "scored": true
-          }
-        }
-      },
-      {
-        "date": "2026-11-17",
-        "mode": "Regular Season",
-        "settled": true,
-        "timing": {},
-        "picks_locked": false,
-        "hits_of_3": 0,
-        "picks": {
-          "1": {
-            "player": "Macklin Celebrini",
-            "team": "SJS",
-            "score": 0.484,
-            "scored": false
-          },
-          "2": {
-            "player": "Jason Robertson",
-            "team": "DAL",
-            "score": 0.465,
-            "scored": false
-          },
-          "3": {
-            "player": "Thomas Harley",
-            "team": "DAL",
-            "score": 0.13,
-            "scored": false
           }
         }
       }
