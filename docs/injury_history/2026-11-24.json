@@ -1,8 +1,8 @@
 {
   "date": "2026-11-24",
-  "captured_utc": "2026-11-25T02:16:22.035795+00:00",
+  "captured_utc": "2026-11-25T02:52:19.925160+00:00",
   "source": "espn-cbs",
-  "count": 120,
+  "count": 121,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -300,6 +300,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Edvinsson (contract dispute) is on the Red Wings' injured, non-roster list, per the NHL media site Wednesday."
+    },
+    {
+      "player": "Filip Hallander",
+      "team": "EDM",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Zach Hyman",
