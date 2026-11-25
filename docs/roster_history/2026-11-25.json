@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-25T05:07:05.020409+00:00",
+  "captured_utc": "2026-11-25T15:20:56.400671+00:00",
   "teams": {
     "ANA": [
       {
@@ -2620,6 +2620,12 @@
       {
         "id": 8475151,
         "name": "Kyle Palmieri",
+        "position": "C",
+        "team": "NYI"
+      },
+      {
+        "id": 8484221,
+        "name": "Calum Ritchie",
         "position": "C",
         "team": "NYI"
       },

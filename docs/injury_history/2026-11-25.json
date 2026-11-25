@@ -1,8 +1,8 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-25T05:07:01.435671+00:00",
+  "captured_utc": "2026-11-25T15:20:53.538882+00:00",
   "source": "espn-cbs",
-  "count": 120,
+  "count": 122,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -266,6 +266,15 @@
       "note": "Bichsel (lower body) was placed on injured reserve Saturday."
     },
     {
+      "player": "Matt Duchene",
+      "team": "DAL",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Duchene will be out for approximately three months after undergoing surgery to repair a core injury, the team announced Monday."
+    },
+    {
       "player": "Sam Montembeault",
       "team": "DET",
       "position": "G",
@@ -293,6 +302,15 @@
       "note": "Edvinsson (contract dispute) is on the Red Wings' injured, non-roster list, per the NHL media site Wednesday."
     },
     {
+      "player": "Zach Hyman",
+      "team": "EDM",
+      "position": "LW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
       "player": "Filip Hallander",
       "team": "EDM",
       "position": "C",
@@ -300,15 +318,6 @@
       "is_out": false,
       "is_dtd": true,
       "note": "day-to-day"
-    },
-    {
-      "player": "Zach Hyman",
-      "team": "EDM",
-      "position": "LW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Hyman (migraine) won't play against Vegas on Tuesday, per Oilers play-by-play announcer Jack Michaels."
     },
     {
       "player": "Alec Regula",
@@ -581,6 +590,15 @@
       "note": "ir"
     },
     {
+      "player": "Andre Burakovsky",
+      "team": "OTT",
+      "position": "LW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Burakovsky (lower body) will be with the Senators for their four-game road trip and is expected to play at some point, Bruce Garrioch of Postmedia reports Wednesday."
+    },
+    {
       "player": "Hayden Hodgson",
       "team": "OTT",
       "position": "RW",
@@ -588,15 +606,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir"
-    },
-    {
-      "player": "Andre Burakovsky",
-      "team": "OTT",
-      "position": "LW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Burakovsky (lower body) was on the ice Friday doing some individual drills, Bruce Garrioch of Postmedia reports."
     },
     {
       "player": "Warren Foegele",
@@ -1020,6 +1029,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Co-president of hockey operations Henrik Sedin said Monday that he hopes Demko (hip) will be ready to return before Christmas, Kevin Woodley of NHL.com reports."
+    },
+    {
+      "player": "Marc Gatcomb",
+      "team": "VGK",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Vincent Desharnais",
