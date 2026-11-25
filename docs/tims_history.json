@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-25 12:01 PM ET",
+      "captured_et": "2026-11-25 04:18 PM ET",
       "model_n_half": 30.73,
       "groups": {
         "1": [
@@ -83,8 +83,8 @@
             "base_pred": 0.512,
             "live_gp": 24,
             "live_goals": 10,
-            "def_multiplier": 1.027,
-            "final_score": 0.484
+            "def_multiplier": 1.028,
+            "final_score": 0.485
           },
           {
             "player": "Alex DeBrincat",
@@ -138,7 +138,7 @@
             "base_pred": 0.413,
             "live_gp": 25,
             "live_goals": 12,
-            "def_multiplier": 0.952,
+            "def_multiplier": 0.951,
             "final_score": 0.424
           },
           {
@@ -250,7 +250,7 @@
             "base_pred": 0.237,
             "live_gp": 23,
             "live_goals": 10,
-            "def_multiplier": 1.017,
+            "def_multiplier": 1.018,
             "final_score": 0.314
           },
           {
@@ -261,7 +261,7 @@
             "base_pred": 0.219,
             "live_gp": 26,
             "live_goals": 11,
-            "def_multiplier": 1.048,
+            "def_multiplier": 1.047,
             "final_score": 0.31
           },
           {
@@ -272,7 +272,7 @@
             "base_pred": 0.217,
             "live_gp": 25,
             "live_goals": 7,
-            "def_multiplier": 0.952,
+            "def_multiplier": 0.951,
             "final_score": 0.224
           },
           {
@@ -362,7 +362,7 @@
             "base_pred": 0.149,
             "live_gp": 25,
             "live_goals": 3,
-            "def_multiplier": 0.952,
+            "def_multiplier": 0.951,
             "final_score": 0.135
           },
           {
@@ -373,7 +373,7 @@
             "base_pred": 0.135,
             "live_gp": 25,
             "live_goals": 4,
-            "def_multiplier": 0.952,
+            "def_multiplier": 0.951,
             "final_score": 0.135
           },
           {
@@ -439,7 +439,7 @@
             "base_pred": 0.083,
             "live_gp": 26,
             "live_goals": 3,
-            "def_multiplier": 1.027,
+            "def_multiplier": 1.028,
             "final_score": 0.097
           },
           {
@@ -450,7 +450,7 @@
             "base_pred": 0.1,
             "live_gp": 24,
             "live_goals": 2,
-            "def_multiplier": 1.027,
+            "def_multiplier": 1.028,
             "final_score": 0.097
           },
           {
@@ -533,8 +533,8 @@
         "lock_et": "7:00 PM ET",
         "recommended_wave_et": "7:30 PM ET",
         "v_now": 1.0368,
-        "v_defer_best": 1.0392,
-        "ev_delta": 0.0024
+        "v_defer_best": 1.0388,
+        "ev_delta": 0.002
       },
       "picks_locked": false,
       "locked_et": ""
@@ -4186,8 +4186,8 @@
           "lock_et": "7:00 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.0368,
-          "v_defer_best": 1.0392,
-          "ev_delta": 0.0024
+          "v_defer_best": 1.0388,
+          "ev_delta": 0.002
         },
         "picks_locked": false,
         "hits_of_3": null,

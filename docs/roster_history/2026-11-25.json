@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-25T15:20:56.400671+00:00",
+  "captured_utc": "2026-11-25T21:20:55.464620+00:00",
   "teams": {
     "ANA": [
       {
@@ -806,12 +806,6 @@
         "team": "CGY"
       },
       {
-        "id": 8484821,
-        "name": "Sam Morton",
-        "position": "C",
-        "team": "CGY"
-      },
-      {
         "id": 8482747,
         "name": "Brennan Othmann",
         "position": "L",
@@ -1061,6 +1055,12 @@
       }
     ],
     "COL": [
+      {
+        "id": 8481550,
+        "name": "Adam Beckman",
+        "position": "L",
+        "team": "COL"
+      },
       {
         "id": 8484149,
         "name": "Gavin Brindley",
@@ -1944,6 +1944,12 @@
       {
         "id": 8476979,
         "name": "Erik Gustafsson",
+        "position": "D",
+        "team": "LAK"
+      },
+      {
+        "id": 8482922,
+        "name": "Kirill Kirsanov",
         "position": "D",
         "team": "LAK"
       },
@@ -4534,12 +4540,6 @@
       {
         "id": 8479639,
         "name": "Dylan Coghlan",
-        "position": "D",
-        "team": "VGK"
-      },
-      {
-        "id": 8482141,
-        "name": "Lukas Cormier",
         "position": "D",
         "team": "VGK"
       },
