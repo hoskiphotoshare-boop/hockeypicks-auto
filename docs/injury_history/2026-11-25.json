@@ -1,8 +1,8 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-25T15:20:53.538882+00:00",
+  "captured_utc": "2026-11-25T17:01:22.735742+00:00",
   "source": "espn-cbs",
-  "count": 122,
+  "count": 117,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -50,6 +50,15 @@
       "note": "Hagens (back) is wearing a non-contact sweater ahead of Tuesday's practice, Steve Conroy of the Boston Herald reports."
     },
     {
+      "player": "Mattias Samuelsson",
+      "team": "BUF",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Samuelsson (undisclosed) is considered a game-time decision for Wednesday's matchup against the Rangers, Paul Hamilton of WGR Sports Radio 550 reports."
+    },
+    {
       "player": "Tyson Kozak",
       "team": "BUF",
       "position": "C",
@@ -89,10 +98,10 @@
       "player": "Morgan Frost",
       "team": "CGY",
       "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "Frost sustained an upper-body injury during Monday's 2-1 loss to the Senators, and head coach Ryan Huska did not have an update on the center's status after the game, Flames TV host Brendan Parker reports."
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Frost (upper body) has been ruled out for Wednesday's game against the Penguins, Eric Francis of Sportsnet reports."
     },
     {
       "player": "Martin Pospisil",
@@ -221,15 +230,6 @@
       "note": "ir"
     },
     {
-      "player": "Sean Monahan",
-      "team": "CBJ",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
       "player": "Tyler Myers",
       "team": "DAL",
       "position": "D",
@@ -354,24 +354,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Janmark (undisclosed) does not have a timetable for his return from injury."
-    },
-    {
-      "player": "Brad Marchand",
-      "team": "FLA",
-      "position": "LW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Marchand (knee) is close to returning to the lineup, but he won't play against Buffalo on Saturday, per Jameson Olive of the Panthers' official site."
-    },
-    {
-      "player": "Aleksander Barkov",
-      "team": "FLA",
-      "position": "C",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Barkov (knee) won't play against Buffalo on Saturday, but he could return within Florida's next three games, Jameson Olive of the Panthers' official site reports."
     },
     {
       "player": "Jonah Gadjovich",
@@ -635,22 +617,13 @@
       "note": "Grebenkin (back) underwent successful surgery and is expected to miss at least four months."
     },
     {
-      "player": "Evgeni Malkin",
+      "player": "Egor Chinakhov",
       "team": "PIT",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
-      "player": "Declan Carlile",
-      "team": "PIT",
-      "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "position": "RW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Bryan Rust",
@@ -824,24 +797,6 @@
       "note": "Geekie (shoulder) underwent surgery Monday and is expected to miss 4-5 months."
     },
     {
-      "player": "Zemgus Girgensons",
-      "team": "TBL",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
-      "player": "Brandon Hagel",
-      "team": "TBL",
-      "position": "LW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Hagel (lower body) was placed on injured reserve by the Lightning on Thursday, retroactive to Nov. 15, Eduardo A. Encina of the Tampa Bay Times reports."
-    },
-    {
       "player": "Jack Roslovic",
       "team": "TOR",
       "position": "C",
@@ -989,10 +944,10 @@
       "player": "Elias Pettersson",
       "team": "VAN",
       "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Brendan Gallagher",
@@ -1046,7 +1001,7 @@
       "status": "IR",
       "is_out": true,
       "is_dtd": false,
-      "note": "Desharnais (appendectomy) was a full participant in Tuesday's practice and has been upgraded to day-to-day, Tarik El-Bashir of Monumental Sports Network reports."
+      "note": "Desharnais (appendectomy) is slated to miss Wednesday's game against the Flyers, Tarik El-Bashir of Monumental Sports Network reports."
     },
     {
       "player": "Rasmus Sandin",

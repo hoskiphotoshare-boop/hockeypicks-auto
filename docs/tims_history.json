@@ -5,7 +5,7 @@
       "season": "20262027",
       "game_type": 2,
       "mode": "Regular Season",
-      "captured_et": "2026-11-25 10:18 AM ET",
+      "captured_et": "2026-11-25 12:01 PM ET",
       "model_n_half": 30.73,
       "groups": {
         "1": [
@@ -72,8 +72,8 @@
             "base_pred": 0.482,
             "live_gp": 23,
             "live_goals": 11,
-            "def_multiplier": 1.016,
-            "final_score": 0.488
+            "def_multiplier": 1.018,
+            "final_score": 0.489
           },
           {
             "player": "Macklin Celebrini",
@@ -94,7 +94,7 @@
             "base_pred": 0.46,
             "live_gp": 23,
             "live_goals": 8,
-            "def_multiplier": 1.112,
+            "def_multiplier": 1.113,
             "final_score": 0.461
           },
           {
@@ -162,7 +162,7 @@
             "base_pred": 0.414,
             "live_gp": 23,
             "live_goals": 9,
-            "def_multiplier": 1.112,
+            "def_multiplier": 1.113,
             "final_score": 0.451
           },
           {
@@ -206,7 +206,7 @@
             "base_pred": 0.369,
             "live_gp": 23,
             "live_goals": 8,
-            "def_multiplier": 1.112,
+            "def_multiplier": 1.113,
             "final_score": 0.402
           },
           {
@@ -395,7 +395,7 @@
             "base_pred": 0.079,
             "live_gp": 5,
             "live_goals": 3,
-            "def_multiplier": 0.96,
+            "def_multiplier": 0.959,
             "final_score": 0.131
           },
           {
@@ -428,7 +428,7 @@
             "base_pred": 0.089,
             "live_gp": 23,
             "live_goals": 3,
-            "def_multiplier": 1.112,
+            "def_multiplier": 1.113,
             "final_score": 0.115
           },
           {
@@ -508,7 +508,7 @@
           "base_pred": 0.414,
           "live_gp": 23,
           "live_goals": 9,
-          "def_multiplier": 1.112,
+          "def_multiplier": 1.113,
           "final_score": 0.451
         },
         "3": {
@@ -533,8 +533,8 @@
         "lock_et": "7:00 PM ET",
         "recommended_wave_et": "7:30 PM ET",
         "v_now": 1.0368,
-        "v_defer_best": 1.0394,
-        "ev_delta": 0.0026
+        "v_defer_best": 1.0392,
+        "ev_delta": 0.0024
       },
       "picks_locked": false,
       "locked_et": ""
@@ -4186,8 +4186,8 @@
           "lock_et": "7:00 PM ET",
           "recommended_wave_et": "7:30 PM ET",
           "v_now": 1.0368,
-          "v_defer_best": 1.0394,
-          "ev_delta": 0.0026
+          "v_defer_best": 1.0392,
+          "ev_delta": 0.0024
         },
         "picks_locked": false,
         "hits_of_3": null,
