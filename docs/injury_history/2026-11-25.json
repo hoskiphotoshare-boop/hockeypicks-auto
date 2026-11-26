@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-26T01:04:13.109316+00:00",
+  "captured_utc": "2026-11-26T01:40:39.690149+00:00",
   "source": "espn-cbs",
   "count": 116,
   "records": [
@@ -140,6 +140,15 @@
       "note": "out"
     },
     {
+      "player": "Tyler Bertuzzi",
+      "team": "CHI",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
       "player": "Connor Bedard",
       "team": "CHI",
       "position": "C",
@@ -147,15 +156,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Bedard underwent successful shoulder surgery Monday and is expected to make a full recovery in approximately four months, the Blackhawks announced."
-    },
-    {
-      "player": "Anton Frondell",
-      "team": "CHI",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
     },
     {
       "player": "Wyatt Kaiser",
