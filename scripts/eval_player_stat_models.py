@@ -434,6 +434,7 @@ def main() -> None:
     if all(g["pass"] for g in report["gate"].values()):
         import joblib
         from datetime import datetime, timezone
+        trained_utc = datetime.now(timezone.utc).isoformat()
         joblib.dump(
             {
                 "features": cols,
@@ -442,12 +443,24 @@ def main() -> None:
                 "interval_scale": interval_scale,
                 "metrics": production_metrics,
                 "gate": report["gate"],
-                "trained_utc": datetime.now(timezone.utc).isoformat(),
+                "trained_utc": trained_utc,
                 "train_through": splits[-1][0],
             },
             BUNDLE,
         )
-        print("wrote", BUNDLE, flush=True)
+        with open("models/player_stat_calibration.json", "w", encoding="utf-8") as fh:
+            json.dump(
+                {
+                    "calibration": calibration,
+                    "interval_scale": interval_scale,
+                    "evaluated_utc": trained_utc,
+                    "source": "monthly_retrain",
+                    "train_through": splits[-1][0],
+                },
+                fh,
+                indent=2,
+            )
+        print("wrote", BUNDLE, "and models/player_stat_calibration.json", flush=True)
 
 
 if __name__ == "__main__":
