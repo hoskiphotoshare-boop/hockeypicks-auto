@@ -517,8 +517,8 @@ def predict_expected_stats(
         if lo_i >= pred - 1e-9:
             lo_i = max(0.0, pred - max(0.5, pred * 0.8))
         out[target] = round(pred, 3)
-        out[f"{target}_lo"] = round(lo_i, 3)
-        out[f"{target}_hi"] = round(hi_i, 3)
+        out[f"{target}_lo"] = float(math.floor(lo_i))
+        out[f"{target}_hi"] = float(math.ceil(hi_i))
     # Points is exactly G + A for consistency; use a Poisson interval for the sum.
     pts = out["goals"] + out["assists"]
     plo, phi = _poisson_interval(pts)
@@ -731,4 +731,12 @@ def build_players_payload(
     else:
         updated_utc = str(updated_utc)
 
-    return {"updated_utc": updated_utc, "players": players}
+    return {
+        "updated_utc": updated_utc,
+        "model_version": {
+            "name": "xgboost-poisson-v1",
+            "trained_utc": (stat_bundle or {}).get("trained_utc"),
+            "train_through": (stat_bundle or {}).get("train_through"),
+        } if stat_bundle else None,
+        "players": players,
+    }
