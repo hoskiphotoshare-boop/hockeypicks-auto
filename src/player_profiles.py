@@ -205,7 +205,7 @@ def parse_game_log_payload(payload: Any) -> list[dict[str, Any]]:
             "toi": toi,
         })
     rows.sort(key=lambda r: str(r.get("date") or ""))
-    return rows[-6:]
+    return rows[-10:]
 
 
 # aliases for tests
@@ -232,7 +232,7 @@ def fetch_player_game_logs(
     cache = _load_cache(cache_path)
     now = datetime.now(timezone.utc)
     stale = True
-    if cache and isinstance(cache.get("logs"), dict):
+    if cache and isinstance(cache.get("logs"), dict) and cache.get("schema") == 2:
         updated = cache.get("updated_utc")
         if updated:
             try:
@@ -284,10 +284,249 @@ def fetch_player_game_logs(
             pass
 
     try:
-        _save_cache(cache_path, {"updated_utc": now.isoformat(), "season": season, "logs": new_logs})
+        _save_cache(cache_path, {"schema": 2, "updated_utc": now.isoformat(), "season": season, "logs": new_logs})
     except Exception:
         pass
     return new_logs
+
+
+def read_prior_player_rates(archive_dir: str, year: Any) -> dict[str, dict[str, float]]:
+    """Per-game prior-season rates keyed by clean name (goals/assists/points/sog)."""
+    stats = read_season_skater_stats(archive_dir, year)
+    out: dict[str, dict[str, float]] = {}
+    for key, row in stats.items():
+        gp = float(row.get("gp", 0) or 0)
+        if gp <= 0:
+            continue
+        out[key] = {
+            "g_pg": float(row.get("goals", 0) or 0) / gp,
+            "a_pg": float(row.get("assists", 0) or 0) / gp,
+            "p_pg": float(row.get("points", 0) or 0) / gp,
+            "sog_pg": float(row.get("sog", 0) or 0) / gp,
+        }
+    return out
+
+
+def read_prior_team_rates(archive_dir: str, year: Any) -> dict[str, dict[str, float]]:
+    """Prior-season team rates keyed by abbreviation."""
+    path = os.path.join(archive_dir, f"{year}_regular_teams.csv")
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        return {}
+    try:
+        df = pd.read_csv(path)
+    except Exception:
+        return {}
+    if "situation" in df.columns:
+        df = df[df["situation"].astype(str).str.lower() == "all"]
+    if "position" in df.columns:
+        df = df[df["position"].astype(str).str.lower().isin(["all", "team", "team level"])]
+    out: dict[str, dict[str, float]] = {}
+    for row in df.drop_duplicates(subset=["team"]).to_dict("records"):
+        gp = float(row.get("games_played", 0) or 0)
+        if gp <= 0:
+            continue
+        ga = float(row.get("goalsAgainst", 0) or 0)
+        sa = float(row.get("shotsOnGoalAgainst", 0) or 0)
+        out[str(row.get("team", "")).upper()] = {
+            "gf_pg": float(row.get("goalsFor", 0) or 0) / gp,
+            "ga_pg": ga / gp,
+            "save_pct": (1.0 - ga / sa) if sa > 0 else 0.9,
+            "xgf_pg": float(row.get("xGoalsFor", 0) or 0) / gp,
+            "xga_pg": float(row.get("xGoalsAgainst", 0) or 0) / gp,
+        }
+    return out
+
+
+def build_team_rolling_context(logs_dir: str, season: str, games: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
+    """Last-10 GF/GA/win% and rest days before each team's next scheduled game."""
+    upcoming: dict[str, str] = {}
+    for g in games or []:
+        date = str(g.get("date") or "")[:10]
+        for team in (g.get("away"), g.get("home")):
+            if team and (team not in upcoming or date < upcoming[team]):
+                upcoming[team] = date
+    out: dict[str, dict[str, float]] = {}
+    for team, game_date in upcoming.items():
+        path = os.path.join(logs_dir, f"{team}_{season}_gamelog.csv")
+        if not os.path.exists(path):
+            continue
+        try:
+            df = pd.read_csv(path)
+        except Exception:
+            continue
+        if df.empty or "Date" not in df.columns:
+            continue
+        df["Date"] = pd.to_datetime(df["Date"].astype(str).str[:10], errors="coerce")
+        df = df.dropna(subset=["Date"]).sort_values("Date")
+        try:
+            cutoff = pd.Timestamp(game_date)
+        except Exception:
+            cutoff = df["Date"].max() + pd.Timedelta(days=1)
+        prior = df[df["Date"] < cutoff]
+        if prior.empty:
+            continue
+        last = prior.tail(10)
+        out[team] = {
+            "gf_pg": float(pd.to_numeric(last.get("Team_Score", 0), errors="coerce").fillna(0).mean()),
+            "ga_pg": float(pd.to_numeric(last.get("Opp_Score", 0), errors="coerce").fillna(0).mean()),
+            "win_pct": float(pd.to_numeric(last.get("Won", 0), errors="coerce").fillna(0).mean()),
+            "rest_days": float(max(0, min(10, (cutoff - prior["Date"].max()).days))),
+        }
+    return out
+
+
+def load_stat_bundle(path: str) -> dict[str, Any] | None:
+    if not path or not os.path.exists(path):
+        return None
+    try:
+        import joblib
+        bundle = joblib.load(path)
+        return bundle if isinstance(bundle, dict) and bundle.get("models") else None
+    except Exception:
+        return None
+
+
+def _toi_minutes(value: Any) -> float:
+    raw = str(value or "").strip()
+    if not raw or ":" not in raw:
+        return 0.0
+    try:
+        mm, ss = raw.split(":")[:2]
+        return float(mm) + float(ss) / 60.0
+    except ValueError:
+        return 0.0
+
+
+def _poisson_interval(lam: float) -> tuple[int, int]:
+    l = max(0.0, float(lam or 0.0))
+    if l <= 0:
+        return 0, 0
+    def cdf(k: int) -> float:
+        term = math.exp(-l)
+        total = term
+        for i in range(1, k + 1):
+            term *= l / i
+            total += term
+        return total
+    lo = 0
+    while lo < 30 and cdf(lo) < 0.10:
+        lo += 1
+    hi = lo
+    while hi < 30 and cdf(hi) < 0.90:
+        hi += 1
+    return lo, hi
+
+
+def predict_expected_stats(
+    rows: list[dict[str, Any]],
+    stats: dict[str, Any],
+    prior: dict[str, float] | None,
+    team_ctx: dict[str, float] | None,
+    opp_ctx: dict[str, float] | None,
+    prior_team: dict[str, float] | None,
+    prior_opp: dict[str, float] | None,
+    *,
+    gp_season: int,
+    is_home: bool,
+    is_defense: bool,
+    bundle: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if not bundle:
+        return None
+    rows = sorted([r for r in (rows or []) if isinstance(r, dict)], key=lambda r: str(r.get("date") or ""))
+    n = len(rows)
+    def rate(key: str, w: int) -> float:
+        chunk = rows[-w:] if n else []
+        if not chunk:
+            return 0.0
+        return float(sum(float((r or {}).get(key, 0) or 0) for r in chunk) / len(chunk))
+    prior = prior or {}
+    team_ctx = team_ctx or {}
+    opp_ctx = opp_ctx or {}
+    prior_team = prior_team or {}
+    prior_opp = prior_opp or {}
+    gp = max(1, int(gp_season or 0))
+    def season_rate(key: str) -> float:
+        try:
+            return float(stats.get(key, 0) or 0) / gp
+        except Exception:
+            return 0.0
+    prior_g = float(prior.get("g_pg", 0) or 0)
+    prior_a = float(prior.get("a_pg", 0) or 0)
+    prior_p = float(prior.get("p_pg", 0) or 0)
+    prior_sog = float(prior.get("sog_pg", 0) or 0)
+    feats = {
+        "roll5_goals": rate("g", 5), "roll10_goals": rate("g", 10),
+        "roll5_assists": rate("a", 5), "roll10_assists": rate("a", 10),
+        "roll5_points": rate("p", 5), "roll10_points": rate("p", 10),
+        "roll5_sog": rate("sog", 5), "roll10_sog": rate("sog", 10),
+        "roll5_toi_min": sum(_toi_minutes(r.get("toi")) for r in rows[-5:]) / max(1, len(rows[-5:])),
+        "roll10_toi_min": sum(_toi_minutes(r.get("toi")) for r in rows[-10:]) / max(1, len(rows[-10:])),
+        "season_goals_pg": season_rate("goals"), "season_assists_pg": season_rate("assists"),
+        "season_points_pg": season_rate("points"), "season_sog_pg": season_rate("sog"),
+        "season_toi_min_pg": float(stats.get("toi_pg", 0) or 0),
+        "prior_g_pg": prior_g, "prior_a_pg": prior_a, "prior_p_pg": prior_p, "prior_sog_pg": prior_sog,
+        "prior_sh_pct": min(0.25, max(0.02, prior_g / max(0.05, prior_sog))) if prior_sog > 0 else 0.08,
+        "team_gf_pg": float(team_ctx.get("gf_pg", 3.0) or 3.0),
+        "team_ga_pg": float(team_ctx.get("ga_pg", 3.0) or 3.0),
+        "team_win_pct": float(team_ctx.get("win_pct", 0.5) or 0.5),
+        "opp_gf_pg": float(opp_ctx.get("gf_pg", 3.0) or 3.0),
+        "opp_ga_pg": float(opp_ctx.get("ga_pg", 3.0) or 3.0),
+        "opp_win_pct": float(opp_ctx.get("win_pct", 0.5) or 0.5),
+        "prior_team_gf_pg": float(prior_team.get("gf_pg", 3.0) or 3.0),
+        "prior_team_ga_pg": float(prior_team.get("ga_pg", 3.0) or 3.0),
+        "prior_team_save_pct": float(prior_team.get("save_pct", 0.9) or 0.9),
+        "prior_opp_gf_pg": float(prior_opp.get("gf_pg", 3.0) or 3.0),
+        "prior_opp_ga_pg": float(prior_opp.get("ga_pg", 3.0) or 3.0),
+        "prior_opp_save_pct": float(prior_opp.get("save_pct", 0.9) or 0.9),
+        "gp_season": float(gp),
+        "rest_days": float(team_ctx.get("rest_days", 3.0) or 3.0),
+        "is_home": 1.0 if is_home else 0.0,
+        "is_defense": 1.0 if is_defense else 0.0,
+        "is_b2b": 1.0 if float(team_ctx.get("rest_days", 3.0) or 3.0) <= 1 else 0.0,
+    }
+    cols = bundle.get("features") or []
+    try:
+        x = [float(feats.get(c, 0.0) or 0.0) for c in cols]
+    except Exception:
+        return None
+    group = "D" if is_defense else "F"
+    prior_map = {"goals": prior_g, "assists": prior_a, "points": prior_p, "sog": prior_sog}
+    cal = bundle.get("calibration") or {}
+    scales = bundle.get("interval_scale") or {}
+    out: dict[str, Any] = {}
+    for target in ("goals", "assists", "sog"):
+        models = (bundle.get("models") or {}).get(target) or {}
+        model = models.get(group) or models.get("F")
+        if model is None:
+            return None
+        bm = math.log(min(5.0, max(0.02, float(prior_map.get(target, 0.05) or 0.05))))
+        try:
+            raw = float(model["mean"].predict([x], base_margin=[bm])[0])
+            lo = float(model["q10"].predict([x], base_margin=[bm])[0])
+            hi = float(model["q90"].predict([x], base_margin=[bm])[0])
+        except Exception:
+            return None
+        c = float(cal.get(target, 1.0) or 1.0)
+        k = float(scales.get(target, 1.0) or 1.0)
+        pred = max(0.0, raw * c)
+        lo_i = max(0.0, pred - k * max(0.0, raw - lo))
+        hi_i = max(pred, pred + k * max(0.0, hi - raw))
+        if hi_i <= pred + 1e-9:
+            hi_i = pred + max(0.5, pred * 0.8)
+        if lo_i >= pred - 1e-9:
+            lo_i = max(0.0, pred - max(0.5, pred * 0.8))
+        out[target] = round(pred, 3)
+        out[f"{target}_lo"] = round(lo_i, 3)
+        out[f"{target}_hi"] = round(hi_i, 3)
+    # Points is exactly G + A for consistency; use a Poisson interval for the sum.
+    pts = out["goals"] + out["assists"]
+    plo, phi = _poisson_interval(pts)
+    out["points"] = round(pts, 3)
+    out["points_lo"] = float(plo)
+    out["points_hi"] = float(phi)
+    out["model"] = "xgboost-poisson-v1"
+    return out
 
 
 def build_players_payload(
@@ -298,8 +537,15 @@ def build_players_payload(
     schedule_games: list[dict[str, Any]] | None = None,
     starting_goalies: dict[str, Any] | None = None,
     updated_utc: Any = None,
+    stat_bundle: dict[str, Any] | None = None,
+    prior_stats: dict[str, dict[str, float]] | None = None,
+    team_context: dict[str, dict[str, float]] | None = None,
+    prior_team: dict[str, dict[str, float]] | None = None,
 ) -> dict[str, Any]:
     season_stats = season_stats or {}
+    prior_stats = prior_stats or {}
+    team_context = team_context or {}
+    prior_team = prior_team or {}
     game_logs = game_logs or {}
     tims_groups = tims_groups or {}
     schedule_games = schedule_games or []
@@ -407,6 +653,25 @@ def build_players_payload(
         sorted_rows = sorted(rows, key=lambda r: str((r or {}).get("date") or ""))
         last6 = [dict(r) for r in sorted_rows[-6:]]
 
+        expected = None
+        if stat_bundle:
+            try:
+                expected = predict_expected_stats(
+                    sorted_rows,
+                    stats if isinstance(stats, dict) else {},
+                    prior_stats.get(clean_name(name), {}) if name else {},
+                    team_context.get(team, {}) if team else {},
+                    team_context.get(opp, {}) if opp else {},
+                    prior_team.get(team, {}) if team else {},
+                    prior_team.get(opp, {}) if opp else {},
+                    gp_season=int((stats or {}).get("gp", 0) or live_gp or 0),
+                    is_home=bool(home),
+                    is_defense=str(position).upper().startswith("D"),
+                    bundle=stat_bundle,
+                )
+            except Exception:
+                expected = None
+
         gp = int(stats.get("gp", 0) or 0) if isinstance(stats, dict) else 0
         goals = int(stats.get("goals", 0) or 0) if isinstance(stats, dict) else 0
         assists = int(stats.get("assists", 0) or 0) if isinstance(stats, dict) else 0
@@ -452,6 +717,8 @@ def build_players_payload(
             "injury": injury,
             "tims_group": tims_group,
         }
+        if expected:
+            player_obj["expected"] = expected
         players.append(player_obj)
 
     players.sort(key=lambda p: (-float((p.get("tonight") or {}).get("goal_rate") or 0.0), str(p.get("name") or "")))

@@ -1032,7 +1032,15 @@ def run_inference(
     # --- players.json (full runs only) ---
     if run_mode == "full" and mp_years:
         try:
-            from src.player_profiles import build_players_payload, fetch_player_game_logs, read_season_skater_stats
+            from src.player_profiles import (
+                build_players_payload,
+                build_team_rolling_context,
+                fetch_player_game_logs,
+                load_stat_bundle,
+                read_prior_player_rates,
+                read_prior_team_rates,
+                read_season_skater_stats,
+            )
             from src.data_sync import clean_name
 
             archive_dir = os.path.join(data_dir, "moneypuck")
@@ -1103,6 +1111,14 @@ def run_inference(
             except Exception:
                 updated_utc = datetime.now(timezone.utc).isoformat()
 
+            prior_year = max(2019, int(active_mp_year) - 1)
+            prior_stats = read_prior_player_rates(archive_dir, prior_year)
+            prior_team = read_prior_team_rates(archive_dir, prior_year)
+            team_context = build_team_rolling_context(
+                logs_dir, str(context.get("nhl_season") or ""), schedule_info.get("games") or []
+            )
+            stat_bundle = load_stat_bundle(os.path.join(models_dir, "player_stat_bundles.joblib"))
+
             players_payload = build_players_payload(
                 slate_scorers=all_scorers,
                 season_stats=season_stats,
@@ -1111,6 +1127,10 @@ def run_inference(
                 schedule_games=schedule_info.get("games") or [],
                 starting_goalies=starting_goalies or {},
                 updated_utc=updated_utc,
+                stat_bundle=stat_bundle,
+                prior_stats=prior_stats,
+                team_context=team_context,
+                prior_team=prior_team,
             )
             write_json_report(players_payload, os.path.join(docs_dir, "players.json"))
         except Exception as exc:
