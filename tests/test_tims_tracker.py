@@ -307,6 +307,30 @@ class TestTimsTracker(unittest.TestCase):
         )
         self.assertEqual(history["days"], [])
 
+    def test_ticket_revisions_preserve_pre_retrain_pick(self):
+        history = {"days": [], "summary": {}}
+        groups = {
+            "1": [_cand("G1", "AAA", 0.5)],
+            "2": [_cand("Lehkonen", "COL", 0.451), _cand("Raymond", "DET", 0.450)],
+            "3": [_cand("G3", "BBB", 0.2)],
+        }
+        early = self._advice(self._picks({
+            "1": {"player": "G1", "team": "AAA", "final_score": 0.5},
+            "2": {"player": "Lehkonen", "team": "COL", "final_score": 0.451},
+            "3": {"player": "G3", "team": "BBB", "final_score": 0.2},
+        }))
+        self.assertTrue(self._upsert(history, groups, advice=early, captured="2026-11-17 04:17 PM ET"))
+        late = self._advice(self._picks({
+            "1": {"player": "G1", "team": "AAA", "final_score": 0.5},
+            "2": {"player": "Raymond", "team": "DET", "final_score": 0.451},
+            "3": {"player": "G3", "team": "BBB", "final_score": 0.2},
+        }))
+        self.assertTrue(self._upsert(history, groups, advice=late, captured="2026-11-17 06:17 PM ET"))
+        revs = history["days"][0]["ticket_revisions"]
+        self.assertEqual(len(revs), 2)
+        self.assertEqual(revs[0]["picks"]["2"]["player"], "Lehkonen")
+        self.assertEqual(revs[1]["picks"]["2"]["player"], "Raymond")
+
 
 if __name__ == "__main__":
     unittest.main()

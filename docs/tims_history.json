@@ -541,7 +541,53 @@
       "locked_utc": "2026-11-26T00:00:00+00:00",
       "lock_et": "7:00 PM ET",
       "lock_wave": 1,
-      "locked_before_first_game": true
+      "locked_before_first_game": true,
+      "ticket_revisions": [
+        {
+          "captured_et": "2026-11-25 12:03 AM ET",
+          "picks": {
+            "1": {
+              "player": "Cutter Gauthier",
+              "team": "ANA",
+              "score": 0.68
+            },
+            "2": {
+              "player": "Artturi Lehkonen",
+              "team": "COL",
+              "score": 0.451
+            },
+            "3": {
+              "player": "Ross Colton",
+              "team": "NSH",
+              "score": 0.2
+            }
+          },
+          "lock_et": "7:00 PM ET",
+          "selection_wave": 1
+        },
+        {
+          "captured_et": "2026-11-25 10:18 AM ET",
+          "picks": {
+            "1": {
+              "player": "Cutter Gauthier",
+              "team": "ANA",
+              "score": 0.68
+            },
+            "2": {
+              "player": "Lucas Raymond",
+              "team": "DET",
+              "score": 0.451
+            },
+            "3": {
+              "player": "Ross Colton",
+              "team": "NSH",
+              "score": 0.199
+            }
+          },
+          "lock_et": "7:00 PM ET",
+          "selection_wave": 1
+        }
+      ]
     },
     {
       "date": "2026-11-24",
@@ -4219,6 +4265,52 @@
         "lock_et": "7:00 PM ET",
         "lock_wave": 1,
         "locked_before_first_game": true,
+        "ticket_revisions": [
+          {
+            "captured_et": "2026-11-25 12:03 AM ET",
+            "picks": {
+              "1": {
+                "player": "Cutter Gauthier",
+                "team": "ANA",
+                "score": 0.68
+              },
+              "2": {
+                "player": "Artturi Lehkonen",
+                "team": "COL",
+                "score": 0.451
+              },
+              "3": {
+                "player": "Ross Colton",
+                "team": "NSH",
+                "score": 0.2
+              }
+            },
+            "lock_et": "7:00 PM ET",
+            "selection_wave": 1
+          },
+          {
+            "captured_et": "2026-11-25 10:18 AM ET",
+            "picks": {
+              "1": {
+                "player": "Cutter Gauthier",
+                "team": "ANA",
+                "score": 0.68
+              },
+              "2": {
+                "player": "Lucas Raymond",
+                "team": "DET",
+                "score": 0.451
+              },
+              "3": {
+                "player": "Ross Colton",
+                "team": "NSH",
+                "score": 0.199
+              }
+            },
+            "lock_et": "7:00 PM ET",
+            "selection_wave": 1
+          }
+        ],
         "hits_of_3": null,
         "picks": {
           "1": {
@@ -4262,6 +4354,7 @@
         "lock_et": "8:00 PM ET",
         "lock_wave": 1,
         "locked_before_first_game": true,
+        "ticket_revisions": [],
         "hits_of_3": 0,
         "picks": {
           "1": {
@@ -4305,6 +4398,7 @@
         "lock_et": "7:00 PM ET",
         "lock_wave": 1,
         "locked_before_first_game": true,
+        "ticket_revisions": [],
         "hits_of_3": 1,
         "picks": {
           "1": {
@@ -4348,6 +4442,7 @@
         "lock_et": "5:00 PM ET",
         "lock_wave": 1,
         "locked_before_first_game": true,
+        "ticket_revisions": [],
         "hits_of_3": 2,
         "picks": {
           "1": {
@@ -4391,6 +4486,7 @@
         "lock_et": "1:00 PM ET",
         "lock_wave": 1,
         "locked_before_first_game": true,
+        "ticket_revisions": [],
         "hits_of_3": 2,
         "picks": {
           "1": {
@@ -4434,6 +4530,7 @@
         "lock_et": "7:00 PM ET",
         "lock_wave": 1,
         "locked_before_first_game": true,
+        "ticket_revisions": [],
         "hits_of_3": 0,
         "picks": {
           "1": {
@@ -4467,6 +4564,7 @@
         "lock_et": null,
         "lock_wave": null,
         "locked_before_first_game": null,
+        "ticket_revisions": [],
         "hits_of_3": 1,
         "picks": {
           "1": {

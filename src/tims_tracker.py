@@ -40,6 +40,19 @@ def save_tims_history(history: dict[str, Any], path: str) -> None:
         json.dump(history, f, indent=2)
 
 
+def _picks_compact(ai_picks: dict[str, Any] | None) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for key, pick in sorted((ai_picks or {}).items(), key=lambda kv: str(kv[0])):
+        if not isinstance(pick, dict):
+            continue
+        out[str(key)] = {
+            "player": pick.get("player"),
+            "team": pick.get("team"),
+            "score": pick.get("final_score"),
+        }
+    return out
+
+
 def _compact_candidate(item: dict[str, Any]) -> dict[str, Any]:
     return {
         "player": str(item.get("player", "")),
@@ -281,6 +294,31 @@ def upsert_tims_snapshot(
             ):
                 timing_obj["basis"] = "deferred"
 
+    current_picks = _picks_compact(ai_picks)
+    revisions: list[dict[str, Any]] = []
+    if existing_idx is not None:
+        existing = days[existing_idx]
+        revisions = list(existing.get("ticket_revisions") or [])
+        if not revisions and existing.get("ai_picks"):
+            revisions.append(
+                {
+                    "captured_et": existing.get("captured_et"),
+                    "picks": _picks_compact(existing.get("ai_picks")),
+                    "lock_et": (existing.get("timing") or {}).get("lock_et"),
+                    "selection_wave": (existing.get("timing") or {}).get("selection_wave"),
+                }
+            )
+    if not revisions or (revisions and revisions[-1].get("picks") != current_picks):
+        revisions.append(
+            {
+                "captured_et": captured_et,
+                "picks": current_picks,
+                "lock_et": timing_obj.get("lock_et"),
+                "selection_wave": timing_obj.get("selection_wave"),
+            }
+        )
+    revisions = revisions[-12:]
+
     record = {
         "date": date_str,
         "season": str(context.get("nhl_season", "")),
@@ -304,6 +342,7 @@ def upsert_tims_snapshot(
             and _parse_iso_utc(timing_obj.get("first_wave_utc")) is not None
             and _parse_captured_et(captured_et) <= _parse_iso_utc(timing_obj.get("first_wave_utc"))
         ),
+        "ticket_revisions": revisions,
     }
     if existing_idx is not None:
         days[existing_idx] = record
@@ -561,6 +600,7 @@ def recompute_tims_summary(history: dict[str, Any]) -> dict[str, Any]:
                 "lock_et": d.get("lock_et") or (d.get("timing") or {}).get("lock_et"),
                 "lock_wave": d.get("lock_wave") or (d.get("timing") or {}).get("selection_wave"),
                 "locked_before_first_game": d.get("locked_before_first_game"),
+                "ticket_revisions": d.get("ticket_revisions") or [],
                 "hits_of_3": d["results"]["hits_of_3"] if d.get("settled") and d.get("results") else None,
                 "picks": {
                     g_key: {
