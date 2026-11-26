@@ -26,7 +26,7 @@ EVENING_END = dt_time(21, 45)
 LATE_START = dt_time(22, 15)
 LATE_END = dt_time(23, 40)
 
-COMMIT_PATHS = ("docs/data.json", "docs/latest_run.html", "docs/tims_history.json", "docs/tims_boards.json", "docs/injury_history/", "docs/roster_history/", "models/")
+COMMIT_PATHS = ("docs/data.json", "docs/latest_run.html", "docs/tims_history.json", "docs/tims_boards.json", "docs/injury_history/", "docs/roster_history/", "docs/transaction_history.json", "models/")
 DEFAULT_INTERVAL_SECONDS = 300
 DEFAULT_LIVE_ODDS_CAP = 3
 

@@ -1,0 +1,755 @@
+{
+  "trades": [
+    {
+      "date": "2026-11-14T08:00Z",
+      "description": "Assigned C Logan Morrison to Coachella Valley (AHL). Activated LD Ryan Lindgren from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "SEA"
+    },
+    {
+      "date": "2026-11-14T08:00Z",
+      "description": "Activated RD Brock Faber from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-14T08:00Z",
+      "description": "Reassigned C Jacob Quillan to Abbotsford (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "VAN"
+    },
+    {
+      "date": "2026-11-14T08:00Z",
+      "description": "Assigned LD Ilya Solovyov to Wilkes-Barre/Scranton (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "PIT"
+    },
+    {
+      "date": "2026-11-14T08:00Z",
+      "description": "Placed LW Kyle MacLean on waivers. Activated C Mathew Barzal from the injured non-roster list. Placed LW Kyle MacLean on non-roster waivers.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "NYI"
+    },
+    {
+      "date": "2026-11-14T08:00Z",
+      "description": "Placed LD Lian Bichsel on injured reserve. Loaned G Remi Poirier to Texas (AHL). Placed LD Kyle Capobianco on long-term injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "DAL"
+    },
+    {
+      "date": "2026-11-15T08:00Z",
+      "description": "Activated RD Ian Moore from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "ANA"
+    },
+    {
+      "date": "2026-11-15T08:00Z",
+      "description": "Recalled G Nikita Tolopilo from Abbotsford (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "VAN"
+    },
+    {
+      "date": "2026-11-15T08:00Z",
+      "description": "Claimed D Mike Reilly off waivers from Carolina.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "COL"
+    },
+    {
+      "date": "2026-11-15T08:00Z",
+      "description": "Activated D Trevor van Riemsdyk from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "PIT"
+    },
+    {
+      "date": "2026-11-15T08:00Z",
+      "description": "Recalled RD David Reinbacher from Laval (AHL). Placed RW Josh Anderson and LW Chris Kreider on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MTL"
+    },
+    {
+      "date": "2026-11-16T08:00Z",
+      "description": "Acquired D Jeremy Davies from Vegas in exchage for future considerations.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": true,
+      "is_waiver": false,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-16T08:00Z",
+      "description": "Recalled F Tyler Boucher from Belleville (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "OTT"
+    },
+    {
+      "date": "2026-11-16T08:00Z",
+      "description": "Recalled F Brett Berard from Laval (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MTL"
+    },
+    {
+      "date": "2026-11-17T08:00Z",
+      "description": "Recalled F Danny Zhilkin from Manitoba (AHL). Placed F Isak Rosen on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "WPG"
+    },
+    {
+      "date": "2026-11-17T08:00Z",
+      "description": "Assigned G Nikita Tolopilo to Abbotsford (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "VAN"
+    },
+    {
+      "date": "2026-11-17T08:00Z",
+      "description": "Placed F Conor Geekie on injured reserve. Reinstated F Brayden Point from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TBL"
+    },
+    {
+      "date": "2026-11-17T08:00Z",
+      "description": "Assigned F Jonathan Huberdeau to Calgary (AHL) on a conditioning loan.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CGY"
+    },
+    {
+      "date": "2026-11-18T08:00Z",
+      "description": "Activated C Isac Lundestrom from long-term injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CBJ"
+    },
+    {
+      "date": "2026-11-18T08:00Z",
+      "description": "Placed F Travis Mitchell on waivers.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "ANA"
+    },
+    {
+      "date": "2026-11-18T08:00Z",
+      "description": "Reinstated C Calum Ritchie from injured reserve and assigned him to Hamilton (AHL).",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NYI"
+    },
+    {
+      "date": "2026-11-19T08:00Z",
+      "description": "Assigned D Gregor Biber to Tucson (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "UTA"
+    },
+    {
+      "date": "2026-11-19T08:00Z",
+      "description": "Activated F Jacob Melanson from injured reserve. Assigned F Jani Nyman to Coachella Valley (AHL).",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "SEA"
+    },
+    {
+      "date": "2026-11-19T08:00Z",
+      "description": "Recalled F Tyler Pitlick from the Iowa (AHL). Assigned G Filip Gustavsson to Iowa (AHL) on a conditioning assignment.",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-19T08:00Z",
+      "description": "Recalled D Stian Solberg from San Diego (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "ANA"
+    },
+    {
+      "date": "2026-11-19T08:00Z",
+      "description": "Recalled F Jansen Harkins from Syracuse (AHL). Placed F Brandon Hagel on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TBL"
+    },
+    {
+      "date": "2026-11-19T08:00Z",
+      "description": "Recalled F Adam Beckman from Colorado (AHL). Placed D Cale Makar on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "COL"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Re-assigned G Niklas Kokko to Coachella Valley (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "SEA"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Recalled D Lukas Cormier from Henderson (AHL). Placed D Noah Hanifin on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "VGK"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Assigned F Tyler Pitlick to Iowa (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Placed G Clay Stevenson on waivers.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "WPG"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Placed D Cole McWard on injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TOR"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Recalled F Avery Hayes from Wilkes-Barre/Scranton (AHL). Placed F Nick Robertson on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "PIT"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Placed F Oliver Bjorkstrand on injured reserve. Recalled F Taylor Raddyah from Hartford (AHL).",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NYR"
+    },
+    {
+      "date": "2026-11-20T08:00Z",
+      "description": "Loaned D Anton Silaev to Utica (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NJD"
+    },
+    {
+      "date": "2026-11-21T08:00Z",
+      "description": "Recalled D Gregor Biber from Tucson (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "UTA"
+    },
+    {
+      "date": "2026-11-21T08:00Z",
+      "description": "Assigned RW Jagger Firkus to Coachella Valley (AHL). Activated C Curtis Douglas off injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "SEA"
+    },
+    {
+      "date": "2026-11-21T08:00Z",
+      "description": "Recalled D Gustafsson Nyberg from Iowa (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-21T08:00Z",
+      "description": "Recalled LW Nico Myatovic from San Diego (AHL). Placed RW Beckett Sennecke on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "ANA"
+    },
+    {
+      "date": "2026-11-21T08:00Z",
+      "description": "Claimed G Clay Stevenson off waivers from Winnipeg.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "WSH"
+    },
+    {
+      "date": "2026-11-21T08:00Z",
+      "description": "Recalled Cs Ty Mueller, Jacob Quillan and G Nikita Tolopilo from Abbotsford (AHL). Placed RW Brendan Gallagher on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "VAN"
+    },
+    {
+      "date": "2026-11-21T08:00Z",
+      "description": "Placed C Luke Glendening on waivers. Placed LW Pavel Dorofeyev on injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "NYR"
+    },
+    {
+      "date": "2026-11-22T08:00Z",
+      "description": "Assigned F Steven Lorentz to Cleveland (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CBJ"
+    },
+    {
+      "date": "2026-11-22T08:00Z",
+      "description": "Placed F Cole Reinhardt on waivers.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "FLA"
+    },
+    {
+      "date": "2026-11-22T08:00Z",
+      "description": "Recalled F Aatu R\u00e4ty from Toronto (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TOR"
+    },
+    {
+      "date": "2026-11-22T08:00Z",
+      "description": "Reinstated D Sean Durzi from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NYR"
+    },
+    {
+      "date": "2026-11-22T08:00Z",
+      "description": "Loaned F Brett Berard and D David Reinbacher to Laval (AHL). Acquired F Dylan Larkin, 2027 third-round pick, 2028 second-round pick in a trade with Detroit in exchange for: C Kirby Dach, C Michael Hage, G Sam Montembeault, 2027 first-round pick, 2027 second-round pick, 2028 fourth-round pick and a 2029 first-round selection.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": true,
+      "is_waiver": false,
+      "team": "MTL"
+    },
+    {
+      "date": "2026-11-22T08:00Z",
+      "description": "Placed F Connor Bedard on injured reserve. Recalled F Dominic Toninato from Rockford (AHL). Assigned F Reid Boucher to Rockford (AHL). Claimed F Luke Glendening off waivers from the New York Rangers.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "CHI"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Activated G Filip Gustavsson from injured reserve. Placed D Quinn Hughes on injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Recalled F Mikael Pyyhtia from Cleveland (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CBJ"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Signed D Jack St. Ivany to a two-year contract.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "WSH"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Assigned G Nikita Tolopilo to Abbotsford (AHL). Claimed F Cole Reinhardt off waivers from Florida.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "VAN"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Assigned F Jansen Harkins to Syracuse (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TBL"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Recalled D Libor Hajek from San Jose (AHL). Placed F Kiefer Sherwood on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "SJS"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Placed G Remi Poirier on waivers.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "DAL"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Assigned F Sheldon Dries to Grand Rapids (AHL). Waived F Sheldon Dries.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "DET"
+    },
+    {
+      "date": "2026-11-23T08:00Z",
+      "description": "Recalled F Sam Morton from Calgary (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CGY"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Placed G Calvin Pickard on waivers.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Placed F Mathieu Olivier on injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CBJ"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Placed F Cole Schwindt on waivers.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "FLA"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Assigned D Noah Warren to San Diego (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "ANA"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Claimed G R\u00e9mi Poirier off waivers from Dallas.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": true,
+      "team": "WSH"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Assigned Fs Brendan Brisson and Ryan Tverberg to Toronto (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TOR"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Placed F Hayden Hodgson on injured reserve. Assigned D Carter Yakemchuk to Belleville (AHL). Recalled D Djibril Tour\u00e9 from Belleville (AHL).",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "OTT"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Placed F Kyle Palmieri on injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NYI"
+    },
+    {
+      "date": "2026-11-24T08:00Z",
+      "description": "Recalled F Brett Berard and D David Reinbacher from Laval (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MTL"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Assigned D Lukas Cormier to Henderson (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "VGK"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Assigned G Calvin Pickard to Iowa (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MIN"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Reinstated F Brad Marchand from injured reserve. Reinstated F Aleksander Barkov from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "FLA"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Recalled G Laurent Brossoit from San Diego (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "ANA"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Recalled G Artur Akhtyamov from Toronto (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TOR"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Reinstated F Brandon Hagel from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TBL"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Recalled F Adam Beckman from Colorado (AHL). Reinstated D Cale Makar from injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "COL"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Recalled D Kirill Kirsanov from Ontario (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "LAK"
+    },
+    {
+      "date": "2026-11-25T08:00Z",
+      "description": "Recalled F Ben Jones from Calgary (AHL). Assigned F Sam Morton to Calgary (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CGY"
+    }
+  ],
+  "updated_utc": "2026-11-26T02:08:25.904330+00:00"
+}

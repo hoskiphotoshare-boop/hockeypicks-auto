@@ -57,7 +57,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           mkdir -p docs/injury_history docs/roster_history
-          git add docs/data.json docs/latest_run.html docs/tims_history.json docs/tims_boards.json docs/injury_history/ docs/roster_history/ models/
+          git add docs/data.json docs/latest_run.html docs/tims_history.json docs/tims_boards.json docs/injury_history/ docs/roster_history/ docs/transaction_history.json models/
           if ! git diff --staged --quiet; then
             git commit -m "Live Inference Update ($(TZ='America/New_York' date '+%Y-%m-%d %H:%M ET'))"
             git pull --rebase origin main

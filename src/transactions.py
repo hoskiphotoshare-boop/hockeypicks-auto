@@ -381,6 +381,76 @@ def compute_team_churn(
         result[team] = min(1.0, abs(net.get(team, 0.0)) / 1.0)
     return result
 
+def load_trade_archive(path: str) -> dict[str, Any]:
+    """Load the committed ESPN trade archive (append-only history)."""
+    if not os.path.exists(path):
+        return {"trades": []}
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except Exception:
+        return {"trades": []}
+    trades = data.get("trades") if isinstance(data, dict) else None
+    clean = [t for t in (trades or []) if isinstance(t, dict) and t.get("description")]
+    return {"trades": clean, "updated_utc": data.get("updated_utc") if isinstance(data, dict) else None}
+
+
+def merge_trade_archive(
+    path: str,
+    trades: list[dict[str, Any]] | None,
+    *,
+    now: datetime | None = None,
+    keep_days: int = 45,
+) -> dict[str, Any]:
+    """Append new ESPN transactions to the archive, dedupe, and prune old rows.
+
+    A degraded/empty ESPN response must never erase trade context: callers read
+    the 7-day window from this archive instead of the live page.
+    """
+    archive = load_trade_archive(path)
+    by_key: dict[tuple[str, str], dict[str, Any]] = {
+        (str(t.get("date") or ""), str(t.get("description") or "")): t
+        for t in archive["trades"]
+    }
+    added = 0
+    for trade in trades or []:
+        if not isinstance(trade, dict):
+            continue
+        desc = str(trade.get("description") or "").strip()
+        if not desc:
+            continue
+        key = (str(trade.get("date") or "").strip(), desc)
+        if key not in by_key:
+            added += 1
+        by_key[key] = trade
+
+    rows = sorted(by_key.values(), key=lambda t: str(t.get("date") or ""))
+    if now is not None and keep_days > 0:
+        cutoff = now.timestamp() - keep_days * 86400
+        kept = []
+        for row in rows:
+            try:
+                ts = datetime.fromisoformat(str(row.get("date") or "").replace("Z", "+00:00")).timestamp()
+            except ValueError:
+                kept.append(row)
+                continue
+            if ts >= cutoff:
+                kept.append(row)
+        rows = kept
+
+    if added or len(rows) != len(archive["trades"]):
+        payload = {
+            "updated_utc": (now or datetime.now(timezone.utc)).isoformat(),
+            "trades": rows,
+        }
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        tmp = f"{path}.tmp"
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(payload, fh, indent=2, sort_keys=True)
+        os.replace(tmp, path)
+    return {"trades": rows, "added": added}
+
+
 def write_roster_moves_index(
     path: str,
     roster_names: dict[str, Any] | None,

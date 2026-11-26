@@ -19,6 +19,8 @@ from src.transactions import (
     compute_name_churn,
     compute_team_churn,
     load_roster_moves_index,
+    load_trade_archive,
+    merge_trade_archive,
     write_roster_moves_index,
     diff_rosters,
     fetch_espn_transactions,
@@ -287,6 +289,29 @@ class TestTransactions(unittest.TestCase):
             self.assertTrue(loaded["generated_utc"])
             # Missing file is a silent no-op, not a crash.
             self.assertEqual(load_roster_moves_index(os.path.join(tmp, "nope.json")), {})
+
+    def test_trade_archive_dedupes_and_survives_empty_feed(self):
+        from datetime import datetime, timezone
+
+        trade = {
+            "date": "2026-11-22T08:00Z",
+            "description": "Acquired F Dylan Larkin ... in exchange for: C Kirby Dach",
+            "is_trade": True,
+        }
+        now = datetime(2026, 11, 25, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "transaction_history.json")
+            first = merge_trade_archive(path, [trade], now=now)
+            self.assertEqual(first["added"], 1)
+            second = merge_trade_archive(path, [trade], now=now)
+            self.assertEqual(second["added"], 0)
+            empty = merge_trade_archive(path, [], now=now)
+            self.assertEqual(len(empty["trades"]), 1)
+            self.assertEqual(load_trade_archive(path)["trades"][0]["description"], trade["description"])
+            old = dict(trade, date="2026-09-01T00:00Z")
+            pruned = merge_trade_archive(path, [old], now=now, keep_days=45)
+            self.assertEqual(len(pruned["trades"]), 1)
+            self.assertNotIn("2026-09-01", pruned["trades"][0]["date"])
 
 
 if __name__ == "__main__":

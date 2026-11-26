@@ -34,6 +34,8 @@ from src.transactions import (
     load_latest_roster_history,
     load_roster_moves_index,
     load_roster_snapshot,
+    load_trade_archive,
+    merge_trade_archive,
     write_roster_history,
     write_roster_moves_index,
 )
@@ -228,20 +230,34 @@ def run_training(
                     write_roster_history(rosters, docs_dir, context["today_str"], captured_utc=datetime.now(timezone.utc).isoformat())
                 except Exception as exc:  # pragma: no cover
                     print(f"Warning: roster archive write failed: {exc}")
+        # The live ESPN feed can return an empty page without raising. Persist
+        # every fetched row to a committed archive and build the display window
+        # from the archive, so a degraded fetch cannot erase trade context.
         try:
             all_tx = fetch_espn_transactions(pages=2, session=session)
-            today_date = date.fromisoformat(context["today_str"])
-            for tx in all_tx:
-                if not tx.get("is_trade"):
-                    continue
-                try:
-                    tx_date = date.fromisoformat(str(tx.get("date", ""))[:10])
-                except ValueError:
-                    continue
-                if 0 <= (today_date - tx_date).days <= 7:
-                    recent_trades.append(tx)
+            trade_feed_ok = bool(all_tx)
+            _archive = merge_trade_archive(
+                os.path.join(docs_dir, "transaction_history.json"),
+                all_tx,
+                now=datetime.now(timezone.utc),
+            )
+            archive_trades = _archive.get("trades") or []
         except Exception as exc:  # pragma: no cover
             print(f"Warning: transaction fetch failed: {exc}")
+            trade_feed_ok = False
+            archive_trades = load_trade_archive(
+                os.path.join(docs_dir, "transaction_history.json")
+            ).get("trades") or []
+        today_date = date.fromisoformat(context["today_str"])
+        for tx in archive_trades:
+            if not tx.get("is_trade"):
+                continue
+            try:
+                tx_date = date.fromisoformat(str(tx.get("date", ""))[:10])
+            except ValueError:
+                continue
+            if 0 <= (today_date - tx_date).days <= 7:
+                recent_trades.append(tx)
 
     roster_stars = build_roster_aware_star_table(rosters, player_values) if (rosters and player_values) else None
 
@@ -477,6 +493,8 @@ def run_inference(
     roster_moves: dict[str, Any] = {}
     roster_stars = None
     team_churn: dict[str, float] = {}
+    trade_feed_ok = False
+    archive_trades: list[dict[str, Any]] = []
     # Test doubles expose .urls; skip live roster/tx fetches for them.
     _live_session = (not skip_network) and not hasattr(session, "urls")
     if _live_session:
@@ -664,12 +682,14 @@ def run_inference(
     # last full run committed. Full runs always rewrite it (even empty) so the
     # card clears when a move ages out.
     _index_path = os.path.join(models_dir, "roster_moves_index.json")
-    if mp_years:
+    if mp_years and (trade_feed_ok or archive_trades):
         try:
             write_roster_moves_index(_index_path, roster_names, team_churn)
         except Exception as exc:  # pragma: no cover
             print(f"Warning: roster moves index write failed: {exc}")
     else:
+        if mp_years:
+            print("Warning: trade feed unavailable and archive empty; keeping previous roster moves index.")
         _index = load_roster_moves_index(_index_path)
         for _t, _info in (_index.get("teams") or {}).items():
             if _t not in roster_names["teams"] and isinstance(_info, dict):
