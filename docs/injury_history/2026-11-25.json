@@ -1,8 +1,8 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-26T02:11:30.726115+00:00",
+  "captured_utc": "2026-11-26T02:35:27.376840+00:00",
   "source": "espn-cbs",
-  "count": 116,
+  "count": 117,
   "records": [
     {
       "player": "Ryan Poehling",
@@ -759,6 +759,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Tucker had arthroscopic knee surgery and will be re-assessed in six weeks, the team announced Wednesday."
+    },
+    {
+      "player": "Pontus Holmberg",
+      "team": "TBL",
+      "position": "RW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Erik Cernak",

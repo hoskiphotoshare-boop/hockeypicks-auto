@@ -1,0 +1,83 @@
+{
+  "calls": 2,
+  "graded": 0,
+  "open": 2,
+  "wins": 0,
+  "losses": 0,
+  "win_rate": 0.0,
+  "brier": 0.0,
+  "current_streak": {
+    "type": "W",
+    "n": 0
+  },
+  "by_confidence": {
+    "50-55": {
+      "calls": 0,
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
+    },
+    "55-60": {
+      "calls": 0,
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
+    },
+    "60-65": {
+      "calls": 0,
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
+    },
+    "65+": {
+      "calls": 0,
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
+    }
+  },
+  "recent": [
+    {
+      "id": 2026020399,
+      "call_id": 2026020399,
+      "date": "2026-11-25",
+      "away": "CHI",
+      "home": "SEA",
+      "pick": "SEA",
+      "pick_prob": 0.622,
+      "away_prob": 0.37799999999999995,
+      "home_prob": 0.622,
+      "kickoff": "2026-11-26T02:40:00Z",
+      "snapshot_at": "2026-11-26T02:31:50.958317+00:00",
+      "status": "open",
+      "closing_prob": 0.622,
+      "result": null,
+      "final_score": null,
+      "graded_at": null,
+      "closing_at": "2026-11-26T02:31:50.958317+00:00"
+    },
+    {
+      "id": 2026020398,
+      "call_id": 2026020398,
+      "date": "2026-11-25",
+      "away": "SJS",
+      "home": "ANA",
+      "pick": "ANA",
+      "pick_prob": 0.5760000000000001,
+      "away_prob": 0.424,
+      "home_prob": 0.5760000000000001,
+      "kickoff": "2026-11-26T03:00:00Z",
+      "snapshot_at": "2026-11-26T02:31:50.958317+00:00",
+      "status": "open",
+      "closing_prob": 0.5760000000000001,
+      "result": null,
+      "final_score": null,
+      "graded_at": null,
+      "closing_at": "2026-11-26T02:31:50.958317+00:00"
+    }
+  ]
+}
