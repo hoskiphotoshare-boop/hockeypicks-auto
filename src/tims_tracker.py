@@ -6,6 +6,7 @@ import json
 import os
 from datetime import datetime, timezone
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from src.data_sync import (
     PlayerMatcher,
@@ -74,6 +75,56 @@ def _resolve_pick(groups_raw: dict[str, Any], group_key: str, pick: dict[str, An
     }
 
 
+def _parse_captured_et(value: Any) -> datetime | None:
+    """Parse the human ET capture timestamp ("YYYY-MM-DD HH:MM PM ET")."""
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        dt = datetime.strptime(text, "%Y-%m-%d %I:%M %p ET")
+    except ValueError:
+        return None
+    return dt.replace(tzinfo=ZoneInfo("America/New_York"))
+
+
+def finalize_tims_locks(history: dict[str, Any], now_utc: datetime | None = None) -> int:
+    """Mark past-lock days locked, including prior-day records after midnight.
+
+    The ticket is frozen at the last pre-lock capture; `locked_before_first_game`
+    records whether that capture preceded the first puck drop.
+    """
+    now = now_utc or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    now = now.astimezone(timezone.utc)
+    changed = 0
+    for day in history.get("days", []):
+        timing = day.get("timing") or {}
+        lock_dt = _parse_iso_utc(timing.get("lock_utc"))
+        if lock_dt is None or now < lock_dt:
+            continue
+        first_dt = _parse_iso_utc(timing.get("first_wave_utc"))
+        captured = str(day.get("captured_et") or "")
+        captured_dt = _parse_captured_et(captured)
+        lock_et = str(timing.get("lock_et") or "")
+        wave = timing.get("selection_wave")
+        if wave is None and first_dt is not None and lock_dt == first_dt:
+            wave = 1
+        day["picks_locked"] = True
+        day["locked_utc"] = lock_dt.isoformat()
+        day["locked_et"] = captured or str(day.get("locked_et") or "")
+        day["lock_et"] = lock_et
+        if wave:
+            day["lock_wave"] = int(wave)
+        day["locked_before_first_game"] = bool(
+            captured_dt is not None and first_dt is not None and captured_dt <= first_dt
+        )
+        if captured_dt is not None and captured_dt > lock_dt:
+            day["late_capture"] = True
+        changed += 1
+    return changed
+
+
 def _parse_iso_utc(value: Any) -> datetime | None:
     """Parse an ISO-8601 UTC timestamp string safely into an aware UTC datetime."""
     text = str(value or "").strip()
@@ -130,8 +181,18 @@ def upsert_tims_snapshot(
         prev_first_wave_dt = _parse_iso_utc(prev_first_wave_utc)
         if prev_lock_dt is not None and now_utc >= prev_lock_dt:
             existing["picks_locked"] = True
-            if not existing.get("locked_et"):
-                existing["locked_et"] = str(existing.get("captured_et") or "")
+            existing["locked_utc"] = prev_lock_dt.isoformat()
+            existing["locked_et"] = str(existing.get("captured_et") or existing.get("locked_et") or "")
+            existing["lock_et"] = str(existing_timing.get("lock_et") or "")
+            wave = existing_timing.get("selection_wave")
+            if wave is None and prev_first_wave_dt is not None and prev_lock_dt == prev_first_wave_dt:
+                wave = 1
+            if wave:
+                existing["lock_wave"] = int(wave)
+            captured_dt = _parse_captured_et(existing.get("captured_et"))
+            existing["locked_before_first_game"] = bool(
+                captured_dt is not None and prev_first_wave_dt is not None and captured_dt <= prev_first_wave_dt
+            )
             return False
 
     groups_compact = {
@@ -178,6 +239,7 @@ def upsert_tims_snapshot(
             "first_wave_utc": prev_first_wave_utc or str(timing_advice.get("first_wave_utc") or ""),
             "lock_utc": timing_advice.get("selection_lock_utc"),
             "lock_et": timing_advice.get("selection_lock_et"),
+            "selection_wave": timing_advice.get("selection_wave"),
             "recommended_wave_et": timing_advice.get("recommended_wave_et"),
             "v_now": timing_advice.get("v_now"),
             "v_defer_best": timing_advice.get("v_defer_best"),
@@ -203,6 +265,15 @@ def upsert_tims_snapshot(
         "timing": timing_obj,
         "picks_locked": picks_locked,
         "locked_et": locked_et,
+        "locked_utc": str(timing_obj.get("lock_utc") or "") if picks_locked else "",
+        "lock_et": str(timing_obj.get("lock_et") or ""),
+        "lock_wave": int(timing_obj.get("selection_wave") or 0) if picks_locked else 0,
+        "locked_before_first_game": bool(
+            picks_locked
+            and _parse_captured_et(captured_et) is not None
+            and _parse_iso_utc(timing_obj.get("first_wave_utc")) is not None
+            and _parse_captured_et(captured_et) <= _parse_iso_utc(timing_obj.get("first_wave_utc"))
+        ),
     }
     if existing_idx is not None:
         days[existing_idx] = record
@@ -455,6 +526,11 @@ def recompute_tims_summary(history: dict[str, Any]) -> dict[str, Any]:
                 "settled": bool(d.get("settled")),
                 "timing": d.get("timing") or {},
                 "picks_locked": bool(d.get("picks_locked")),
+                "captured_et": d.get("captured_et"),
+                "locked_et": d.get("locked_et"),
+                "lock_et": d.get("lock_et") or (d.get("timing") or {}).get("lock_et"),
+                "lock_wave": d.get("lock_wave") or (d.get("timing") or {}).get("selection_wave"),
+                "locked_before_first_game": d.get("locked_before_first_game"),
                 "hits_of_3": d["results"]["hits_of_3"] if d.get("settled") and d.get("results") else None,
                 "picks": {
                     g_key: {

@@ -263,6 +263,32 @@ class TestTimsTracker(unittest.TestCase):
         self.assertEqual(entry["timing"]["basis"], "now")
         self.assertEqual(entry["timing"]["lock_utc"], "2026-11-18T00:00:00Z")
 
+    def test_finalize_locks_prior_day_before_first_game(self):
+        from datetime import datetime, timezone
+        from src.tims_tracker import finalize_tims_locks
+
+        history = {
+            "days": [
+                {
+                    "date": "2026-11-24",
+                    "captured_et": "2026-11-24 07:41 PM ET",
+                    "picks_locked": False,
+                    "timing": {
+                        "lock_utc": "2026-11-25T01:00:00Z",
+                        "lock_et": "8:00 PM ET",
+                        "first_wave_utc": "2026-11-25T01:00:00Z",
+                    },
+                }
+            ]
+        }
+        changed = finalize_tims_locks(history, now_utc=datetime(2026, 11, 25, 3, 0, tzinfo=timezone.utc))
+        day = history["days"][0]
+        self.assertEqual(changed, 1)
+        self.assertTrue(day["picks_locked"])
+        self.assertTrue(day["locked_before_first_game"])
+        self.assertEqual(day["lock_wave"], 1)
+        self.assertEqual(day["locked_et"], "2026-11-24 07:41 PM ET")
+
 
 if __name__ == "__main__":
     unittest.main()

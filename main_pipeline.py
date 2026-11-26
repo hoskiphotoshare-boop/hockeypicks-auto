@@ -83,6 +83,7 @@ from src.tims_boards import (
 )
 from src.tims_timing import compute_tims_deferral_advice
 from src.tims_tracker import (
+    finalize_tims_locks,
     load_tims_history,
     recompute_tims_summary,
     save_tims_history,
@@ -853,6 +854,11 @@ def run_inference(
         timing_advice=tims_timing_advice,
         now_utc=context["now_et"].astimezone(timezone.utc),
     )
+    try:
+        finalize_tims_locks(tims_history, now_utc=context["now_et"].astimezone(timezone.utc))
+    except Exception as exc:  # pragma: no cover
+        print(f"Warning: tims lock finalize failed: {exc}")
+
     history_summary = recompute_tims_summary(tims_history)
     save_tims_history(tims_history, tims_history_path)
     print(
