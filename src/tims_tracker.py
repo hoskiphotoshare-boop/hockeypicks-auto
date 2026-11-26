@@ -231,6 +231,36 @@ def upsert_tims_snapshot(
         picks_locked = bool(isinstance(timing_advice, dict) and selection)
     locked_et = captured_et if picks_locked else ""
 
+    # No pre-lock snapshot exists: do not create a "locked" ticket from
+    # post-start data (that would leak results into the tracker).
+    if lock_dt is not None and now_utc >= lock_dt:
+        if existing_idx is None:
+            return False
+        existing = days[existing_idx]
+        existing_timing = existing.get("timing") or {}
+        first_dt = _parse_iso_utc(timing_advice.get("first_wave_utc") if isinstance(timing_advice, dict) else "")
+        captured = str(existing.get("captured_et") or "")
+        captured_dt = _parse_captured_et(captured)
+        wave = timing_advice.get("selection_wave") if isinstance(timing_advice, dict) else None
+        if wave is None and first_dt is not None and lock_dt == first_dt:
+            wave = 1
+        existing["picks_locked"] = True
+        existing["locked_utc"] = lock_dt.isoformat()
+        existing["locked_et"] = captured or str(existing.get("locked_et") or "")
+        existing["lock_et"] = str(
+            (timing_advice.get("selection_lock_et") if isinstance(timing_advice, dict) else "")
+            or existing_timing.get("lock_et")
+            or ""
+        )
+        if wave:
+            existing["lock_wave"] = int(wave)
+        existing["locked_before_first_game"] = bool(
+            captured_dt is not None and first_dt is not None and captured_dt <= first_dt
+        )
+        if captured_dt is not None and captured_dt > lock_dt:
+            existing["late_capture"] = True
+        return False
+
     timing_obj: dict[str, Any] = {}
     if isinstance(timing_advice, dict):
         timing_obj = {

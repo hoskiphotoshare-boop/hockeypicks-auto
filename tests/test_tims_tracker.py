@@ -166,19 +166,25 @@ class TestTimsTracker(unittest.TestCase):
         self.assertEqual(entry["timing"], {})
         self.assertFalse(entry["picks_locked"])
 
-    def test_locked_flag_when_captured_after_lock(self):
+    def test_post_lock_run_freezes_existing_pre_lock_ticket(self):
         history = {"days": [], "summary": {}}
-        advice = self._advice(self._picks({
-            "1": {"player": "Last G1", "team": "DDD", "final_score": 0.22},
-            "2": {"player": "Last G2", "team": "DDD", "final_score": 0.21},
-            "3": {"player": "Last G3", "team": "CCC", "final_score": 0.20},
+        early = self._advice(self._picks({
+            "1": {"player": "Early G1", "team": "AAA", "final_score": 0.5},
+            "2": {"player": "Early G2", "team": "BBB", "final_score": 0.45},
+            "3": {"player": "Early G3", "team": "AAA", "final_score": 0.3},
         }))
         self.assertTrue(
-            self._upsert(history, self._late_groups(), advice=advice, captured="2026-11-17 10:36 PM ET", now=AFTER_LOCK)
+            self._upsert(history, self._groups(), advice=early, captured="2026-11-17 04:17 PM ET", now=CAPTURE_NOW)
+        )
+        original = dict(history["days"][0]["ai_picks"])
+        # A post-lock run must not replace the pre-lock ticket with live data.
+        self.assertFalse(
+            self._upsert(history, self._late_groups(), advice=early, captured="2026-11-17 10:36 PM ET", now=AFTER_LOCK)
         )
         entry = history["days"][0]
+        self.assertEqual(entry["ai_picks"], original)
         self.assertTrue(entry["picks_locked"])
-        self.assertEqual(entry["locked_et"], "2026-11-17 10:36 PM ET")
+        self.assertEqual(entry["locked_et"], "2026-11-17 04:17 PM ET")
 
     def test_recompute_summary_includes_timing_and_lock(self):
         history = {"days": [], "summary": {}}
@@ -288,6 +294,18 @@ class TestTimsTracker(unittest.TestCase):
         self.assertTrue(day["locked_before_first_game"])
         self.assertEqual(day["lock_wave"], 1)
         self.assertEqual(day["locked_et"], "2026-11-24 07:41 PM ET")
+
+    def test_does_not_create_post_lock_ticket(self):
+        history = {"days": [], "summary": {}}
+        advice = self._advice(self._picks({
+            "1": {"player": "Early G1", "team": "AAA", "final_score": 0.5},
+            "2": {"player": "Early G2", "team": "BBB", "final_score": 0.45},
+            "3": {"player": "Early G3", "team": "AAA", "final_score": 0.3},
+        }), lock_utc=LOCK_UTC)
+        self.assertFalse(
+            self._upsert(history, self._groups(), advice=advice, captured="2026-11-17 10:36 PM ET", now=AFTER_LOCK)
+        )
+        self.assertEqual(history["days"], [])
 
 
 if __name__ == "__main__":
