@@ -153,6 +153,7 @@ def run_training(
     *,
     data_dir: str = "./data",
     models_dir: str = "./models",
+    docs_dir: str = "./docs",
     skip_network: bool = False,
 ) -> dict[str, Any]:
     """Training Stage: Sync MoneyPuck & historical NHL logs, train XGBoost models, save snapshots."""
@@ -161,6 +162,7 @@ def run_training(
     os.makedirs(archive_dir, exist_ok=True)
     os.makedirs(logs_dir, exist_ok=True)
     os.makedirs(models_dir, exist_ok=True)
+    os.makedirs(docs_dir, exist_ok=True)
 
     context = get_nhl_season_context()
     session = None if skip_network else create_http_session()
@@ -442,7 +444,7 @@ def run_inference(
 
     if trained_state is None and not _inference_artifacts_ready(models_dir):
         print(f"Saved inference artifacts missing in {models_dir}; running initial training stage first...")
-        trained_state = run_training(data_dir=data_dir, models_dir=models_dir, skip_network=skip_network)
+        trained_state = run_training(data_dir=data_dir, models_dir=models_dir, docs_dir=docs_dir, skip_network=skip_network)
         run_mode = "full"
 
     odds_key = (odds_api_key if odds_api_key is not None else os.environ.get("ODDS_API_KEY", "")).strip()
@@ -1149,6 +1151,7 @@ def run_pipeline(
         return run_training(
             data_dir=data_dir,
             models_dir=models_dir,
+            docs_dir=docs_dir,
             skip_network=skip_network,
         )
     if mode == "infer":
@@ -1165,6 +1168,7 @@ def run_pipeline(
     trained_state = run_training(
         data_dir=data_dir,
         models_dir=models_dir,
+        docs_dir=docs_dir,
         skip_network=skip_network,
     )
     return run_inference(
