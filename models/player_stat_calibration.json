@@ -1,67 +1,17 @@
 {
   "calibration": {
-    "goals": 1.042,
-    "assists": 1.0296,
-    "points": 1.0319,
-    "sog": 1.0019
+    "goals": 1.0695973688661815,
+    "assists": 1.017860285377806,
+    "points": 1.0349518349199962,
+    "sog": 1.0158715258291366
   },
   "interval_scale": {
-    "goals": 1.062,
-    "assists": 1.262,
-    "points": 1.337,
+    "goals": 1.1,
+    "assists": 1.05,
+    "points": 1.05,
     "sog": 1.05
   },
-  "evaluated_utc": "2026-11-26T03:54:38.297407+00:00",
-  "source": "weekly_recalibration",
-  "window": {
-    "from": "2026-10-26",
-    "to": "2026-11-25",
-    "rows": 6746
-  },
-  "metrics": {
-    "goals": {
-      "rows": 6746,
-      "raw_mean": 0.17054515504760057,
-      "actual_mean": 0.17714201008004743,
-      "ratio": 1.0387,
-      "calibration": 1.042,
-      "interval_scale": 1.062,
-      "coverage_80": 0.8424,
-      "mae": 0.2777,
-      "poisson_deviance": 0.6062
-    },
-    "assists": {
-      "rows": 6746,
-      "raw_mean": 0.29511332146662156,
-      "actual_mean": 0.30492143492439966,
-      "ratio": 1.0332,
-      "calibration": 1.0296,
-      "interval_scale": 1.262,
-      "coverage_80": 0.8023,
-      "mae": 0.4136,
-      "poisson_deviance": 0.7888
-    },
-    "points": {
-      "rows": 6746,
-      "raw_mean": 0.46627566113564406,
-      "actual_mean": 0.4820634450044471,
-      "ratio": 1.0339,
-      "calibration": 1.0319,
-      "interval_scale": 1.337,
-      "coverage_80": 0.7996,
-      "mae": 0.5409,
-      "poisson_deviance": 0.9364
-    },
-    "sog": {
-      "rows": 6746,
-      "raw_mean": 1.5268827066898982,
-      "actual_mean": 1.525496590572191,
-      "ratio": 0.9991,
-      "calibration": 1.0019,
-      "interval_scale": 1.05,
-      "coverage_80": 0.7972,
-      "mae": 1.0098,
-      "poisson_deviance": 1.2341
-    }
-  }
+  "evaluated_utc": "2026-11-26T04:15:27.584591+00:00",
+  "source": "monthly_retrain",
+  "train_through": "20252026"
 }
