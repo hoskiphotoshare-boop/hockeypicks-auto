@@ -523,8 +523,81 @@
           "final_score": 0.199
         }
       },
-      "settled": false,
-      "results": null,
+      "settled": true,
+      "results": {
+        "hits_of_3": 3,
+        "total_picks": 3,
+        "group_hits": {
+          "1": {
+            "player": "Cutter Gauthier",
+            "team": "ANA",
+            "goals": 1,
+            "scored": true
+          },
+          "2": {
+            "player": "Lucas Raymond",
+            "team": "DET",
+            "goals": 1,
+            "scored": true
+          },
+          "3": {
+            "player": "Ross Colton",
+            "team": "NSH",
+            "goals": 1,
+            "scored": true
+          }
+        },
+        "group_random_probs": {
+          "1": 0.2308,
+          "2": 0.3333,
+          "3": 0.0667
+        },
+        "player_goals": {
+          "Cutter Gauthier": 1,
+          "Kyle Connor": 1,
+          "Kirill Kaprizov": 0,
+          "Tage Thompson": 0,
+          "Matt Boldy": 0,
+          "David Pastrnak": 0,
+          "Macklin Celebrini": 0,
+          "Alex DeBrincat": 0,
+          "Jake Guentzel": 0,
+          "Jack Hughes": 0,
+          "Jason Robertson": 0,
+          "Cole Caufield": 0,
+          "Wyatt Johnston": 1,
+          "Lucas Raymond": 1,
+          "Artturi Lehkonen": 1,
+          "Sam Reinhart": 0,
+          "Rickard Rakell": 1,
+          "Viktor Arvidsson": 1,
+          "Mikael Granlund": 0,
+          "Joel Farabee": 1,
+          "Mika Zibanejad": 0,
+          "Simon Holmstrom": 0,
+          "Matvei Michkov": 0,
+          "Alex Newhook": 0,
+          "Zayne Parekh": 0,
+          "Jeff Malott": 0,
+          "Ilya Protas": 0,
+          "Alex Iafallo": 0,
+          "Ross Colton": 1,
+          "Sandis Vilmanis": 0,
+          "Tristan Luneau": 0,
+          "Phillip Danault": 0,
+          "Jake Evans": 0,
+          "Brayden Yager": 0,
+          "Alexander Nikishin": 0,
+          "Adam Lowry": 0,
+          "Jack McBain": 0,
+          "Justin Faulk": 0,
+          "Dmitry Orlov": 0,
+          "Zack Ostapchuk": 0,
+          "Zeev Buium": 0,
+          "Peyton Krebs": 0,
+          "Ty Mueller": 0
+        }
+      },
       "timing": {
         "decision": "BORDERLINE_WATCH",
         "basis": "now",
@@ -587,7 +660,8 @@
           "lock_et": "7:00 PM ET",
           "selection_wave": 1
         }
-      ]
+      ],
+      "settled_et": "2026-11-26 01:00 AM ET"
     },
     {
       "date": "2026-11-24",
@@ -4229,25 +4303,25 @@
   ],
   "summary": {
     "total_days_logged": 9,
-    "settled_days": 8,
-    "pending_days": 1,
-    "ai_hits": 7,
-    "ai_possible": 24,
-    "ai_hit_rate_pct": 29.2,
-    "random_expected_pct": 23.3,
-    "hit_1plus_days": 5,
-    "hit_2plus_days": 2,
-    "sweep_3_days": 0,
+    "settled_days": 9,
+    "pending_days": 0,
+    "ai_hits": 10,
+    "ai_possible": 27,
+    "ai_hit_rate_pct": 37.0,
+    "random_expected_pct": 23.1,
+    "hit_1plus_days": 6,
+    "hit_2plus_days": 3,
+    "sweep_3_days": 1,
     "group_hit_rates": {
-      "1": 25.0,
-      "2": 37.5,
-      "3": 25.0
+      "1": 33.3,
+      "2": 44.4,
+      "3": 33.3
     },
     "recent_days": [
       {
         "date": "2026-11-25",
         "mode": "Regular Season",
-        "settled": false,
+        "settled": true,
         "timing": {
           "decision": "BORDERLINE_WATCH",
           "basis": "now",
@@ -4311,25 +4385,25 @@
             "selection_wave": 1
           }
         ],
-        "hits_of_3": null,
+        "hits_of_3": 3,
         "picks": {
           "1": {
             "player": "Cutter Gauthier",
             "team": "ANA",
             "score": 0.68,
-            "scored": null
+            "scored": true
           },
           "2": {
             "player": "Lucas Raymond",
             "team": "DET",
             "score": 0.451,
-            "scored": null
+            "scored": true
           },
           "3": {
             "player": "Ross Colton",
             "team": "NSH",
             "score": 0.199,
-            "scored": null
+            "scored": true
           }
         }
       },
