@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-25T23:41:15.728933+00:00",
+  "captured_utc": "2026-11-26T00:05:18.374229+00:00",
   "source": "espn-cbs",
   "count": 116,
   "records": [
@@ -50,22 +50,13 @@
       "note": "Hagens (back) is wearing a non-contact sweater ahead of Tuesday's practice, Steve Conroy of the Boston Herald reports."
     },
     {
-      "player": "Mattias Samuelsson",
-      "team": "BUF",
-      "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "Samuelsson (undisclosed) is considered a game-time decision for Wednesday's matchup against the Rangers, Paul Hamilton of WGR Sports Radio 550 reports."
-    },
-    {
       "player": "Tyson Kozak",
       "team": "BUF",
       "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "Kozak (undisclosed) did not practice Tuesday and is considered day-to-day, per Paul Hamilton of WGR Sports Radio 550."
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Kozak (undisclosed) won't play Wednesday versus the Rangers, Matthew Fairburn of The Athletic reports."
     },
     {
       "player": "Konsta Helenius",
@@ -134,10 +125,10 @@
       "player": "K'Andre Miller",
       "team": "CAR",
       "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Nikolaj Ehlers",
@@ -228,15 +219,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir"
-    },
-    {
-      "player": "Oskar Back",
-      "team": "DAL",
-      "position": "C",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Back (finger) is expected to return within the next week, Robert Tiffin of NHL.com reports Thursday."
     },
     {
       "player": "Kyle Capobianco",
@@ -777,6 +759,24 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Tucker had arthroscopic knee surgery and will be re-assessed in six weeks, the team announced Wednesday."
+    },
+    {
+      "player": "Erik Cernak",
+      "team": "TBL",
+      "position": "D",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
+      "player": "Victor Hedman",
+      "team": "TBL",
+      "position": "D",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Conor Geekie",
