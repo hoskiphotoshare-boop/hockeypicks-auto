@@ -1,8 +1,8 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-26T03:04:19.088318+00:00",
+  "captured_utc": "2026-11-26T03:36:48.363005+00:00",
   "source": "espn-cbs",
-  "count": 117,
+  "count": 118,
   "records": [
     {
       "player": "Ryan Poehling",
@@ -210,6 +210,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir-lt"
+    },
+    {
+      "player": "Denton Mateychuk",
+      "team": "CBJ",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Mathieu Olivier",
@@ -593,10 +602,10 @@
       "player": "Egor Chinakhov",
       "team": "PIT",
       "position": "RW",
-      "status": "Out",
+      "status": "IR",
       "is_out": true,
       "is_dtd": false,
-      "note": "out"
+      "note": "ir"
     },
     {
       "player": "Bryan Rust",
@@ -764,10 +773,10 @@
       "player": "Pontus Holmberg",
       "team": "TBL",
       "position": "RW",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Erik Cernak",
