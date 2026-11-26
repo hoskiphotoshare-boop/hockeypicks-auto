@@ -320,6 +320,66 @@ def _build_causal_prior_defense(
     return ai_factors, prior_base_mults, prior_lg_ga
 
 
+def _poisson_deviance(y: np.ndarray, mu: np.ndarray) -> float:
+    """Mean Poisson deviance for count targets."""
+    yy = np.asarray(y, dtype=float)
+    mm = np.clip(np.asarray(mu, dtype=float), 1e-9, None)
+    term = np.where(yy > 0, yy * np.log(np.clip(yy, 1e-9, None) / mm), 0.0)
+    return float(2.0 * np.mean(term - (yy - mm)))
+
+
+def _spearman(a: np.ndarray, b: np.ndarray) -> float:
+    ra = pd.Series(np.asarray(a, dtype=float)).rank().to_numpy()
+    rb = pd.Series(np.asarray(b, dtype=float)).rank().to_numpy()
+    if float(np.std(ra)) == 0.0 or float(np.std(rb)) == 0.0:
+        return 0.0
+    return float(np.corrcoef(ra, rb)[0, 1])
+
+
+def _mcnemar_exact(b: int, c: int) -> float:
+    """Two-sided exact McNemar p-value from discordant pair counts."""
+    n = int(b) + int(c)
+    if n == 0:
+        return 1.0
+    k = min(int(b), int(c))
+    tail = sum(math.comb(n, i) for i in range(k + 1)) / float(2 ** n)
+    return float(min(1.0, 2.0 * tail))
+
+
+def _paired_summary(model_hits: list[int], base_hits: list[int]) -> dict[str, Any]:
+    a = np.asarray(model_hits, dtype=float)
+    b = np.asarray(base_hits, dtype=float)
+    n = int(len(a))
+    if n == 0 or len(b) != n:
+        return {"slates": n}
+    diff = a - b
+    rng = np.random.default_rng(13)
+    idx = rng.integers(0, n, size=(10000, n))
+    boot = diff[idx].mean(axis=1)
+    a1 = a >= 1
+    b1 = b >= 1
+    b_only = int(np.sum(a1 & ~b1))
+    c_only = int(np.sum(~a1 & b1))
+    a2 = a >= 2
+    b2 = b >= 2
+    return {
+        "slates": n,
+        "mean_hits_diff": round(float(diff.mean()), 4),
+        "mean_hits_ci95": [
+            round(float(np.percentile(boot, 2.5)), 4),
+            round(float(np.percentile(boot, 97.5)), 4),
+        ],
+        "hit1plus_diff_pp": round(float(a1.mean() - b1.mean()) * 100.0, 2),
+        "hit1plus_mcnemar_b": b_only,
+        "hit1plus_mcnemar_c": c_only,
+        "hit1plus_mcnemar_p": round(_mcnemar_exact(b_only, c_only), 4),
+        "hit2plus_diff_pp": round(float(a2.mean() - b2.mean()) * 100.0, 2),
+        "model_wins": int(np.sum(diff > 0)),
+        "base_wins": int(np.sum(diff < 0)),
+        "ties": int(np.sum(diff == 0)),
+    }
+
+
 def evaluate_walk_forward_backtest(
     label: str,
     df_box: pd.DataFrame,
@@ -332,6 +392,7 @@ def evaluate_walk_forward_backtest(
     profile_year: int,
     max_log_season: str,
     exclude_season_game_type: tuple[str, int] | None = None,
+    group_sort: str = "toi",
 ) -> dict[str, Any]:
     """Execute zero-leakage chronological walk-forward backtest over real NHL boxscores."""
     if df_box.empty:
@@ -355,25 +416,31 @@ def evaluate_walk_forward_backtest(
     live_player_state: dict[int, dict[str, float]] = {}
     team_ga_state: dict[str, dict[str, float]] = {}
 
-    strat_names = ("ai_full", "xgb_eb", "xgb_only", "emp_blend", "naive_live", "naive_prior", "random")
+    strat_names = (
+        "ai_full", "xgb_eb", "xgb_only", "emp_blend",
+        "naive_live", "naive_prior", "season_gpg", "season_gpg10",
+        "blend_50", "blend_prior_xgb", "random",
+    )
+    pick_strats = tuple(s for s in strat_names if s != "random")
     tier_hits: dict[int, dict[str, list[int | float]]] = {
         1: {s: [] for s in strat_names},
         2: {s: [] for s in strat_names},
         3: {s: [] for s in strat_names},
     }
-    ticket_outcomes: dict[str, list[int]] = {s: [] for s in strat_names if s != "random"}
+    ticket_outcomes: dict[str, list[int]] = {s: [] for s in pick_strats}
     random_expected_tickets = {"hit_1plus": [], "hit_2plus": [], "sweep_3": [], "mean_hits": []}
 
-    slate_top1_hits: dict[str, list[int]] = {s: [] for s in ("ai_full", "xgb_only", "emp_blend", "naive_live", "naive_prior")}
-    slate_top3_hits: dict[str, list[int]] = {s: [] for s in ("ai_full", "xgb_only", "emp_blend", "naive_live", "naive_prior")}
+    slate_top1_hits: dict[str, list[int]] = {s: [] for s in pick_strats}
+    slate_top3_hits: dict[str, list[int]] = {s: [] for s in pick_strats}
 
-    all_preds_prob: list[float] = []
-    all_preds_rate: list[float] = []
-    all_targets: list[int] = []
+    all_rates: dict[str, list[float]] = {s: [] for s in pick_strats}
+    all_goals: list[int] = []
+    all_scored: list[int] = []
+    ai_probs: list[float] = []
+    slate_rows: list[dict[str, Any]] = []
     min_games_for_3tier = 2 if skater_mode == "playoffs" else 3
 
     for date_str, day_df in df_box.groupby("game_date", sort=True):
-        # Compute causal league average GA/GP strictly from games < date_str
         tot_ga = sum(v["ga"] for v in team_ga_state.values())
         tot_gp = sum(v["gp"] for v in team_ga_state.values())
         live_lg_ga = (tot_ga / tot_gp) if tot_gp >= 32 else prior_lg_ga
@@ -401,7 +468,6 @@ def evaluate_walk_forward_backtest(
             live_gp = st["gp"]
             live_goals = st["goals"]
             live_shots = st["shots"]
-            live_rate = (live_goals / live_gp) if live_gp > 0 else prior_rate
 
             blended, _ = blend_skater_goal_rate(
                 base_pred=base_pred,
@@ -427,70 +493,86 @@ def evaluate_walk_forward_backtest(
 
             scored = 1 if int(row.goals) >= 1 else 0
             p_goal = 1.0 - math.exp(-ai_full)
-            all_preds_rate.append(ai_full)
-            all_preds_prob.append(p_goal)
-            all_targets.append(scored)
+            ai_probs.append(p_goal)
+            all_goals.append(int(row.goals))
+            all_scored.append(scored)
 
             avg_pre_toi = (st["toi_sum"] / live_gp) if live_gp > 0 else float(row.toi_sec)
             neutral_rate = (prior_goals + live_goals + 1.4) / (prior_gp + live_gp + 10.0)
-            candidates.append(
-                {
-                    "pid": pid,
-                    "scored": scored,
-                    "goals": int(row.goals),
-                    "prior_gp": prior_gp,
-                    "live_gp": live_gp,
-                    "avg_pre_toi": avg_pre_toi,
-                    "neutral_rate": neutral_rate,
-                    "emp_blend": neutral_rate,
-                    "ai_full": ai_full,
-                    "xgb_eb": blended,
-                    "xgb_only": base_pred,
-                    "naive_live": (live_goals / live_gp) if live_gp >= 3 else prior_rate,
-                    "naive_prior": prior_rate,
-                }
-            )
+            season_gpg = (live_goals / live_gp) if live_gp > 0 else prior_rate
+            season_gpg10 = (live_goals / live_gp) if live_gp >= 10 else prior_rate
+            candidate = {
+                "pid": pid,
+                "name": str(getattr(row, "name", nc) or nc),
+                "scored": scored,
+                "goals": int(row.goals),
+                "prior_gp": prior_gp,
+                "live_gp": live_gp,
+                "prior_rate": prior_rate,
+                "avg_pre_toi": avg_pre_toi,
+                "neutral_rate": neutral_rate,
+                "emp_blend": neutral_rate,
+                "ai_full": ai_full,
+                "xgb_eb": blended,
+                "xgb_only": base_pred,
+                "naive_live": (live_goals / live_gp) if live_gp >= 3 else prior_rate,
+                "naive_prior": prior_rate,
+                "season_gpg": season_gpg,
+                "season_gpg10": season_gpg10,
+                "blend_50": (0.5 * prior_rate) + (0.5 * ai_full),
+                "blend_prior_xgb": (0.5 * prior_rate) + (0.5 * base_pred),
+            }
+            for s in pick_strats:
+                all_rates[s].append(float(candidate[s]))
+            candidates.append(candidate)
 
-        # Evaluate overall slate top picks
         regulars = [c for c in candidates if (c["prior_gp"] + c["live_gp"] >= 10) or c["avg_pre_toi"] >= 720]
         pool = regulars if len(regulars) >= 10 else candidates
+        slate_top1_today: dict[str, int] = {}
         if pool:
-            for s in ("ai_full", "xgb_only", "emp_blend", "naive_live", "naive_prior"):
+            for s in pick_strats:
                 ranked_s = sorted(pool, key=lambda x: (x[s], x["avg_pre_toi"]), reverse=True)
+                slate_top1_today[s] = ranked_s[0]["scored"]
                 slate_top1_hits[s].append(ranked_s[0]["scored"])
                 slate_top3_hits[s].extend(x["scored"] for x in ranked_s[:3])
 
-        # Simulated 3-Group Tim Hortons Challenge evaluation
         num_games = int(day_df["game_id"].nunique())
         eligible = [c for c in candidates if (c["prior_gp"] + c["live_gp"] >= 10) and c["avg_pre_toi"] >= 660]
         if num_games >= min_games_for_3tier and len(eligible) >= 30:
-            ranked_neutral = sorted(eligible, key=lambda x: (x["neutral_rate"], x["avg_pre_toi"]), reverse=True)
-            if len(ranked_neutral) >= 36:
+            if group_sort == "prior":
+                ranked_groups = sorted(eligible, key=lambda x: (x["prior_rate"], x["avg_pre_toi"]), reverse=True)
+            elif group_sort == "blend":
+                ranked_groups = sorted(eligible, key=lambda x: (x["neutral_rate"], x["avg_pre_toi"]), reverse=True)
+            else:
+                ranked_groups = sorted(eligible, key=lambda x: (x["avg_pre_toi"], x["prior_gp"] + x["live_gp"]), reverse=True)
+            if len(ranked_groups) >= 36:
                 groups = {
-                    1: ranked_neutral[0:10],
-                    2: ranked_neutral[10:22],
-                    3: ranked_neutral[22:36],
+                    1: ranked_groups[0:10],
+                    2: ranked_groups[10:22],
+                    3: ranked_groups[22:36],
                 }
             else:
-                g1_end = max(6, len(ranked_neutral) // 3)
-                g2_end = max(g1_end + 8, (2 * len(ranked_neutral)) // 3)
+                g1_end = max(6, len(ranked_groups) // 3)
+                g2_end = max(g1_end + 8, (2 * len(ranked_groups)) // 3)
                 groups = {
-                    1: ranked_neutral[0:g1_end],
-                    2: ranked_neutral[g1_end:g2_end],
-                    3: ranked_neutral[g2_end:],
+                    1: ranked_groups[0:g1_end],
+                    2: ranked_groups[g1_end:g2_end],
+                    3: ranked_groups[g2_end:],
                 }
 
-            night_hits: dict[str, int] = {s: 0 for s in ticket_outcomes}
+            night_hits: dict[str, int] = {s: 0 for s in pick_strats}
             grp_rand_probs: list[float] = []
+            picks: dict[str, list[dict[str, Any]]] = {s: [] for s in pick_strats}
             for g_idx in (1, 2, 3):
                 bucket = groups[g_idx]
                 p_rand = float(np.mean([c["scored"] for c in bucket]))
                 tier_hits[g_idx]["random"].append(p_rand)
                 grp_rand_probs.append(p_rand)
-                for s in ticket_outcomes:
+                for s in pick_strats:
                     best = max(bucket, key=lambda x: (x[s], x["neutral_rate"]))
                     tier_hits[g_idx][s].append(best["scored"])
                     night_hits[s] += best["scored"]
+                    picks[s].append({"pid": best["pid"], "name": best["name"], "rate": round(float(best[s]), 3)})
 
             for s, hits_cnt in night_hits.items():
                 ticket_outcomes[s].append(hits_cnt)
@@ -504,7 +586,24 @@ def evaluate_walk_forward_backtest(
             random_expected_tickets["sweep_3"].append(p_sweep)
             random_expected_tickets["mean_hits"].append(p1 + p2 + p3)
 
-        # Strictly update causal state AFTER scoring date_str
+            slate_goals = np.asarray([c["goals"] for c in candidates], dtype=float)
+            slate_deviance = {
+                s: round(_poisson_deviance(slate_goals, np.asarray([c[s] for c in candidates], dtype=float)), 4)
+                for s in pick_strats
+            }
+            slate_rows.append(
+                {
+                    "date": date_str,
+                    "games": num_games,
+                    "eligible": len(eligible),
+                    "hits": {s: night_hits[s] for s in pick_strats},
+                    "top1": {s: slate_top1_today.get(s, 0) for s in pick_strats},
+                    "picks": picks,
+                    "deviance": slate_deviance,
+                    "random_mean_hits": round(p1 + p2 + p3, 4),
+                }
+            )
+
         seen_teams: set[tuple[str, int]] = set()
         for row in day_df.itertuples(index=False):
             pid = int(row.player_id)
@@ -521,10 +620,10 @@ def evaluate_walk_forward_backtest(
                 tst["gp"] += 1.0
                 tst["ga"] += float(row.team_goals_against)
 
-    # Aggregate results
-    y_true = np.asarray(all_targets, dtype=int)
-    y_prob = np.clip(np.asarray(all_preds_prob, dtype=float), 1e-6, 1.0 - 1e-6)
-    y_rate = np.asarray(all_preds_rate, dtype=float)
+    y_true = np.asarray(all_scored, dtype=int)
+    goals_arr = np.asarray(all_goals, dtype=int)
+    y_prob = np.clip(np.asarray(ai_probs, dtype=float), 1e-6, 1.0 - 1e-6)
+    y_rate = np.asarray(all_rates["ai_full"], dtype=float)
 
     calib_bins = [
         ("0.00-0.12", 0.0, 0.12),
@@ -545,6 +644,24 @@ def evaluate_walk_forward_backtest(
                     "actual_hit_pct": round(float(np.mean(y_true[mask])) * 100.0, 1),
                 }
             )
+
+    player_metrics: dict[str, dict[str, float]] = {}
+    for s in pick_strats:
+        rate = np.clip(np.asarray(all_rates[s], dtype=float), 1e-6, None)
+        prob = np.clip(1.0 - np.exp(-rate), 1e-6, 1.0 - 1e-6)
+        entry = {
+            "poisson_deviance": round(_poisson_deviance(goals_arr, rate), 4),
+            "brier": round(float(brier_score_loss(y_true, prob)), 4),
+            "log_loss": round(float(log_loss(y_true, prob)), 4),
+            "spearman_goals": round(_spearman(rate, goals_arr), 4),
+            "mean_pred": round(float(rate.mean()), 4),
+            "mean_actual": round(float(goals_arr.mean()), 4),
+        }
+        try:
+            entry["auc"] = round(float(roc_auc_score(y_true, prob)), 4)
+        except ValueError:
+            entry["auc"] = 0.0
+        player_metrics[s] = entry
 
     num_slates = len(ticket_outcomes["ai_full"])
     tier_summary: dict[str, dict[str, float]] = {}
@@ -576,12 +693,18 @@ def evaluate_walk_forward_backtest(
             "top1_pct": round(float(np.mean(slate_top1_hits[s])) * 100.0, 2) if slate_top1_hits[s] else 0.0,
             "top3_pct": round(float(np.mean(slate_top3_hits[s])) * 100.0, 2) if slate_top3_hits[s] else 0.0,
         }
-        for s in slate_top1_hits
+        for s in pick_strats
+    }
+
+    paired = {
+        base: _paired_summary(ticket_outcomes["ai_full"], ticket_outcomes[base])
+        for base in ("season_gpg", "season_gpg10", "naive_live", "naive_prior", "emp_blend", "xgb_eb", "blend_50", "blend_prior_xgb")
     }
 
     return {
         "label": label,
         "mode": skater_mode,
+        "group_sort": group_sort,
         "skater_model_metrics": skater_bundle["metrics"],
         "n_half": n_half,
         "games": int(df_box["game_id"].nunique()),
@@ -595,7 +718,10 @@ def evaluate_walk_forward_backtest(
         "tiers": tier_summary,
         "tickets": ticket_summary,
         "slate_top_picks": slate_summary,
+        "player_metrics": player_metrics,
+        "paired_vs_ai_full": paired,
         "calibration": calibration,
+        "per_slate": slate_rows,
     }
 
 
@@ -604,6 +730,17 @@ def main() -> int:
     parser.add_argument("--data-dir", default="./data", help="Data directory containing moneypuck/ and nhl_game_logs/.")
     parser.add_argument("--skip-network", action="store_true", help="Run strictly from cached CSVs without network.")
     parser.add_argument("--sync-only", action="store_true", help="Download and cache historical data without training.")
+    parser.add_argument(
+        "--seasons",
+        default="",
+        help="Comma-separated NHL seasons (e.g. 20232024,20242025,20252026). Overrides the default spec list.",
+    )
+    parser.add_argument(
+        "--group-sort",
+        default="toi",
+        choices=["toi", "prior", "blend"],
+        help="Neutral criterion for building the three pick groups (default: toi).",
+    )
     args = parser.parse_args()
 
     archive_dir = os.path.join(args.data_dir, "moneypuck")
@@ -646,7 +783,38 @@ def main() -> int:
         )
         return 0
 
-    specs = [
+    if args.seasons:
+        specs = []
+        for season in [x.strip() for x in args.seasons.split(",") if x.strip()]:
+            end_year = int(season[4:])
+            df_box = sync_boxscore_skaters(season, 2, backtest_dir, allow_network=not args.skip_network)
+            # MoneyPuck files are named by season start year. The test season
+            # itself is end_year - 1, so the strictly prior season is end_year - 2.
+            available = [
+                y for y in range(2021, max(2022, end_year - 1))
+                if os.path.exists(os.path.join(archive_dir, f"{y}_regular_skaters.csv"))
+            ]
+            profile_year = max(available) if available else 2021
+            specs.append(
+                {
+                    "label": f"{season[:4]}-{str(end_year)[2:]} Regular Season (Walk-Forward)",
+                    "df_box": df_box,
+                    "skater_mode": "regular",
+                    "skater_target_years": [
+                        y for y in range(2021 if profile_year < 2022 else 2022, profile_year + 1)
+                    ],
+                    "baseline_files": [
+                        f"{profile_year}_regular_skaters.csv",
+                        f"{profile_year}_playoffs_skaters.csv",
+                    ],
+                    "pairwise_years": [y for y in range(2021, profile_year + 1)],
+                    "profile_year": profile_year,
+                    "max_log_season": f"{end_year - 2}{end_year - 1}",
+                    "exclude_season_game_type": None,
+                }
+            )
+    else:
+        specs = [
         {
             "label": "2025-26 Regular Season (Out-of-Sample Walk-Forward)",
             "df_box": df_box_2526_reg,
@@ -696,15 +864,49 @@ def main() -> int:
             profile_year=sp["profile_year"],
             max_log_season=sp["max_log_season"],
             exclude_season_game_type=sp["exclude_season_game_type"],
+            group_sort=args.group_sort,
         )
         results.append(res)
 
-    report = {"tims_history_probes": tims_probes, "results": results}
+    slate_rows: list[dict[str, Any]] = []
+    for res in results:
+        season_rows = res.pop("per_slate", [])
+        for row in season_rows:
+            row["label"] = res.get("label")
+            row["group_sort"] = res.get("group_sort")
+            slate_rows.append(row)
+    with open(os.path.join(backtest_dir, "tims_slates.json"), "w", encoding="utf-8") as f:
+        json.dump(slate_rows, f)
+
+    report = {
+        "tims_history_probes": tims_probes,
+        "group_sort": args.group_sort,
+        "results": results,
+    }
     out_path = os.path.join(backtest_dir, "tims_backtest_report.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
 
-    print("\n" + json.dumps(report, indent=2))
+    for res in results:
+        if "error" in res:
+            print(f"\n{res['label']}: ERROR {res['error']}")
+            continue
+        tk = res["tickets"]
+        print(f"\n{res['label']}: {res['tims_3tier_slates']} slates, {res['games']} games, groups={res['group_sort']}")
+        header = ("strategy", "1+%", "2+%", "sweep%", "mean", "top1%")
+        print("  " + "  ".join(f"{h:>12}" for h in header))
+        for name in ("ai_full", "emp_blend", "naive_prior", "season_gpg", "season_gpg10", "blend_50"):
+            t = tk[name]
+            print(
+                f"  {name:>12}  {t['hit_1plus_pct']:>12.2f}  {t['hit_2plus_pct']:>12.2f}"
+                f"  {t['sweep_3_pct']:>12.2f}  {t['mean_hits_of_3']:>12.3f}"
+                f"  {res['slate_top_picks'][name]['top1_pct']:>12.2f}"
+            )
+        for base, cmp in res["paired_vs_ai_full"].items():
+            print(
+                f"  ai_full - {base}: mean_hits {cmp.get('mean_hits_diff')} "
+                f"CI {cmp.get('mean_hits_ci95')} 1+ McNemar p={cmp.get('hit1plus_mcnemar_p')}"
+            )
     return 0
 
 

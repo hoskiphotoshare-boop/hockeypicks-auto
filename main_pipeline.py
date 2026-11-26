@@ -46,6 +46,7 @@ from src.report_builder import (
 )
 from src.skater_model import (
     build_inference_baseline,
+    build_prior_goal_rate_frame,
     compute_skater_base_predictions,
     load_skater_bundle,
     normalize_skater_frame,
@@ -329,6 +330,13 @@ def run_training(
         play_b = skater_bundles.get("playoffs") or skater_bundles["regular"]
         df_baseline["base_pred_regular"] = compute_skater_base_predictions(df_baseline, reg_b)
         df_baseline["base_pred_playoffs"] = compute_skater_base_predictions(df_baseline, play_b)
+        # Prior-season goals/GP (last season, regular + playoffs). Note that
+        # df_baseline's own stats are the *current* season to date, which is a
+        # different (worse) strategy, so it is loaded separately.
+        df_baseline["playerId"] = pd.to_numeric(df_baseline["playerId"], errors="coerce").fillna(0).astype(int)
+        prior_frame = build_prior_goal_rate_frame(archive_dir, active_mp_year - 1)
+        if not prior_frame.empty:
+            df_baseline = df_baseline.merge(prior_frame, on="playerId", how="left")
         keep_cols = [
             c
             for c in (
@@ -339,6 +347,7 @@ def run_training(
                 "position",
                 "games_played",
                 "I_F_shotsOnGoal_per_game",
+                "prior_goals_per_game",
                 "base_pred_regular",
                 "base_pred_playoffs",
             )
@@ -355,6 +364,7 @@ def run_training(
                 "position",
                 "games_played",
                 "I_F_shotsOnGoal_per_game",
+                "prior_goals_per_game",
                 "base_pred_regular",
                 "base_pred_playoffs",
             ]

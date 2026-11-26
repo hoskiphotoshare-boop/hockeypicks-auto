@@ -396,6 +396,37 @@ def build_inference_baseline(archive_dir: str, active_mp_year: int) -> tuple[pd.
     return df_prepped, source_label
 
 
+def build_prior_goal_rate_frame(archive_dir: str, prior_mp_year: int) -> pd.DataFrame:
+    """Return playerId -> prior-season goals/GP (regular + playoffs combined).
+
+    MoneyPuck files are named by season start year, so callers pass the season
+    immediately before the active one. Missing players (rookies/call-ups) are
+    left out of the frame so the picker can fall back to the model score.
+    """
+    frames: list[pd.DataFrame] = []
+    for suffix in ("regular", "playoffs"):
+        path = os.path.join(archive_dir, f"{prior_mp_year}_{suffix}_skaters.csv")
+        if os.path.exists(path):
+            try:
+                frames.append(pd.read_csv(path))
+            except Exception:
+                continue
+    if not frames:
+        return pd.DataFrame(columns=["playerId", "prior_goals_per_game"])
+    combined = combine_skater_frames(frames)
+    if combined.empty or "playerId" not in combined.columns:
+        return pd.DataFrame(columns=["playerId", "prior_goals_per_game"])
+    gp = pd.to_numeric(combined.get("games_played"), errors="coerce").replace(0, np.nan)
+    goals = pd.to_numeric(combined.get("I_F_goals"), errors="coerce")
+    out = pd.DataFrame(
+        {
+            "playerId": pd.to_numeric(combined["playerId"], errors="coerce").fillna(0).astype(int),
+            "prior_goals_per_game": (goals / gp).fillna(0.0).clip(lower=0.0, upper=2.0),
+        }
+    )
+    return out.drop_duplicates(subset=["playerId"], keep="first")
+
+
 def compute_skater_base_predictions(df_baseline: pd.DataFrame, bundle: dict[str, Any]) -> np.ndarray:
     """Predict clipped XGBoost goals-per-game base predictions for a prepared skater pool."""
     if df_baseline.empty:
@@ -407,6 +438,30 @@ def compute_skater_base_predictions(df_baseline: pd.DataFrame, bundle: dict[str,
     X_imp = bundle["imputer"].transform(X_all)
     preds = np.asarray(bundle["model"].predict(X_imp), dtype=float).reshape(-1)
     return np.clip(preds, 0.0, 2.0)
+
+
+def tims_score_strategy() -> str:
+    """Pick-scoring strategy for the Tims path.
+
+    ``model`` (default) keeps the shipped XGB + EB + defense-multiplier score.
+    ``prior_gp`` ranks by prior-season goals/GP; the corrected 4-season
+    walk-forward found the strategies statistically indistinguishable, so the
+    alternative stays available for shadowing/experiments but is not shipped.
+    """
+    return os.environ.get("TIMS_SCORE_STRATEGY", "model").strip().lower()
+
+
+def resolve_tims_final_score(prior_rate: float | None, model_score: float, strategy: str | None = None) -> float:
+    """Return the displayed/pick score under the active Tims strategy.
+
+    ``prior_rate=None`` means the player has no prior-season sample; those
+    players (rookies, call-ups) fall back to the model score instead of a flat
+    default, which is the one deliberate deviation from the backtest baseline.
+    """
+    strat = (strategy or tims_score_strategy()).strip().lower()
+    if strat == "prior_gp" and prior_rate is not None and float(prior_rate) >= 0.0:
+        return float(prior_rate)
+    return float(model_score)
 
 
 def blend_skater_goal_rate(
@@ -560,6 +615,12 @@ def score_skater_candidates(
         else:
             base_pred = 0.14
 
+        prior_rate: float | None = None
+        if baseline_row is not None:
+            pr_val = baseline_row.get("prior_goals_per_game") if hasattr(baseline_row, "get") else None
+            if pr_val is not None and pd.notna(pr_val):
+                prior_rate = float(pr_val)
+
         blended, weight_live = blend_skater_goal_rate(
             base_pred=base_pred,
             live_gp=live_gp,
@@ -571,7 +632,8 @@ def score_skater_candidates(
 
         opp_clean = normalize_team_abbrev(opponent)
         def_mult = float(defense_multipliers.get(opp_clean, 1.0))
-        final_score = max(0.0, blended * def_mult)
+        model_score = max(0.0, blended * def_mult)
+        final_score = max(0.0, resolve_tims_final_score(prior_rate, model_score))
 
         inj = injury_matcher.match(
             name=name,
@@ -589,6 +651,8 @@ def score_skater_candidates(
             "position": position or "F",
             "opponent": opp_clean if opp_clean != "UNK" else daily_matchups.get(team, "UNK"),
             "base_pred": round(base_pred, 3),
+            "prior_goals_per_game": round(prior_rate, 3) if prior_rate is not None else None,
+            "model_score": round(model_score, 3),
             "live_gp": live_gp,
             "live_goals": live_goals,
             "live_shots": live_shots,

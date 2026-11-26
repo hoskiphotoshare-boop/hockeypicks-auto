@@ -64,6 +64,7 @@ def _compact_candidate(item: dict[str, Any]) -> dict[str, Any]:
         "live_goals": int(item.get("live_goals", 0)),
         "def_multiplier": round(float(item.get("def_multiplier", 1.0)), 3),
         "final_score": round(float(item.get("final_score", 0.0)), 3),
+        "model_score": round(float(item.get("model_score", item.get("final_score", 0.0))), 3),
     }
 
 
