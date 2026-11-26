@@ -43,7 +43,8 @@ var HP_ALLOWED_WORKFLOWS = {
   "hockeypicks_infer.yml": true,
   "hockeypicks_live_loop.yml": true,
   "hockeypicks_health.yml": true,
-  "hockeypicks_futures.yml": true
+  "hockeypicks_futures.yml": true,
+  "hockeypicks_player_models.yml": true
 };
 
 /**
@@ -55,6 +56,8 @@ var HP_SCHEDULE_SLOTS = [
   { id: "run_0001", hour: 0, minute: 1, workflow: "hockeypicks_run.yml", inputs: {} },
   { id: "run_1017", hour: 10, minute: 17, workflow: "hockeypicks_run.yml", inputs: {} },
   { id: "futures_mon_1030", dayOfWeek: 1, hour: 10, minute: 30, workflow: "hockeypicks_futures.yml", inputs: {} },
+  { id: "player_models_weekly", dayOfWeek: 1, hour: 9, minute: 0, workflow: "hockeypicks_player_models.yml", inputs: { mode: "evaluate" } },
+  { id: "player_models_monthly", dayOfWeek: 1, nthWeekday: 1, hour: 9, minute: 15, workflow: "hockeypicks_player_models.yml", inputs: { mode: "retrain" } },
   { id: "infer_1100", hour: 11, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 11 * * *" } },
   { id: "infer_1200", hour: 12, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 12 * * *" } },
   { id: "run_1617", hour: 16, minute: 17, workflow: "hockeypicks_run.yml", inputs: {} },
@@ -78,12 +81,16 @@ function hockeypicksCronTick() {
   var minute = parseInt(parts[2], 10);
   var etLabel = dateStr + " " + parts[3];
   var dayOfWeek = parseInt(parts[4], 10);
+  var dayOfMonth = parseInt(String(parts[0]).split("-")[2], 10);
   var currentTotalMin = hour * 60 + minute;
 
   var matchingSlots = [];
   for (var i = 0; i < HP_SCHEDULE_SLOTS.length; i++) {
     var slot = HP_SCHEDULE_SLOTS[i];
     if (slot.dayOfWeek !== undefined && slot.dayOfWeek !== dayOfWeek) {
+      continue;
+    }
+    if (slot.nthWeekday !== undefined && Math.ceil(dayOfMonth / 7) !== slot.nthWeekday) {
       continue;
     }
     var slotTotalMin = slot.hour * 60 + slot.minute;
@@ -542,6 +549,8 @@ function handleHockeypicksDoGet(e) {
         } else if (workflow === "hockeypicks_futures.yml") {
           if (params.bankroll !== undefined) inputs.bankroll = String(params.bankroll);
           if (params.n_sims !== undefined) inputs.n_sims = String(params.n_sims);
+        } else if (workflow === "hockeypicks_player_models.yml") {
+          if (params.mode !== undefined) inputs.mode = String(params.mode);
         }
         var dispatchRes = hpDispatchWorkflow_(workflow, inputs, dispatchToken);
         var etLabel = Utilities.formatDate(new Date(), HP_CONFIG.timeZone, "yyyy-MM-dd HH:mm:ss z");

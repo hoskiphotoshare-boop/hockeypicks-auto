@@ -1119,6 +1119,7 @@ def run_inference(
             )
             stat_bundle = load_stat_bundle(os.path.join(models_dir, "player_stat_bundles.joblib"))
 
+            driver_rows: list[dict[str, Any]] = []
             players_payload = build_players_payload(
                 slate_scorers=all_scorers,
                 season_stats=season_stats,
@@ -1131,8 +1132,56 @@ def run_inference(
                 prior_stats=prior_stats,
                 team_context=team_context,
                 prior_team=prior_team,
+                drivers_out=driver_rows,
             )
             write_json_report(players_payload, os.path.join(docs_dir, "players.json"))
+
+            if driver_rows:
+                targets = ("goals", "assists", "points", "sog")
+                global_drivers: dict[str, Any] = {}
+                for target in targets:
+                    acc: dict[str, list[float]] = {}
+                    for row in driver_rows:
+                        info = ((row.get("drivers") or {}).get(target) or {})
+                        for feat, val in (info.get("contribs") or {}).items():
+                            acc.setdefault(feat, []).append(abs(float(val)))
+                    ranked = sorted(
+                        ({"feature": k, "mean_abs": sum(v) / len(v)} for k, v in acc.items() if v),
+                        key=lambda x: x["mean_abs"], reverse=True,
+                    )[:12]
+                    global_drivers[target] = ranked
+                player_drivers: dict[str, Any] = {}
+                for row in driver_rows:
+                    stats: dict[str, Any] = {}
+                    for target in targets:
+                        info = ((row.get("drivers") or {}).get(target) or {})
+                        contribs = info.get("contribs") or {}
+                        top = sorted(
+                            ({"feature": k, "contrib": float(v)} for k, v in contribs.items()),
+                            key=lambda x: abs(x["contrib"]), reverse=True,
+                        )[:6]
+                        stats[target] = {
+                            "pred": info.get("pred"),
+                            "base_prior": info.get("base_prior"),
+                            "top": top,
+                        }
+                    key = str(row.get("id") or f"{row.get('name')}|{row.get('team')}")
+                    player_drivers[key] = {
+                        "name": row.get("name"),
+                        "team": row.get("team"),
+                        "position": row.get("position"),
+                        "stats": stats,
+                    }
+                write_json_report(
+                    {
+                        "updated_utc": updated_utc,
+                        "model_version": players_payload.get("model_version"),
+                        "features": (stat_bundle or {}).get("features") or [],
+                        "global": global_drivers,
+                        "players": player_drivers,
+                    },
+                    os.path.join(docs_dir, "player_drivers.json"),
+                )
         except Exception as exc:
             print(f"Warning: players.json build failed: {exc}")
 

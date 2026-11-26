@@ -1,0 +1,67 @@
+{
+  "calibration": {
+    "goals": 1.0454,
+    "assists": 1.026,
+    "points": 1.0299,
+    "sog": 1.0047
+  },
+  "interval_scale": {
+    "goals": 1.075,
+    "assists": 1.325,
+    "points": 1.325,
+    "sog": 1.05
+  },
+  "evaluated_utc": "2026-11-26T03:47:27.219414+00:00",
+  "source": "weekly_recalibration",
+  "window": {
+    "from": "2026-10-26",
+    "to": "2026-11-25",
+    "rows": 6579
+  },
+  "metrics": {
+    "goals": {
+      "rows": 6579,
+      "raw_mean": 0.17050519594541866,
+      "actual_mean": 0.17616659066727466,
+      "ratio": 1.0332,
+      "calibration": 1.0454,
+      "interval_scale": 1.075,
+      "coverage_80": 0.8439,
+      "mae": 0.2771,
+      "poisson_deviance": 0.6061
+    },
+    "assists": {
+      "rows": 6579,
+      "raw_mean": 0.2958524578193896,
+      "actual_mean": 0.3047575619395045,
+      "ratio": 1.0301,
+      "calibration": 1.026,
+      "interval_scale": 1.325,
+      "coverage_80": 0.8051,
+      "mae": 0.4118,
+      "poisson_deviance": 0.7834
+    },
+    "points": {
+      "rows": 6579,
+      "raw_mean": 0.46676889211528294,
+      "actual_mean": 0.4809241526067791,
+      "ratio": 1.0303,
+      "calibration": 1.0299,
+      "interval_scale": 1.325,
+      "coverage_80": 0.7989,
+      "mae": 0.5383,
+      "poisson_deviance": 0.9297
+    },
+    "sog": {
+      "rows": 6579,
+      "raw_mean": 1.5254335689506626,
+      "actual_mean": 1.5213558291533669,
+      "ratio": 0.9973,
+      "calibration": 1.0047,
+      "interval_scale": 1.05,
+      "coverage_80": 0.7954,
+      "mae": 1.0127,
+      "poisson_deviance": 1.2424
+    }
+  }
+}

@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from typing import Any, Callable
 
 import pandas as pd
+import xgboost as xgb
 
 from src.data_sync import _fetch_with_retries, clean_name
 
@@ -381,7 +382,24 @@ def load_stat_bundle(path: str) -> dict[str, Any] | None:
     try:
         import joblib
         bundle = joblib.load(path)
-        return bundle if isinstance(bundle, dict) and bundle.get("models") else None
+        if not (isinstance(bundle, dict) and bundle.get("models")):
+            return None
+        # Weekly recalibration is stored separately so we never rewrite the
+        # 10 MB tree bundle just to adjust a scalar.
+        cal_path = os.path.join(os.path.dirname(path) or ".", "player_stat_calibration.json")
+        if os.path.exists(cal_path):
+            try:
+                import json as _json
+                with open(cal_path, "r", encoding="utf-8") as fh:
+                    cal = _json.load(fh)
+                if isinstance(cal.get("calibration"), dict):
+                    bundle["calibration"] = cal["calibration"]
+                if isinstance(cal.get("interval_scale"), dict):
+                    bundle["interval_scale"] = cal["interval_scale"]
+                bundle["calibration_meta"] = cal
+            except Exception:
+                pass
+        return bundle
     except Exception:
         return None
 
@@ -430,7 +448,8 @@ def predict_expected_stats(
     is_home: bool,
     is_defense: bool,
     bundle: dict[str, Any] | None,
-) -> dict[str, Any] | None:
+    explain: bool = False,
+) -> Any:
     if not bundle:
         return None
     rows = sorted([r for r in (rows or []) if isinstance(r, dict)], key=lambda r: str(r.get("date") or ""))
@@ -495,6 +514,7 @@ def predict_expected_stats(
     cal = bundle.get("calibration") or {}
     scales = bundle.get("interval_scale") or {}
     out: dict[str, Any] = {}
+    explain_out: dict[str, Any] = {}
     for target in ("goals", "assists", "sog"):
         models = (bundle.get("models") or {}).get(target) or {}
         model = models.get(group) or models.get("F")
@@ -519,6 +539,18 @@ def predict_expected_stats(
         out[target] = round(pred, 3)
         out[f"{target}_lo"] = float(math.floor(lo_i))
         out[f"{target}_hi"] = float(math.ceil(hi_i))
+        if explain:
+            try:
+                booster = model["mean"].get_booster()
+                dm = xgb.DMatrix([x], feature_names=cols)
+                contrib = booster.predict(dm, pred_contribs=True)[0]
+                explain_out[target] = {
+                    "pred": float(pred),
+                    "base_prior": float(bm),
+                    "contribs": {cols[i]: float(contrib[i]) for i in range(len(cols))},
+                }
+            except Exception:
+                pass
     # Points is exactly G + A for consistency; use a Poisson interval for the sum.
     pts = out["goals"] + out["assists"]
     plo, phi = _poisson_interval(pts)
@@ -526,6 +558,16 @@ def predict_expected_stats(
     out["points_lo"] = float(plo)
     out["points_hi"] = float(phi)
     out["model"] = "xgboost-poisson-v1"
+    if explain and "goals" in explain_out and "assists" in explain_out:
+        g, a = explain_out["goals"], explain_out["assists"]
+        keys = set(g["contribs"]) | set(a["contribs"])
+        explain_out["points"] = {
+            "pred": float(out["points"]),
+            "base_prior": float(g.get("base_prior", 0.0)) + float(a.get("base_prior", 0.0)),
+            "contribs": {k: float(g["contribs"].get(k, 0.0)) + float(a["contribs"].get(k, 0.0)) for k in keys},
+        }
+    if explain:
+        return out, explain_out
     return out
 
 
@@ -541,6 +583,7 @@ def build_players_payload(
     prior_stats: dict[str, dict[str, float]] | None = None,
     team_context: dict[str, dict[str, float]] | None = None,
     prior_team: dict[str, dict[str, float]] | None = None,
+    drivers_out: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     season_stats = season_stats or {}
     prior_stats = prior_stats or {}
@@ -654,9 +697,10 @@ def build_players_payload(
         last6 = [dict(r) for r in sorted_rows[-6:]]
 
         expected = None
+        drivers = None
         if stat_bundle:
             try:
-                expected = predict_expected_stats(
+                result = predict_expected_stats(
                     sorted_rows,
                     stats if isinstance(stats, dict) else {},
                     prior_stats.get(clean_name(name), {}) if name else {},
@@ -668,9 +712,15 @@ def build_players_payload(
                     is_home=bool(home),
                     is_defense=str(position).upper().startswith("D"),
                     bundle=stat_bundle,
+                    explain=drivers_out is not None,
                 )
+                if isinstance(result, tuple):
+                    expected, drivers = result
+                else:
+                    expected = result
             except Exception:
                 expected = None
+                drivers = None
 
         gp = int(stats.get("gp", 0) or 0) if isinstance(stats, dict) else 0
         goals = int(stats.get("goals", 0) or 0) if isinstance(stats, dict) else 0
@@ -719,6 +769,16 @@ def build_players_payload(
         }
         if expected:
             player_obj["expected"] = expected
+        if drivers and drivers_out is not None:
+            drivers_out.append(
+                {
+                    "id": pid,
+                    "name": name,
+                    "team": team,
+                    "position": position,
+                    "drivers": drivers,
+                }
+            )
         players.append(player_obj)
 
     players.sort(key=lambda p: (-float((p.get("tonight") or {}).get("goal_rate") or 0.0), str(p.get("name") or "")))
