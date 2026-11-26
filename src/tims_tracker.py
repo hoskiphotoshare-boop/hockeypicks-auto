@@ -65,6 +65,14 @@ def _compact_candidate(item: dict[str, Any]) -> dict[str, Any]:
         "def_multiplier": round(float(item.get("def_multiplier", 1.0)), 3),
         "final_score": round(float(item.get("final_score", 0.0)), 3),
         "model_score": round(float(item.get("model_score", item.get("final_score", 0.0))), 3),
+        "prior_goals_per_game": (
+            round(float(item["prior_goals_per_game"]), 3)
+            if item.get("prior_goals_per_game") is not None
+            else None
+        ),
+        "prior_gp": round(float(item.get("prior_gp", 0.0) or 0.0), 1),
+        "prior_goals": round(float(item.get("prior_goals", 0.0) or 0.0), 1),
+        "injury_out": bool(item.get("injury_out", False)),
     }
 
 

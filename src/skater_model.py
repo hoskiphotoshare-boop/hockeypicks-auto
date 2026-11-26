@@ -421,6 +421,8 @@ def build_prior_goal_rate_frame(archive_dir: str, prior_mp_year: int) -> pd.Data
     out = pd.DataFrame(
         {
             "playerId": pd.to_numeric(combined["playerId"], errors="coerce").fillna(0).astype(int),
+            "prior_gp": pd.to_numeric(combined.get("games_played"), errors="coerce").fillna(0.0),
+            "prior_goals": goals.fillna(0.0),
             "prior_goals_per_game": (goals / gp).fillna(0.0).clip(lower=0.0, upper=2.0),
         }
     )
@@ -616,10 +618,18 @@ def score_skater_candidates(
             base_pred = 0.14
 
         prior_rate: float | None = None
+        prior_gp = 0.0
+        prior_goals = 0.0
         if baseline_row is not None:
             pr_val = baseline_row.get("prior_goals_per_game") if hasattr(baseline_row, "get") else None
             if pr_val is not None and pd.notna(pr_val):
                 prior_rate = float(pr_val)
+            pg_val = baseline_row.get("prior_gp") if hasattr(baseline_row, "get") else None
+            if pg_val is not None and pd.notna(pg_val):
+                prior_gp = float(pg_val)
+            pg_goals = baseline_row.get("prior_goals") if hasattr(baseline_row, "get") else None
+            if pg_goals is not None and pd.notna(pg_goals):
+                prior_goals = float(pg_goals)
 
         blended, weight_live = blend_skater_goal_rate(
             base_pred=base_pred,
@@ -652,6 +662,8 @@ def score_skater_candidates(
             "opponent": opp_clean if opp_clean != "UNK" else daily_matchups.get(team, "UNK"),
             "base_pred": round(base_pred, 3),
             "prior_goals_per_game": round(prior_rate, 3) if prior_rate is not None else None,
+            "prior_gp": round(prior_gp, 1),
+            "prior_goals": round(prior_goals, 1),
             "model_score": round(model_score, 3),
             "live_gp": live_gp,
             "live_goals": live_goals,
