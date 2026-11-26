@@ -101,14 +101,12 @@ def summarize(history: dict[str, Any], days: int = DEFAULT_DAYS) -> dict[str, An
             row["shipped_hits"] = (day.get("results") or {}).get("hits_of_3")
             rows.append(row)
 
-    summary: dict[str, Any] = {}
-    for strategy in STRATEGIES:
-        vals = [r["hits"][strategy] for r in rows]
+    def _agg(vals: list[int]) -> dict[str, Any]:
         n = len(vals)
         p1 = sum(1 for v in vals if v == 1) / n if n else 0.0
         p2 = sum(1 for v in vals if v == 2) / n if n else 0.0
         p3 = sum(1 for v in vals if v == 3) / n if n else 0.0
-        summary[strategy] = {
+        return {
             "days": n,
             "hit_1plus_pct": round((1.0 - sum(1 for v in vals if v == 0) / n) * 100.0, 2) if n else 0.0,
             "hit_2plus_pct": round(sum(1 for v in vals if v >= 2) / n * 100.0, 2) if n else 0.0,
@@ -116,6 +114,14 @@ def summarize(history: dict[str, Any], days: int = DEFAULT_DAYS) -> dict[str, An
             "mean_hits": round(sum(vals) / n, 3) if n else 0.0,
             "expected_points_per_day": round(10.0 * p1 + 25.0 * p2 + 100.0 * p3, 2) if n else 0.0,
         }
+
+    summary: dict[str, Any] = {
+        strategy: _agg([r["hits"][strategy] for r in rows])
+        for strategy in STRATEGIES
+    }
+    shipped_vals = [int(r["shipped_hits"]) for r in rows if r.get("shipped_hits") is not None]
+    if shipped_vals:
+        summary["shipped_actual"] = _agg(shipped_vals)
 
     start = str(window[0]["date"]) if window else None
     end = str(window[-1]["date"]) if window else None

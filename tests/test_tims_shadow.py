@@ -20,13 +20,11 @@ def _cand(player: str, model: float, prior: float, goals: int, prior_gp: int = 8
     }
 
 
-def _day(date: str, groups: dict, player_goals: dict, settled: bool = True) -> dict:
-    return {
-        "date": date,
-        "settled": settled,
-        "groups": groups,
-        "results": {"player_goals": player_goals},
-    }
+def _day(date: str, groups: dict, player_goals: dict, settled: bool = True, hits_of_3: int | None = None) -> dict:
+    results: dict = {"player_goals": player_goals}
+    if hits_of_3 is not None:
+        results["hits_of_3"] = hits_of_3
+    return {"date": date, "settled": settled, "groups": groups, "results": results}
 
 
 class TimsShadowReportTests(unittest.TestCase):
@@ -41,6 +39,7 @@ class TimsShadowReportTests(unittest.TestCase):
                         "3": [_cand("E", 0.15, 0.15, 1), _cand("F", 0.25, 0.05, 1)],
                     },
                     {"A": 1, "B": 0, "C": 0, "D": 1, "E": 0, "F": 0},
+                    hits_of_3=1,
                 )
             ]
         }
@@ -53,6 +52,8 @@ class TimsShadowReportTests(unittest.TestCase):
         self.assertEqual(report["summary"]["prior_gp"]["mean_hits"], 1.0)
         self.assertEqual(report["summary"]["prior_gp"]["expected_points_per_day"], 10.0)
         self.assertEqual(report["summary"]["blend_50"]["mean_hits"], 1.0)
+        # The shipped ticket is carried through when hits_of_3 exists.
+        self.assertIn("shipped_actual", report["summary"])
 
     def test_missing_prior_fields_are_skipped(self) -> None:
         history = {"days": [_day("2026-11-26", {"1": [{"player": "X", "final_score": 0.4}]}, {})]}
