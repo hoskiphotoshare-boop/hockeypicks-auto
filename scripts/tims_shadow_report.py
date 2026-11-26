@@ -137,11 +137,48 @@ def summarize(history: dict[str, Any], days: int = DEFAULT_DAYS) -> dict[str, An
     }
 
 
+LABELS = {
+    "model": "Model (shipped)",
+    "blend_50": "50/50 prior + model",
+    "emp_blend": "Empirical Bayes (2-line)",
+    "prior_gp": "Prior-season G/GP",
+    "shipped_actual": "Shipped ticket (control)",
+}
+
+
+def to_markdown(report: dict[str, Any]) -> str:
+    """Render the report as a GitHub-issue-ready markdown table."""
+    w = report.get("window") or {}
+    lines = [
+        f"**Window:** {w.get('start')} → {w.get('end')} "
+        f"({w.get('days')}/{report.get('window_days_requested')} settled days)",
+        "",
+        "| Strategy | 1+ | 2+ | Sweep | Mean hits | E[pts/day] |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for strategy, s in report["summary"].items():
+        label = LABELS.get(strategy, strategy)
+        lines.append(
+            f"| {label} | {s['hit_1plus_pct']:.1f}% | {s['hit_2plus_pct']:.1f}% | "
+            f"{s['sweep_3_pct']:.1f}% | {s['mean_hits']:.3f} | {s['expected_points_per_day']:.2f} |"
+        )
+    lines += [
+        "",
+        "Picks are reconstructed from the frozen pre-lock candidate pool and graded against the "
+        "frozen `results.player_goals` map; no post-lock information is used. "
+        "`E[pts/day]` uses the official 10/25/100 daily-points tiers.",
+        "",
+        "Re-run with `python scripts/tims_shadow_report.py --days 30 --format markdown`.",
+    ]
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Live shadow report for Tims pick strategies.")
     parser.add_argument("--history", default="docs/tims_history.json")
     parser.add_argument("--days", type=int, default=DEFAULT_DAYS)
     parser.add_argument("--out", default="data/backtest/tims_shadow_report.json")
+    parser.add_argument("--format", choices=("table", "markdown"), default="table")
     args = parser.parse_args()
 
     history = json.loads(Path(args.history).read_text())
@@ -150,19 +187,22 @@ def main() -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2))
 
-    print(
-        f"Shadow window: {report['window']['start']} -> {report['window']['end']} "
-        f"({report['window']['days']}/{args.days} days, ready={report['ready']}, "
-        f"remaining={report['remaining_days']})"
-    )
-    header = ("strategy", "1+%", "2+%", "sweep%", "mean", "Epts")
-    print("  " + "  ".join(f"{h:>10}" for h in header))
-    for strategy, s in report["summary"].items():
+    if args.format == "markdown":
+        print(to_markdown(report))
+    else:
         print(
-            f"  {strategy:>10}  {s['hit_1plus_pct']:>10.1f}  {s['hit_2plus_pct']:>10.1f}"
-            f"  {s['sweep_3_pct']:>10.1f}  {s['mean_hits']:>10.3f}  {s['expected_points_per_day']:>10.2f}"
+            f"Shadow window: {report['window']['start']} -> {report['window']['end']} "
+            f"({report['window']['days']}/{args.days} days, ready={report['ready']}, "
+            f"remaining={report['remaining_days']})"
         )
-    print(f"wrote {out}")
+        header = ("strategy", "1+%", "2+%", "sweep%", "mean", "Epts")
+        print("  " + "  ".join(f"{h:>10}" for h in header))
+        for strategy, s in report["summary"].items():
+            print(
+                f"  {strategy:>10}  {s['hit_1plus_pct']:>10.1f}  {s['hit_2plus_pct']:>10.1f}"
+                f"  {s['sweep_3_pct']:>10.1f}  {s['mean_hits']:>10.3f}  {s['expected_points_per_day']:>10.2f}"
+            )
+        print(f"wrote {out}")
     return 0
 
 

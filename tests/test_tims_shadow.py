@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from scripts.tims_shadow_report import summarize
+from scripts.tims_shadow_report import summarize, to_markdown
 
 
 def _cand(player: str, model: float, prior: float, goals: int, prior_gp: int = 80, live_gp: int = 10) -> dict:
@@ -52,6 +52,10 @@ class TimsShadowReportTests(unittest.TestCase):
         self.assertEqual(report["summary"]["prior_gp"]["mean_hits"], 1.0)
         self.assertEqual(report["summary"]["prior_gp"]["expected_points_per_day"], 10.0)
         self.assertEqual(report["summary"]["blend_50"]["mean_hits"], 1.0)
+        md = to_markdown(report)
+        self.assertIn("| Model (shipped)", md)
+        self.assertIn("Window:", md)
+        self.assertIn("E[pts/day]", md)
         # The shipped ticket is carried through when hits_of_3 exists.
         self.assertIn("shipped_actual", report["summary"])
 

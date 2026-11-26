@@ -1,0 +1,67 @@
+name: Tims Shadow Check
+
+# Weekly check for the 30-settled-day Tims strategy shadow.
+# Opens (or updates) an issue once a full window has accumulated.
+# GitHub's scheduler is best-effort; workflow_dispatch is the reliable path.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 14 * * 1"  # Mondays ~09:00/10:00 ET (UTC, DST-shifted)
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: tims-shadow-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Build 30-day shadow report
+        run: |
+          python3 scripts/tims_shadow_report.py --days 30 --format markdown > "$RUNNER_TEMP/shadow.md"
+          cat "$RUNNER_TEMP/shadow.md"
+
+      - name: Read readiness
+        id: ready
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          d = json.load(open("data/backtest/tims_shadow_report.json"))
+          print(f"ready={'true' if d['ready'] else 'false'}")
+          print(f"days={d['window']['days']}")
+          print(f"start={d['window']['start']}")
+          print(f"end={d['window']['end']}")
+          PY
+
+      - name: Open or update the shadow issue
+        if: steps.ready.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          READY_DAYS: ${{ steps.ready.outputs.days }}
+        run: |
+          TITLE="Tims 30-day shadow is ready"
+          {
+            echo "The 30-settled-day shadow window is complete."
+            echo ""
+            cat "$RUNNER_TEMP/shadow.md"
+          } > "$RUNNER_TEMP/body.md"
+          NUM="$(gh issue list --state all --search "$TITLE in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$NUM" ]; then
+            gh issue edit "$NUM" --body-file "$RUNNER_TEMP/body.md"
+            gh issue reopen "$NUM" 2>/dev/null || true
+          else
+            gh issue create --title "$TITLE" --body-file "$RUNNER_TEMP/body.md"
+          fi
+
+      - name: Report progress while waiting
+        if: steps.ready.outputs.ready != 'true'
+        run: echo "Shadow has ${{ steps.ready.outputs.days }}/30 settled days; no issue yet."
