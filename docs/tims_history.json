@@ -537,7 +537,11 @@
         "ev_delta": 0.002
       },
       "picks_locked": true,
-      "locked_et": "2026-11-25 06:41 PM ET"
+      "locked_et": "2026-11-25 06:41 PM ET",
+      "locked_utc": "2026-11-26T00:00:00+00:00",
+      "lock_et": "7:00 PM ET",
+      "lock_wave": 1,
+      "locked_before_first_game": true
     },
     {
       "date": "2026-11-24",
@@ -968,9 +972,13 @@
         "v_defer_best": 0.8345,
         "ev_delta": 0.0
       },
-      "picks_locked": false,
-      "locked_et": "",
-      "settled_et": "2026-11-24 11:15 PM ET"
+      "picks_locked": true,
+      "locked_et": "2026-11-24 07:41 PM ET",
+      "settled_et": "2026-11-24 11:15 PM ET",
+      "locked_utc": "2026-11-25T01:00:00+00:00",
+      "lock_et": "8:00 PM ET",
+      "lock_wave": 1,
+      "locked_before_first_game": true
     },
     {
       "date": "2026-11-23",
@@ -1535,7 +1543,11 @@
       },
       "picks_locked": true,
       "locked_et": "2026-11-23 06:40 PM ET",
-      "settled_et": "2026-11-24 10:18 AM ET"
+      "settled_et": "2026-11-24 10:18 AM ET",
+      "locked_utc": "2026-11-24T00:00:00+00:00",
+      "lock_et": "7:00 PM ET",
+      "lock_wave": 1,
+      "locked_before_first_game": true
     },
     {
       "date": "2026-11-22",
@@ -2112,7 +2124,11 @@
       },
       "picks_locked": true,
       "locked_et": "2026-11-22 04:41 PM ET",
-      "settled_et": "2026-11-22 11:13 PM ET"
+      "settled_et": "2026-11-22 11:13 PM ET",
+      "locked_utc": "2026-11-22T22:00:00+00:00",
+      "lock_et": "5:00 PM ET",
+      "lock_wave": 1,
+      "locked_before_first_game": true
     },
     {
       "date": "2026-11-21",
@@ -2725,7 +2741,11 @@
       },
       "picks_locked": true,
       "locked_et": "2026-11-21 12:01 PM ET",
-      "settled_et": "2026-11-22 12:57 AM ET"
+      "settled_et": "2026-11-22 12:57 AM ET",
+      "locked_utc": "2026-11-21T18:00:00+00:00",
+      "lock_et": "1:00 PM ET",
+      "lock_wave": 1,
+      "locked_before_first_game": true
     },
     {
       "date": "2026-11-19",
@@ -3362,7 +3382,11 @@
       },
       "picks_locked": true,
       "locked_et": "2026-11-19 06:41 PM ET",
-      "settled_et": "2026-11-20 10:18 AM ET"
+      "settled_et": "2026-11-20 10:18 AM ET",
+      "locked_utc": "2026-11-20T00:00:00+00:00",
+      "lock_et": "7:00 PM ET",
+      "lock_wave": 1,
+      "locked_before_first_game": true
     },
     {
       "date": "2026-11-18",
@@ -4190,6 +4214,11 @@
           "ev_delta": 0.002
         },
         "picks_locked": true,
+        "captured_et": "2026-11-25 06:41 PM ET",
+        "locked_et": "2026-11-25 06:41 PM ET",
+        "lock_et": "7:00 PM ET",
+        "lock_wave": 1,
+        "locked_before_first_game": true,
         "hits_of_3": null,
         "picks": {
           "1": {
@@ -4227,7 +4256,12 @@
           "v_defer_best": 0.8345,
           "ev_delta": 0.0
         },
-        "picks_locked": false,
+        "picks_locked": true,
+        "captured_et": "2026-11-24 07:41 PM ET",
+        "locked_et": "2026-11-24 07:41 PM ET",
+        "lock_et": "8:00 PM ET",
+        "lock_wave": 1,
+        "locked_before_first_game": true,
         "hits_of_3": 0,
         "picks": {
           "1": {
@@ -4266,6 +4300,11 @@
           "ev_delta": 0.0043
         },
         "picks_locked": true,
+        "captured_et": "2026-11-23 06:40 PM ET",
+        "locked_et": "2026-11-23 06:40 PM ET",
+        "lock_et": "7:00 PM ET",
+        "lock_wave": 1,
+        "locked_before_first_game": true,
         "hits_of_3": 1,
         "picks": {
           "1": {
@@ -4304,6 +4343,11 @@
           "ev_delta": 0.004
         },
         "picks_locked": true,
+        "captured_et": "2026-11-22 04:41 PM ET",
+        "locked_et": "2026-11-22 04:41 PM ET",
+        "lock_et": "5:00 PM ET",
+        "lock_wave": 1,
+        "locked_before_first_game": true,
         "hits_of_3": 2,
         "picks": {
           "1": {
@@ -4342,6 +4386,11 @@
           "ev_delta": 0.0016
         },
         "picks_locked": true,
+        "captured_et": "2026-11-21 12:01 PM ET",
+        "locked_et": "2026-11-21 12:01 PM ET",
+        "lock_et": "1:00 PM ET",
+        "lock_wave": 1,
+        "locked_before_first_game": true,
         "hits_of_3": 2,
         "picks": {
           "1": {
@@ -4380,6 +4429,11 @@
           "ev_delta": 0.0031
         },
         "picks_locked": true,
+        "captured_et": "2026-11-19 06:41 PM ET",
+        "locked_et": "2026-11-19 06:41 PM ET",
+        "lock_et": "7:00 PM ET",
+        "lock_wave": 1,
+        "locked_before_first_game": true,
         "hits_of_3": 0,
         "picks": {
           "1": {
@@ -4408,6 +4462,11 @@
         "settled": true,
         "timing": {},
         "picks_locked": false,
+        "captured_et": "2026-11-18 07:36 PM ET",
+        "locked_et": null,
+        "lock_et": null,
+        "lock_wave": null,
+        "locked_before_first_game": null,
         "hits_of_3": 1,
         "picks": {
           "1": {
