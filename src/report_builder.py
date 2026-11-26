@@ -130,6 +130,10 @@ def build_dashboard_payload(
     availability_summary: dict[str, Any] | None = None,
     odds_usage: dict[str, Any] | None = None,
     run_mode: str = "full",
+    calls_summary: dict[str, Any] | None = None,
+    calls_recent: list[dict[str, Any]] | None = None,
+    calls_admin: dict[str, Any] | None = None,
+    tims_board_players: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Assemble the complete JSON payload consumed by docs/index.html."""
     now_utc = datetime.now(UTC_TZ)
@@ -175,6 +179,10 @@ def build_dashboard_payload(
         "games": game_predictions,
         "power_rankings": power_rankings,
         "playoff_series": playoff_series,
+        "calls_summary": calls_summary if calls_summary is not None else {},
+        "calls_recent": calls_recent if calls_recent is not None else [],
+        "calls_admin": calls_admin if calls_admin is not None else {},
+        "tims_board_players": tims_board_players if tims_board_players is not None else [],
         "feature_importance": {
             "skater": skater_bundle.get("feature_importance", []),
             "pairwise": pairwise_bundle.get("feature_importance", []),

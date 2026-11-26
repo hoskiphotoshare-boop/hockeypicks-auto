@@ -17,6 +17,7 @@ from src.data_sync import (
     build_player_value_table,
     build_roster_aware_star_table,
     build_roster_membership_moves,
+    _fetch_with_retries,
     create_http_session,
     fetch_live_club_skaters,
     fetch_nhl_schedule,
@@ -916,6 +917,98 @@ def run_inference(
             + ", ".join(f"{row['player']} ({row['goals']}G)" for row in tims_scoreboard[:5])
         )
 
+    # --- Model call ledger ---
+    calls_summary = {}
+    calls_recent = []
+    calls_admin = {}
+    try:
+        from src.calls_ledger import update_calls_ledger
+
+        _merged = list(game_predictions or [])
+        _seen_ids = {g.get("id") for g in _merged if g.get("id") is not None}
+        for g in (schedule_info.get("previous_games") or []):
+            if g.get("id") not in _seen_ids:
+                _merged.append(g)
+                _seen_ids.add(g.get("id"))
+
+        allow_network_ledger = (not skip_network)
+        if allow_network_ledger and session is not None and hasattr(session, "urls"):
+            allow_network_ledger = False
+
+        def _fetch_scores(date_str: str):
+            if not allow_network_ledger or session is None:
+                return {}
+            try:
+                url = f"https://api-web.nhle.com/v1/score/{date_str}"
+                res = _fetch_with_retries(session, url, timeout=12, attempts=2)
+                if res is None or getattr(res, "status_code", None) != 200:
+                    return {}
+                payload = res.json() if hasattr(res, "json") else {}
+                out = {}
+                for g in (payload or {}).get("games", []) or []:
+                    gid = g.get("id")
+                    if gid is None:
+                        continue
+                    out[gid] = {
+                        "state": g.get("gameState"),
+                        "away_score": (g.get("awayTeam") or {}).get("score"),
+                        "home_score": (g.get("homeTeam") or {}).get("score"),
+                    }
+                return out
+            except Exception:
+                return {}
+
+        ledger_result = update_calls_ledger(
+            docs_dir,
+            _merged,
+            context["now_et"].astimezone(timezone.utc) if hasattr(context["now_et"], "astimezone") else __import__("datetime").datetime.now(timezone.utc),
+            fetch_scores=_fetch_scores if allow_network_ledger else None,
+        )
+        calls_summary = ledger_result.get("summary", {}) or {}
+        calls_recent = ledger_result.get("recent", []) or []
+        admin_summary = ledger_result.get("admin_summary", {}) or {}
+        calls_admin = {
+            "summary": admin_summary,
+            "recent": admin_summary.get("recent", []) or [],
+        }
+    except Exception as exc:
+        print(f"Warning: calls ledger update failed: {exc}")
+
+    # --- tims board players (compact) ---
+    tims_board_players = []
+    try:
+        boards_path = os.path.join(docs_dir, "tims_boards.json")
+        boards = load_tims_boards(boards_path)
+        _games = schedule_info.get("games") or []
+        _starts = sorted({str(g.get("start_time_utc")) for g in _games if g.get("start_time_utc")})
+        _labels = {
+            str(g.get("start_time_utc")): g.get("start_time_et")
+            for g in _games
+            if g.get("start_time_utc")
+        }
+        _team_wave: dict[str, tuple[int, str]] = {}
+        for _idx, _start in enumerate(_starts):
+            for g in _games:
+                if str(g.get("start_time_utc")) != _start:
+                    continue
+                for _team in (g.get("away"), g.get("home")):
+                    if _team:
+                        _team_wave[_team] = (_idx + 1, str(_labels.get(_start) or ""))
+        for p in (board_players_for(boards, str(context["today_str"])) or [])[:60]:
+            _wave_num, _wave_label = _team_wave.get(p.get("team"), ("", ""))
+            tims_board_players.append(
+                {
+                    "player": p.get("player"),
+                    "team": p.get("team"),
+                    "group": str(p.get("group")),
+                    "wave": _wave_num,
+                    "wave_et": _wave_label,
+                }
+            )
+    except Exception as exc:
+        print(f"Warning: tims board players build failed: {exc}")
+        tims_board_players = []
+
     payload = build_dashboard_payload(
         context=context,
         sync_stats=sync_stats,
@@ -942,7 +1035,99 @@ def run_inference(
             "goalie_count": len(starting_goalies),
         },
         run_mode=run_mode,
+        calls_summary=calls_summary,
+        calls_recent=calls_recent,
+        calls_admin=calls_admin,
+        tims_board_players=tims_board_players,
     )
+
+    # --- players.json (full runs only) ---
+    if run_mode == "full" and mp_years:
+        try:
+            from src.player_profiles import build_players_payload, fetch_player_game_logs, read_season_skater_stats
+            from src.data_sync import clean_name
+
+            archive_dir = os.path.join(data_dir, "moneypuck")
+            active_mp_year = int(sync_stats.get("active_mp_year") or (max(mp_years) if mp_years else context.get("mp_year", 2026)))
+            season_stats = read_season_skater_stats(archive_dir, active_mp_year)
+
+            season = context.get("nhl_season")
+            game_type = schedule_info.get("active_game_type", 2)
+
+            # map tims groups player->group
+            tims_groups_map = {}
+            for g_key, group_players in (skater_scores.get("tims_groups") or {}).items():
+                for cand in (group_players or []):
+                    nm = cand.get("player")
+                    if nm and nm not in tims_groups_map:
+                        tims_groups_map[nm] = g_key
+
+            # enrich scorers with playerId
+            pool_map = {}
+            try:
+                for _, r in df_pool.iterrows():
+                    nm = str(r.get("name", "") or "")
+                    pidv = r.get("playerId")
+                    if nm and pidv is not None and not (isinstance(pidv, float) and pd.isna(pidv)):
+                        pool_map[clean_name(nm)] = int(pidv)
+            except Exception:
+                pass
+            all_scorers = list(skater_scores.get("all_slate_scorers") or [])
+            for sc in all_scorers:
+                if "playerId" not in sc:
+                    sc["playerId"] = pool_map.get(clean_name(sc.get("player", "")), 0)
+
+            # cap network logs to GP>=3 active-team players
+            player_ids = []
+            active_teams = set((schedule_info.get("daily_matchups") or {}).keys()) | set((schedule_info.get("daily_matchups") or {}).values())
+            for sc in all_scorers:
+                if int(sc.get("live_gp", 0) or 0) >= 3:
+                    pidv = sc.get("playerId")
+                    if pidv:
+                        player_ids.append(pidv)
+            player_ids = list(dict.fromkeys(player_ids))
+
+            cache_path = os.path.join(data_dir, "player_game_logs", f"{season}_{game_type}.json")
+            allow_net = (not skip_network) and session is not None and not hasattr(session, "urls")
+            if allow_net:
+                game_logs = fetch_player_game_logs(
+                    player_ids,
+                    season,
+                    game_type,
+                    session,
+                    cache_path,
+                    max_age_hours=12,
+                    concurrency=8,
+                )
+            else:
+                game_logs = {}
+                try:
+                    from src.player_profiles import _load_cache as _lc
+                    c = _lc(cache_path)
+                    if isinstance(c.get("logs"), dict):
+                        game_logs = c["logs"]
+                except Exception:
+                    game_logs = {}
+
+            updated_utc = None
+            try:
+                updated_utc = context["now_et"].astimezone(timezone.utc).isoformat()
+            except Exception:
+                updated_utc = datetime.now(timezone.utc).isoformat()
+
+            players_payload = build_players_payload(
+                slate_scorers=all_scorers,
+                season_stats=season_stats,
+                game_logs=game_logs,
+                tims_groups=tims_groups_map,
+                schedule_games=schedule_info.get("games") or [],
+                starting_goalies=starting_goalies or {},
+                updated_utc=updated_utc,
+            )
+            write_json_report(players_payload, os.path.join(docs_dir, "players.json"))
+        except Exception as exc:
+            print(f"Warning: players.json build failed: {exc}")
+
     write_json_report(payload, os.path.join(docs_dir, "data.json"))
     print("Inference complete.")
     return payload
