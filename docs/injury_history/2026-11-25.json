@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-26T03:36:48.363005+00:00",
+  "captured_utc": "2026-11-26T04:01:19.633439+00:00",
   "source": "espn-cbs",
   "count": 118,
   "records": [
@@ -383,6 +383,15 @@
       "note": "ir"
     },
     {
+      "player": "Ivan Demidov",
+      "team": "MTL",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Demidov is expected to travel to Vegas and join the Canadiens for practice Friday, Eric Engels of Sportsnet reports."
+    },
+    {
       "player": "Mike Matheson",
       "team": "MTL",
       "position": "D",
@@ -390,15 +399,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Matheson (lower body) was placed on long-term injured reserve Tuesday, Renaud Lavoie of TVA Sports reports."
-    },
-    {
-      "player": "Ivan Demidov",
-      "team": "MTL",
-      "position": "RW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "General manager Kent Hughes said Monday that Demidov (ankle) will not travel with the team for Wednesday's game in Colorado, Renaud Lavoie of TVA Sports reports."
     },
     {
       "player": "Josh Anderson",
