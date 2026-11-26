@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "captured_utc": "2026-11-26T00:17:20.228883+00:00",
+  "captured_utc": "2026-11-26T00:34:27.096590+00:00",
   "source": "espn-cbs",
   "count": 116,
   "records": [
@@ -248,6 +248,15 @@
       "note": "Duchene will be out for approximately three months after undergoing surgery to repair a core injury, the team announced Monday."
     },
     {
+      "player": "William Wallinder",
+      "team": "DET",
+      "position": "D",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
       "player": "Sam Montembeault",
       "team": "DET",
       "position": "G",
@@ -255,15 +264,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Montembeault (lower body), Kirby Dach, Michael Hage, a 2027 first-round pick, a 2029 first-round pick, a 2027 second-round pick and a 2028 fourth-round pick were traded to the Red Wings from the Canadiens on Sunday in exchange for Dylan Larkin, a 2028 second-round pick and a 2027 third-round pick."
-    },
-    {
-      "player": "William Wallinder",
-      "team": "DET",
-      "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
     },
     {
       "player": "Simon Edvinsson",
