@@ -379,13 +379,14 @@ function setupHockeypicksTriggers(githubToken) {
   var existing = ScriptApp.getProjectTriggers();
   var removed = 0;
   for (var i = 0; i < existing.length; i++) {
-    if (existing[i].getHandlerFunction() === "hockeypicksCronTick") {
+    var fn = existing[i].getHandlerFunction();
+    if (fn === "hockeypicksCronTick" || fn === "hpTickGuarded") {
       ScriptApp.deleteTrigger(existing[i]);
       removed++;
     }
   }
 
-  var created = ScriptApp.newTrigger("hockeypicksCronTick")
+  var created = ScriptApp.newTrigger("hpTickGuarded")
     .timeBased()
     .everyMinutes(1)
     .create();
@@ -395,7 +396,7 @@ function setupHockeypicksTriggers(githubToken) {
     removedOldTriggers: removed,
     triggerInstalled: true,
     triggerId: created.getUniqueId(),
-    handlerFunction: "hockeypicksCronTick",
+    handlerFunction: "hpTickGuarded",
     intervalMinutes: 1,
     hasGithubToken: Boolean(hpGetToken_(props)),
     etTime: Utilities.formatDate(new Date(), HP_CONFIG.timeZone, "yyyy-MM-dd HH:mm:ss z")
@@ -416,7 +417,8 @@ function getHockeypicksDispatcherStatus() {
   var triggers = ScriptApp.getProjectTriggers();
   var matchingTriggerIds = [];
   for (var i = 0; i < triggers.length; i++) {
-    if (triggers[i].getHandlerFunction() === "hockeypicksCronTick") {
+    var trigFn = triggers[i].getHandlerFunction();
+    if (trigFn === "hockeypicksCronTick" || trigFn === "hpTickGuarded") {
       matchingTriggerIds.push(triggers[i].getUniqueId());
     }
   }
@@ -465,7 +467,8 @@ function getHockeypicksDispatcherStatus() {
     healthLastHourFired: props[HP_CONFIG.firedPrefix + "health_hourly"] || null,
     lastDispatch: lastDispatch,
     slots: slots,
-    waveSchedule: waveSchedule
+    waveSchedule: waveSchedule,
+    tickProbe: props["HP_TICK_PROBE"] || null
   };
 }
 
@@ -1011,4 +1014,32 @@ function doPost(e) {
   }
   params.__via_post = true;
   return handleHockeypicksDoGet(params);
+}
+
+/**
+ * Trigger-safe wrapper: records the last tick outcome (including any thrown
+ * error and stack) in ScriptProperties so failures are diagnosable without a
+ * linked GCP project. Delegates all scheduling to hockeypicksCronTick, which
+ * stays callable on its own from the Apps Script editor.
+ */
+function hpTickGuarded() {
+  var props = PropertiesService.getScriptProperties();
+  var startedAt = new Date().toISOString();
+  try {
+    var res = hockeypicksCronTick();
+    props.setProperty("HP_TICK_PROBE", JSON.stringify({
+      ok: true,
+      startedAt: startedAt,
+      finishedAt: new Date().toISOString(),
+      result: res
+    }).slice(0, 8500));
+  } catch (err) {
+    props.setProperty("HP_TICK_PROBE", JSON.stringify({
+      ok: false,
+      startedAt: startedAt,
+      finishedAt: new Date().toISOString(),
+      error: String(err),
+      stack: (err && err.stack) ? String(err.stack).slice(0, 4000) : null
+    }).slice(0, 8500));
+  }
 }
