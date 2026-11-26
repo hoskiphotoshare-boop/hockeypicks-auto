@@ -1,8 +1,8 @@
 {
   "date": "2026-11-26",
-  "captured_utc": "2026-11-26T17:01:39.892872+00:00",
+  "captured_utc": "2026-11-26T21:20:49.454694+00:00",
   "source": "espn-cbs",
-  "count": 119,
+  "count": 118,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -21,15 +21,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Poehling (knee) is expected back in the short term, with head coach Joel Quenneville telling reporters, \"He's close. Would love to see him in by the weekend. We'll see,\" Derek Lee of The Hockey News reports."
-    },
-    {
-      "player": "Beckett Sennecke",
-      "team": "ANA",
-      "position": "RW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Sennecke (upper body) is now considered day-to-day, Zach Cavanagh of The Sporting Tribune reports Wednesday."
     },
     {
       "player": "A.J. Greer",
@@ -215,19 +206,10 @@
       "player": "Denton Mateychuk",
       "team": "CBJ",
       "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
-      "player": "Mathieu Olivier",
-      "team": "CBJ",
-      "position": "RW",
-      "status": "IR",
+      "status": "Out",
       "is_out": true,
       "is_dtd": false,
-      "note": "ir"
+      "note": "out"
     },
     {
       "player": "Kyle Capobianco",
@@ -428,15 +410,6 @@
       "note": "ir"
     },
     {
-      "player": "Bryce Pickford",
-      "team": "MTL",
-      "position": "D",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "ir-nr"
-    },
-    {
       "player": "Lucas Condotta",
       "team": "MTL",
       "position": "LW",
@@ -444,6 +417,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir-nr"
+    },
+    {
+      "player": "Brenden Dillon",
+      "team": "NJD",
+      "position": "D",
+      "status": "Susp",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "suspension"
     },
     {
       "player": "Anthony Mantha",
@@ -498,6 +480,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir"
+    },
+    {
+      "player": "Gabe Perreault",
+      "team": "NYR",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Perreault (lower body) was put on injured reserve Thursday, per Mollie Walker of the New York Post."
     },
     {
       "player": "Pavel Dorofeyev",
@@ -815,6 +806,15 @@
       "note": "Geekie (shoulder) underwent surgery Monday and is expected to miss 4-5 months."
     },
     {
+      "player": "Jack Roslovic",
+      "team": "TOR",
+      "position": "C",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Roslovic (upper body) is expected to miss Friday's road clash against the Bruins, per Mark Masters of TSN."
+    },
+    {
       "player": "Kirill Marchenko",
       "team": "TOR",
       "position": "RW",
@@ -822,15 +822,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Marchenko (lower body) is expected back in the lineup against the Bruins on Friday after telling reporters, \"My leg feels perfect and I'm ready to go,\" Mark Masters of TSN reports."
-    },
-    {
-      "player": "Jack Roslovic",
-      "team": "TOR",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
     },
     {
       "player": "Colton Sissons",

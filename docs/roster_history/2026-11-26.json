@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "captured_utc": "2026-11-26T15:18:43.362656+00:00",
+  "captured_utc": "2026-11-26T21:18:58.829478+00:00",
   "teams": {
     "ANA": [
       {
@@ -1107,6 +1107,12 @@
         "id": 8477492,
         "name": "Nathan MacKinnon",
         "position": "C",
+        "team": "COL"
+      },
+      {
+        "id": 8482953,
+        "name": "Taylor Makar",
+        "position": "L",
         "team": "COL"
       },
       {
@@ -2764,6 +2770,12 @@
         "team": "NYR"
       },
       {
+        "id": 8481704,
+        "name": "Juuso Parssinen",
+        "position": "C",
+        "team": "NYR"
+      },
+      {
         "id": 8484210,
         "name": "Gabe Perreault",
         "position": "R",
@@ -3524,9 +3536,9 @@
         "team": "SJS"
       },
       {
-        "id": 8481517,
-        "name": "Brett Leason",
-        "position": "R",
+        "id": 8483481,
+        "name": "Cam Lund",
+        "position": "C",
         "team": "SJS"
       },
       {
@@ -3584,14 +3596,14 @@
         "team": "SJS"
       },
       {
-        "id": 8484806,
-        "name": "Sam Dickinson",
+        "id": 8484152,
+        "name": "Luca Cagnoni",
         "position": "D",
         "team": "SJS"
       },
       {
-        "id": 8479333,
-        "name": "Libor Hajek",
+        "id": 8484806,
+        "name": "Sam Dickinson",
         "position": "D",
         "team": "SJS"
       },
@@ -4126,6 +4138,12 @@
     ],
     "UTA": [
       {
+        "id": 8485594,
+        "name": "Yegor Borikov",
+        "position": "R",
+        "team": "UTA"
+      },
+      {
         "id": 8484388,
         "name": "Daniil But",
         "position": "L",
@@ -4177,12 +4195,6 @@
         "id": 8480855,
         "name": "Jack McBain",
         "position": "C",
-        "team": "UTA"
-      },
-      {
-        "id": 8481827,
-        "name": "Ben McCartney",
-        "position": "L",
         "team": "UTA"
       },
       {

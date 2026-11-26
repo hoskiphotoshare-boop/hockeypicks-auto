@@ -54,7 +54,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020401,
@@ -69,11 +69,11 @@
     "kickoff": "2026-11-27T18:00:00Z",
     "snapshot_at": "2026-11-26T06:00:56.638847+00:00",
     "status": "open",
-    "closing_prob": 0.648,
+    "closing_prob": 0.647,
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020402,
@@ -92,7 +92,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020403,
@@ -111,7 +111,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020404,
@@ -130,7 +130,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020405,
@@ -149,7 +149,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020406,
@@ -168,7 +168,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020407,
@@ -183,11 +183,11 @@
     "kickoff": "2026-11-27T20:00:00Z",
     "snapshot_at": "2026-11-26T06:00:56.638847+00:00",
     "status": "open",
-    "closing_prob": 0.524,
+    "closing_prob": 0.519,
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020408,
@@ -206,7 +206,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020409,
@@ -221,11 +221,11 @@
     "kickoff": "2026-11-27T21:00:00Z",
     "snapshot_at": "2026-11-26T06:00:56.638847+00:00",
     "status": "open",
-    "closing_prob": 0.565,
+    "closing_prob": 0.568,
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020410,
@@ -244,7 +244,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020411,
@@ -259,11 +259,11 @@
     "kickoff": "2026-11-27T22:30:00Z",
     "snapshot_at": "2026-11-26T06:00:56.638847+00:00",
     "status": "open",
-    "closing_prob": 0.591,
+    "closing_prob": 0.579,
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020412,
@@ -282,7 +282,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020413,
@@ -301,7 +301,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   },
   {
     "id": 2026020414,
@@ -320,6 +320,6 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-26T17:01:39.282896+00:00"
+    "closing_at": "2026-11-26T21:18:50.607113+00:00"
   }
 ]
