@@ -1,9 +1,18 @@
 {
   "date": "2026-11-26",
-  "captured_utc": "2026-11-26T08:54:28.838332+00:00",
+  "captured_utc": "2026-11-26T15:20:47.638848+00:00",
   "source": "espn-cbs",
   "count": 119,
   "records": [
+    {
+      "player": "Leo Carlsson",
+      "team": "ANA",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
     {
       "player": "Ryan Poehling",
       "team": "ANA",
@@ -21,15 +30,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Sennecke (upper body) is now considered day-to-day, Zach Cavanagh of The Sporting Tribune reports Wednesday."
-    },
-    {
-      "player": "Leo Carlsson",
-      "team": "ANA",
-      "position": "C",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
     },
     {
       "player": "A.J. Greer",
@@ -53,10 +53,10 @@
       "player": "Tyson Kozak",
       "team": "BUF",
       "position": "C",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Kozak (undisclosed) won't play Wednesday versus the Rangers, Matthew Fairburn of The Athletic reports."
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Konsta Helenius",
@@ -89,10 +89,10 @@
       "player": "Morgan Frost",
       "team": "CGY",
       "position": "C",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Frost (upper body) has been ruled out for Wednesday's game against the Penguins, Eric Francis of Sportsnet reports."
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Martin Pospisil",
@@ -122,31 +122,31 @@
       "note": "Bahl will undergo surgery for a ruptured Achilles tendon and won't play again in the 2026-27 season, the Flames announced Sunday."
     },
     {
-      "player": "K'Andre Miller",
-      "team": "CAR",
-      "position": "D",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
-    },
-    {
       "player": "Nikolaj Ehlers",
       "team": "CAR",
       "position": "LW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "K'Andre Miller",
+      "team": "CAR",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Tyler Bertuzzi",
       "team": "CHI",
       "position": "LW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Connor Bedard",
@@ -260,10 +260,10 @@
       "player": "William Wallinder",
       "team": "DET",
       "position": "D",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Sam Montembeault",
@@ -719,19 +719,19 @@
       "player": "Pavel Buchnevich",
       "team": "STL",
       "position": "LW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Buchnevich (upper body) will miss Wednesday's game against the Islanders, per Brandon Kiley of ESPN St. Louis."
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Jimmy Snuggerud",
       "team": "STL",
       "position": "RW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Snuggerud (upper body) didn't travel to Long Island for Wednesday's clash with the Islanders, Brandon Kiley of ESPN St. Louis reports."
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Connor McMichael",
@@ -779,27 +779,27 @@
       "note": "Tucker had arthroscopic knee surgery and will be re-assessed in six weeks, the team announced Wednesday."
     },
     {
-      "player": "Pontus Holmberg",
+      "player": "Victor Hedman",
       "team": "TBL",
-      "position": "RW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Erik Cernak",
       "team": "TBL",
       "position": "D",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
-      "player": "Victor Hedman",
+      "player": "Pontus Holmberg",
       "team": "TBL",
-      "position": "D",
+      "position": "RW",
       "status": "Out",
       "is_out": true,
       "is_dtd": false,
