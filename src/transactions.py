@@ -381,6 +381,36 @@ def compute_team_churn(
         result[team] = min(1.0, abs(net.get(team, 0.0)) / 1.0)
     return result
 
+def refresh_trade_context(
+    docs_dir: str,
+    session: Any,
+    *,
+    now: datetime | None = None,
+    pages: int = 2,
+    keep_days: int = 45,
+) -> tuple[bool, list[dict[str, Any]]]:
+    """Fetch ESPN transactions, merge them into the committed archive, and return
+    ``(feed_ok, archive_trades)``.
+
+    A degraded/empty feed must never erase trade context, so callers build the
+    7-day display window from the archive instead of the live page.
+    """
+    path = os.path.join(docs_dir, "transaction_history.json")
+    rows: list[dict[str, Any]] | None
+    try:
+        rows = fetch_espn_transactions(pages=pages, session=session)
+    except Exception:
+        rows = None
+    if rows:
+        try:
+            archive = merge_trade_archive(path, rows, now=now, keep_days=keep_days)
+            return True, archive.get("trades") or []
+        except Exception:
+            pass
+    archive = load_trade_archive(path)
+    return bool(rows), archive.get("trades") or []
+
+
 def load_trade_archive(path: str) -> dict[str, Any]:
     """Load the committed ESPN trade archive (append-only history)."""
     if not os.path.exists(path):

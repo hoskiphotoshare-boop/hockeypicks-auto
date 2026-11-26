@@ -17,6 +17,7 @@ from src.team_game_model import (
 )
 from src.transactions import (
     compute_name_churn,
+    refresh_trade_context,
     compute_team_churn,
     load_roster_moves_index,
     load_trade_archive,
@@ -312,6 +313,27 @@ class TestTransactions(unittest.TestCase):
             pruned = merge_trade_archive(path, [old], now=now, keep_days=45)
             self.assertEqual(len(pruned["trades"]), 1)
             self.assertNotIn("2026-09-01", pruned["trades"][0]["date"])
+
+    def test_refresh_trade_context_falls_back_to_archive(self):
+        from datetime import datetime, timezone
+
+        trade = {
+            "date": "2026-11-22T08:00Z",
+            "description": "Acquired F Dylan Larkin ... in exchange for: C Kirby Dach",
+            "is_trade": True,
+        }
+        now = datetime(2026, 11, 25, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch("src.transactions.fetch_espn_transactions", return_value=[trade]):
+                ok, rows = refresh_trade_context(tmp, session=object(), now=now)
+            self.assertTrue(ok)
+            self.assertEqual(len(rows), 1)
+            # Empty feed must not erase the archived trade.
+            with mock.patch("src.transactions.fetch_espn_transactions", return_value=[]):
+                ok, rows = refresh_trade_context(tmp, session=object(), now=now)
+            self.assertFalse(ok)
+            self.assertEqual(len(rows), 1)
+            self.assertIn("Larkin", rows[0]["description"])
 
 
 if __name__ == "__main__":

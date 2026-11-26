@@ -35,8 +35,7 @@ from src.transactions import (
     load_latest_roster_history,
     load_roster_moves_index,
     load_roster_snapshot,
-    load_trade_archive,
-    merge_trade_archive,
+    refresh_trade_context,
     write_roster_history,
     write_roster_moves_index,
 )
@@ -236,21 +235,9 @@ def run_training(
         # The live ESPN feed can return an empty page without raising. Persist
         # every fetched row to a committed archive and build the display window
         # from the archive, so a degraded fetch cannot erase trade context.
-        try:
-            all_tx = fetch_espn_transactions(pages=2, session=session)
-            trade_feed_ok = bool(all_tx)
-            _archive = merge_trade_archive(
-                os.path.join(docs_dir, "transaction_history.json"),
-                all_tx,
-                now=datetime.now(timezone.utc),
-            )
-            archive_trades = _archive.get("trades") or []
-        except Exception as exc:  # pragma: no cover
-            print(f"Warning: transaction fetch failed: {exc}")
-            trade_feed_ok = False
-            archive_trades = load_trade_archive(
-                os.path.join(docs_dir, "transaction_history.json")
-            ).get("trades") or []
+        trade_feed_ok, archive_trades = refresh_trade_context(
+            docs_dir, session, now=datetime.now(timezone.utc)
+        )
         today_date = date.fromisoformat(context["today_str"])
         for tx in archive_trades:
             if not tx.get("is_trade"):
@@ -513,20 +500,19 @@ def run_inference(
             except Exception as exc:  # pragma: no cover
                 print(f"Warning: roster fetch failed: {exc}")
                 rosters = None
-        try:
-            all_tx = fetch_espn_transactions(pages=2, session=session)
-            today_date = date.fromisoformat(context["today_str"])
-            for tx in all_tx:
-                if not tx.get("is_trade"):
-                    continue
-                try:
-                    tx_date = date.fromisoformat(str(tx.get("date", ""))[:10])
-                except ValueError:
-                    continue
-                if 0 <= (today_date - tx_date).days <= 7:
-                    recent_trades.append(tx)
-        except Exception as exc:  # pragma: no cover
-            print(f"Warning: transaction fetch failed: {exc}")
+        trade_feed_ok, archive_trades = refresh_trade_context(
+            docs_dir, session, now=datetime.now(timezone.utc)
+        )
+        today_date = date.fromisoformat(context["today_str"])
+        for tx in archive_trades:
+            if not tx.get("is_trade"):
+                continue
+            try:
+                tx_date = date.fromisoformat(str(tx.get("date", ""))[:10])
+            except ValueError:
+                continue
+            if 0 <= (today_date - tx_date).days <= 7:
+                recent_trades.append(tx)
 
         if rosters:
             try:

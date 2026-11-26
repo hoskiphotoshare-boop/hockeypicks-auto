@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 from datetime import datetime, timezone
 from typing import Any, Callable, Optional
@@ -137,9 +138,16 @@ def snapshot_calls(
             for side, edge, team, model_prob in candidates:
                 if edge.get("odds") is None:
                     continue
-                if float(edge.get("edge_pct", 0) or 0) < 2:
+                try:
+                    _edge_pct = float(edge.get("edge_pct", 0) or 0)
+                    _price = float(edge.get("odds"))
+                except (TypeError, ValueError):
                     continue
-                if chosen is None or float(edge.get("edge_pct", 0) or 0) > float(chosen[1].get("edge_pct", 0) or 0):
+                if not math.isfinite(_edge_pct) or not math.isfinite(_price):
+                    continue
+                if _edge_pct < 2:
+                    continue
+                if chosen is None or _edge_pct > float(chosen[1].get("edge_pct", 0) or 0):
                     chosen = (side, edge, team, model_prob)
             if chosen is None:
                 continue
@@ -153,7 +161,7 @@ def snapshot_calls(
                 "market": "ml",
                 "side": side,
                 "team": team,
-                "price": edge.get("odds"),
+                "price": float(edge.get("odds")),
                 "bookmaker": game.get("bookie"),
                 "edge": (float(edge.get("edge_pct", 0) or 0) / 100.0),
                 "model_prob": _to_prob(model_prob),

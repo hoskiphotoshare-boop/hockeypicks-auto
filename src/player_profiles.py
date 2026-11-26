@@ -137,6 +137,8 @@ def read_season_skater_stats(archive_dir: str, year: Any) -> dict[str, dict[str,
                 toi_pg = float(toi_val or 0)
             except (TypeError, ValueError):
                 toi_pg = 0.0
+        if not math.isfinite(float(toi_pg or 0.0)):
+            toi_pg = 0.0
         pp_points = int(pp_points_by_name.get(key, 0))
         result[key] = {
             "gp": gp,
@@ -358,6 +360,8 @@ def build_players_payload(
             goal_rate_f = float(goal_rate) if goal_rate is not None else 0.0
         except (TypeError, ValueError):
             goal_rate_f = 0.0
+        if not math.isfinite(goal_rate_f):
+            goal_rate_f = 0.0
         # guard overflow
         try:
             goal_prob = 1.0 - math.exp(-goal_rate_f)
@@ -370,6 +374,8 @@ def build_players_payload(
         try:
             def_mult_f = float(def_mult) if def_mult is not None else 0.0
         except (TypeError, ValueError):
+            def_mult_f = 0.0
+        if not math.isfinite(def_mult_f):
             def_mult_f = 0.0
 
         # goalie: opponent first, fallback own team
@@ -407,6 +413,8 @@ def build_players_payload(
         points = int(stats.get("points", 0) or 0) if isinstance(stats, dict) else 0
         sog = int(stats.get("sog", 0) or 0) if isinstance(stats, dict) else 0
         toi_pg = float(stats.get("toi_pg", 0) or 0) if isinstance(stats, dict) else 0.0
+        if not math.isfinite(toi_pg):
+            toi_pg = 0.0
         pp_points = int(stats.get("pp_points", 0) or 0) if isinstance(stats, dict) else 0
         gpg = (goals / gp) if gp else 0.0
         ppg = (points / gp) if gp else 0.0
