@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T22:46:35.790226+00:00",
+  "captured_utc": "2026-11-27T23:22:51.324285+00:00",
   "source": "espn-cbs",
   "count": 117,
   "records": [
@@ -338,6 +338,15 @@
       "note": "Janmark (undisclosed) does not have a timetable for his return from injury."
     },
     {
+      "player": "Garnet Hathaway",
+      "team": "FLA",
+      "position": "RW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
       "player": "Jonah Gadjovich",
       "team": "FLA",
       "position": "LW",
@@ -608,15 +617,6 @@
       "note": "out"
     },
     {
-      "player": "Matvei Michkov",
-      "team": "PHI",
-      "position": "RW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
-    },
-    {
       "player": "Nikita Grebenkin",
       "team": "PHI",
       "position": "RW",
@@ -809,10 +809,10 @@
       "player": "Chris Tanev",
       "team": "TOR",
       "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Dakota Joshua",
