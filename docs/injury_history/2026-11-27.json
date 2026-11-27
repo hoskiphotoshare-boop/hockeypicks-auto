@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T05:04:54.800618+00:00",
+  "captured_utc": "2026-11-27T15:22:18.736528+00:00",
   "source": "espn-cbs",
-  "count": 118,
+  "count": 117,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -1004,13 +1004,13 @@
       "note": "day-to-day"
     },
     {
-      "player": "Vincent Desharnais",
+      "player": "Jordan Kyrou",
       "team": "WSH",
-      "position": "D",
+      "position": "RW",
       "status": "IR",
       "is_out": true,
       "is_dtd": false,
-      "note": "Desharnais (appendectomy) is slated to miss Wednesday's game against the Flyers, Tarik El-Bashir of Monumental Sports Network reports."
+      "note": "Kyrou (upper body) was put on injured reserve Friday."
     },
     {
       "player": "Rasmus Sandin",
@@ -1020,15 +1020,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Sandin (knee) has been cleared to start taking contact, Sammi Silber of The District Standard reports Tuesday."
-    },
-    {
-      "player": "Jordan Kyrou",
-      "team": "WSH",
-      "position": "RW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
     },
     {
       "player": "Dylan DeMelo",

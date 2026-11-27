@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T05:02:42.494423+00:00",
+  "captured_utc": "2026-11-27T15:18:49.647316+00:00",
   "teams": {
     "ANA": [
       {
@@ -3193,6 +3193,12 @@
         "id": 8479638,
         "name": "Justin Brazeau",
         "position": "R",
+        "team": "PIT"
+      },
+      {
+        "id": 8483833,
+        "name": "Atley Calvert",
+        "position": "C",
         "team": "PIT"
       },
       {
