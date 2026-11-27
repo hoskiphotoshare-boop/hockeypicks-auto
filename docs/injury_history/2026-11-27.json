@@ -1,17 +1,17 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T17:01:18.862246+00:00",
+  "captured_utc": "2026-11-27T17:41:26.314226+00:00",
   "source": "espn-cbs",
-  "count": 116,
+  "count": 114,
   "records": [
     {
       "player": "Leo Carlsson",
       "team": "ANA",
       "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
     },
     {
       "player": "Ryan Poehling",
@@ -557,24 +557,6 @@
       "player": "Adam Sykora",
       "team": "NYR",
       "position": "LW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "ir"
-    },
-    {
-      "player": "Andre Burakovsky",
-      "team": "OTT",
-      "position": "LW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Burakovsky (lower body) will be with the Senators for their four-game road trip and is expected to play at some point, Bruce Garrioch of Postmedia reports Wednesday."
-    },
-    {
-      "player": "Hayden Hodgson",
-      "team": "OTT",
-      "position": "RW",
       "status": "IR",
       "is_out": true,
       "is_dtd": false,

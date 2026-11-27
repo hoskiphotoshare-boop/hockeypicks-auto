@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T15:18:49.647316+00:00",
+  "captured_utc": "2026-11-27T17:41:27.793211+00:00",
   "teams": {
     "ANA": [
       {
@@ -916,6 +916,12 @@
         "team": "CHI"
       },
       {
+        "id": 8485554,
+        "name": "Dillon Boucher",
+        "position": "L",
+        "team": "CHI"
+      },
+      {
         "id": 8477987,
         "name": "Ryan Donato",
         "position": "C",
@@ -976,6 +982,12 @@
         "team": "CHI"
       },
       {
+        "id": 8482172,
+        "name": "Landon Slaggert",
+        "position": "L",
+        "team": "CHI"
+      },
+      {
         "id": 8482062,
         "name": "Cole Smith",
         "position": "R",
@@ -984,12 +996,6 @@
       {
         "id": 8476882,
         "name": "Teuvo Teravainen",
-        "position": "C",
-        "team": "CHI"
-      },
-      {
-        "id": 8476952,
-        "name": "Dominic Toninato",
         "position": "C",
         "team": "CHI"
       },
@@ -2314,12 +2320,6 @@
         "team": "NJD"
       },
       {
-        "id": 8484177,
-        "name": "Lenni Hameenaho",
-        "position": "R",
-        "team": "NJD"
-      },
-      {
         "id": 8480002,
         "name": "Nico Hischier",
         "position": "C",
@@ -2400,6 +2400,12 @@
       {
         "id": 8478399,
         "name": "Jonas Siegenthaler",
+        "position": "D",
+        "team": "NJD"
+      },
+      {
+        "id": 8484987,
+        "name": "Anton Silaev",
         "position": "D",
         "team": "NJD"
       },
@@ -2900,18 +2906,6 @@
       {
         "id": 8480208,
         "name": "Drake Batherson",
-        "position": "R",
-        "team": "OTT"
-      },
-      {
-        "id": 8478104,
-        "name": "Sammy Blais",
-        "position": "L",
-        "team": "OTT"
-      },
-      {
-        "id": 8482674,
-        "name": "Tyler Boucher",
         "position": "R",
         "team": "OTT"
       },
@@ -4856,12 +4850,6 @@
       {
         "id": 8480796,
         "name": "Martin Fehérváry",
-        "position": "D",
-        "team": "WSH"
-      },
-      {
-        "id": 8475718,
-        "name": "Justin Holl",
         "position": "D",
         "team": "WSH"
       },
