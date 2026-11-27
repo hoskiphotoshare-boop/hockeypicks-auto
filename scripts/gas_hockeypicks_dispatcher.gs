@@ -65,6 +65,23 @@ var HP_SCHEDULE_SLOTS = [
   { id: "infer_2200", hour: 22, minute: 0, workflow: "hockeypicks_infer.yml", inputs: { cron: "0 22 * * *" } }
 ];
 
+// 15-minute live-loop fallback during NHL game hours (ET). Dynamic waves still
+// handle exact puck-drop timing; this prevents a missed wave from leaving
+// docs/data.json stale for an hour. Skipped when the cached data has no live games.
+for (var _lh = 12; _lh <= 23; _lh++) {
+  for (var _lm = 0; _lm < 60; _lm += 15) {
+    HP_SCHEDULE_SLOTS.push({
+      id: "live_" + ("0" + _lh).slice(-2) + ("0" + _lm).slice(-2),
+      hour: _lh,
+      minute: _lm,
+      workflow: "hockeypicks_live_loop.yml",
+      inputs: { once: true, dry_run: false },
+      skipIfActive: true,
+      requiresLive: true
+    });
+  }
+}
+
 /**
  * 1-minute time-driven entry point.
  * Fast-path returns immediately in memory outside fixed slot windows and wave triggers so
@@ -430,6 +447,9 @@ function getHockeypicksDispatcherStatus() {
   var slots = [];
   for (var j = 0; j < HP_SCHEDULE_SLOTS.length; j++) {
     var s = HP_SCHEDULE_SLOTS[j];
+    if (s.requiresLive && (!waveCache || !waveCache.hasLiveGames)) {
+      continue;
+    }
     var key = HP_CONFIG.firedPrefix + s.id;
     slots.push({
       id: s.id,
