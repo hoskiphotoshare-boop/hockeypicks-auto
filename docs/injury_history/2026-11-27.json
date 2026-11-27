@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T23:22:51.324285+00:00",
+  "captured_utc": "2026-11-27T23:59:28.811066+00:00",
   "source": "espn-cbs",
-  "count": 117,
+  "count": 118,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -777,6 +777,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Tucker had arthroscopic knee surgery and will be re-assessed in six weeks, the team announced Wednesday."
+    },
+    {
+      "player": "Victor Hedman",
+      "team": "TBL",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Hedman (undisclosed) didn't finish Friday's game versus the Senators, Benjamin Pierce of the Lightning's official site reports."
     },
     {
       "player": "Erik Cernak",

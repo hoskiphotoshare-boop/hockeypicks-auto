@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-27 23:23:02 UTC",
-    "updated_et": "2026-11-27 06:23 PM ET",
+    "updated_utc": "2026-11-27 23:59:43 UTC",
+    "updated_et": "2026-11-27 06:59 PM ET",
     "today_date": "2026-11-27",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -24,7 +24,7 @@
     },
     "availability": {
       "injury_source": "espn",
-      "injury_count": 117,
+      "injury_count": 118,
       "goalie_source": "dailyfaceoff",
       "goalie_count": 30
     },
@@ -1096,7 +1096,7 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 2,
-      "game_state": "LIVE"
+      "game_state": "FINAL"
     },
     {
       "player": "Jack Hughes",
@@ -1136,7 +1136,17 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 1,
-      "game_state": "LIVE"
+      "game_state": "FINAL"
+    },
+    {
+      "player": "Artturi Lehkonen",
+      "team": "COL",
+      "opponent": "MIN",
+      "group": "2",
+      "wave": 4,
+      "wave_et": "4:00 PM ET",
+      "goals": 1,
+      "game_state": "FINAL"
     },
     {
       "player": "Jack Eichel",
@@ -1146,15 +1156,25 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 1,
-      "game_state": "LIVE"
+      "game_state": "FINAL"
+    },
+    {
+      "player": "Macklin Celebrini",
+      "team": "SJS",
+      "opponent": "VGK",
+      "group": "1",
+      "wave": 4,
+      "wave_et": "4:00 PM ET",
+      "goals": 1,
+      "game_state": "FINAL"
     }
   ],
   "tims_scoreboard_meta": {
     "date": "2026-11-27",
     "previous_day": false,
-    "all_final": false,
-    "scorers": 8,
-    "goals": 11
+    "all_final": true,
+    "scorers": 10,
+    "goals": 13
   },
   "slate_top_scorers": [
     {
@@ -1195,7 +1215,7 @@
       "live_shots": 105,
       "live_g_gp": 0.92,
       "eb_live_weight_pct": 44.8,
-      "def_multiplier": 0.989,
+      "def_multiplier": 0.99,
       "final_score": 0.641,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1264,7 +1284,7 @@
       "live_shots": 80,
       "live_g_gp": 0.704,
       "eb_live_weight_pct": 46.7,
-      "def_multiplier": 0.945,
+      "def_multiplier": 0.946,
       "final_score": 0.556,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1425,7 +1445,7 @@
       "live_shots": 107,
       "live_g_gp": 0.519,
       "eb_live_weight_pct": 46.7,
-      "def_multiplier": 0.945,
+      "def_multiplier": 0.946,
       "final_score": 0.474,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1494,7 +1514,7 @@
       "live_shots": 53,
       "live_g_gp": 0.545,
       "eb_live_weight_pct": 41.7,
-      "def_multiplier": 0.989,
+      "def_multiplier": 0.99,
       "final_score": 0.457,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1626,14 +1646,14 @@
       "prior_goals_per_game": 0.542,
       "prior_gp": 83.0,
       "prior_goals": 45.0,
-      "model_score": 0.427,
+      "model_score": 0.428,
       "live_gp": 25,
       "live_goals": 10,
       "live_shots": 76,
       "live_g_gp": 0.4,
       "eb_live_weight_pct": 44.8,
       "def_multiplier": 0.976,
-      "final_score": 0.427,
+      "final_score": 0.428,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1678,7 +1698,7 @@
       "live_shots": 49,
       "live_g_gp": 0.522,
       "eb_live_weight_pct": 42.8,
-      "def_multiplier": 0.988,
+      "def_multiplier": 0.987,
       "final_score": 0.422,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1724,7 +1744,7 @@
       "live_shots": 45,
       "live_g_gp": 0.6,
       "eb_live_weight_pct": 44.8,
-      "def_multiplier": 0.988,
+      "def_multiplier": 0.987,
       "final_score": 0.419,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1770,7 +1790,7 @@
       "live_shots": 52,
       "live_g_gp": 0.667,
       "eb_live_weight_pct": 43.8,
-      "def_multiplier": 0.922,
+      "def_multiplier": 0.921,
       "final_score": 0.418,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1816,7 +1836,7 @@
       "live_shots": 29,
       "live_g_gp": 0.615,
       "eb_live_weight_pct": 29.7,
-      "def_multiplier": 1.045,
+      "def_multiplier": 1.046,
       "final_score": 0.41,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1885,7 +1905,7 @@
       "live_shots": 57,
       "live_g_gp": 0.444,
       "eb_live_weight_pct": 36.9,
-      "def_multiplier": 1.018,
+      "def_multiplier": 1.017,
       "final_score": 0.41,
       "mode": "Regular Season",
       "injury_status": null,
@@ -1954,7 +1974,7 @@
       "live_shots": 72,
       "live_g_gp": 0.423,
       "eb_live_weight_pct": 45.8,
-      "def_multiplier": 1.045,
+      "def_multiplier": 1.046,
       "final_score": 0.407,
       "mode": "Regular Season",
       "injury_status": null,
@@ -2046,7 +2066,7 @@
       "live_shots": 87,
       "live_g_gp": 0.37,
       "eb_live_weight_pct": 46.7,
-      "def_multiplier": 0.945,
+      "def_multiplier": 0.946,
       "final_score": 0.393,
       "mode": "Regular Season",
       "injury_status": null,
@@ -2325,8 +2345,8 @@
       "home": "TBL",
       "away_score": 6,
       "home_score": 2,
-      "away_prob": 41.7,
-      "home_prob": 58.3,
+      "away_prob": 41.8,
+      "home_prob": 58.2,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
@@ -2334,7 +2354,7 @@
       "away_roster_in": [],
       "away_roster_out": [],
       "favored": "TBL",
-      "fav_prob": 58.3,
+      "fav_prob": 58.2,
       "away_streak": 1,
       "home_streak": -3,
       "away_b2b": false,
@@ -2352,12 +2372,12 @@
       "away_goalie": {
         "name": "Linus Ullmark",
         "confirmation": "Confirmed",
-        "sv_pct": 0.938
+        "sv_pct": 0.933
       },
       "home_goalie": {
         "name": "Dennis Hildeby",
         "confirmation": "Confirmed",
-        "sv_pct": 0.873
+        "sv_pct": 0.864
       },
       "away_injuries": [
         "Warren Foegele (IR)",
@@ -2410,12 +2430,12 @@
       "away_goalie": {
         "name": "Leevi Merilainen",
         "confirmation": "Confirmed",
-        "sv_pct": 0.884
+        "sv_pct": 0.883
       },
       "home_goalie": {
         "name": "Dan Vladar",
         "confirmation": "Confirmed",
-        "sv_pct": 0.874
+        "sv_pct": 0.875
       },
       "away_injuries": [
         "Elias Pettersson (Out)",
@@ -2469,12 +2489,12 @@
       "away_goalie": {
         "name": "Jacob Markstrom",
         "confirmation": "Confirmed",
-        "sv_pct": 0.898
+        "sv_pct": 0.896
       },
       "home_goalie": {
         "name": "Logan Thompson",
         "confirmation": "Confirmed",
-        "sv_pct": 0.882
+        "sv_pct": 0.879
       },
       "away_injuries": [
         "Garnet Hathaway (Out)",
@@ -2530,7 +2550,7 @@
       "away_goalie": {
         "name": "John Gibson",
         "confirmation": "Confirmed",
-        "sv_pct": 0.868
+        "sv_pct": 0.869
       },
       "home_goalie": {
         "name": "Jet Greaves",
@@ -2553,14 +2573,14 @@
       "is_today": true,
       "start_time_utc": "2026-11-27T21:00:00Z",
       "start_time_et": "4:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "COL",
       "home": "MIN",
-      "away_score": 0,
+      "away_score": 4,
       "home_score": 3,
-      "away_prob": 48.3,
-      "home_prob": 51.7,
+      "away_prob": 47.4,
+      "home_prob": 52.6,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
@@ -2568,9 +2588,9 @@
       "away_roster_in": [],
       "away_roster_out": [],
       "favored": "MIN",
-      "fav_prob": 51.7,
-      "away_streak": 2,
-      "home_streak": -1,
+      "fav_prob": 52.6,
+      "away_streak": 3,
+      "home_streak": -2,
       "away_b2b": false,
       "home_b2b": false,
       "away_3in4": false,
@@ -2586,12 +2606,12 @@
       "away_goalie": {
         "name": "Mackenzie Blackwood",
         "confirmation": "Confirmed",
-        "sv_pct": 0.908
+        "sv_pct": 0.907
       },
       "home_goalie": {
         "name": "Jesper Wallstedt",
         "confirmation": "Confirmed",
-        "sv_pct": 0.921
+        "sv_pct": 0.923
       },
       "away_injuries": [
         "Martin Necas (Out)",
@@ -2612,14 +2632,14 @@
       "is_today": true,
       "start_time_utc": "2026-11-27T21:00:00Z",
       "start_time_et": "4:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "LAK",
       "home": "ANA",
-      "away_score": 4,
+      "away_score": 5,
       "home_score": 3,
-      "away_prob": 43.6,
-      "home_prob": 56.4,
+      "away_prob": 42.8,
+      "home_prob": 57.2,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
@@ -2627,9 +2647,9 @@
       "away_roster_in": [],
       "away_roster_out": [],
       "favored": "ANA",
-      "fav_prob": 56.4,
-      "away_streak": 1,
-      "home_streak": 1,
+      "fav_prob": 57.2,
+      "away_streak": 2,
+      "home_streak": -1,
       "away_b2b": false,
       "home_b2b": false,
       "away_3in4": false,
@@ -2645,12 +2665,12 @@
       "away_goalie": {
         "name": "Darcy Kuemper",
         "confirmation": "Confirmed",
-        "sv_pct": 0.888
+        "sv_pct": 0.889
       },
       "home_goalie": {
         "name": "Laurent Brossoit",
         "confirmation": "Confirmed",
-        "sv_pct": 0.881
+        "sv_pct": 0.874
       },
       "away_injuries": [
         "Erik Gustafsson (IR)",
@@ -2670,12 +2690,12 @@
       "is_today": true,
       "start_time_utc": "2026-11-27T21:00:00Z",
       "start_time_et": "4:00 PM ET",
-      "game_state": "LIVE",
+      "game_state": "FINAL",
       "game_type": 2,
       "away": "VGK",
       "home": "SJS",
       "away_score": 1,
-      "home_score": 2,
+      "home_score": 4,
       "away_prob": 65.6,
       "home_prob": 34.4,
       "home_roster_churn": 0.0,
@@ -2686,8 +2706,8 @@
       "away_roster_out": [],
       "favored": "VGK",
       "fav_prob": 65.6,
-      "away_streak": 2,
-      "home_streak": -2,
+      "away_streak": -1,
+      "home_streak": 1,
       "away_b2b": false,
       "home_b2b": false,
       "away_3in4": false,
@@ -2703,12 +2723,12 @@
       "away_goalie": {
         "name": "Carter Hart",
         "confirmation": "Confirmed",
-        "sv_pct": 0.889
+        "sv_pct": 0.888
       },
       "home_goalie": {
         "name": "Yaroslav Askarov",
         "confirmation": "Confirmed",
-        "sv_pct": 0.893
+        "sv_pct": 0.894
       },
       "away_injuries": [],
       "home_injuries": [
@@ -2759,12 +2779,12 @@
       "away_goalie": {
         "name": "Dylan Garand",
         "confirmation": "Confirmed",
-        "sv_pct": 0.909
+        "sv_pct": 0.907
       },
       "home_goalie": {
         "name": "Spencer Knight",
         "confirmation": "Confirmed",
-        "sv_pct": 0.891
+        "sv_pct": 0.893
       },
       "away_injuries": [
         "Gabe Perreault (IR)",
@@ -2787,7 +2807,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-28T00:30:00Z",
       "start_time_et": "7:30 PM ET",
-      "game_state": "FUT",
+      "game_state": "PRE",
       "game_type": 2,
       "away": "WPG",
       "home": "NYI",
@@ -2973,8 +2993,8 @@
       "home": "VGK",
       "away_score": null,
       "home_score": null,
-      "away_prob": 46.5,
-      "home_prob": 53.5,
+      "away_prob": 46.3,
+      "home_prob": 53.7,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.41,
       "home_roster_in": [],
@@ -2986,9 +3006,9 @@
         "Kirby Dach"
       ],
       "favored": "VGK",
-      "fav_prob": 53.5,
+      "fav_prob": 53.7,
       "away_streak": -3,
-      "home_streak": 2,
+      "home_streak": -1,
       "away_b2b": false,
       "home_b2b": true,
       "away_3in4": false,
@@ -3005,7 +3025,7 @@
       "home_goalie": {
         "name": "Carter Hart",
         "confirmation": "Confirmed",
-        "sv_pct": 0.889
+        "sv_pct": 0.888
       },
       "away_injuries": [
         "Kaiden Guhle (Out)",
@@ -3029,8 +3049,8 @@
       "home": "FLA",
       "away_score": null,
       "home_score": null,
-      "away_prob": 49.7,
-      "home_prob": 50.3,
+      "away_prob": 49.6,
+      "home_prob": 50.4,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
@@ -3038,7 +3058,7 @@
       "away_roster_in": [],
       "away_roster_out": [],
       "favored": "FLA",
-      "fav_prob": 50.3,
+      "fav_prob": 50.4,
       "away_streak": -3,
       "home_streak": 3,
       "away_b2b": true,
@@ -3056,12 +3076,12 @@
       "away_goalie": {
         "name": "Dennis Hildeby",
         "confirmation": "Confirmed",
-        "sv_pct": 0.873
+        "sv_pct": 0.864
       },
       "home_goalie": {
         "name": "Jacob Markstrom",
         "confirmation": "Confirmed",
-        "sv_pct": 0.898
+        "sv_pct": 0.896
       },
       "away_injuries": [
         "Erik Cernak (Out)",
@@ -3123,7 +3143,7 @@
       "home_goalie": {
         "name": "John Gibson",
         "confirmation": "Confirmed",
-        "sv_pct": 0.868
+        "sv_pct": 0.869
       },
       "away_injuries": [],
       "home_injuries": [
@@ -3238,7 +3258,7 @@
       "home_goalie": {
         "name": "Dylan Garand",
         "confirmation": "Confirmed",
-        "sv_pct": 0.909
+        "sv_pct": 0.907
       },
       "away_injuries": [
         "Martin Pospisil (Out)",
@@ -3354,7 +3374,7 @@
       "away_goalie": {
         "name": "Linus Ullmark",
         "confirmation": "Confirmed",
-        "sv_pct": 0.938
+        "sv_pct": 0.933
       },
       "home_goalie": null,
       "away_injuries": [
@@ -3404,7 +3424,7 @@
       "away_goalie": {
         "name": "Logan Thompson",
         "confirmation": "Confirmed",
-        "sv_pct": 0.882
+        "sv_pct": 0.879
       },
       "home_goalie": {
         "name": "Joel Hofer",
@@ -3468,7 +3488,7 @@
       "home_goalie": {
         "name": "Dan Vladar",
         "confirmation": "Confirmed",
-        "sv_pct": 0.874
+        "sv_pct": 0.875
       },
       "away_injuries": [
         "Kyle Palmieri (IR)",
@@ -3554,8 +3574,8 @@
       "home": "COL",
       "away_score": null,
       "home_score": null,
-      "away_prob": 26.2,
-      "home_prob": 73.8,
+      "away_prob": 26.3,
+      "home_prob": 73.7,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
@@ -3563,9 +3583,9 @@
       "away_roster_in": [],
       "away_roster_out": [],
       "favored": "COL",
-      "fav_prob": 73.8,
-      "away_streak": -2,
-      "home_streak": 2,
+      "fav_prob": 73.7,
+      "away_streak": 1,
+      "home_streak": 3,
       "away_b2b": true,
       "home_b2b": true,
       "away_3in4": true,
@@ -3581,12 +3601,12 @@
       "away_goalie": {
         "name": "Yaroslav Askarov",
         "confirmation": "Confirmed",
-        "sv_pct": 0.893
+        "sv_pct": 0.894
       },
       "home_goalie": {
         "name": "Mackenzie Blackwood",
         "confirmation": "Confirmed",
-        "sv_pct": 0.908
+        "sv_pct": 0.907
       },
       "away_injuries": [
         "Jacob Trouba (Out)",
@@ -3615,18 +3635,18 @@
       "home": "LAK",
       "away_score": null,
       "home_score": null,
-      "away_prob": 49.7,
-      "home_prob": 50.3,
+      "away_prob": 50.6,
+      "home_prob": 49.4,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
       "home_roster_out": [],
       "away_roster_in": [],
       "away_roster_out": [],
-      "favored": "LAK",
-      "fav_prob": 50.3,
-      "away_streak": 1,
-      "home_streak": 1,
+      "favored": "ANA",
+      "fav_prob": 50.6,
+      "away_streak": -1,
+      "home_streak": 2,
       "away_b2b": true,
       "home_b2b": true,
       "away_3in4": true,
@@ -3642,12 +3662,12 @@
       "away_goalie": {
         "name": "Laurent Brossoit",
         "confirmation": "Confirmed",
-        "sv_pct": 0.881
+        "sv_pct": 0.874
       },
       "home_goalie": {
         "name": "Darcy Kuemper",
         "confirmation": "Confirmed",
-        "sv_pct": 0.888
+        "sv_pct": 0.889
       },
       "away_injuries": [
         "Leo Carlsson (IR)",
@@ -3740,29 +3760,12 @@
       "rank": 1
     },
     {
-      "team": "COL",
-      "ai_power": 10.38,
-      "elo": 1574.8,
-      "avg_win_prob": 61.5,
-      "gp": 24,
-      "streak": 2,
-      "last_won": 1,
-      "gsax": 0.0,
-      "starter_sv_pct": 0.908,
-      "top3_pts": 95,
-      "top3_xgoals": 23.4,
-      "ga_gp": 2.79,
-      "xga_gp": 2.77,
-      "def_multiplier": 0.945,
-      "rank": 2
-    },
-    {
       "team": "MIN",
-      "ai_power": 10.34,
+      "ai_power": 10.41,
       "elo": 1563.6,
-      "avg_win_prob": 61.2,
+      "avg_win_prob": 61.8,
       "gp": 27,
-      "streak": -1,
+      "streak": -2,
       "last_won": 0,
       "gsax": 13.6,
       "starter_sv_pct": 0.916,
@@ -3770,14 +3773,31 @@
       "top3_xgoals": 31.9,
       "ga_gp": 2.26,
       "xga_gp": 2.77,
-      "def_multiplier": 0.922,
+      "def_multiplier": 0.921,
+      "rank": 2
+    },
+    {
+      "team": "COL",
+      "ai_power": 10.33,
+      "elo": 1574.8,
+      "avg_win_prob": 61.1,
+      "gp": 24,
+      "streak": 3,
+      "last_won": 1,
+      "gsax": 0.0,
+      "starter_sv_pct": 0.908,
+      "top3_pts": 95,
+      "top3_xgoals": 23.4,
+      "ga_gp": 2.79,
+      "xga_gp": 2.77,
+      "def_multiplier": 0.946,
       "rank": 3
     },
     {
       "team": "TBL",
-      "ai_power": 10.01,
+      "ai_power": 9.99,
       "elo": 1553.9,
-      "avg_win_prob": 58.4,
+      "avg_win_prob": 58.3,
       "gp": 24,
       "streak": -3,
       "last_won": 0,
@@ -3792,12 +3812,12 @@
     },
     {
       "team": "VGK",
-      "ai_power": 9.92,
+      "ai_power": 9.94,
       "elo": 1533.5,
-      "avg_win_prob": 57.6,
+      "avg_win_prob": 57.8,
       "gp": 26,
-      "streak": 2,
-      "last_won": 1,
+      "streak": -1,
+      "last_won": 0,
       "gsax": -0.3,
       "starter_sv_pct": 0.891,
       "top3_pts": 88,
@@ -3945,7 +3965,7 @@
     },
     {
       "team": "MTL",
-      "ai_power": 9.15,
+      "ai_power": 9.16,
       "elo": 1523.1,
       "avg_win_prob": 51.3,
       "gp": 26,
@@ -3959,6 +3979,23 @@
       "xga_gp": 3.39,
       "def_multiplier": 1.018,
       "rank": 14
+    },
+    {
+      "team": "ANA",
+      "ai_power": 9.09,
+      "elo": 1476.9,
+      "avg_win_prob": 50.7,
+      "gp": 26,
+      "streak": -1,
+      "last_won": 0,
+      "gsax": -8.0,
+      "starter_sv_pct": 0.895,
+      "top3_pts": 83,
+      "top3_xgoals": 28.9,
+      "ga_gp": 3.65,
+      "xga_gp": 3.36,
+      "def_multiplier": 1.017,
+      "rank": 15
     },
     {
       "team": "UTA",
@@ -3975,7 +4012,7 @@
       "ga_gp": 3.31,
       "xga_gp": 2.83,
       "def_multiplier": 0.968,
-      "rank": 15
+      "rank": 16
     },
     {
       "team": "BUF",
@@ -3992,23 +4029,6 @@
       "ga_gp": 3.32,
       "xga_gp": 3.3,
       "def_multiplier": 1.015,
-      "rank": 16
-    },
-    {
-      "team": "ANA",
-      "ai_power": 9.05,
-      "elo": 1476.9,
-      "avg_win_prob": 50.4,
-      "gp": 26,
-      "streak": 1,
-      "last_won": 1,
-      "gsax": -8.0,
-      "starter_sv_pct": 0.895,
-      "top3_pts": 83,
-      "top3_xgoals": 28.9,
-      "ga_gp": 3.65,
-      "xga_gp": 3.36,
-      "def_multiplier": 1.018,
       "rank": 17
     },
     {
@@ -4110,16 +4130,16 @@
       "top3_xgoals": 19.2,
       "ga_gp": 2.83,
       "xga_gp": 3.01,
-      "def_multiplier": 0.988,
+      "def_multiplier": 0.987,
       "rank": 23
     },
     {
       "team": "LAK",
-      "ai_power": 8.55,
+      "ai_power": 8.48,
       "elo": 1470.6,
-      "avg_win_prob": 46.2,
+      "avg_win_prob": 45.7,
       "gp": 22,
-      "streak": 1,
+      "streak": 2,
       "last_won": 1,
       "gsax": -4.2,
       "starter_sv_pct": 0.895,
@@ -4127,7 +4147,7 @@
       "top3_xgoals": 20.2,
       "ga_gp": 3.23,
       "xga_gp": 2.96,
-      "def_multiplier": 0.989,
+      "def_multiplier": 0.99,
       "rank": 24
     },
     {
@@ -4217,19 +4237,19 @@
     },
     {
       "team": "SJS",
-      "ai_power": 7.71,
+      "ai_power": 7.7,
       "elo": 1429.2,
-      "avg_win_prob": 39.3,
+      "avg_win_prob": 39.1,
       "gp": 27,
-      "streak": -2,
-      "last_won": 0,
+      "streak": 1,
+      "last_won": 1,
       "gsax": 3.6,
       "starter_sv_pct": 0.892,
       "top3_pts": 72,
       "top3_xgoals": 27.8,
       "ga_gp": 3.67,
       "xga_gp": 3.72,
-      "def_multiplier": 1.045,
+      "def_multiplier": 1.046,
       "rank": 30
     },
     {
@@ -4270,23 +4290,23 @@
   "playoff_series": [],
   "calls_summary": {
     "calls": 30,
-    "graded": 10,
-    "open": 20,
+    "graded": 13,
+    "open": 17,
     "wins": 6,
-    "losses": 4,
-    "win_rate": 0.6,
-    "brier": 0.2599583,
+    "losses": 7,
+    "win_rate": 0.46153846153846156,
+    "brier": 0.2749717692307692,
     "current_streak": {
-      "type": "W",
+      "type": "L",
       "n": 3
     },
     "by_confidence": {
       "50-55": {
-        "calls": 3,
-        "n": 3,
+        "calls": 5,
+        "n": 5,
         "wins": 3,
-        "losses": 0,
-        "win_rate": 1.0
+        "losses": 2,
+        "win_rate": 0.6
       },
       "55-60": {
         "calls": 3,
@@ -4296,11 +4316,11 @@
         "win_rate": 0.3333333333333333
       },
       "60-65": {
-        "calls": 3,
-        "n": 3,
+        "calls": 4,
+        "n": 4,
         "wins": 1,
-        "losses": 2,
-        "win_rate": 0.3333333333333333
+        "losses": 3,
+        "win_rate": 0.25
       },
       "65+": {
         "calls": 1,
@@ -4324,11 +4344,11 @@
         "kickoff": "2026-11-28T23:00:00Z",
         "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
         "status": "open",
-        "closing_prob": 0.503,
+        "closing_prob": 0.504,
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020417,
@@ -4347,7 +4367,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020418,
@@ -4366,7 +4386,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020419,
@@ -4385,7 +4405,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020420,
@@ -4404,7 +4424,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020421,
@@ -4423,7 +4443,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020422,
@@ -4442,7 +4462,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020423,
@@ -4461,7 +4481,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020424,
@@ -4480,7 +4500,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020425,
@@ -4495,11 +4515,11 @@
         "kickoff": "2026-11-29T02:00:00Z",
         "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
         "status": "open",
-        "closing_prob": 0.738,
+        "closing_prob": 0.737,
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020426,
@@ -4514,11 +4534,11 @@
         "kickoff": "2026-11-29T02:00:00Z",
         "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
         "status": "open",
-        "closing_prob": 0.49700000000000005,
+        "closing_prob": 0.506,
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       },
       {
         "id": 2026020427,
@@ -4537,7 +4557,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:22:50.775217+00:00"
+        "closing_at": "2026-11-27T23:59:27.904485+00:00"
       }
     ]
   },
@@ -4555,11 +4575,11 @@
       "kickoff": "2026-11-28T23:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.503,
+      "closing_prob": 0.504,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020417,
@@ -4578,7 +4598,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020418,
@@ -4597,7 +4617,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020419,
@@ -4616,7 +4636,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020420,
@@ -4635,7 +4655,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020421,
@@ -4654,7 +4674,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020422,
@@ -4673,7 +4693,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020423,
@@ -4692,7 +4712,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020424,
@@ -4711,7 +4731,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020425,
@@ -4726,11 +4746,11 @@
       "kickoff": "2026-11-29T02:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.738,
+      "closing_prob": 0.737,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020426,
@@ -4745,11 +4765,11 @@
       "kickoff": "2026-11-29T02:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.49700000000000005,
+      "closing_prob": 0.506,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     },
     {
       "id": 2026020427,
@@ -4768,7 +4788,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:22:50.775217+00:00"
+      "closing_at": "2026-11-27T23:59:27.904485+00:00"
     }
   ],
   "tims_board_players": [
