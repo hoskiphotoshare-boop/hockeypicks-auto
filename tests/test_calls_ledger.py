@@ -198,12 +198,14 @@ class TestCallsLedger(unittest.TestCase):
     def test_update_calls_ledger(self):
         d = tempfile.mkdtemp()
         games = [make_game(id=1)]
-        res = update_calls_ledger(d, games, NOW)
+        private = os.path.join(d, "private")
+        res = update_calls_ledger(d, games, NOW, private_dir=private)
         self.assertIn("summary", res)
         self.assertIn("admin_summary", res)
         self.assertIn("recent", res)
         self.assertTrue(os.path.exists(os.path.join(d, "calls_history.json")))
-        self.assertTrue(os.path.exists(os.path.join(d, "calls_ledger.json")))
+        self.assertFalse(os.path.exists(os.path.join(d, "calls_ledger.json")))
+        self.assertTrue(os.path.exists(os.path.join(private, "calls_ledger.json")))
         self.assertTrue(os.path.exists(os.path.join(d, "calls_scoreboard.json")))
 
 

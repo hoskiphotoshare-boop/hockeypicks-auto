@@ -572,10 +572,13 @@ def update_calls_ledger(
     games: list[dict[str, Any]],
     now_utc: Any,
     fetch_scores: Optional[Callable[[str], dict[str, Any]]] = None,
+    private_dir: str | None = None,
 ) -> dict[str, Any]:
     now = _normalize_now(now_utc)
     history_path = os.path.join(docs_dir, "calls_history.json")
-    ledger_path = os.path.join(docs_dir, "calls_ledger.json")
+    private_dir = private_dir or docs_dir
+    os.makedirs(private_dir, exist_ok=True)
+    ledger_path = os.path.join(private_dir, "calls_ledger.json")
     scoreboard_path = os.path.join(docs_dir, "calls_scoreboard.json")
 
     public_calls = load_calls(history_path)

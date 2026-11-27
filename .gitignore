@@ -11,3 +11,5 @@ data/
 *.csv
 *.zip
 !tests/fixtures/*.csv
+
+docs/calls_ledger.json

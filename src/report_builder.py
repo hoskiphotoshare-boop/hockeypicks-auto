@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import html
 import json
 import os
@@ -13,6 +14,34 @@ import pytz
 
 UTC_TZ = pytz.UTC
 ET_TZ = pytz.timezone("America/New_York")
+
+
+PUBLIC_DROP_GAME_KEYS = frozenset({
+    "book_odds", "away_odds", "home_odds",
+    "away_edge", "home_edge", "away_ev", "home_ev",
+    "rec_bet", "kelly", "edge_pct", "best_odds", "best_bookie",
+    "home_depth_eff", "away_depth_eff",
+    "home_prob_unadjusted", "away_prob_unadjusted",
+})
+
+
+def sanitize_public_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return a public copy with admin odds/ledger fields removed.
+
+    The Worker also filters responses, but the raw docs/data.json is public in
+    the repository; sanitizing at write time closes that bypass.
+    """
+    if not isinstance(payload, dict):
+        return payload
+    out = copy.deepcopy(payload)
+    out.pop("calls_admin", None)
+    games = out.get("games")
+    if isinstance(games, list):
+        for game in games:
+            if isinstance(game, dict):
+                for key in PUBLIC_DROP_GAME_KEYS:
+                    game.pop(key, None)
+    return out
 
 
 def write_json_report(payload: dict[str, Any], path: str) -> None:

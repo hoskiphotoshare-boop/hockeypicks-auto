@@ -41,6 +41,7 @@ from src.transactions import (
 )
 from src.report_builder import (
     build_dashboard_payload,
+    sanitize_public_payload,
     write_json_report,
     write_terminal_log_html,
 )
@@ -718,7 +719,10 @@ def run_inference(
     )
     power_rankings, defense_multipliers = compute_power_rankings_and_defense(profiles, pairwise_bundle)
 
-    existing_payload = _load_existing_payload(os.path.join(docs_dir, "data.json"))
+    # Cached odds live in the private full payload; docs/data.json is public and sanitized.
+    existing_payload = _load_existing_payload(os.path.join(data_dir, "full_data.json"))
+    if not existing_payload:
+        existing_payload = _load_existing_payload(os.path.join(docs_dir, "data.json"))
     cached_odds = extract_cached_odds_lookup(existing_payload)
     prev_usage = (existing_payload.get("meta") or {}).get("odds_usage") or {}
     prev_live_fetches = (
@@ -971,6 +975,7 @@ def run_inference(
             _merged,
             context["now_et"].astimezone(timezone.utc) if hasattr(context["now_et"], "astimezone") else __import__("datetime").datetime.now(timezone.utc),
             fetch_scores=_fetch_scores if allow_network_ledger else None,
+            private_dir=os.path.join(os.path.dirname(docs_dir), "data"),
         )
         calls_summary = ledger_result.get("summary", {}) or {}
         calls_recent = ledger_result.get("recent", []) or []
@@ -1205,7 +1210,11 @@ def run_inference(
         except Exception as exc:
             print(f"Warning: players.json build failed: {exc}")
 
-    write_json_report(payload, os.path.join(docs_dir, "data.json"))
+    public_payload = sanitize_public_payload(payload)
+    if "calls_admin" in public_payload:
+        raise RuntimeError("public payload still contains calls_admin")
+    write_json_report(public_payload, os.path.join(docs_dir, "data.json"))
+    write_json_report(payload, os.path.join(os.path.dirname(docs_dir), "data", "full_data.json"))
     print("Inference complete.")
     return payload
 

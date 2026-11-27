@@ -51,13 +51,17 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python main_pipeline.py --mode infer
 
+      - name: Check public docs contain no admin odds
+        if: steps.gate.outputs.should_run == 'true'
+        run: python scripts/check_public_docs.py
+
       - name: Commit and Push Live Predictions
         if: steps.gate.outputs.should_run == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           mkdir -p docs/injury_history docs/roster_history
-          git add docs/data.json docs/latest_run.html docs/tims_history.json docs/tims_boards.json docs/injury_history/ docs/roster_history/ docs/transaction_history.json docs/calls_history.json docs/calls_scoreboard.json docs/calls_ledger.json models/
+          git add docs/data.json docs/latest_run.html docs/tims_history.json docs/tims_boards.json docs/injury_history/ docs/roster_history/ docs/transaction_history.json docs/calls_history.json docs/calls_scoreboard.json models/
           if ! git diff --staged --quiet; then
             git commit -m "Live Inference Update ($(TZ='America/New_York' date '+%Y-%m-%d %H:%M ET'))"
             git pull --rebase origin main
