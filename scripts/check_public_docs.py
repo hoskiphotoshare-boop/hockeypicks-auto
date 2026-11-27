@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -17,6 +18,13 @@ def check_docs(root: str | Path = ".") -> list[str]:
     errors: list[str] = []
     if (docs / "calls_ledger.json").exists():
         errors.append("docs/calls_ledger.json must not be published")
+    if (Path(root) / ".git").exists():
+        tracked = subprocess.run(
+            ["git", "ls-files", "--", "docs/latest_run.html"],
+            cwd=str(root), capture_output=True, text=True,
+        )
+        if tracked.stdout.strip():
+            errors.append("docs/latest_run.html must not be tracked (admin log may contain odds)")
     data_path = docs / "data.json"
     if not data_path.exists():
         return [f"missing {data_path}"]

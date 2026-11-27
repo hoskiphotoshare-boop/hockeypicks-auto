@@ -13,3 +13,5 @@ data/
 !tests/fixtures/*.csv
 
 docs/calls_ledger.json
+
+docs/latest_run.html
