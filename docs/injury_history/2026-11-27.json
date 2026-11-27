@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T16:00:45.743967+00:00",
+  "captured_utc": "2026-11-27T17:01:18.862246+00:00",
   "source": "espn-cbs",
-  "count": 117,
+  "count": 116,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -41,6 +41,24 @@
       "note": "Hagens (back) is wearing a non-contact sweater ahead of Tuesday's practice, Steve Conroy of the Boston Herald reports."
     },
     {
+      "player": "Noah Ostlund",
+      "team": "BUF",
+      "position": "C",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Ostlund (undisclosed) is expected to miss Friday's game against Pittsburgh, per Rachel Lenzi of The Buffalo News."
+    },
+    {
+      "player": "Zach Benson",
+      "team": "BUF",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Benson (upper body) will not play in Friday's home clash against the Penguins, per Rachel Lenzi of The Buffalo News."
+    },
+    {
       "player": "Tyson Kozak",
       "team": "BUF",
       "position": "C",
@@ -57,15 +75,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir"
-    },
-    {
-      "player": "Justin Danforth",
-      "team": "BUF",
-      "position": "RW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Danforth (upper body) was placed on injured reserve Thursday, per the NHL media site."
     },
     {
       "player": "Matt Grzelcyk",
@@ -116,15 +125,6 @@
       "player": "Nikolaj Ehlers",
       "team": "CAR",
       "position": "LW",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
-      "player": "K'Andre Miller",
-      "team": "CAR",
-      "position": "D",
       "status": "DTD",
       "is_out": false,
       "is_dtd": true,
@@ -419,6 +419,15 @@
       "note": "ir-nr"
     },
     {
+      "player": "Declan Chisholm",
+      "team": "NJD",
+      "position": "D",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Chisholm (illness) is expected to miss Friday's game against Calgary, per Amanda Stein of the Devils' official site."
+    },
+    {
       "player": "Brenden Dillon",
       "team": "NJD",
       "position": "D",
@@ -461,7 +470,7 @@
       "status": "IR",
       "is_out": true,
       "is_dtd": false,
-      "note": "ir"
+      "note": "Palmieri is expected to miss the next 6-8 months with a torn ACL and meniscus in his right knee, the team announced Friday."
     },
     {
       "player": "Ryan Pulock",
@@ -813,24 +822,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Roslovic (upper body) is expected to miss Friday's road clash against the Bruins, per Mark Masters of TSN."
-    },
-    {
-      "player": "Kirill Marchenko",
-      "team": "TOR",
-      "position": "RW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Marchenko (lower body) is expected back in the lineup against the Bruins on Friday after telling reporters, \"My leg feels perfect and I'm ready to go,\" Mark Masters of TSN reports."
-    },
-    {
-      "player": "Colton Sissons",
-      "team": "TOR",
-      "position": "C",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Sissons (lower body) is day-to-day, per David Alter of The Hockey News on Sunday."
     },
     {
       "player": "Cole McWard",
