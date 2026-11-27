@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T17:41:26.314226+00:00",
+  "captured_utc": "2026-11-27T18:04:42.111880+00:00",
   "source": "espn-cbs",
   "count": 114,
   "records": [
@@ -84,15 +84,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Grzelcyk (lower body) suffered a \"flare-up\" and could be out for at least \"a few days,\" head coach Lindy Ruff told Rachel Lenzi of The Buffalo News on Tuesday."
-    },
-    {
-      "player": "Morgan Frost",
-      "team": "CGY",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
     },
     {
       "player": "Martin Pospisil",
@@ -698,18 +689,18 @@
       "note": "McCann (lower body) will be out for approximately 10 weeks, the team announced Sunday."
     },
     {
-      "player": "Pavel Buchnevich",
-      "team": "STL",
-      "position": "LW",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
       "player": "Jimmy Snuggerud",
       "team": "STL",
       "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
+    },
+    {
+      "player": "Pavel Buchnevich",
+      "team": "STL",
+      "position": "LW",
       "status": "DTD",
       "is_out": false,
       "is_dtd": true,
@@ -795,6 +786,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Geekie (shoulder) underwent surgery Monday and is expected to miss 4-5 months."
+    },
+    {
+      "player": "Dakota Joshua",
+      "team": "TOR",
+      "position": "C",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Jack Roslovic",

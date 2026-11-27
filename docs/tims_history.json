@@ -783,12 +783,12 @@
         "v_defer_best": 1.0446,
         "ev_delta": 0.0068
       },
-      "picks_locked": false,
-      "locked_et": "",
-      "locked_utc": "",
+      "picks_locked": true,
+      "locked_et": "2026-11-27 12:41 PM ET",
+      "locked_utc": "2026-11-27T18:00:00+00:00",
       "lock_et": "1:00 PM ET",
-      "lock_wave": 0,
-      "locked_before_first_game": false,
+      "lock_wave": 1,
+      "locked_before_first_game": true,
       "ticket_revisions": [
         {
           "captured_et": "2026-11-27 12:02 AM ET",
@@ -5192,12 +5192,12 @@
           "v_defer_best": 1.0446,
           "ev_delta": 0.0068
         },
-        "picks_locked": false,
+        "picks_locked": true,
         "captured_et": "2026-11-27 12:41 PM ET",
-        "locked_et": "",
+        "locked_et": "2026-11-27 12:41 PM ET",
         "lock_et": "1:00 PM ET",
         "lock_wave": 1,
-        "locked_before_first_game": false,
+        "locked_before_first_game": true,
         "ticket_revisions": [
           {
             "captured_et": "2026-11-27 12:02 AM ET",
