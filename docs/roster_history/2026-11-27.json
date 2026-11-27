@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T17:41:27.793211+00:00",
+  "captured_utc": "2026-11-27T20:49:37.306171+00:00",
   "teams": {
     "ANA": [
       {
@@ -389,6 +389,12 @@
         "id": 8482097,
         "name": "Jack Quinn",
         "position": "R",
+        "team": "BUF"
+      },
+      {
+        "id": 8477839,
+        "name": "Conor Sheary",
+        "position": "L",
         "team": "BUF"
       },
       {

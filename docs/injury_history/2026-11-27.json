@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T19:39:44.873596+00:00",
+  "captured_utc": "2026-11-27T20:49:36.482746+00:00",
   "source": "espn-cbs",
   "count": 115,
   "records": [
@@ -50,6 +50,15 @@
       "note": "Hagens (back) is wearing a non-contact sweater ahead of Tuesday's practice, Steve Conroy of the Boston Herald reports."
     },
     {
+      "player": "Noah Ostlund",
+      "team": "BUF",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Ostlund (undisclosed) was placed on injured reserve Friday, per the NHL Media Site."
+    },
+    {
       "player": "Tyson Kozak",
       "team": "BUF",
       "position": "C",
@@ -57,15 +66,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir"
-    },
-    {
-      "player": "Noah Ostlund",
-      "team": "BUF",
-      "position": "C",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Ostlund (undisclosed) is expected to miss Friday's game against Pittsburgh, per Rachel Lenzi of The Buffalo News."
     },
     {
       "player": "Zach Benson",
@@ -251,10 +251,10 @@
       "player": "William Wallinder",
       "team": "DET",
       "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Sam Montembeault",
@@ -761,31 +761,22 @@
       "note": "Tucker had arthroscopic knee surgery and will be re-assessed in six weeks, the team announced Wednesday."
     },
     {
-      "player": "Victor Hedman",
-      "team": "TBL",
-      "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
       "player": "Erik Cernak",
       "team": "TBL",
       "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Cernak (illness) is expected to miss Friday's game against Ottawa, per Gabby Shirley of the Lightning's official site."
     },
     {
       "player": "Pontus Holmberg",
       "team": "TBL",
       "position": "RW",
-      "status": "Out",
+      "status": "IR",
       "is_out": true,
       "is_dtd": false,
-      "note": "out"
+      "note": "ir"
     },
     {
       "player": "Conor Geekie",
@@ -795,6 +786,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Geekie (shoulder) underwent surgery Monday and is expected to miss 4-5 months."
+    },
+    {
+      "player": "Chris Tanev",
+      "team": "TOR",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Dakota Joshua",

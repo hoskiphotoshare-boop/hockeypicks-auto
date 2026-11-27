@@ -1,11 +1,11 @@
 {
   "calls": 30,
-  "graded": 2,
-  "open": 28,
-  "wins": 1,
-  "losses": 1,
+  "graded": 4,
+  "open": 26,
+  "wins": 2,
+  "losses": 2,
   "win_rate": 0.5,
-  "brier": 0.28332999999999997,
+  "brier": 0.263365,
   "current_streak": {
     "type": "W",
     "n": 1
@@ -26,18 +26,18 @@
       "win_rate": 1.0
     },
     "60-65": {
-      "calls": 1,
-      "n": 1,
+      "calls": 2,
+      "n": 2,
       "wins": 0,
-      "losses": 1,
+      "losses": 2,
       "win_rate": 0.0
     },
     "65+": {
-      "calls": 0,
-      "n": 0,
-      "wins": 0,
+      "calls": 1,
+      "n": 1,
+      "wins": 1,
       "losses": 0,
-      "win_rate": 0.0
+      "win_rate": 1.0
     }
   },
   "recent": [
@@ -58,7 +58,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020417,
@@ -73,11 +73,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.535,
+      "closing_prob": 0.529,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020418,
@@ -92,11 +92,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.588,
+      "closing_prob": 0.5870000000000001,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020419,
@@ -111,11 +111,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.5870000000000001,
+      "closing_prob": 0.584,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020420,
@@ -130,11 +130,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.5539999999999999,
+      "closing_prob": 0.561,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020421,
@@ -153,7 +153,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020422,
@@ -172,7 +172,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020423,
@@ -191,7 +191,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020424,
@@ -206,11 +206,11 @@
       "kickoff": "2026-11-29T01:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.565,
+      "closing_prob": 0.562,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020425,
@@ -229,7 +229,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020426,
@@ -248,7 +248,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     },
     {
       "id": 2026020427,
@@ -267,7 +267,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T19:39:44.105085+00:00"
+      "closing_at": "2026-11-27T20:49:35.986900+00:00"
     }
   ]
 }
