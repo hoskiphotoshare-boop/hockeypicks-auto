@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T18:04:42.111880+00:00",
+  "captured_utc": "2026-11-27T18:40:37.220236+00:00",
   "source": "espn-cbs",
-  "count": 114,
+  "count": 112,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -692,24 +692,6 @@
       "player": "Jimmy Snuggerud",
       "team": "STL",
       "position": "RW",
-      "status": "IR",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "ir"
-    },
-    {
-      "player": "Pavel Buchnevich",
-      "team": "STL",
-      "position": "LW",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
-      "player": "Connor McMichael",
-      "team": "STL",
-      "position": "LW",
       "status": "IR",
       "is_out": true,
       "is_dtd": false,
