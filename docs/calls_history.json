@@ -54,7 +54,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020401,
@@ -73,7 +73,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020402,
@@ -92,7 +92,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020403,
@@ -111,7 +111,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020404,
@@ -130,7 +130,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020405,
@@ -149,7 +149,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020406,
@@ -168,7 +168,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020407,
@@ -187,7 +187,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020408,
@@ -206,7 +206,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020409,
@@ -225,7 +225,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020410,
@@ -244,7 +244,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020411,
@@ -263,7 +263,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020412,
@@ -282,7 +282,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020413,
@@ -301,7 +301,7 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   },
   {
     "id": 2026020414,
@@ -320,6 +320,253 @@
     "result": null,
     "final_score": null,
     "graded_at": null,
-    "closing_at": "2026-11-27T03:01:24.042844+00:00"
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020415,
+    "call_id": 2026020415,
+    "date": "2026-11-28",
+    "away": "MTL",
+    "home": "VGK",
+    "pick": "VGK",
+    "pick_prob": 0.532,
+    "away_prob": 0.46799999999999997,
+    "home_prob": 0.532,
+    "kickoff": "2026-11-28T21:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.532,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020416,
+    "call_id": 2026020416,
+    "date": "2026-11-28",
+    "away": "TBL",
+    "home": "FLA",
+    "pick": "FLA",
+    "pick_prob": 0.519,
+    "away_prob": 0.48100000000000004,
+    "home_prob": 0.519,
+    "kickoff": "2026-11-28T23:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.519,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020417,
+    "call_id": 2026020417,
+    "date": "2026-11-28",
+    "away": "NSH",
+    "home": "DET",
+    "pick": "DET",
+    "pick_prob": 0.55,
+    "away_prob": 0.45,
+    "home_prob": 0.55,
+    "kickoff": "2026-11-29T00:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.55,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020418,
+    "call_id": 2026020418,
+    "date": "2026-11-28",
+    "away": "WPG",
+    "home": "NJD",
+    "pick": "NJD",
+    "pick_prob": 0.604,
+    "away_prob": 0.396,
+    "home_prob": 0.604,
+    "kickoff": "2026-11-29T00:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.604,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020419,
+    "call_id": 2026020419,
+    "date": "2026-11-28",
+    "away": "CGY",
+    "home": "NYR",
+    "pick": "NYR",
+    "pick_prob": 0.573,
+    "away_prob": 0.42700000000000005,
+    "home_prob": 0.573,
+    "kickoff": "2026-11-29T00:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.573,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020420,
+    "call_id": 2026020420,
+    "date": "2026-11-28",
+    "away": "TOR",
+    "home": "PIT",
+    "pick": "PIT",
+    "pick_prob": 0.555,
+    "away_prob": 0.445,
+    "home_prob": 0.555,
+    "kickoff": "2026-11-29T00:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.555,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020421,
+    "call_id": 2026020421,
+    "date": "2026-11-28",
+    "away": "OTT",
+    "home": "CAR",
+    "pick": "CAR",
+    "pick_prob": 0.779,
+    "away_prob": 0.221,
+    "home_prob": 0.779,
+    "kickoff": "2026-11-29T00:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.779,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020422,
+    "call_id": 2026020422,
+    "date": "2026-11-28",
+    "away": "WSH",
+    "home": "STL",
+    "pick": "WSH",
+    "pick_prob": 0.513,
+    "away_prob": 0.513,
+    "home_prob": 0.48700000000000004,
+    "kickoff": "2026-11-29T00:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.513,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020423,
+    "call_id": 2026020423,
+    "date": "2026-11-28",
+    "away": "NYI",
+    "home": "PHI",
+    "pick": "NYI",
+    "pick_prob": 0.521,
+    "away_prob": 0.521,
+    "home_prob": 0.479,
+    "kickoff": "2026-11-29T00:30:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.521,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020424,
+    "call_id": 2026020424,
+    "date": "2026-11-28",
+    "away": "UTA",
+    "home": "DAL",
+    "pick": "DAL",
+    "pick_prob": 0.568,
+    "away_prob": 0.43200000000000005,
+    "home_prob": 0.568,
+    "kickoff": "2026-11-29T01:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.568,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020425,
+    "call_id": 2026020425,
+    "date": "2026-11-28",
+    "away": "SJS",
+    "home": "COL",
+    "pick": "COL",
+    "pick_prob": 0.7440000000000001,
+    "away_prob": 0.256,
+    "home_prob": 0.7440000000000001,
+    "kickoff": "2026-11-29T02:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.7440000000000001,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020426,
+    "call_id": 2026020426,
+    "date": "2026-11-28",
+    "away": "ANA",
+    "home": "LAK",
+    "pick": "ANA",
+    "pick_prob": 0.503,
+    "away_prob": 0.503,
+    "home_prob": 0.49700000000000005,
+    "kickoff": "2026-11-29T02:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.503,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
+  },
+  {
+    "id": 2026020427,
+    "call_id": 2026020427,
+    "date": "2026-11-28",
+    "away": "EDM",
+    "home": "SEA",
+    "pick": "EDM",
+    "pick_prob": 0.603,
+    "away_prob": 0.603,
+    "home_prob": 0.397,
+    "kickoff": "2026-11-29T03:00:00Z",
+    "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
+    "status": "open",
+    "closing_prob": 0.603,
+    "result": null,
+    "final_score": null,
+    "graded_at": null,
+    "closing_at": "2026-11-27T05:02:34.916299+00:00"
   }
 ]

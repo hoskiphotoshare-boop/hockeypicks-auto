@@ -779,7 +779,27 @@
       "is_trade": false,
       "is_waiver": false,
       "team": "MTL"
+    },
+    {
+      "date": "2026-11-26T08:00Z",
+      "description": "Recalled F Taylor Makar from Colorado (AHL). Placed F Gavin Brindley on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "COL"
+    },
+    {
+      "date": "2026-11-26T08:00Z",
+      "description": "Recalled F Dillon Boucher from Hartford (AHL). Reassigned F Dominic Toninato to Hartford (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CHI"
     }
   ],
-  "updated_utc": "2026-11-27T03:01:25.100794+00:00"
+  "updated_utc": "2026-11-27T05:02:42.498245+00:00"
 }
