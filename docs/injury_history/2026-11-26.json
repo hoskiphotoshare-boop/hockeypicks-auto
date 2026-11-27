@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "captured_utc": "2026-11-26T21:30:38.662410+00:00",
+  "captured_utc": "2026-11-27T03:01:24.531819+00:00",
   "source": "espn-cbs",
   "count": 118,
   "records": [
@@ -170,10 +170,10 @@
       "player": "Gavin Brindley",
       "team": "COL",
       "position": "C",
-      "status": "Out",
+      "status": "IR",
       "is_out": true,
       "is_dtd": false,
-      "note": "out"
+      "note": "ir"
     },
     {
       "player": "Nathan MacKinnon",

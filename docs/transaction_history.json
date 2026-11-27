@@ -749,7 +749,37 @@
       "is_trade": false,
       "is_waiver": false,
       "team": "CGY"
+    },
+    {
+      "date": "2026-11-26T08:00Z",
+      "description": "Recalled F Taylor Makar from Colorado (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "COL"
+    },
+    {
+      "date": "2026-11-26T08:00Z",
+      "description": "D Brendon Dillon received a four-game suspension for an illegal check to the head of Columbus' D Denton Mateychuk.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NJD"
+    },
+    {
+      "date": "2026-11-26T08:00Z",
+      "description": "Reinstated D Bryce Pickford from the non-roster injured and reassigned him to Laval (AHL).",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "MTL"
     }
   ],
-  "updated_utc": "2026-11-26T02:08:25.904330+00:00"
+  "updated_utc": "2026-11-27T03:01:25.100794+00:00"
 }
