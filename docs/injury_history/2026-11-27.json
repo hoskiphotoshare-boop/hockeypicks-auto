@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T18:40:37.220236+00:00",
+  "captured_utc": "2026-11-27T19:39:44.873596+00:00",
   "source": "espn-cbs",
-  "count": 112,
+  "count": 115,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -32,6 +32,15 @@
       "note": "Greer (upper body) was placed on injured reserve Monday."
     },
     {
+      "player": "David Pastrnak",
+      "team": "BOS",
+      "position": "RW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Pastrnak sustained a lower-body injury and is unlikely to return to Friday's game against Toronto."
+    },
+    {
       "player": "James Hagens",
       "team": "BOS",
       "position": "C",
@@ -39,6 +48,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Hagens (back) is wearing a non-contact sweater ahead of Tuesday's practice, Steve Conroy of the Boston Herald reports."
+    },
+    {
+      "player": "Tyson Kozak",
+      "team": "BUF",
+      "position": "C",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "ir"
     },
     {
       "player": "Noah Ostlund",
@@ -57,15 +75,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Benson (upper body) will not play in Friday's home clash against the Penguins, per Rachel Lenzi of The Buffalo News."
-    },
-    {
-      "player": "Tyson Kozak",
-      "team": "BUF",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
     },
     {
       "player": "Konsta Helenius",
@@ -120,6 +129,15 @@
       "is_out": false,
       "is_dtd": true,
       "note": "day-to-day"
+    },
+    {
+      "player": "Patrick Kane",
+      "team": "CHI",
+      "position": "RW",
+      "status": "IR",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Kane (foot) was placed on injured reserve Friday, per the NHL media site."
     },
     {
       "player": "Tyler Bertuzzi",
@@ -257,22 +275,22 @@
       "note": "Edvinsson (contract dispute) is on the Red Wings' injured, non-roster list, per the NHL media site Wednesday."
     },
     {
-      "player": "Zach Hyman",
-      "team": "EDM",
-      "position": "LW",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
-    },
-    {
       "player": "Filip Hallander",
       "team": "EDM",
       "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
+      "player": "Zach Hyman",
+      "team": "EDM",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Alec Regula",
@@ -359,10 +377,10 @@
       "player": "Kaiden Guhle",
       "team": "MTL",
       "position": "D",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "Guhle (upper body) is considered day-to-day, the team announced Friday."
     },
     {
       "player": "Ivan Demidov",
@@ -570,6 +588,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Eklund had surgery to repair a torn ankle tendon and will be out 10-12 weeks, Bruce Garrioch of Postmedia reports Thursday."
+    },
+    {
+      "player": "Matvei Michkov",
+      "team": "PHI",
+      "position": "RW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Nikita Grebenkin",
