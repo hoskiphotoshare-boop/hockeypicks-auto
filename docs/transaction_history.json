@@ -799,7 +799,67 @@
       "is_trade": false,
       "is_waiver": false,
       "team": "CHI"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Recalled G Clay Stevenson from Hershey (AHL). Assigned D Justin Holl to Hershey (AHL). Placed F Jordan Kyrou on injured reserve. Activated D Vincent Desharnais from injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "WSH"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Activated F Colton Sissons from injured reserve. Activated F Kirill Marchenko from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TOR"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Recalled F Atley Calvert from Wilkes-Barre/Scranton (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "PIT"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Recalled G David Rittich from Utica (AHL). Assigned F Lenni Hameenaho to Utica (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NJD"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Assigned F Dominic Toninato to Rockford (AHL). Recalled F Dillon Boucher from Rockford (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CHI"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Recalled F Conor Sheary from Rochester (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "BUF"
     }
   ],
-  "updated_utc": "2026-11-27T05:02:42.498245+00:00"
+  "updated_utc": "2026-11-27T22:46:35.812971+00:00"
 }

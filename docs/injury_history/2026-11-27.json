@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-27T20:49:36.482746+00:00",
+  "captured_utc": "2026-11-27T22:46:35.790226+00:00",
   "source": "espn-cbs",
-  "count": 115,
+  "count": 117,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -131,6 +131,15 @@
       "note": "day-to-day"
     },
     {
+      "player": "Tyler Bertuzzi",
+      "team": "CHI",
+      "position": "LW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
       "player": "Patrick Kane",
       "team": "CHI",
       "position": "RW",
@@ -138,15 +147,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Kane (foot) was placed on injured reserve Friday, per the NHL media site."
-    },
-    {
-      "player": "Tyler Bertuzzi",
-      "team": "CHI",
-      "position": "LW",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
     },
     {
       "player": "Connor Bedard",
@@ -174,6 +174,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Byram (upper body) didn't accompany his teammates on Chicago's three-game road trip, per Mark Lazerus of The Athletic on Saturday."
+    },
+    {
+      "player": "Martin Necas",
+      "team": "COL",
+      "position": "C",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
     },
     {
       "player": "Gavin Brindley",
@@ -590,6 +599,15 @@
       "note": "Eklund had surgery to repair a torn ankle tendon and will be out 10-12 weeks, Bruce Garrioch of Postmedia reports Thursday."
     },
     {
+      "player": "Owen Tippett",
+      "team": "PHI",
+      "position": "RW",
+      "status": "Out",
+      "is_out": true,
+      "is_dtd": false,
+      "note": "out"
+    },
+    {
       "player": "Matvei Michkov",
       "team": "PHI",
       "position": "RW",
@@ -932,6 +950,15 @@
       "note": "ir"
     },
     {
+      "player": "Filip Chytil",
+      "team": "VAN",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
       "player": "Elias Pettersson",
       "team": "VAN",
       "position": "C",
@@ -975,15 +1002,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Co-president of hockey operations Henrik Sedin said Monday that he hopes Demko (hip) will be ready to return before Christmas, Kevin Woodley of NHL.com reports."
-    },
-    {
-      "player": "Marc Gatcomb",
-      "team": "VGK",
-      "position": "C",
-      "status": "DTD",
-      "is_out": false,
-      "is_dtd": true,
-      "note": "day-to-day"
     },
     {
       "player": "Jordan Kyrou",
