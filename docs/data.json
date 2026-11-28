@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-28 00:34:32 UTC",
-    "updated_et": "2026-11-27 07:34 PM ET",
+    "updated_utc": "2026-11-28 00:46:44 UTC",
+    "updated_et": "2026-11-27 07:46 PM ET",
     "today_date": "2026-11-27",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -257,7 +257,7 @@
         "position": "F",
         "final_score": 0.684,
         "p_goal_pct": 49.5,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -269,7 +269,7 @@
         "position": "F",
         "final_score": 0.492,
         "p_goal_pct": 38.9,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -281,7 +281,7 @@
         "position": "F",
         "final_score": 0.141,
         "p_goal_pct": 13.2,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -295,7 +295,7 @@
         "position": "F",
         "final_score": 0.684,
         "p_goal_pct": 49.5,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -307,7 +307,7 @@
         "position": "F",
         "final_score": 0.492,
         "p_goal_pct": 38.9,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -319,7 +319,7 @@
         "position": "F",
         "final_score": 0.141,
         "p_goal_pct": 13.2,
-        "wave_idx": 4,
+        "wave_idx": 3,
         "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
@@ -329,7 +329,7 @@
     "first_wave_utc": "2026-11-28T01:00:00Z",
     "selection_lock_et": "8:00 PM ET",
     "selection_lock_utc": "2026-11-28T01:00:00Z",
-    "selection_wave": 4,
+    "selection_wave": 3,
     "v_now": 1.0155,
     "v_defer_best": 1.0155,
     "ev_delta": 0.0,
@@ -337,21 +337,6 @@
     "waves": [
       {
         "wave": 1,
-        "start_time_et": "4:00 PM ET",
-        "matchups": [
-          "LAK @ ANA"
-        ],
-        "est_ev": 0.0,
-        "ev_delta": 0.0,
-        "beat_now_pct": 0.0,
-        "visible_carried": 0,
-        "hidden_available": 0,
-        "unlisted_scorers": [],
-        "is_current": false,
-        "is_past": true
-      },
-      {
-        "wave": 2,
         "start_time_et": "5:30 PM ET",
         "matchups": [
           "NYR @ CHI"
@@ -366,7 +351,7 @@
         "is_past": true
       },
       {
-        "wave": 3,
+        "wave": 2,
         "start_time_et": "7:30 PM ET",
         "matchups": [
           "WPG @ NYI"
@@ -381,7 +366,7 @@
         "is_past": true
       },
       {
-        "wave": 4,
+        "wave": 3,
         "start_time_et": "8:00 PM ET",
         "matchups": [
           "PIT @ BUF",
@@ -867,7 +852,7 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 2,
-      "game_state": "FINAL"
+      "game_state": "OFF"
     },
     {
       "player": "Jack Hughes",
@@ -907,7 +892,7 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 1,
-      "game_state": "FINAL"
+      "game_state": "OFF"
     },
     {
       "player": "Artturi Lehkonen",
@@ -980,14 +965,14 @@
       "prior_goals_per_game": 0.511,
       "prior_gp": 88.0,
       "prior_goals": 45.0,
-      "model_score": 0.641,
-      "live_gp": 25,
+      "model_score": 0.631,
+      "live_gp": 26,
       "live_goals": 23,
-      "live_shots": 105,
-      "live_g_gp": 0.92,
-      "eb_live_weight_pct": 44.8,
+      "live_shots": 110,
+      "live_g_gp": 0.885,
+      "eb_live_weight_pct": 45.8,
       "def_multiplier": 0.99,
-      "final_score": 0.641,
+      "final_score": 0.631,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1248,6 +1233,29 @@
       "injury_note": ""
     },
     {
+      "player": "Beckett Sennecke",
+      "team": "ANA",
+      "position": "R",
+      "opponent": "LAK",
+      "base_pred": 0.417,
+      "prior_goals_per_game": 0.298,
+      "prior_gp": 94.0,
+      "prior_goals": 28.0,
+      "model_score": 0.465,
+      "live_gp": 23,
+      "live_goals": 13,
+      "live_shots": 54,
+      "live_g_gp": 0.565,
+      "eb_live_weight_pct": 42.8,
+      "def_multiplier": 0.99,
+      "final_score": 0.465,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
       "player": "David Pastrnak",
       "team": "BOS",
       "position": "R",
@@ -1269,29 +1277,6 @@
       "injury_out": false,
       "injury_dtd": true,
       "injury_note": "Pastrnak sustained a lower-body injury and is unlikely to return to Friday's game against Toronto."
-    },
-    {
-      "player": "Beckett Sennecke",
-      "team": "ANA",
-      "position": "R",
-      "opponent": "LAK",
-      "base_pred": 0.417,
-      "prior_goals_per_game": 0.298,
-      "prior_gp": 94.0,
-      "prior_goals": 28.0,
-      "model_score": 0.457,
-      "live_gp": 22,
-      "live_goals": 12,
-      "live_shots": 53,
-      "live_g_gp": 0.545,
-      "eb_live_weight_pct": 41.7,
-      "def_multiplier": 0.99,
-      "final_score": 0.457,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
     },
     {
       "player": "Sam Reinhart",
@@ -1685,29 +1670,6 @@
       "injury_note": ""
     },
     {
-      "player": "Artemi Panarin",
-      "team": "LAK",
-      "position": "L",
-      "opponent": "ANA",
-      "base_pred": 0.375,
-      "prior_goals_per_game": 0.366,
-      "prior_gp": 82.0,
-      "prior_goals": 30.0,
-      "model_score": 0.41,
-      "live_gp": 18,
-      "live_goals": 8,
-      "live_shots": 57,
-      "live_g_gp": 0.444,
-      "eb_live_weight_pct": 36.9,
-      "def_multiplier": 1.017,
-      "final_score": 0.41,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
-    },
-    {
       "player": "Bo Horvat",
       "team": "NYI",
       "position": "C",
@@ -1815,6 +1777,29 @@
       "live_g_gp": 0.407,
       "eb_live_weight_pct": 46.7,
       "def_multiplier": 0.978,
+      "final_score": 0.402,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
+      "player": "Artemi Panarin",
+      "team": "LAK",
+      "position": "L",
+      "opponent": "ANA",
+      "base_pred": 0.375,
+      "prior_goals_per_game": 0.366,
+      "prior_gp": 82.0,
+      "prior_goals": 30.0,
+      "model_score": 0.402,
+      "live_gp": 19,
+      "live_goals": 8,
+      "live_shots": 59,
+      "live_g_gp": 0.421,
+      "eb_live_weight_pct": 38.2,
+      "def_multiplier": 1.017,
       "final_score": 0.402,
       "mode": "Regular Season",
       "injury_status": null,
@@ -2403,7 +2388,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-27T21:00:00Z",
       "start_time_et": "4:00 PM ET",
-      "game_state": "FINAL",
+      "game_state": "OFF",
       "game_type": 2,
       "away": "LAK",
       "home": "ANA",
@@ -2578,12 +2563,12 @@
       "is_today": true,
       "start_time_utc": "2026-11-28T00:30:00Z",
       "start_time_et": "7:30 PM ET",
-      "game_state": "PRE",
+      "game_state": "LIVE",
       "game_type": 2,
       "away": "WPG",
       "home": "NYI",
-      "away_score": null,
-      "home_score": null,
+      "away_score": 0,
+      "home_score": 0,
       "away_prob": 43.8,
       "home_prob": 56.2,
       "home_roster_churn": 0.0,
@@ -2675,7 +2660,7 @@
       },
       "home_goalie": {
         "name": "Ukko-Pekka Luukkonen",
-        "confirmation": "Likely",
+        "confirmation": "Confirmed",
         "sv_pct": 0.885
       },
       "away_injuries": [
@@ -4119,7 +4104,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020417,
@@ -4138,7 +4123,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020418,
@@ -4157,7 +4142,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020419,
@@ -4176,7 +4161,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020420,
@@ -4195,7 +4180,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020421,
@@ -4214,7 +4199,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020422,
@@ -4233,7 +4218,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020423,
@@ -4252,7 +4237,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020424,
@@ -4271,7 +4256,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020425,
@@ -4290,7 +4275,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020426,
@@ -4309,7 +4294,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       },
       {
         "id": 2026020427,
@@ -4328,7 +4313,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:34:20.409694+00:00"
+        "closing_at": "2026-11-28T00:46:28.375196+00:00"
       }
     ]
   },
@@ -4350,7 +4335,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020417,
@@ -4369,7 +4354,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020418,
@@ -4388,7 +4373,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020419,
@@ -4407,7 +4392,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020420,
@@ -4426,7 +4411,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020421,
@@ -4445,7 +4430,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020422,
@@ -4464,7 +4449,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020423,
@@ -4483,7 +4468,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020424,
@@ -4502,7 +4487,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020425,
@@ -4521,7 +4506,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020426,
@@ -4540,7 +4525,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     },
     {
       "id": 2026020427,
@@ -4559,7 +4544,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:34:20.409694+00:00"
+      "closing_at": "2026-11-28T00:46:28.375196+00:00"
     }
   ],
   "tims_board_players": [
