@@ -859,7 +859,97 @@
       "is_trade": false,
       "is_waiver": false,
       "team": "BUF"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Waived D William Trudeau.",
+      "is_ir": false,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NSH"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Placed F Leo Carlsson on injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "ANA"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Activated F Colton Sissons from injured reserve. Activated F Kirill Marchenko from injured reserve. Assigned G Artur Akhtyamov to Toronto (AHL).",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TOR"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Placed F Pontus Holmberg on injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "TBL"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Placed F Jimmy Snuggerud on injured reserve. Activated F Connor McMichael from injured reserve.",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "STL"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Assigned F Tyler Boucher to Belleville (AHL). Activated F Hayden Hodgson from injured reserve. Activated F Andre Burakovsky from injured reserve. Assigned F Samuel Blais to Belleville (AHL).",
+      "is_ir": true,
+      "is_recall": false,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "OTT"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Recalled G David Rittich from Utica (AHL). Assigned F Lenni Hameenaho to Utica (AHL). Assigned G David Rittich to Utica (AHL).",
+      "is_ir": false,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "NJD"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Assigned F Dominic Toninato to Rockford (AHL). Recalled F Dillon Boucher from Rockford (AHL). Placed F Patrick Kane on injured reserve. Recalled F Landon Slaggert from Rockford (AHL).",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": true,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "CHI"
+    },
+    {
+      "date": "2026-11-27T08:00Z",
+      "description": "Recalled F Conor Sheary from Rochester (AHL). Placed F Noah Ostlund on injured reserve. Activated F Justin Danforth from injured reserve. Placed F Tyson Kozak on injured reserve.",
+      "is_ir": true,
+      "is_recall": true,
+      "is_signing": false,
+      "is_trade": false,
+      "is_waiver": false,
+      "team": "BUF"
     }
   ],
-  "updated_utc": "2026-11-27T22:46:35.812971+00:00"
+  "updated_utc": "2026-11-28T00:11:28.285042+00:00"
 }

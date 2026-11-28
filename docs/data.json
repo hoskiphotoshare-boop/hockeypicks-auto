@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-27 23:59:43 UTC",
-    "updated_et": "2026-11-27 06:59 PM ET",
+    "updated_utc": "2026-11-28 00:11:40 UTC",
+    "updated_et": "2026-11-27 07:11 PM ET",
     "today_date": "2026-11-27",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -1569,6 +1569,29 @@
       "injury_note": ""
     },
     {
+      "player": "Macklin Celebrini",
+      "team": "SJS",
+      "position": "C",
+      "opponent": "VGK",
+      "base_pred": 0.481,
+      "prior_goals_per_game": 0.549,
+      "prior_gp": 82.0,
+      "prior_goals": 45.0,
+      "model_score": 0.437,
+      "live_gp": 26,
+      "live_goals": 11,
+      "live_shots": 103,
+      "live_g_gp": 0.423,
+      "eb_live_weight_pct": 45.8,
+      "def_multiplier": 0.96,
+      "final_score": 0.437,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
       "player": "Alex DeBrincat",
       "team": "DET",
       "position": "R",
@@ -1608,29 +1631,6 @@
       "eb_live_weight_pct": 43.8,
       "def_multiplier": 1.056,
       "final_score": 0.43,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
-    },
-    {
-      "player": "Macklin Celebrini",
-      "team": "SJS",
-      "position": "C",
-      "opponent": "VGK",
-      "base_pred": 0.481,
-      "prior_goals_per_game": 0.549,
-      "prior_gp": 82.0,
-      "prior_goals": 45.0,
-      "model_score": 0.428,
-      "live_gp": 25,
-      "live_goals": 10,
-      "live_shots": 99,
-      "live_g_gp": 0.4,
-      "eb_live_weight_pct": 44.8,
-      "def_multiplier": 0.96,
-      "final_score": 0.428,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1799,6 +1799,29 @@
       "injury_note": ""
     },
     {
+      "player": "Jack Eichel",
+      "team": "VGK",
+      "position": "C",
+      "opponent": "SJS",
+      "base_pred": 0.361,
+      "prior_goals_per_game": 0.302,
+      "prior_gp": 96.0,
+      "prior_goals": 29.0,
+      "model_score": 0.417,
+      "live_gp": 27,
+      "live_goals": 12,
+      "live_shots": 75,
+      "live_g_gp": 0.444,
+      "eb_live_weight_pct": 46.7,
+      "def_multiplier": 1.046,
+      "final_score": 0.417,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
       "player": "Lucas Raymond",
       "team": "DET",
       "position": "L",
@@ -1815,29 +1838,6 @@
       "eb_live_weight_pct": 44.8,
       "def_multiplier": 1.032,
       "final_score": 0.415,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
-    },
-    {
-      "player": "Victor Olofsson",
-      "team": "VGK",
-      "position": "L",
-      "opponent": "SJS",
-      "base_pred": 0.315,
-      "prior_goals_per_game": 0.167,
-      "prior_gp": 78.0,
-      "prior_goals": 13.0,
-      "model_score": 0.41,
-      "live_gp": 13,
-      "live_goals": 8,
-      "live_shots": 29,
-      "live_g_gp": 0.615,
-      "eb_live_weight_pct": 29.7,
-      "def_multiplier": 1.046,
-      "final_score": 0.41,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1960,22 +1960,22 @@
       "injury_note": ""
     },
     {
-      "player": "Jack Eichel",
+      "player": "Victor Olofsson",
       "team": "VGK",
-      "position": "C",
+      "position": "L",
       "opponent": "SJS",
-      "base_pred": 0.361,
-      "prior_goals_per_game": 0.302,
-      "prior_gp": 96.0,
-      "prior_goals": 29.0,
-      "model_score": 0.407,
-      "live_gp": 26,
-      "live_goals": 11,
-      "live_shots": 72,
-      "live_g_gp": 0.423,
-      "eb_live_weight_pct": 45.8,
+      "base_pred": 0.315,
+      "prior_goals_per_game": 0.167,
+      "prior_gp": 78.0,
+      "prior_goals": 13.0,
+      "model_score": 0.406,
+      "live_gp": 14,
+      "live_goals": 8,
+      "live_shots": 35,
+      "live_g_gp": 0.571,
+      "eb_live_weight_pct": 31.3,
       "def_multiplier": 1.046,
-      "final_score": 0.407,
+      "final_score": 0.406,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -4348,7 +4348,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020417,
@@ -4367,7 +4367,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020418,
@@ -4386,7 +4386,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020419,
@@ -4405,7 +4405,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020420,
@@ -4424,7 +4424,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020421,
@@ -4443,7 +4443,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020422,
@@ -4462,7 +4462,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020423,
@@ -4481,7 +4481,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020424,
@@ -4500,7 +4500,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020425,
@@ -4519,7 +4519,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020426,
@@ -4538,7 +4538,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       },
       {
         "id": 2026020427,
@@ -4557,7 +4557,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-27T23:59:27.904485+00:00"
+        "closing_at": "2026-11-28T00:11:27.520222+00:00"
       }
     ]
   },
@@ -4579,7 +4579,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020417,
@@ -4598,7 +4598,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020418,
@@ -4617,7 +4617,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020419,
@@ -4636,7 +4636,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020420,
@@ -4655,7 +4655,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020421,
@@ -4674,7 +4674,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020422,
@@ -4693,7 +4693,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020423,
@@ -4712,7 +4712,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020424,
@@ -4731,7 +4731,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020425,
@@ -4750,7 +4750,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020426,
@@ -4769,7 +4769,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     },
     {
       "id": 2026020427,
@@ -4788,7 +4788,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-27T23:59:27.904485+00:00"
+      "closing_at": "2026-11-28T00:11:27.520222+00:00"
     }
   ],
   "tims_board_players": [
