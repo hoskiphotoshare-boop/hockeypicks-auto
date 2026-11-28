@@ -13,15 +13,6 @@
     "skater_baseline_source": "2026 Regular + 2025 Playoffs",
     "tims_status": "empty_404",
     "odds_enabled": true,
-    "odds_usage": {
-      "date": "2026-11-27",
-      "live_loop_fetches": 3,
-      "live_loop_cap": 3,
-      "last_source": "cached_cap_reached",
-      "requests_last": 1,
-      "requests_used": 210,
-      "requests_remaining": 290
-    },
     "availability": {
       "injury_source": "espn",
       "injury_count": 118,
@@ -1623,9 +1614,7 @@
       ],
       "home_injuries": [
         "James Hagens (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020401,
@@ -1683,9 +1672,7 @@
         "Brenden Dillon (Susp)",
         "Anthony Mantha (IR)",
         "Johnathan Kovacevic (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020402,
@@ -1739,9 +1726,7 @@
         "Nick Schmaltz (IR)",
         "Nate Schmidt (IR)"
       ],
-      "home_injuries": [],
-      "bookie": null,
-      "bookie_key": null
+      "home_injuries": []
     },
     {
       "id": 2026020403,
@@ -1799,9 +1784,7 @@
         "Brandon Carlo (IR)",
         "Torey Krug (IR)",
         "Dillon Dube (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020404,
@@ -1857,9 +1840,7 @@
         "Erik Cernak (Out)",
         "Pontus Holmberg (IR)",
         "Conor Geekie (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020405,
@@ -1916,9 +1897,7 @@
       "home_injuries": [
         "Owen Tippett (Out)",
         "Nikita Grebenkin (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020406,
@@ -1973,9 +1952,7 @@
       "home_injuries": [
         "Jordan Kyrou (IR)",
         "Rasmus Sandin (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020407,
@@ -2033,9 +2010,7 @@
       ],
       "home_injuries": [
         "Denton Mateychuk (Out)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020408,
@@ -2092,9 +2067,7 @@
       "home_injuries": [
         "Quinn Hughes (IR)",
         "Olli Maatta (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020409,
@@ -2150,9 +2123,7 @@
         "Leo Carlsson (IR)",
         "Ryan Poehling (IR)",
         "A.J. Greer (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020410,
@@ -2206,9 +2177,7 @@
         "Kiefer Sherwood (IR)",
         "Igor Chernyshov (IR)",
         "Quentin Musty (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020411,
@@ -2267,9 +2236,7 @@
         "Patrick Kane (IR)",
         "Connor Bedard (IR)",
         "Wyatt Kaiser (Susp)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020412,
@@ -2327,9 +2294,7 @@
         "Kyle Palmieri (IR)",
         "Ryan Pulock (Out)",
         "Alexander Romanov (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020413,
@@ -2388,9 +2353,7 @@
         "Tyson Kozak (IR)",
         "Zach Benson (Out)",
         "Konsta Helenius (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020414,
@@ -2447,9 +2410,7 @@
         "Zach Hyman (Out)",
         "Alec Regula (IR)",
         "Matt Savoie (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020415,
@@ -2503,9 +2464,7 @@
         "Mike Matheson (IR)",
         "Josh Anderson (IR)"
       ],
-      "home_injuries": [],
-      "bookie": null,
-      "bookie_key": null
+      "home_injuries": []
     },
     {
       "id": 2026020416,
@@ -2561,9 +2520,7 @@
       "home_injuries": [
         "Garnet Hathaway (Out)",
         "Jonah Gadjovich (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020417,
@@ -2619,9 +2576,7 @@
       "home_injuries": [
         "William Wallinder (Out)",
         "Simon Edvinsson (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020418,
@@ -2680,9 +2635,7 @@
         "Brenden Dillon (Susp)",
         "Anthony Mantha (IR)",
         "Johnathan Kovacevic (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020419,
@@ -2740,9 +2693,7 @@
         "Pavel Dorofeyev (IR)",
         "Oliver Bjorkstrand (IR)",
         "Alberts Smits (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020420,
@@ -2801,9 +2752,7 @@
         "Bryan Rust (IR)",
         "Nick Robertson (IR)",
         "Elmer Soderblom (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020421,
@@ -2851,9 +2800,7 @@
         "Warren Foegele (IR)",
         "William Eklund (IR)"
       ],
-      "home_injuries": [],
-      "bookie": null,
-      "bookie_key": null
+      "home_injuries": []
     },
     {
       "id": 2026020422,
@@ -2910,9 +2857,7 @@
         "Brandon Carlo (IR)",
         "Torey Krug (IR)",
         "Dillon Dube (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020423,
@@ -2968,9 +2913,7 @@
       "home_injuries": [
         "Owen Tippett (Out)",
         "Nikita Grebenkin (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020424,
@@ -3028,9 +2971,7 @@
         "Kyle Capobianco (IR)",
         "Lian Bichsel (IR)",
         "Matt Duchene (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020425,
@@ -3089,9 +3030,7 @@
         "Gavin Brindley (IR)",
         "Nathan MacKinnon (Out)",
         "Josh Manson (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020426,
@@ -3147,9 +3086,7 @@
       "home_injuries": [
         "Erik Gustafsson (IR)",
         "Jakub Dvorak (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     },
     {
       "id": 2026020427,
@@ -3206,9 +3143,7 @@
       "home_injuries": [
         "Jake O'Brien (IR)",
         "Jared McCann (IR)"
-      ],
-      "bookie": null,
-      "bookie_key": null
+      ]
     }
   ],
   "power_rankings": [

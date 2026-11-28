@@ -45,6 +45,7 @@ from src.report_builder import (
     write_json_report,
     write_terminal_log_html,
 )
+from src.admin_publish import publish_admin_artifacts
 from src.skater_model import (
     build_inference_baseline,
     build_prior_goal_rate_frame,
@@ -1322,6 +1323,20 @@ def main() -> int:
         payload["meta"],
         os.path.join(args.docs_dir, "latest_run.html"),
     )
+
+    if args.mode != "train" and payload:
+        latest_path = os.path.join(args.docs_dir, "latest_run.html")
+        latest_html = None
+        try:
+            if os.path.exists(latest_path):
+                with open(latest_path, "r", encoding="utf-8") as f:
+                    latest_html = f.read()
+        except Exception:
+            latest_html = None
+        try:
+            publish_admin_artifacts(data=payload, latest_run_html=latest_html)
+        except Exception:
+            pass
     return 0
 
 

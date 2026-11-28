@@ -48,6 +48,7 @@ jobs:
       - name: Run Live Window Loop
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          HP_ADMIN_PUBLISH_TOKEN: ${{ secrets.HP_ADMIN_PUBLISH_TOKEN }}
         run: |
           ARGS=""
           if [ "${{ inputs.once }}" = "true" ]; then ARGS="$ARGS --once"; fi

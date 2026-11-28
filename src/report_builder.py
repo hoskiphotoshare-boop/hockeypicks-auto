@@ -20,6 +20,7 @@ PUBLIC_DROP_GAME_KEYS = frozenset({
     "book_odds", "away_odds", "home_odds",
     "away_edge", "home_edge", "away_ev", "home_ev",
     "rec_bet", "kelly", "edge_pct", "best_odds", "best_bookie",
+    "bookie", "bookie_key",
     "home_depth_eff", "away_depth_eff",
     "home_prob_unadjusted", "away_prob_unadjusted",
 })
@@ -35,12 +36,63 @@ def sanitize_public_payload(payload: dict[str, Any]) -> dict[str, Any]:
         return payload
     out = copy.deepcopy(payload)
     out.pop("calls_admin", None)
+    meta = out.get("meta")
+    if isinstance(meta, dict):
+        meta.pop("odds_usage", None)
     games = out.get("games")
     if isinstance(games, list):
         for game in games:
             if isinstance(game, dict):
                 for key in PUBLIC_DROP_GAME_KEYS:
                     game.pop(key, None)
+    return out
+
+
+TEAM_KEEP_KEYS = (
+    "rank", "team", "conference", "division", "gp", "points", "proj_points",
+    "make_playoffs_pct", "make_conf_final_pct", "make_cup_final_pct",
+    "model_cup_pct", "win_division_pct",
+)
+SUMMARY_KEEP_KEYS = ("avg_gp", "max_team_pct", "months_to_cup")
+META_KEEP_KEYS = (
+    "updated_et", "n_sims", "model_metrics", "model_features",
+    "remaining_regular_games", "active_playoff_series_count", "empirical_ot_rate",
+    "sim_mode", "status", "today_date", "nhl_season", "nhl_season_label",
+)
+
+
+def sanitize_public_cup_futures(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return a public copy of cup futures with all betting fields removed."""
+    if not isinstance(payload, dict):
+        return payload
+    out = copy.deepcopy(payload)
+    teams = out.get("teams")
+    if isinstance(teams, list):
+        sanitized = []
+        for t in teams:
+            if not isinstance(t, dict):
+                continue
+            o = {}
+            for k in TEAM_KEEP_KEYS:
+                if k in t:
+                    o[k] = t[k]
+            sanitized.append(o)
+        out["teams"] = sanitized
+    summary = out.get("summary")
+    if isinstance(summary, dict):
+        o = {}
+        for k in SUMMARY_KEEP_KEYS:
+            if k in summary:
+                o[k] = summary[k]
+        out["summary"] = o
+    meta = out.get("meta")
+    if isinstance(meta, dict):
+        o = {}
+        for k in META_KEEP_KEYS:
+            if k in meta:
+                o[k] = meta[k]
+        o["odds_enabled"] = False
+        out["meta"] = o
     return out
 
 

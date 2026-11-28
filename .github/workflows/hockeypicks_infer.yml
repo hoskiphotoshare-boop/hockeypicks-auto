@@ -49,6 +49,7 @@ jobs:
         if: steps.gate.outputs.should_run == 'true'
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          HP_ADMIN_PUBLISH_TOKEN: ${{ secrets.HP_ADMIN_PUBLISH_TOKEN }}
         run: python main_pipeline.py --mode infer
 
       - name: Check public docs contain no admin odds

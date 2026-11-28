@@ -56,6 +56,7 @@ jobs:
       - name: Train Futures Model & Simulate Stanley Cup Odds
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          HP_ADMIN_PUBLISH_TOKEN: ${{ secrets.HP_ADMIN_PUBLISH_TOKEN }}
         run: |
           python -m src.cup_futures \
             --data-dir ./data \

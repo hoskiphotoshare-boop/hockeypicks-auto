@@ -30,3 +30,70 @@ class PublicDocsGuardTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PublicDocsGuardExtendedTests(unittest.TestCase):
+    def test_detects_meta_odds_usage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            docs.mkdir()
+            (docs / "data.json").write_text(json.dumps({"meta": {"odds_usage": {"x": 1}}, "games": []}))
+            (docs / "cup_futures.json").write_text(json.dumps({"meta": {"odds_enabled": False}, "teams": [], "summary": {}}))
+            errors = check_docs(tmp)
+            self.assertTrue(any("odds_usage" in e for e in errors))
+
+    def test_detects_new_game_keys(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            docs.mkdir()
+            (docs / "data.json").write_text(json.dumps({"games": [{"id": 1, "bookie": "X", "bookie_key": "y"}]}))
+            (docs / "cup_futures.json").write_text(json.dumps({"meta": {"odds_enabled": False}, "teams": [], "summary": {}}))
+            errors = check_docs(tmp)
+            self.assertTrue(any("bookie" in e for e in errors))
+
+    def test_cup_futures_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            docs.mkdir()
+            (docs / "data.json").write_text(json.dumps({"games": []}))
+            errors = check_docs(tmp)
+            self.assertTrue(any("cup_futures" in e for e in errors))
+
+    def test_cup_futures_banned_team_key(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            docs.mkdir()
+            (docs / "data.json").write_text(json.dumps({"games": []}))
+            (docs / "cup_futures.json").write_text(json.dumps({
+                "meta": {"odds_enabled": False},
+                "teams": [{"team": "TOR", "best_odds": 5.0}],
+                "summary": {},
+            }))
+            errors = check_docs(tmp)
+            self.assertTrue(any("best_odds" in e for e in errors))
+
+    def test_cup_futures_odds_enabled_true(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            docs.mkdir()
+            (docs / "data.json").write_text(json.dumps({"games": []}))
+            (docs / "cup_futures.json").write_text(json.dumps({
+                "meta": {"odds_enabled": True},
+                "teams": [],
+                "summary": {},
+            }))
+            errors = check_docs(tmp)
+            self.assertTrue(any("odds_enabled" in e for e in errors))
+
+    def test_cup_futures_banned_summary_key(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            docs.mkdir()
+            (docs / "data.json").write_text(json.dumps({"games": []}))
+            (docs / "cup_futures.json").write_text(json.dumps({
+                "meta": {"odds_enabled": False},
+                "teams": [],
+                "summary": {"bankroll": 1000},
+            }))
+            errors = check_docs(tmp)
+            self.assertTrue(any("bankroll" in e for e in errors))

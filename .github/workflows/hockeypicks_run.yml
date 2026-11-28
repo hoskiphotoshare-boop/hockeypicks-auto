@@ -47,6 +47,7 @@ jobs:
       - name: Execute Hockeypicks AI Training & Inference Pipeline
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          HP_ADMIN_PUBLISH_TOKEN: ${{ secrets.HP_ADMIN_PUBLISH_TOKEN }}
         run: python main_pipeline.py --mode full
 
       - name: Check public docs contain no admin odds

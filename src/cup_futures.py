@@ -29,7 +29,8 @@ from src.data_sync import (
     sync_game_logs,
     sync_moneypuck_data,
 )
-from src.report_builder import write_json_report
+from src.report_builder import sanitize_public_cup_futures, write_json_report
+from src.admin_publish import publish_admin_artifacts
 from src.team_game_model import (
     _pairwise_win_prob,
     _safe_int,
@@ -1067,8 +1068,14 @@ def run_futures_pipeline(
         "active_goalies_count": len(active_goalies),
     }
 
+    try:
+        publish_admin_artifacts(cup_futures=payload)
+    except Exception:
+        pass
+
+    public_payload = sanitize_public_cup_futures(payload)
     out_path = os.path.join(docs_dir, "cup_futures.json")
-    write_json_report(payload, out_path)
+    write_json_report(public_payload, out_path)
     print(
         f"Futures Simulation ({sim_mode}, {n_sims} trials, {len(remaining_games)} reg games left, OT rate={ot_rate:.1%}) -> "
         f"Top Favorite: {rows[0]['team']} ({rows[0]['blended_cup_pct']:.1f}% Cup) | "
