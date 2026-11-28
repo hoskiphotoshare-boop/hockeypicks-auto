@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-28 00:11:40 UTC",
-    "updated_et": "2026-11-27 07:11 PM ET",
+    "updated_utc": "2026-11-28 00:34:32 UTC",
+    "updated_et": "2026-11-27 07:34 PM ET",
     "today_date": "2026-11-27",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -95,30 +95,6 @@
         "group": 1
       },
       {
-        "player": "Kyle Connor",
-        "team": "WPG",
-        "position": "F",
-        "opponent": "NYI",
-        "base_pred": 0.49,
-        "prior_goals_per_game": 0.476,
-        "prior_gp": 82.0,
-        "prior_goals": 39.0,
-        "model_score": 0.622,
-        "live_gp": 26,
-        "live_goals": 20,
-        "live_shots": 105,
-        "live_g_gp": 0.769,
-        "eb_live_weight_pct": 45.8,
-        "def_multiplier": 1.012,
-        "final_score": 0.622,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
         "player": "Tage Thompson",
         "team": "BUF",
         "position": "F",
@@ -165,30 +141,6 @@
         "injury_dtd": false,
         "injury_note": "",
         "group": 1
-      },
-      {
-        "player": "Bo Horvat",
-        "team": "NYI",
-        "position": "F",
-        "opponent": "WPG",
-        "base_pred": 0.427,
-        "prior_goals_per_game": 0.456,
-        "prior_gp": 68.0,
-        "prior_goals": 31.0,
-        "model_score": 0.41,
-        "live_gp": 24,
-        "live_goals": 9,
-        "live_shots": 71,
-        "live_g_gp": 0.375,
-        "eb_live_weight_pct": 43.8,
-        "def_multiplier": 1.01,
-        "final_score": 0.41,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
       }
     ],
     "2": [
@@ -209,78 +161,6 @@
         "eb_live_weight_pct": 44.8,
         "def_multiplier": 1.063,
         "final_score": 0.492,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Anthony Duclair",
-        "team": "NYI",
-        "position": "F",
-        "opponent": "WPG",
-        "base_pred": 0.2,
-        "prior_goals_per_game": 0.194,
-        "prior_gp": 62.0,
-        "prior_goals": 12.0,
-        "model_score": 0.235,
-        "live_gp": 24,
-        "live_goals": 7,
-        "live_shots": 29,
-        "live_g_gp": 0.292,
-        "eb_live_weight_pct": 43.8,
-        "def_multiplier": 1.01,
-        "final_score": 0.235,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Josh Morrissey",
-        "team": "WPG",
-        "position": "D",
-        "opponent": "NYI",
-        "base_pred": 0.16,
-        "prior_goals_per_game": 0.182,
-        "prior_gp": 77.0,
-        "prior_goals": 14.0,
-        "model_score": 0.164,
-        "live_gp": 12,
-        "live_goals": 2,
-        "live_shots": 31,
-        "live_g_gp": 0.167,
-        "eb_live_weight_pct": 28.0,
-        "def_multiplier": 1.012,
-        "final_score": 0.164,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Emil Heineman",
-        "team": "NYI",
-        "position": "F",
-        "opponent": "WPG",
-        "base_pred": 0.162,
-        "prior_goals_per_game": 0.268,
-        "prior_gp": 82.0,
-        "prior_goals": 22.0,
-        "model_score": 0.15,
-        "live_gp": 24,
-        "live_goals": 3,
-        "live_shots": 30,
-        "live_g_gp": 0.125,
-        "eb_live_weight_pct": 43.8,
-        "def_multiplier": 1.01,
-        "final_score": 0.15,
         "mode": "Regular Season",
         "injury_status": null,
         "injury_out": false,
@@ -314,30 +194,6 @@
       }
     ],
     "3": [
-      {
-        "player": "Morgan Barron",
-        "team": "WPG",
-        "position": "F",
-        "opponent": "NYI",
-        "base_pred": 0.125,
-        "prior_goals_per_game": 0.169,
-        "prior_gp": 65.0,
-        "prior_goals": 11.0,
-        "model_score": 0.167,
-        "live_gp": 26,
-        "live_goals": 6,
-        "live_shots": 36,
-        "live_g_gp": 0.231,
-        "eb_live_weight_pct": 45.8,
-        "def_multiplier": 1.012,
-        "final_score": 0.167,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
       {
         "player": "Ville Koivunen",
         "team": "PIT",
@@ -389,16 +245,10 @@
     ]
   },
   "tims_timing": {
-    "status": "evaluated",
+    "status": "single_wave",
     "decision": "SELECT_NOW",
-    "headline": "Select Current Best Now (Before 7:30 PM ET)",
-    "detail": "Deferring past 7:30 PM ET loses 0.022 xG by shrinking the top-tier pool",
-    "defer_threshold": 0.02,
-    "recommended_wave_et": "8:00 PM ET",
-    "v_now": 1.0378,
-    "v_defer_best": 1.0162,
-    "ev_delta": -0.0216,
-    "locked_picks_if_defer_1": 1,
+    "headline": "Select Current Best Now (Single Wave at 8:00 PM ET)",
+    "detail": "All remaining games start together; waiting adds no new players.",
     "current_best": {
       "1": {
         "player": "Leon Draisaitl",
@@ -425,14 +275,14 @@
         "injury_dtd": false
       },
       "3": {
-        "player": "Morgan Barron",
-        "team": "WPG",
-        "opponent": "NYI",
+        "player": "Ville Koivunen",
+        "team": "PIT",
+        "opponent": "BUF",
         "position": "F",
-        "final_score": 0.167,
-        "p_goal_pct": 15.4,
-        "wave_idx": 3,
-        "wave_et": "7:30 PM ET",
+        "final_score": 0.141,
+        "p_goal_pct": 13.2,
+        "wave_idx": 4,
+        "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
       }
@@ -463,34 +313,33 @@
         "injury_dtd": false
       },
       "3": {
-        "player": "Morgan Barron",
-        "team": "WPG",
-        "opponent": "NYI",
+        "player": "Ville Koivunen",
+        "team": "PIT",
+        "opponent": "BUF",
         "position": "F",
-        "final_score": 0.167,
-        "p_goal_pct": 15.4,
-        "wave_idx": 3,
-        "wave_et": "7:30 PM ET",
+        "final_score": 0.141,
+        "p_goal_pct": 13.2,
+        "wave_idx": 4,
+        "wave_et": "8:00 PM ET",
         "injury_status": null,
         "injury_dtd": false
       }
     },
     "lock_basis": "now",
-    "first_wave_utc": "2026-11-28T00:30:00Z",
-    "selection_lock_utc": "2026-11-28T00:30:00Z",
-    "selection_lock_et": "7:30 PM ET",
-    "selection_wave": 3,
+    "first_wave_utc": "2026-11-28T01:00:00Z",
+    "selection_lock_et": "8:00 PM ET",
+    "selection_lock_utc": "2026-11-28T01:00:00Z",
+    "selection_wave": 4,
+    "v_now": 1.0155,
+    "v_defer_best": 1.0155,
+    "ev_delta": 0.0,
     "hidden_upside_players": [],
-    "g1_best_score": 0.684,
-    "g2_best_score": 0.492,
     "waves": [
       {
         "wave": 1,
         "start_time_et": "4:00 PM ET",
         "matchups": [
-          "COL @ MIN",
-          "LAK @ ANA",
-          "VGK @ SJS"
+          "LAK @ ANA"
         ],
         "est_ev": 0.0,
         "ev_delta": 0.0,
@@ -522,43 +371,14 @@
         "matchups": [
           "WPG @ NYI"
         ],
-        "est_ev": 1.0378,
+        "est_ev": 0.0,
         "ev_delta": 0.0,
         "beat_now_pct": 0.0,
-        "visible_carried": 13,
-        "hidden_available": 112,
-        "unlisted_scorers": [
-          {
-            "player": "Mark Scheifele",
-            "team": "WPG",
-            "final_score": 0.403,
-            "p_goal_pct": 33.2,
-            "injury_status": null
-          },
-          {
-            "player": "Cole Perfetti",
-            "team": "WPG",
-            "final_score": 0.39,
-            "p_goal_pct": 32.3,
-            "injury_status": null
-          },
-          {
-            "player": "Matthew Schaefer",
-            "team": "NYI",
-            "final_score": 0.374,
-            "p_goal_pct": 31.2,
-            "injury_status": null
-          },
-          {
-            "player": "Mathew Barzal",
-            "team": "NYI",
-            "final_score": 0.362,
-            "p_goal_pct": 30.4,
-            "injury_status": null
-          }
-        ],
-        "is_current": true,
-        "is_past": false
+        "visible_carried": 0,
+        "hidden_available": 0,
+        "unlisted_scorers": [],
+        "is_current": false,
+        "is_past": true
       },
       {
         "wave": 4,
@@ -567,62 +387,13 @@
           "PIT @ BUF",
           "SEA @ EDM"
         ],
-        "est_ev": 1.0162,
-        "ev_delta": -0.0216,
+        "est_ev": 1.0155,
+        "ev_delta": 0.0,
         "beat_now_pct": 0.0,
         "visible_carried": 7,
-        "hidden_available": 76,
-        "projected_ticket": {
-          "1": {
-            "player": "Leon Draisaitl",
-            "team": "EDM",
-            "group": "1",
-            "final_score": 0.684
-          },
-          "2": {
-            "player": "Jack Quinn",
-            "team": "BUF",
-            "group": "2",
-            "final_score": 0.492
-          },
-          "3": {
-            "player": "Ville Koivunen",
-            "team": "PIT",
-            "group": "3",
-            "final_score": 0.141
-          }
-        },
-        "unlisted_scorers": [
-          {
-            "player": "Vasily Podkolzin",
-            "team": "EDM",
-            "final_score": 0.419,
-            "p_goal_pct": 34.2,
-            "injury_status": null
-          },
-          {
-            "player": "Rickard Rakell",
-            "team": "PIT",
-            "final_score": 0.41,
-            "p_goal_pct": 33.6,
-            "injury_status": null
-          },
-          {
-            "player": "Evan Bouchard",
-            "team": "EDM",
-            "final_score": 0.351,
-            "p_goal_pct": 29.6,
-            "injury_status": null
-          },
-          {
-            "player": "Jordan Eberle",
-            "team": "SEA",
-            "final_score": 0.337,
-            "p_goal_pct": 28.6,
-            "injury_status": null
-          }
-        ],
-        "is_current": false,
+        "hidden_available": 0,
+        "unlisted_scorers": [],
+        "is_current": true,
         "is_past": false
       }
     ]
@@ -1146,7 +917,7 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 1,
-      "game_state": "FINAL"
+      "game_state": "OFF"
     },
     {
       "player": "Jack Eichel",
@@ -1156,7 +927,7 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 1,
-      "game_state": "FINAL"
+      "game_state": "OFF"
     },
     {
       "player": "Macklin Celebrini",
@@ -1166,7 +937,7 @@
       "wave": 4,
       "wave_et": "4:00 PM ET",
       "goals": 1,
-      "game_state": "FINAL"
+      "game_state": "OFF"
     }
   ],
   "tims_scoreboard_meta": {
@@ -1278,14 +1049,14 @@
       "prior_goals_per_game": 0.551,
       "prior_gp": 89.0,
       "prior_goals": 49.0,
-      "model_score": 0.556,
-      "live_gp": 27,
+      "model_score": 0.546,
+      "live_gp": 28,
       "live_goals": 19,
       "live_shots": 80,
-      "live_g_gp": 0.704,
-      "eb_live_weight_pct": 46.7,
+      "live_g_gp": 0.679,
+      "eb_live_weight_pct": 47.6,
       "def_multiplier": 0.946,
-      "final_score": 0.556,
+      "final_score": 0.546,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1431,29 +1202,6 @@
       "injury_note": ""
     },
     {
-      "player": "Matt Boldy",
-      "team": "MIN",
-      "position": "L",
-      "opponent": "COL",
-      "base_pred": 0.489,
-      "prior_goals_per_game": 0.563,
-      "prior_gp": 87.0,
-      "prior_goals": 49.0,
-      "model_score": 0.474,
-      "live_gp": 27,
-      "live_goals": 14,
-      "live_shots": 107,
-      "live_g_gp": 0.519,
-      "eb_live_weight_pct": 46.7,
-      "def_multiplier": 0.946,
-      "final_score": 0.474,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
-    },
-    {
       "player": "Auston Matthews",
       "team": "TOR",
       "position": "C",
@@ -1470,6 +1218,29 @@
       "eb_live_weight_pct": 46.7,
       "def_multiplier": 0.978,
       "final_score": 0.472,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
+      "player": "Matt Boldy",
+      "team": "MIN",
+      "position": "L",
+      "opponent": "COL",
+      "base_pred": 0.489,
+      "prior_goals_per_game": 0.563,
+      "prior_gp": 87.0,
+      "prior_goals": 49.0,
+      "model_score": 0.466,
+      "live_gp": 28,
+      "live_goals": 14,
+      "live_shots": 109,
+      "live_g_gp": 0.5,
+      "eb_live_weight_pct": 47.6,
+      "def_multiplier": 0.946,
+      "final_score": 0.466,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1661,6 +1432,29 @@
       "injury_note": ""
     },
     {
+      "player": "Artturi Lehkonen",
+      "team": "COL",
+      "position": "L",
+      "opponent": "MIN",
+      "base_pred": 0.317,
+      "prior_goals_per_game": 0.296,
+      "prior_gp": 81.0,
+      "prior_goals": 24.0,
+      "model_score": 0.428,
+      "live_gp": 25,
+      "live_goals": 17,
+      "live_shots": 57,
+      "live_g_gp": 0.68,
+      "eb_live_weight_pct": 44.8,
+      "def_multiplier": 0.921,
+      "final_score": 0.428,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
       "player": "Tim Sttzle",
       "team": "OTT",
       "position": "C",
@@ -1776,21 +1570,21 @@
       "injury_note": ""
     },
     {
-      "player": "Artturi Lehkonen",
-      "team": "COL",
-      "position": "L",
-      "opponent": "MIN",
-      "base_pred": 0.317,
-      "prior_goals_per_game": 0.296,
-      "prior_gp": 81.0,
-      "prior_goals": 24.0,
+      "player": "Joel Eriksson Ek",
+      "team": "MIN",
+      "position": "C",
+      "opponent": "COL",
+      "base_pred": 0.454,
+      "prior_goals_per_game": 0.289,
+      "prior_gp": 76.0,
+      "prior_goals": 22.0,
       "model_score": 0.418,
-      "live_gp": 24,
-      "live_goals": 16,
-      "live_shots": 52,
-      "live_g_gp": 0.667,
-      "eb_live_weight_pct": 43.8,
-      "def_multiplier": 0.921,
+      "live_gp": 28,
+      "live_goals": 12,
+      "live_shots": 92,
+      "live_g_gp": 0.429,
+      "eb_live_weight_pct": 47.6,
+      "def_multiplier": 0.946,
       "final_score": 0.418,
       "mode": "Regular Season",
       "injury_status": null,
@@ -2045,29 +1839,6 @@
       "eb_live_weight_pct": 44.8,
       "def_multiplier": 0.968,
       "final_score": 0.401,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
-    },
-    {
-      "player": "Joel Eriksson Ek",
-      "team": "MIN",
-      "position": "C",
-      "opponent": "COL",
-      "base_pred": 0.454,
-      "prior_goals_per_game": 0.289,
-      "prior_gp": 76.0,
-      "prior_goals": 22.0,
-      "model_score": 0.393,
-      "live_gp": 27,
-      "live_goals": 10,
-      "live_shots": 87,
-      "live_g_gp": 0.37,
-      "eb_live_weight_pct": 46.7,
-      "def_multiplier": 0.946,
-      "final_score": 0.393,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -2573,7 +2344,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-27T21:00:00Z",
       "start_time_et": "4:00 PM ET",
-      "game_state": "FINAL",
+      "game_state": "OFF",
       "game_type": 2,
       "away": "COL",
       "home": "MIN",
@@ -2606,12 +2377,12 @@
       "away_goalie": {
         "name": "Mackenzie Blackwood",
         "confirmation": "Confirmed",
-        "sv_pct": 0.907
+        "sv_pct": 0.908
       },
       "home_goalie": {
         "name": "Jesper Wallstedt",
         "confirmation": "Confirmed",
-        "sv_pct": 0.923
+        "sv_pct": 0.919
       },
       "away_injuries": [
         "Martin Necas (Out)",
@@ -2665,12 +2436,12 @@
       "away_goalie": {
         "name": "Darcy Kuemper",
         "confirmation": "Confirmed",
-        "sv_pct": 0.889
+        "sv_pct": 0.891
       },
       "home_goalie": {
         "name": "Laurent Brossoit",
         "confirmation": "Confirmed",
-        "sv_pct": 0.874
+        "sv_pct": 0.877
       },
       "away_injuries": [
         "Erik Gustafsson (IR)",
@@ -2690,7 +2461,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-27T21:00:00Z",
       "start_time_et": "4:00 PM ET",
-      "game_state": "FINAL",
+      "game_state": "OFF",
       "game_type": 2,
       "away": "VGK",
       "home": "SJS",
@@ -2723,12 +2494,12 @@
       "away_goalie": {
         "name": "Carter Hart",
         "confirmation": "Confirmed",
-        "sv_pct": 0.888
+        "sv_pct": 0.887
       },
       "home_goalie": {
         "name": "Yaroslav Askarov",
         "confirmation": "Confirmed",
-        "sv_pct": 0.894
+        "sv_pct": 0.893
       },
       "away_injuries": [],
       "home_injuries": [
@@ -2779,7 +2550,7 @@
       "away_goalie": {
         "name": "Dylan Garand",
         "confirmation": "Confirmed",
-        "sv_pct": 0.907
+        "sv_pct": 0.906
       },
       "home_goalie": {
         "name": "Spencer Knight",
@@ -2839,7 +2610,7 @@
       "home_top3_pts": 63,
       "away_goalie": {
         "name": "Stuart Skinner",
-        "confirmation": "Likely",
+        "confirmation": "Confirmed",
         "sv_pct": 0.887
       },
       "home_goalie": {
@@ -2867,7 +2638,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-28T01:00:00Z",
       "start_time_et": "8:00 PM ET",
-      "game_state": "FUT",
+      "game_state": "PRE",
       "game_type": 2,
       "away": "PIT",
       "home": "BUF",
@@ -2928,7 +2699,7 @@
       "is_today": true,
       "start_time_utc": "2026-11-28T01:00:00Z",
       "start_time_et": "8:00 PM ET",
-      "game_state": "FUT",
+      "game_state": "PRE",
       "game_type": 2,
       "away": "SEA",
       "home": "EDM",
@@ -3025,7 +2796,7 @@
       "home_goalie": {
         "name": "Carter Hart",
         "confirmation": "Confirmed",
-        "sv_pct": 0.888
+        "sv_pct": 0.887
       },
       "away_injuries": [
         "Kaiden Guhle (Out)",
@@ -3191,7 +2962,7 @@
       "home_top3_pts": 71,
       "away_goalie": {
         "name": "Stuart Skinner",
-        "confirmation": "Likely",
+        "confirmation": "Confirmed",
         "sv_pct": 0.887
       },
       "home_goalie": {
@@ -3258,7 +3029,7 @@
       "home_goalie": {
         "name": "Dylan Garand",
         "confirmation": "Confirmed",
-        "sv_pct": 0.907
+        "sv_pct": 0.906
       },
       "away_injuries": [
         "Martin Pospisil (Out)",
@@ -3601,12 +3372,12 @@
       "away_goalie": {
         "name": "Yaroslav Askarov",
         "confirmation": "Confirmed",
-        "sv_pct": 0.894
+        "sv_pct": 0.893
       },
       "home_goalie": {
         "name": "Mackenzie Blackwood",
         "confirmation": "Confirmed",
-        "sv_pct": 0.907
+        "sv_pct": 0.908
       },
       "away_injuries": [
         "Jacob Trouba (Out)",
@@ -3662,12 +3433,12 @@
       "away_goalie": {
         "name": "Laurent Brossoit",
         "confirmation": "Confirmed",
-        "sv_pct": 0.874
+        "sv_pct": 0.877
       },
       "home_goalie": {
         "name": "Darcy Kuemper",
         "confirmation": "Confirmed",
-        "sv_pct": 0.889
+        "sv_pct": 0.891
       },
       "away_injuries": [
         "Leo Carlsson (IR)",
@@ -4348,7 +4119,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020417,
@@ -4367,7 +4138,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020418,
@@ -4386,7 +4157,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020419,
@@ -4405,7 +4176,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020420,
@@ -4424,7 +4195,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020421,
@@ -4443,7 +4214,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020422,
@@ -4462,7 +4233,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020423,
@@ -4481,7 +4252,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020424,
@@ -4500,7 +4271,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020425,
@@ -4519,7 +4290,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020426,
@@ -4538,7 +4309,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       },
       {
         "id": 2026020427,
@@ -4557,7 +4328,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:11:27.520222+00:00"
+        "closing_at": "2026-11-28T00:34:20.409694+00:00"
       }
     ]
   },
@@ -4579,7 +4350,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020417,
@@ -4598,7 +4369,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020418,
@@ -4617,7 +4388,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020419,
@@ -4636,7 +4407,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020420,
@@ -4655,7 +4426,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020421,
@@ -4674,7 +4445,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020422,
@@ -4693,7 +4464,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020423,
@@ -4712,7 +4483,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020424,
@@ -4731,7 +4502,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020425,
@@ -4750,7 +4521,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020426,
@@ -4769,7 +4540,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     },
     {
       "id": 2026020427,
@@ -4788,7 +4559,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:11:27.520222+00:00"
+      "closing_at": "2026-11-28T00:34:20.409694+00:00"
     }
   ],
   "tims_board_players": [
