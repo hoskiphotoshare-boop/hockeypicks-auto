@@ -28,6 +28,18 @@ class PublicDocsGuardTests(unittest.TestCase):
             self.assertTrue(any("away_edge" in e for e in errors))
 
 
+class PublicDocsLineModelTests(unittest.TestCase):
+    def test_detects_spread_total_model_keys(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            docs.mkdir()
+            (docs / "data.json").write_text(json.dumps({"games": [{"id": 1, "spread_model": {"x": 1}, "total_model": {"y": 2}}]}))
+            (docs / "cup_futures.json").write_text(json.dumps({"meta": {"odds_enabled": False}, "teams": [], "summary": {}}))
+            errors = check_docs(tmp)
+            self.assertTrue(any("spread_model" in e for e in errors))
+            self.assertTrue(any("total_model" in e for e in errors))
+
+
 if __name__ == "__main__":
     unittest.main()
 

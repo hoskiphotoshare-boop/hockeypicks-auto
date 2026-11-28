@@ -78,6 +78,18 @@ from src.team_game_model import (
 )
 
 from src.live_scoreboard import build_tims_scoreboard, choose_scoreboard_slate
+try:
+    from src.line_models import (
+        train_line_models,
+        save_line_bundle,
+        load_line_bundle,
+        estimate_league_total_prior,
+    )
+except Exception:  # pragma: no cover
+    train_line_models = None
+    save_line_bundle = None
+    load_line_bundle = None
+    estimate_league_total_prior = None
 from src.tims_boards import (
     board_players_for,
     load_tims_boards,
@@ -128,6 +140,7 @@ def _determine_skater_target_years(
 
 def _artifact_paths(models_dir: str) -> dict[str, str]:
     return {
+        "line": os.path.join(models_dir, "line_game_bundle.joblib"),
         "pairwise": os.path.join(models_dir, "pairwise_game_bundle.joblib"),
         "skater_regular": os.path.join(models_dir, "skater_regular_bundle.joblib"),
         "skater_playoffs": os.path.join(models_dir, "skater_playoffs_bundle.joblib"),
@@ -269,6 +282,28 @@ def run_training(
         f"Acc={pairwise_bundle['metrics']['oof_accuracy']:.1%}"
     )
 
+    line_bundle = None
+    league_total_prior = 6.24
+    if estimate_league_total_prior is not None:
+        try:
+            league_total_prior = estimate_league_total_prior(
+                df_master_logs, before_date=context["today_str"]
+            )
+        except Exception:
+            league_total_prior = 6.24
+    if train_line_models is not None:
+        try:
+            line_bundle = train_line_models(df_team_hist, df_stars, df_goalies, df_master_logs)
+            save_line_bundle(line_bundle, paths["line"])
+            print(
+                f"Line models -> spread Brier {line_bundle['spread']['metrics'].get('brier')} "
+                f"(base {line_bundle['spread']['metrics'].get('base_brier')}) | "
+                f"total validated: {line_bundle['total'].get('validated')} (experimental)"
+            )
+        except Exception as exc:
+            print(f"Warning: line model training failed: {exc}")
+            line_bundle = None
+
     active_mp_year = int(sync_stats["active_mp_year"])
     profiles_regular, _ = build_live_team_profiles(
         df_team_hist=df_team_hist,
@@ -385,6 +420,12 @@ def run_training(
         "skater_baseline_source": baseline_label,
         "sync_stats": sync_stats,
         "log_stats": log_stats,
+        "line_metrics": (line_bundle and {
+            "spread": line_bundle["spread"].get("metrics"),
+            "margin": line_bundle["margin"].get("metrics"),
+            "total": line_bundle["total"].get("metrics"),
+        }) or {},
+        "league_total_prior": round(float(league_total_prior), 4),
     }
     with open(paths["meta"], "w", encoding="utf-8") as f:
         json.dump(inf_meta, f, indent=2)
@@ -404,6 +445,8 @@ def run_training(
         "log_stats": log_stats,
         "latest_team_context": latest_team_context,
         "pairwise_bundle": pairwise_bundle,
+        "line_bundle": line_bundle,
+        "league_total_prior": league_total_prior,
         "skater_bundles": skater_bundles,
         "profiles_regular": profiles_regular,
         "profiles_playoffs": profiles_playoffs,
@@ -568,6 +611,7 @@ def run_inference(
         log_stats = trained_state["log_stats"]
         latest_team_context = trained_state["latest_team_context"]
         pairwise_bundle = trained_state["pairwise_bundle"]
+        line_bundle = trained_state.get("line_bundle")
         skater_bundles = trained_state["skater_bundles"]
         profiles_regular = trained_state["profiles_regular"]
         profiles_playoffs = trained_state["profiles_playoffs"]
@@ -597,6 +641,12 @@ def run_inference(
         }
 
         pairwise_bundle = load_pairwise_bundle(paths["pairwise"])
+        line_bundle = None
+        if load_line_bundle is not None and os.path.exists(paths.get("line", "")):
+            try:
+                line_bundle = load_line_bundle(paths["line"])
+            except Exception:
+                line_bundle = None
         skater_bundles = {}
         for sk_mode in ("regular", "playoffs"):
             if os.path.exists(paths[f"skater_{sk_mode}"]):
@@ -752,6 +802,42 @@ def run_inference(
             effective_odds_key = ""
             skip_reason = "cached_cap_reached"
 
+    # Decide which markets to request. Only the 10:17 & 16:17 ET "always" runs fetch
+    # spreads+totals, and never more than twice per ET day (hard cost guard).
+    prev_line_fetches = (
+        int(prev_usage.get("line_markets_fetches", 0) or 0)
+        if prev_usage.get("date") == context["today_str"]
+        else 0
+    )
+    markets = "h2h"
+    if effective_odds_key:
+        line_hours_raw = os.environ.get("ODDS_LINE_MARKETS_HOURS", "10,16")
+        try:
+            line_hours = {int(x.strip()) for x in line_hours_raw.split(",") if x.strip()}
+        except ValueError:
+            line_hours = {10, 16}
+        current_hour = context["now_et"].hour if hasattr(context.get("now_et"), "hour") else None
+        if current_hour is None:
+            try:
+                current_hour = datetime.now().astimezone().hour
+            except Exception:
+                current_hour = None
+        if odds_policy == "always" and current_hour in line_hours and prev_line_fetches < 2:
+            markets = "h2h,spreads,totals"
+        else:
+            markets = "h2h"
+
+    league_total_prior = 6.24
+    if trained_state is not None:
+        league_total_prior = float(trained_state.get("league_total_prior", 6.24) or 6.24)
+    elif estimate_league_total_prior is not None:
+        try:
+            league_total_prior = estimate_league_total_prior(
+                df_curr_logs, before_date=context["today_str"]
+            )
+        except Exception:
+            league_total_prior = 6.24
+
     odds_meta_out: dict[str, Any] = {}
     game_predictions, playoff_series = predict_upcoming_games(
         schedule_games=schedule_info["games"],
@@ -765,6 +851,9 @@ def run_inference(
         profiles_unadjusted=profiles_unadjusted,
         team_churn=team_churn,
         roster_moves=roster_names,
+        line_bundle=line_bundle,
+        league_total_prior=6.24,
+        odds_markets=markets,
     )
 
     if effective_odds_key and odds_meta_out.get("api_ok"):
@@ -777,6 +866,10 @@ def run_inference(
             "live_loop_fetches": live_loop_fetches,
             "live_loop_cap": live_odds_cap,
             "last_source": "api",
+            "markets": markets,
+            "line_markets_fetched": "spreads" in markets,
+            "line_markets_fetches": prev_line_fetches + (1 if "spreads" in markets else 0),
+            "line_markets_as_of": odds_meta_out.get("line_markets_as_of") or prev_usage.get("line_markets_as_of"),
             "requests_last": req_last if req_last is not None else prev_usage.get("requests_last"),
             "requests_used": req_used if req_used is not None else prev_usage.get("requests_used"),
             "requests_remaining": req_rem if req_rem is not None else prev_usage.get("requests_remaining"),
@@ -793,6 +886,10 @@ def run_inference(
             "live_loop_fetches": live_loop_fetches,
             "live_loop_cap": live_odds_cap,
             "last_source": skip_reason or "cached_api_fallback",
+            "markets": markets,
+            "line_markets_fetched": False,
+            "line_markets_fetches": prev_line_fetches,
+            "line_markets_as_of": prev_usage.get("line_markets_as_of"),
             "requests_last": prev_usage.get("requests_last"),
             "requests_used": prev_usage.get("requests_used"),
             "requests_remaining": prev_usage.get("requests_remaining"),

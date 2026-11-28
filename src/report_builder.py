@@ -23,6 +23,9 @@ PUBLIC_DROP_GAME_KEYS = frozenset({
     "bookie", "bookie_key",
     "home_depth_eff", "away_depth_eff",
     "home_prob_unadjusted", "away_prob_unadjusted",
+    "spread_model", "total_model", "spread_market", "total_market",
+    "home_spread_edge", "away_spread_edge", "over_edge", "under_edge",
+    "spread_odds", "total_odds", "line_models",
 })
 
 

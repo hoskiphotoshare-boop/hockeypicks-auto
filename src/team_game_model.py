@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 from typing import Any
 
 import numpy as np
@@ -1171,6 +1172,18 @@ def build_live_team_profiles(
         p_gf = _lookup_prior_table(mp_idx, prior_year, team, "goalsFor_per_game", 3.1)
         p_ga = _lookup_prior_table(mp_idx, prior_year, team, "goalsAgainst_per_game", 3.1)
 
+        stat["Prior_GF"] = p_gf
+        stat["Prior_GA"] = p_ga
+        stat["Prior_xGF"] = p_xgf
+        stat["Prior_xGA"] = p_xga
+        stat["Prior_ShotsFor"] = _lookup_prior_table(mp_idx, prior_year, team, "shotsOnGoalFor_per_game", 30.0)
+        stat["Prior_ShotsAgainst"] = _lookup_prior_table(mp_idx, prior_year, team, "shotsOnGoalAgainst_per_game", 30.0)
+        stat["Prior_Attempts"] = _lookup_prior_table(mp_idx, prior_year, team, "shotAttemptsFor_per_game", 60.0)
+        stat["Prior_DangerFor"] = _lookup_prior_table(mp_idx, prior_year, team, "highDangerShotsFor_per_game", 8.0)
+        stat["Prior_DangerAgainst"] = _lookup_prior_table(mp_idx, prior_year, team, "highDangerShotsAgainst_per_game", 8.0)
+        stat["Prior_Starter_SavePct"] = _lookup_prior_table(go_idx, prior_year, team, "Starter_SavePct", 0.905)
+        stat["Prior_Team_GSAx"] = _lookup_prior_table(go_idx, prior_year, team, "Team_GSAx_per_game", 0.0)
+
         c_xgp = float(row.get("xGoalsPercentage", p_xgp) or p_xgp)
         c_fen = float(row.get("fenwickPercentage", p_fen) or p_fen)
         c_xgd = float(row.get("xGoalsFor_per_game", p_xgf) or p_xgf) - float(row.get("xGoalsAgainst_per_game", p_xga) or p_xga)
@@ -1660,6 +1673,10 @@ def extract_cached_odds_lookup(
 ) -> dict[tuple[str, str, str], dict[str, Any]]:
     """Extract cached per-game moneyline odds keyed by (date, away, home) from data.json."""
     cached: dict[tuple[str, str, str], dict[str, Any]] = {}
+    _meta = (payload or {}).get("meta") or {}
+    _global_as_of = _meta.get("line_markets_as_of")
+    if not _global_as_of:
+        _global_as_of = (_meta.get("odds_usage") or {}).get("line_markets_as_of")
     for g in (payload or {}).get("games") or []:
         date_str = str(g.get("date") or "").strip()
         away_abbr = normalize_team_abbrev(g.get("away"))
@@ -1692,10 +1709,20 @@ def extract_cached_odds_lookup(
         cached_books = g.get("book_odds")
         if isinstance(cached_books, dict) and cached_books:
             entry["books"] = cached_books
+        for key_src, key_dst in (("spread_market", "spread"), ("total_market", "total")):
+            val = g.get(key_src)
+            if isinstance(val, dict) and val:
+                entry[key_dst] = val
+        # also support direct cached keys
+        for key in ("spread", "total"):
+            if key not in entry and isinstance(g.get(key), dict):
+                entry[key] = g.get(key)
         if home_odds > 1.0:
             entry[home_abbr] = home_odds
         if away_odds > 1.0:
             entry[away_abbr] = away_odds
+        if _global_as_of and "line_markets_as_of" not in entry:
+            entry["line_markets_as_of"] = _global_as_of
         cached[(date_str, away_abbr, home_abbr)] = entry
     return cached
 
@@ -1703,6 +1730,7 @@ def extract_cached_odds_lookup(
 def _fetch_nhl_odds_lookup(
     odds_api_key: str,
     session: Any,
+    markets: str = "h2h",
     meta_out: dict[str, Any] | None = None,
 ) -> dict[tuple[str, str], dict[str, Any]]:
     """Fetch live Pinnacle / best NHL h2h moneyline odds when ODDS_API_KEY env var is present."""
@@ -1710,7 +1738,7 @@ def _fetch_nhl_odds_lookup(
         return {}
     url = (
         f"https://api.the-odds-api.com/v4/sports/icehockey_nhl/odds/"
-        f"?bookmakers={ODDS_API_BOOKMAKERS}&markets=h2h&oddsFormat=decimal"
+        f"?bookmakers={ODDS_API_BOOKMAKERS}&markets={markets}&oddsFormat=decimal"
     )
     try:
         res = session.get(url, timeout=15, headers={"x-api-key": odds_api_key})
@@ -1744,44 +1772,183 @@ def _fetch_nhl_odds_lookup(
             continue
 
         bookies = game.get("bookmakers", [])
-        books: dict[str, dict[str, Any]] = {}
+        h2h_books: dict[str, dict[str, Any]] = {}
+        spread_books: dict[str, dict[str, Any]] = {}
+        total_books: dict[str, dict[str, Any]] = {}
         for book in bookies:
             b_key = str(book.get("key") or "").strip().lower()
             b_title = str(book.get("title") or b_key or "").strip()
             if not b_key or not b_title:
                 continue
             for market in book.get("markets", []):
-                if market.get("key") != "h2h":
-                    continue
-                h_odds, a_odds = 0.0, 0.0
-                for outcome in market.get("outcomes", []):
-                    if outcome.get("name") == h_full:
-                        h_odds = float(outcome.get("price", 0.0) or 0.0)
-                    elif outcome.get("name") == a_full:
-                        a_odds = float(outcome.get("price", 0.0) or 0.0)
-                if h_odds > 1.0 and a_odds > 1.0:
-                    books[b_key] = {"title": b_title, "home": h_odds, "away": a_odds}
-        if not books:
+                mkey = market.get("key")
+                if mkey == "h2h":
+                    h_odds, a_odds = 0.0, 0.0
+                    for outcome in market.get("outcomes", []):
+                        if outcome.get("name") == h_full:
+                            h_odds = float(outcome.get("price", 0.0) or 0.0)
+                        elif outcome.get("name") == a_full:
+                            a_odds = float(outcome.get("price", 0.0) or 0.0)
+                    if h_odds > 1.0 and a_odds > 1.0:
+                        h2h_books[b_key] = {"title": b_title, "home": h_odds, "away": a_odds}
+                elif mkey == "spreads":
+                    home_point = None
+                    away_point = None
+                    h_odds, a_odds = 0.0, 0.0
+                    for outcome in market.get("outcomes", []):
+                        name = outcome.get("name")
+                        pt = outcome.get("point")
+                        price = float(outcome.get("price", 0.0) or 0.0)
+                        if name == h_full:
+                            h_odds = price
+                            home_point = pt
+                        elif name == a_full:
+                            a_odds = price
+                            away_point = pt
+                    if h_odds > 1.0 and a_odds > 1.0:
+                        spread_books[b_key] = {
+                            "title": b_title,
+                            "home": h_odds,
+                            "away": a_odds,
+                            "home_point": home_point,
+                            "away_point": away_point,
+                        }
+                elif mkey == "totals":
+                    point = None
+                    over_odds, under_odds = 0.0, 0.0
+                    for outcome in market.get("outcomes", []):
+                        name = str(outcome.get("name", "")).lower()
+                        pt = outcome.get("point")
+                        price = float(outcome.get("price", 0.0) or 0.0)
+                        if "over" in name:
+                            over_odds = price
+                            point = pt
+                        elif "under" in name:
+                            under_odds = price
+                            if point is None:
+                                point = pt
+                    if over_odds > 1.0 and under_odds > 1.0:
+                        total_books[b_key] = {
+                            "title": b_title,
+                            "over": over_odds,
+                            "under": under_odds,
+                            "point": point,
+                        }
+        if not h2h_books:
             continue
 
-        # Default line keeps the historical Pinnacle-first preference (falling back to
-        # the first book returned) so existing edges and cached-odds reuse stay stable.
-        default_key = "pinnacle" if "pinnacle" in books else next(iter(books))
-        default_line = books[default_key]
-        odds_map[(away_abbr, home_abbr)] = {
+        default_key = "pinnacle" if "pinnacle" in h2h_books else next(iter(h2h_books))
+        default_line = h2h_books[default_key]
+        entry: dict[str, Any] = {
             home_abbr: default_line["home"],
             away_abbr: default_line["away"],
             "bookie": default_line["title"],
             "bookie_key": default_key,
-            "books": books,
+            "books": h2h_books,
         }
 
+        # spread market
+        if "spreads" in str(markets).split(",") and spread_books:
+            points = [b.get("home_point") for b in spread_books.values() if b.get("home_point") is not None]
+            main_point = None
+            if points:
+                # prefer -1.5
+                if -1.5 in [float(p) for p in points if p is not None]:
+                    main_point = -1.5
+                else:
+                    from collections import Counter
+
+                    c = Counter(float(p) for p in points)
+                    main_point = c.most_common(1)[0][0]
+            # filter books on main line
+            main_spread_books = {}
+            for bk, info in spread_books.items():
+                try:
+                    if main_point is None or float(info.get("home_point")) == float(main_point):
+                        main_spread_books[bk] = info
+                except (TypeError, ValueError):
+                    main_spread_books[bk] = info
+            if not main_spread_books:
+                main_spread_books = spread_books
+            # pinnacle
+            pin = main_spread_books.get("pinnacle") or (main_spread_books.get(next(iter(main_spread_books))) if main_spread_books else None)
+            # best prices
+            best_home = None
+            best_away = None
+            for bk, info in main_spread_books.items():
+                if best_home is None or info["home"] > best_home["odds"]:
+                    best_home = {"odds": info["home"], "book": info["title"]}
+                if best_away is None or info["away"] > best_away["odds"]:
+                    best_away = {"odds": info["away"], "book": info["title"]}
+            entry["spread"] = {
+                "line": float(main_point) if main_point is not None else None,
+                "books": main_spread_books,
+                "pinnacle": ({"home": pin["home"], "away": pin["away"]} if pin else None),
+                "best_home": best_home,
+                "best_away": best_away,
+                "as_of": datetime.now(timezone.utc).isoformat(),
+            }
+
+        # total market
+        if "totals" in str(markets).split(",") and total_books:
+            points = [b.get("point") for b in total_books.values() if b.get("point") is not None]
+            main_point = None
+            if points:
+                float_points = [float(p) for p in points]
+                if 5.5 in float_points:
+                    main_point = 5.5
+                elif 6.5 in float_points:
+                    main_point = 6.5
+                else:
+                    from collections import Counter
+
+                    c = Counter(float_points)
+                    main_point = c.most_common(1)[0][0]
+            main_total_books = {}
+            for bk, info in total_books.items():
+                try:
+                    if main_point is None or float(info.get("point")) == float(main_point):
+                        main_total_books[bk] = info
+                except (TypeError, ValueError):
+                    main_total_books[bk] = info
+            if not main_total_books:
+                main_total_books = total_books
+            pin = main_total_books.get("pinnacle") or (main_total_books.get(next(iter(main_total_books))) if main_total_books else None)
+            best_over = None
+            best_under = None
+            for bk, info in main_total_books.items():
+                if best_over is None or info["over"] > best_over["odds"]:
+                    best_over = {"odds": info["over"], "book": info["title"]}
+                if best_under is None or info["under"] > best_under["odds"]:
+                    best_under = {"odds": info["under"], "book": info["title"]}
+            entry["total"] = {
+                "line": float(main_point) if main_point is not None else None,
+                "books": main_total_books,
+                "pinnacle": ({"over": pin["over"], "under": pin["under"], "point": pin.get("point")} if pin else None),
+                "best_over": best_over,
+                "best_under": best_under,
+                "as_of": datetime.now(timezone.utc).isoformat(),
+            }
+
+        odds_map[(away_abbr, home_abbr)] = entry
+
+    line_as_of = None
+    for _e in odds_map.values():
+        if isinstance(_e, dict):
+            if isinstance(_e.get("spread"), dict) and _e["spread"].get("as_of"):
+                line_as_of = _e["spread"]["as_of"]
+                break
+            if isinstance(_e.get("total"), dict) and _e["total"].get("as_of"):
+                line_as_of = _e["total"]["as_of"]
+                break
     if meta_out is not None:
         meta_out.update(
             {
                 "api_ok": True,
                 "status_code": res.status_code,
                 "fetched_games": len(odds_map),
+                "markets": markets,
+                "line_markets_as_of": line_as_of,
                 "requests_last": _safe_int(headers.get("x-requests-last")),
                 "requests_used": _safe_int(headers.get("x-requests-used")),
                 "requests_remaining": _safe_int(headers.get("x-requests-remaining")),
@@ -1802,12 +1969,26 @@ def predict_upcoming_games(
     profiles_unadjusted: dict[str, dict[str, Any]] | None = None,
     team_churn: dict[str, float] | None = None,
     roster_moves: dict[str, Any] | None = None,
+    line_bundle: dict[str, Any] | None = None,
+    league_total_prior: float | None = None,
+    odds_markets: str = "h2h",
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Generate single-game win probabilities and optional active playoff series projections."""
     churn_map: dict[str, float] = dict(team_churn or {})
 
+    def _safe_num(v: Any, default: float = 0.0) -> float:
+        try:
+            if v is None:
+                return default
+            f = float(v)
+            if not __import__("math").isfinite(f):
+                return default
+            return f
+        except (TypeError, ValueError):
+            return default
+
     odds_map = (
-        _fetch_nhl_odds_lookup(odds_api_key, session, meta_out=odds_meta_out)
+        _fetch_nhl_odds_lookup(odds_api_key, session, markets=odds_markets, meta_out=odds_meta_out)
         if (odds_api_key and session)
         else {}
     )
@@ -1880,6 +2061,179 @@ def predict_upcoming_games(
         away_edge = evaluate_kelly_edge(away_prob, game_odds.get(away), min_edge_pct=2.0)
         # (availability already resolved above)
 
+        # --- line models (puck line + total goals) ---
+        spread_model_out = None
+        total_model_out = None
+        spread_market = game_odds.get("spread") if isinstance(game_odds, dict) else None
+        total_market = game_odds.get("total") if isinstance(game_odds, dict) else None
+
+        # build line feature vector from profiles
+        _spread_model_out = None
+        _total_model_out = None
+        _spread_market = spread_market
+        _total_market = total_market
+        _home_spread_edge = None
+        _away_spread_edge = None
+        _over_edge = None
+        _under_edge = None
+        if line_bundle is not None:
+            try:
+                import src.line_models as _lm
+
+                ltp = 6.24 if league_total_prior is None else float(league_total_prior)
+                st_h = profiles.get(home, {}) or {}
+                st_a = profiles.get(away, {}) or {}
+                prior_gd_h = _safe_num(st_h.get("Prior_GD", st_h.get("Prior_GD", 0.0)))
+                prior_gd_a = _safe_num(st_a.get("Prior_GD", 0.0))
+                prior_xgd_h = _safe_num(st_h.get("Prior_xGD", 0.0))
+                prior_xgd_a = _safe_num(st_a.get("Prior_xGD", 0.0))
+                prior_gf_h = _safe_num(st_h.get("Prior_GF", 3.1))
+                prior_ga_h = _safe_num(st_h.get("Prior_GA", 3.1))
+                prior_gf_a = _safe_num(st_a.get("Prior_GF", 3.1))
+                prior_ga_a = _safe_num(st_a.get("Prior_GA", 3.1))
+
+                gf_h = _safe_num(st_h.get("goalsFor_per_game", prior_gf_h))
+                ga_h = _safe_num(st_h.get("goalsAgainst_per_game", prior_ga_h))
+                gf_a = _safe_num(st_a.get("goalsFor_per_game", prior_gf_a))
+                ga_a = _safe_num(st_a.get("goalsAgainst_per_game", prior_ga_a))
+
+                prior_xgf_h = _safe_num(st_h.get("Prior_xGF", 3.1))
+                prior_xga_h = _safe_num(st_h.get("Prior_xGA", 3.1))
+                prior_xgf_a = _safe_num(st_a.get("Prior_xGF", 3.1))
+                prior_xga_a = _safe_num(st_a.get("Prior_xGA", 3.1))
+                exp_margin = (prior_gf_h - prior_ga_h) - (prior_gf_a - prior_ga_a)
+                exp_margin_xg = (prior_xgf_h - prior_xga_h) - (prior_xgf_a - prior_xga_a)
+                exp_total = ((prior_gf_h + prior_ga_a) + (prior_gf_a + prior_ga_h)) / 2.0
+                exp_total_xg = ((prior_xgf_h + prior_xga_a) + (prior_xgf_a + prior_xga_h)) / 2.0
+                cur_exp_margin = (gf_h - ga_h) - (gf_a - ga_a)
+                cur_exp_total = (gf_h + ga_h + gf_a + ga_a) / 2.0
+                cur_gp_h = _safe_num(st_h.get("games_played", 0.0))
+                cur_gp_a = _safe_num(st_a.get("games_played", 0.0))
+                cur_gp_min = min(cur_gp_h, cur_gp_a)
+                k = 10.0
+                cur_exp_margin_s = (cur_gp_min * cur_exp_margin + k * exp_margin) / (cur_gp_min + k)
+                cur_exp_total_s = (cur_gp_min * cur_exp_total + k * exp_total) / (cur_gp_min + k)
+
+                feats = {}
+                # initialize all feature names to 0
+                for fn in line_bundle.get("feature_names", []):
+                    feats[fn] = 0.0
+                # base pairwise-style diffs
+                feats["Elo_diff"] = _safe_num(st_h.get("Causal_Elo", 1500.0)) - _safe_num(st_a.get("Causal_Elo", 1500.0))
+                feats["Prior_GD_diff"] = exp_margin
+                feats["Prior_xGD_diff"] = exp_margin_xg
+                feats["Blended_GD_GP_diff"] = _safe_num(st_h.get("Blended_GD_GP", 0.0)) - _safe_num(st_a.get("Blended_GD_GP", 0.0))
+                feats["EWMA_GD_diff"] = _safe_num(st_h.get("EWMA_GD", 0.0)) - _safe_num(st_a.get("EWMA_GD", 0.0))
+                feats["Rolling10_GoalDiff_diff"] = _safe_num(st_h.get("Rolling10_GoalDiff", 0.0)) - _safe_num(st_a.get("Rolling10_GoalDiff", 0.0))
+                feats["Top3_Points_per_game_diff"] = _safe_num(st_h.get("Top3_Points_per_game", 0.0)) - _safe_num(st_a.get("Top3_Points_per_game", 0.0))
+                feats["Team_GSAx_per_game_diff"] = _safe_num(st_h.get("Team_GSAx_per_game", 0.0)) - _safe_num(st_a.get("Team_GSAx_per_game", 0.0))
+                feats["Starter_SavePct_diff"] = _safe_num(st_h.get("Starter_SavePct", 0.905)) - _safe_num(st_a.get("Starter_SavePct", 0.905))
+                # line aggregates
+                feats["exp_margin"] = exp_margin
+                feats["exp_margin_xg"] = exp_margin_xg
+                feats["exp_total"] = exp_total
+                feats["exp_total_xg"] = exp_total_xg
+                feats["pace"] = (_safe_num(st_h.get("Prior_Attempts", 60.0)) + _safe_num(st_a.get("Prior_Attempts", 60.0))) / 2.0
+                feats["shots_sum"] = _safe_num(st_h.get("Prior_ShotsFor", 30.0)) + _safe_num(st_a.get("Prior_ShotsFor", 30.0))
+                feats["shots_against_sum"] = _safe_num(st_h.get("Prior_ShotsAgainst", 30.0)) + _safe_num(st_a.get("Prior_ShotsAgainst", 30.0))
+                feats["danger_sum"] = _safe_num(st_h.get("Prior_DangerFor", 8.0)) + _safe_num(st_a.get("Prior_DangerFor", 8.0))
+                feats["danger_against_sum"] = _safe_num(st_h.get("Prior_DangerAgainst", 8.0)) + _safe_num(st_a.get("Prior_DangerAgainst", 8.0))
+                feats["save_pct_sum"] = _safe_num(st_h.get("Prior_Starter_SavePct", 0.905)) + _safe_num(st_a.get("Prior_Starter_SavePct", 0.905))
+                feats["gsax_sum"] = _safe_num(st_h.get("Prior_Team_GSAx", 0.0)) + _safe_num(st_a.get("Prior_Team_GSAx", 0.0))
+                # causal current
+                feats["cur_exp_margin"] = cur_exp_margin
+                feats["cur_exp_total"] = cur_exp_total
+                feats["cur_exp_margin_s"] = cur_exp_margin_s
+                feats["cur_exp_total_s"] = cur_exp_total_s
+                feats["cur_gp_min"] = cur_gp_min
+                feats["league_total_prior"] = ltp
+                # prior xg total approximate
+                feats["exp_total_xg"] = exp_total
+
+                spread_line = spread_market.get("line") if isinstance(spread_market, dict) else None
+                if spread_line is None:
+                    spread_line = -1.5
+                sp = _lm.predict_spread(line_bundle, feats, float(spread_line))
+                spread_model_out = {
+                    "line": spread_line,
+                    "home_cover_prob": round(float(sp["home_cover_prob"]) * 100.0, 1),
+                    "away_cover_prob": round(float(sp["away_cover_prob"]) * 100.0, 1),
+                    "push_prob": round(float(sp.get("push_prob", 0.0)) * 100.0, 1),
+                    "exp_margin": round(float(sp.get("exp_margin", exp_margin)), 4),
+                    "validated": True,
+                    "metrics": (line_bundle.get("spread", {}) or {}).get("metrics", {}),
+                }
+
+                total_line = total_market.get("line") if isinstance(total_market, dict) else None
+                if total_line is None:
+                    total_line = 5.5
+                tp = _lm.predict_total(line_bundle, feats, float(total_line))
+                total_model_out = {
+                    "line": total_line,
+                    "over_prob": round(float(tp["over"]) * 100.0, 1),
+                    "under_prob": round(float(tp["under"]) * 100.0, 1),
+                    "push_prob": round(float(tp.get("push", 0.0)) * 100.0, 1),
+                    "exp_total": round(float(tp.get("exp_total", exp_total)), 4),
+                    "validated": False,
+                    "experimental": True,
+                    "stake_enabled": False,
+                    "metrics": (line_bundle.get("total", {}) or {}).get("metrics", {}),
+                }
+
+                # edges for markets
+                if isinstance(spread_market, dict):
+                    home_price = None
+                    away_price = None
+                    if isinstance(spread_market.get("best_home"), dict):
+                        home_price = spread_market["best_home"].get("odds")
+                    if isinstance(spread_market.get("best_away"), dict):
+                        away_price = spread_market["best_away"].get("odds")
+                    if home_price is None and isinstance(spread_market.get("pinnacle"), dict):
+                        home_price = spread_market["pinnacle"].get("home")
+                    if away_price is None and isinstance(spread_market.get("pinnacle"), dict):
+                        away_price = spread_market["pinnacle"].get("away")
+                    home_cover_frac = float(sp["home_cover_prob"])
+                    away_cover_frac = float(sp["away_cover_prob"])
+                    home_spread_edge = _lm.evaluate_line_edge(home_cover_frac, home_price, min_edge_pct=2.0, stake_enabled=True)
+                    away_spread_edge = _lm.evaluate_line_edge(away_cover_frac, away_price, min_edge_pct=2.0, stake_enabled=True)
+                else:
+                    home_spread_edge = None
+                    away_spread_edge = None
+
+                if isinstance(total_market, dict):
+                    over_price = None
+                    under_price = None
+                    if isinstance(total_market.get("best_over"), dict):
+                        over_price = total_market["best_over"].get("odds")
+                    if isinstance(total_market.get("best_under"), dict):
+                        under_price = total_market["best_under"].get("odds")
+                    if over_price is None and isinstance(total_market.get("pinnacle"), dict):
+                        over_price = total_market["pinnacle"].get("over")
+                    if under_price is None and isinstance(total_market.get("pinnacle"), dict):
+                        under_price = total_market["pinnacle"].get("under")
+                    over_edge = _lm.evaluate_line_edge(float(tp["over"]), over_price, min_edge_pct=2.0, stake_enabled=False)
+                    under_edge = _lm.evaluate_line_edge(float(tp["under"]), under_price, min_edge_pct=2.0, stake_enabled=False)
+                else:
+                    over_edge = None
+                    under_edge = None
+            except Exception:
+                spread_model_out = None
+                total_model_out = None
+                home_spread_edge = None
+                away_spread_edge = None
+                over_edge = None
+                under_edge = None
+
+        # attach to prediction dict later; store in locals for now
+        _spread_model_out = spread_model_out
+        _total_model_out = total_model_out
+        _spread_market = spread_market
+        _total_market = total_market
+        _home_spread_edge = home_spread_edge if line_bundle is not None else None
+        _away_spread_edge = away_spread_edge if line_bundle is not None else None
+        _over_edge = over_edge if line_bundle is not None else None
+        _under_edge = under_edge if line_bundle is not None else None
+
         predictions.append(
             {
                 "id": g["id"],
@@ -1932,6 +2286,14 @@ def predict_upcoming_games(
                 "home_odds": round(float(game_odds[home]), 3) if game_odds.get(home) else None,
                 "away_edge": away_edge,
                 "home_edge": home_edge,
+                "spread_model": _spread_model_out,
+                "total_model": _total_model_out,
+                "spread_market": _spread_market,
+                "total_market": _total_market,
+                "home_spread_edge": _home_spread_edge,
+                "away_spread_edge": _away_spread_edge,
+                "over_edge": _over_edge,
+                "under_edge": _under_edge,
             }
         )
 
