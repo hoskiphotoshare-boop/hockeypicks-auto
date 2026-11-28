@@ -769,8 +769,82 @@
           "injury_out": false
         }
       },
-      "settled": false,
-      "results": null,
+      "settled": true,
+      "results": {
+        "hits_of_3": 1,
+        "total_picks": 3,
+        "group_hits": {
+          "1": {
+            "player": "Leon Draisaitl",
+            "team": "EDM",
+            "goals": 1,
+            "scored": true
+          },
+          "2": {
+            "player": "Jack Quinn",
+            "team": "BUF",
+            "goals": 0,
+            "scored": false
+          },
+          "3": {
+            "player": "Morgan Barron",
+            "team": "WPG",
+            "goals": 0,
+            "scored": false
+          }
+        },
+        "group_random_probs": {
+          "1": 0.5,
+          "2": 0.4,
+          "3": 0.1333
+        },
+        "player_goals": {
+          "Leon Draisaitl": 1,
+          "Cutter Gauthier": 0,
+          "Kyle Connor": 2,
+          "Tage Thompson": 0,
+          "Kirill Kaprizov": 0,
+          "Connor McDavid": 1,
+          "Auston Matthews": 0,
+          "David Pastrnak": 0,
+          "Jake Guentzel": 2,
+          "Jack Hughes": 1,
+          "Macklin Celebrini": 1,
+          "Bo Horvat": 0,
+          "Jack Eichel": 1,
+          "Mark Stone": 0,
+          "Jack Quinn": 0,
+          "Sam Reinhart": 0,
+          "Jason Robertson": 2,
+          "Alex DeBrincat": 1,
+          "Artturi Lehkonen": 1,
+          "Joel Farabee": 0,
+          "Matvei Michkov": 0,
+          "Vincent Trocheck": 0,
+          "Anthony Cirelli": 0,
+          "Claude Giroux": 1,
+          "Mats Zuccarello": 2,
+          "Matthew Poitras": 0,
+          "Josh Morrissey": 0,
+          "Rutger McGroarty": 1,
+          "Nicholas Paul": 0,
+          "Morgan Barron": 0,
+          "Paul Cotter": 0,
+          "Frank Vatrano": 0,
+          "Ville Koivunen": 1,
+          "Brandt Clarke": 0,
+          "Brandon Montour": 0,
+          "Rasmus Andersson": 0,
+          "Mason Lohrei": 0,
+          "Andre Lee": 1,
+          "Jack Williams": 0,
+          "Vladislav Gavrikov": 0,
+          "Jared Spurgeon": 0,
+          "Sean Kuraly": 0,
+          "Nick Foligno": 0,
+          "Yakov Trenin": 0
+        }
+      },
       "timing": {
         "decision": "BORDERLINE_WATCH",
         "basis": "now",
@@ -856,7 +930,8 @@
           "lock_et": "1:00 PM ET",
           "selection_wave": 1
         }
-      ]
+      ],
+      "settled_et": "2026-11-27 11:13 PM ET"
     },
     {
       "date": "2026-11-25",
@@ -5161,25 +5236,25 @@
   ],
   "summary": {
     "total_days_logged": 10,
-    "settled_days": 9,
-    "pending_days": 1,
-    "ai_hits": 10,
-    "ai_possible": 27,
-    "ai_hit_rate_pct": 37.0,
-    "random_expected_pct": 23.1,
-    "hit_1plus_days": 6,
+    "settled_days": 10,
+    "pending_days": 0,
+    "ai_hits": 11,
+    "ai_possible": 30,
+    "ai_hit_rate_pct": 36.7,
+    "random_expected_pct": 24.2,
+    "hit_1plus_days": 7,
     "hit_2plus_days": 3,
     "sweep_3_days": 1,
     "group_hit_rates": {
-      "1": 33.3,
-      "2": 44.4,
-      "3": 33.3
+      "1": 40.0,
+      "2": 40.0,
+      "3": 30.0
     },
     "recent_days": [
       {
         "date": "2026-11-27",
         "mode": "Regular Season",
-        "settled": false,
+        "settled": true,
         "timing": {
           "decision": "BORDERLINE_WATCH",
           "basis": "now",
@@ -5266,25 +5341,25 @@
             "selection_wave": 1
           }
         ],
-        "hits_of_3": null,
+        "hits_of_3": 1,
         "picks": {
           "1": {
             "player": "Leon Draisaitl",
             "team": "EDM",
             "score": 0.684,
-            "scored": null
+            "scored": true
           },
           "2": {
             "player": "Jack Quinn",
             "team": "BUF",
             "score": 0.492,
-            "scored": null
+            "scored": false
           },
           "3": {
             "player": "Morgan Barron",
             "team": "WPG",
             "score": 0.167,
-            "scored": null
+            "scored": false
           }
         }
       },
