@@ -1,8 +1,8 @@
 {
   "date": "2026-11-28",
-  "captured_utc": "2026-11-28T05:09:21.169101+00:00",
+  "captured_utc": "2026-11-28T15:29:18.129950+00:00",
   "source": "espn-cbs",
-  "count": 120,
+  "count": 119,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -50,6 +50,15 @@
       "note": "Hagens (back) is wearing a non-contact sweater ahead of Tuesday's practice, Steve Conroy of the Boston Herald reports."
     },
     {
+      "player": "Zach Benson",
+      "team": "BUF",
+      "position": "LW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
       "player": "Noah Ostlund",
       "team": "BUF",
       "position": "C",
@@ -66,15 +75,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "ir"
-    },
-    {
-      "player": "Zach Benson",
-      "team": "BUF",
-      "position": "LW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Benson (upper body) will not play in Friday's home clash against the Penguins, per Rachel Lenzi of The Buffalo News."
     },
     {
       "player": "Konsta Helenius",
@@ -131,6 +131,15 @@
       "note": "day-to-day"
     },
     {
+      "player": "Tyler Bertuzzi",
+      "team": "CHI",
+      "position": "LW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
       "player": "Jordan Greenway",
       "team": "CHI",
       "position": "LW",
@@ -138,15 +147,6 @@
       "is_out": false,
       "is_dtd": true,
       "note": "Greenway missed Friday's game versus the Rangers due to an upper-body injury, Ben Pope of the Chicago Sun-Times reports."
-    },
-    {
-      "player": "Tyler Bertuzzi",
-      "team": "CHI",
-      "position": "LW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
     },
     {
       "player": "Patrick Kane",
@@ -167,15 +167,6 @@
       "note": "Bedard underwent successful shoulder surgery Monday and is expected to make a full recovery in approximately four months, the Blackhawks announced."
     },
     {
-      "player": "Wyatt Kaiser",
-      "team": "CHI",
-      "position": "D",
-      "status": "Susp",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Kaiser was suspended for three games by the NHL Department of Player Safety on Sunday for an illegal check to the head against Calgary's Martin Pospisil (upper body) on Saturday."
-    },
-    {
       "player": "Bowen Byram",
       "team": "CHI",
       "position": "D",
@@ -188,10 +179,10 @@
       "player": "Martin Necas",
       "team": "COL",
       "position": "C",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Gavin Brindley",
@@ -233,10 +224,10 @@
       "player": "Denton Mateychuk",
       "team": "CBJ",
       "position": "D",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Kyle Capobianco",
@@ -269,10 +260,10 @@
       "player": "William Wallinder",
       "team": "DET",
       "position": "D",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Sam Montembeault",
@@ -458,10 +449,10 @@
       "player": "Declan Chisholm",
       "team": "NJD",
       "position": "D",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Chisholm (illness) is expected to miss Friday's game against Calgary, per Amanda Stein of the Devils' official site."
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Brenden Dillon",
@@ -620,10 +611,10 @@
       "player": "Owen Tippett",
       "team": "PHI",
       "position": "RW",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Nikita Grebenkin",
@@ -797,6 +788,15 @@
       "note": "Tucker had arthroscopic knee surgery and will be re-assessed in six weeks, the team announced Wednesday."
     },
     {
+      "player": "Erik Cernak",
+      "team": "TBL",
+      "position": "D",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
       "player": "Victor Hedman",
       "team": "TBL",
       "position": "D",
@@ -804,15 +804,6 @@
       "is_out": false,
       "is_dtd": true,
       "note": "Hedman (undisclosed) didn't finish Friday's game versus the Senators, Benjamin Pierce of the Lightning's official site reports."
-    },
-    {
-      "player": "Erik Cernak",
-      "team": "TBL",
-      "position": "D",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Cernak (illness) is expected to miss Friday's game against Ottawa, per Gabby Shirley of the Lightning's official site."
     },
     {
       "player": "Pontus Holmberg",
@@ -833,6 +824,24 @@
       "note": "Geekie (shoulder) underwent surgery Monday and is expected to miss 4-5 months."
     },
     {
+      "player": "Jack Roslovic",
+      "team": "TOR",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
+      "player": "Dakota Joshua",
+      "team": "TOR",
+      "position": "C",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
+    },
+    {
       "player": "Chris Tanev",
       "team": "TOR",
       "position": "D",
@@ -840,24 +849,6 @@
       "is_out": true,
       "is_dtd": false,
       "note": "out"
-    },
-    {
-      "player": "Dakota Joshua",
-      "team": "TOR",
-      "position": "C",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "out"
-    },
-    {
-      "player": "Jack Roslovic",
-      "team": "TOR",
-      "position": "C",
-      "status": "Out",
-      "is_out": true,
-      "is_dtd": false,
-      "note": "Roslovic (upper body) is expected to miss Friday's road clash against the Bruins, per Mark Masters of TSN."
     },
     {
       "player": "Cole McWard",
