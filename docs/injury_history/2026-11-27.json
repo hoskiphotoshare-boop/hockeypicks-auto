@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-28T03:01:28.399754+00:00",
+  "captured_utc": "2026-11-28T03:37:24.050633+00:00",
   "source": "espn-cbs",
-  "count": 119,
+  "count": 120,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -723,6 +723,15 @@
       "is_out": true,
       "is_dtd": false,
       "note": "Keyser (upper body) was placed on non-roster injured reserve by the Sharks on Monday, Curtis Pashelka of The San Jose Mercury News reports."
+    },
+    {
+      "player": "Philipp Grubauer",
+      "team": "SEA",
+      "position": "G",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "day-to-day"
     },
     {
       "player": "Jake O'Brien",
