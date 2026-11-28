@@ -2126,8 +2126,8 @@ def predict_upcoming_games(
                 feats["EWMA_GD_diff"] = _safe_num(st_h.get("EWMA_GD", 0.0)) - _safe_num(st_a.get("EWMA_GD", 0.0))
                 feats["Rolling10_GoalDiff_diff"] = _safe_num(st_h.get("Rolling10_GoalDiff", 0.0)) - _safe_num(st_a.get("Rolling10_GoalDiff", 0.0))
                 feats["Top3_Points_per_game_diff"] = _safe_num(st_h.get("Top3_Points_per_game", 0.0)) - _safe_num(st_a.get("Top3_Points_per_game", 0.0))
-                feats["Team_GSAx_per_game_diff"] = _safe_num(st_h.get("Team_GSAx_per_game", 0.0)) - _safe_num(st_a.get("Team_GSAx_per_game", 0.0))
-                feats["Starter_SavePct_diff"] = _safe_num(st_h.get("Starter_SavePct", 0.905)) - _safe_num(st_a.get("Starter_SavePct", 0.905))
+                feats["Team_GSAx_per_game_diff"] = _safe_num(st_h.get("Prior_Team_GSAx", 0.0)) - _safe_num(st_a.get("Prior_Team_GSAx", 0.0))
+                feats["Starter_SavePct_diff"] = _safe_num(st_h.get("Prior_Starter_SavePct", 0.905)) - _safe_num(st_a.get("Prior_Starter_SavePct", 0.905))
                 # line aggregates
                 feats["exp_margin"] = exp_margin
                 feats["exp_margin_xg"] = exp_margin_xg
