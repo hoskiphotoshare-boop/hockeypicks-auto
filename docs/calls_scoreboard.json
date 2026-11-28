@@ -54,11 +54,11 @@
       "kickoff": "2026-11-28T23:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.504,
+      "closing_prob": 0.521,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020417,
@@ -73,11 +73,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.527,
+      "closing_prob": 0.539,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020418,
@@ -92,11 +92,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.5870000000000001,
+      "closing_prob": 0.593,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020419,
@@ -111,11 +111,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.59,
+      "closing_prob": 0.588,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020420,
@@ -130,11 +130,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.561,
+      "closing_prob": 0.547,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020421,
@@ -149,11 +149,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.765,
+      "closing_prob": 0.7609999999999999,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020422,
@@ -168,11 +168,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.51,
+      "closing_prob": 0.489,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020423,
@@ -187,11 +187,11 @@
       "kickoff": "2026-11-29T00:30:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.5539999999999999,
+      "closing_prob": 0.546,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020424,
@@ -206,11 +206,11 @@
       "kickoff": "2026-11-29T01:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.5770000000000001,
+      "closing_prob": 0.564,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020425,
@@ -225,11 +225,11 @@
       "kickoff": "2026-11-29T02:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.737,
+      "closing_prob": 0.7340000000000001,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020426,
@@ -244,11 +244,11 @@
       "kickoff": "2026-11-29T02:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.506,
+      "closing_prob": 0.491,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     },
     {
       "id": 2026020427,
@@ -263,11 +263,11 @@
       "kickoff": "2026-11-29T03:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.579,
+      "closing_prob": 0.5770000000000001,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T01:40:23.936840+00:00"
+      "closing_at": "2026-11-28T01:59:15.371482+00:00"
     }
   ]
 }

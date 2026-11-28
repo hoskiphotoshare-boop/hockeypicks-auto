@@ -1,8 +1,8 @@
 {
   "date": "2026-11-27",
-  "captured_utc": "2026-11-28T01:40:24.788188+00:00",
+  "captured_utc": "2026-11-28T02:03:33.280016+00:00",
   "source": "espn-cbs",
-  "count": 118,
+  "count": 119,
   "records": [
     {
       "player": "Leo Carlsson",
@@ -129,6 +129,15 @@
       "is_out": false,
       "is_dtd": true,
       "note": "day-to-day"
+    },
+    {
+      "player": "Jordan Greenway",
+      "team": "CHI",
+      "position": "LW",
+      "status": "DTD",
+      "is_out": false,
+      "is_dtd": true,
+      "note": "Greenway missed Friday's game versus the Rangers due to an upper-body injury, Ben Pope of the Chicago Sun-Times reports."
     },
     {
       "player": "Tyler Bertuzzi",

@@ -1,6 +1,6 @@
 {
   "artifact_schema_version": 4,
-  "trained_et": "2026-11-27 10:18 AM ET",
+  "trained_et": "2026-11-27 08:59 PM ET",
   "active_mp_year": 2026,
   "skater_baseline_source": "2026 Regular + 2025 Playoffs",
   "sync_stats": {
@@ -14,6 +14,47 @@
     "downloaded": 32,
     "cached": 160,
     "errors": 0,
-    "total_rows": 14784
-  }
+    "total_rows": 14808
+  },
+  "line_metrics": {
+    "spread": {
+      "brier": 0.2128,
+      "log_loss": 0.6154,
+      "accuracy": 0.6742,
+      "base_rate": 0.3266,
+      "base_brier": 0.2199,
+      "base_log_loss": 0.6317,
+      "validated": true
+    },
+    "margin": {
+      "mae": 2.149,
+      "brier_at_minus_1_5": 0.2132
+    },
+    "total": {
+      "base_rates": {
+        "5": 0.7928,
+        "6": 0.5733,
+        "7": 0.4614,
+        "8": 0.2559
+      },
+      "brier": {
+        "5": 0.1647,
+        "6": 0.2447,
+        "7": 0.2485,
+        "8": 0.1904
+      },
+      "log_loss": {
+        "5": 0.5117,
+        "6": 0.6826,
+        "7": 0.6902,
+        "8": 0.5687
+      },
+      "note": "Total model has no validated edge (OOF Brier not below base). Experimental only; no auto-stake.",
+      "validated": false,
+      "experimental": true,
+      "stake_enabled": false,
+      "regressor_mae": 1.8612
+    }
+  },
+  "league_total_prior": 6.2407
 }
