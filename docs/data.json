@@ -2,8 +2,8 @@
   "meta": {
     "status": "live",
     "run_mode": "infer",
-    "updated_utc": "2026-11-28 00:46:44 UTC",
-    "updated_et": "2026-11-27 07:46 PM ET",
+    "updated_utc": "2026-11-28 01:04:50 UTC",
+    "updated_et": "2026-11-27 08:04 PM ET",
     "today_date": "2026-11-27",
     "nhl_season": "20262027",
     "nhl_season_label": "2026-27",
@@ -11,7 +11,7 @@
     "active_mode": "Regular Season",
     "active_game_type": 2,
     "skater_baseline_source": "2026 Regular + 2025 Playoffs",
-    "tims_status": "ok",
+    "tims_status": "empty_404",
     "odds_enabled": true,
     "odds_usage": {
       "date": "2026-11-27",
@@ -68,320 +68,24 @@
       }
     }
   },
-  "tims_picks": {
-    "1": [
-      {
-        "player": "Leon Draisaitl",
-        "team": "EDM",
-        "position": "F",
-        "opponent": "SEA",
-        "base_pred": 0.517,
-        "prior_goals_per_game": 0.535,
-        "prior_gp": 71.0,
-        "prior_goals": 38.0,
-        "model_score": 0.684,
-        "live_gp": 27,
-        "live_goals": 23,
-        "live_shots": 99,
-        "live_g_gp": 0.852,
-        "eb_live_weight_pct": 46.7,
-        "def_multiplier": 1.023,
-        "final_score": 0.684,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
-        "player": "Tage Thompson",
-        "team": "BUF",
-        "position": "F",
-        "opponent": "PIT",
-        "base_pred": 0.444,
-        "prior_goals_per_game": 0.479,
-        "prior_gp": 94.0,
-        "prior_goals": 45.0,
-        "model_score": 0.581,
-        "live_gp": 25,
-        "live_goals": 17,
-        "live_shots": 97,
-        "live_g_gp": 0.68,
-        "eb_live_weight_pct": 44.8,
-        "def_multiplier": 1.063,
-        "final_score": 0.581,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      },
-      {
-        "player": "Connor McDavid",
-        "team": "EDM",
-        "position": "F",
-        "opponent": "SEA",
-        "base_pred": 0.458,
-        "prior_goals_per_game": 0.557,
-        "prior_gp": 88.0,
-        "prior_goals": 49.0,
-        "model_score": 0.493,
-        "live_gp": 27,
-        "live_goals": 14,
-        "live_shots": 72,
-        "live_g_gp": 0.519,
-        "eb_live_weight_pct": 46.7,
-        "def_multiplier": 1.023,
-        "final_score": 0.493,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 1
-      }
-    ],
-    "2": [
-      {
-        "player": "Jack Quinn",
-        "team": "BUF",
-        "position": "F",
-        "opponent": "PIT",
-        "base_pred": 0.387,
-        "prior_goals_per_game": 0.232,
-        "prior_gp": 95.0,
-        "prior_goals": 22.0,
-        "model_score": 0.492,
-        "live_gp": 25,
-        "live_goals": 14,
-        "live_shots": 73,
-        "live_g_gp": 0.56,
-        "eb_live_weight_pct": 44.8,
-        "def_multiplier": 1.063,
-        "final_score": 0.492,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      },
-      {
-        "player": "Rutger McGroarty",
-        "team": "PIT",
-        "position": "F",
-        "opponent": "BUF",
-        "base_pred": 0.147,
-        "prior_goals_per_game": 0.125,
-        "prior_gp": 24.0,
-        "prior_goals": 3.0,
-        "model_score": 0.125,
-        "live_gp": 8,
-        "live_goals": 0,
-        "live_shots": 10,
-        "live_g_gp": 0.0,
-        "eb_live_weight_pct": 20.6,
-        "def_multiplier": 1.015,
-        "final_score": 0.125,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 2
-      }
-    ],
-    "3": [
-      {
-        "player": "Ville Koivunen",
-        "team": "PIT",
-        "position": "F",
-        "opponent": "BUF",
-        "base_pred": 0.157,
-        "prior_goals_per_game": 0.051,
-        "prior_gp": 39.0,
-        "prior_goals": 2.0,
-        "model_score": 0.141,
-        "live_gp": 20,
-        "live_goals": 2,
-        "live_shots": 18,
-        "live_g_gp": 0.1,
-        "eb_live_weight_pct": 39.4,
-        "def_multiplier": 1.015,
-        "final_score": 0.141,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      },
-      {
-        "player": "Brandon Montour",
-        "team": "SEA",
-        "position": "D",
-        "opponent": "EDM",
-        "base_pred": 0.138,
-        "prior_goals_per_game": 0.172,
-        "prior_gp": 64.0,
-        "prior_goals": 11.0,
-        "model_score": 0.135,
-        "live_gp": 21,
-        "live_goals": 3,
-        "live_shots": 40,
-        "live_g_gp": 0.143,
-        "eb_live_weight_pct": 40.5,
-        "def_multiplier": 0.967,
-        "final_score": 0.135,
-        "mode": "Regular Season",
-        "injury_status": null,
-        "injury_out": false,
-        "injury_dtd": false,
-        "injury_note": "",
-        "group": 3
-      }
-    ]
-  },
+  "tims_picks": {},
   "tims_timing": {
-    "status": "single_wave",
-    "decision": "SELECT_NOW",
-    "headline": "Select Current Best Now (Single Wave at 8:00 PM ET)",
-    "detail": "All remaining games start together; waiting adds no new players.",
-    "current_best": {
-      "1": {
-        "player": "Leon Draisaitl",
-        "team": "EDM",
-        "opponent": "SEA",
-        "position": "F",
-        "final_score": 0.684,
-        "p_goal_pct": 49.5,
-        "wave_idx": 3,
-        "wave_et": "8:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      },
-      "2": {
-        "player": "Jack Quinn",
-        "team": "BUF",
-        "opponent": "PIT",
-        "position": "F",
-        "final_score": 0.492,
-        "p_goal_pct": 38.9,
-        "wave_idx": 3,
-        "wave_et": "8:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      },
-      "3": {
-        "player": "Ville Koivunen",
-        "team": "PIT",
-        "opponent": "BUF",
-        "position": "F",
-        "final_score": 0.141,
-        "p_goal_pct": 13.2,
-        "wave_idx": 3,
-        "wave_et": "8:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      }
-    },
-    "selection": {
-      "1": {
-        "player": "Leon Draisaitl",
-        "team": "EDM",
-        "opponent": "SEA",
-        "position": "F",
-        "final_score": 0.684,
-        "p_goal_pct": 49.5,
-        "wave_idx": 3,
-        "wave_et": "8:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      },
-      "2": {
-        "player": "Jack Quinn",
-        "team": "BUF",
-        "opponent": "PIT",
-        "position": "F",
-        "final_score": 0.492,
-        "p_goal_pct": 38.9,
-        "wave_idx": 3,
-        "wave_et": "8:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      },
-      "3": {
-        "player": "Ville Koivunen",
-        "team": "PIT",
-        "opponent": "BUF",
-        "position": "F",
-        "final_score": 0.141,
-        "p_goal_pct": 13.2,
-        "wave_idx": 3,
-        "wave_et": "8:00 PM ET",
-        "injury_status": null,
-        "injury_dtd": false
-      }
-    },
-    "lock_basis": "now",
-    "first_wave_utc": "2026-11-28T01:00:00Z",
-    "selection_lock_et": "8:00 PM ET",
-    "selection_lock_utc": "2026-11-28T01:00:00Z",
-    "selection_wave": 3,
-    "v_now": 1.0155,
-    "v_defer_best": 1.0155,
+    "status": "no_tims_pool",
+    "decision": "UNAVAILABLE",
+    "headline": "Awaiting Tim Hortons Player Lists",
+    "detail": "Upstream Tim Hortons groups are not posted yet.",
+    "current_best": {},
+    "selection": {},
+    "lock_basis": "unavailable",
+    "first_wave_utc": "",
+    "selection_lock_utc": "",
+    "selection_lock_et": "",
+    "selection_wave": 0,
+    "v_now": 0.0,
+    "v_defer_best": 0.0,
     "ev_delta": 0.0,
     "hidden_upside_players": [],
-    "waves": [
-      {
-        "wave": 1,
-        "start_time_et": "5:30 PM ET",
-        "matchups": [
-          "NYR @ CHI"
-        ],
-        "est_ev": 0.0,
-        "ev_delta": 0.0,
-        "beat_now_pct": 0.0,
-        "visible_carried": 0,
-        "hidden_available": 0,
-        "unlisted_scorers": [],
-        "is_current": false,
-        "is_past": true
-      },
-      {
-        "wave": 2,
-        "start_time_et": "7:30 PM ET",
-        "matchups": [
-          "WPG @ NYI"
-        ],
-        "est_ev": 0.0,
-        "ev_delta": 0.0,
-        "beat_now_pct": 0.0,
-        "visible_carried": 0,
-        "hidden_available": 0,
-        "unlisted_scorers": [],
-        "is_current": false,
-        "is_past": true
-      },
-      {
-        "wave": 3,
-        "start_time_et": "8:00 PM ET",
-        "matchups": [
-          "PIT @ BUF",
-          "SEA @ EDM"
-        ],
-        "est_ev": 1.0155,
-        "ev_delta": 0.0,
-        "beat_now_pct": 0.0,
-        "visible_carried": 7,
-        "hidden_available": 0,
-        "unlisted_scorers": [],
-        "is_current": true,
-        "is_past": false
-      }
-    ]
+    "waves": []
   },
   "tims_history": {
     "total_days_logged": 10,
@@ -1270,7 +974,7 @@
       "live_shots": 88,
       "live_g_gp": 0.44,
       "eb_live_weight_pct": 44.8,
-      "def_multiplier": 1.022,
+      "def_multiplier": 1.021,
       "final_score": 0.465,
       "mode": "Regular Season",
       "injury_status": "DTD",
@@ -1379,37 +1083,14 @@
       "prior_goals_per_game": 0.293,
       "prior_gp": 82.0,
       "prior_goals": 24.0,
-      "model_score": 0.43,
+      "model_score": 0.431,
       "live_gp": 24,
       "live_goals": 10,
       "live_shots": 51,
       "live_g_gp": 0.417,
       "eb_live_weight_pct": 43.8,
-      "def_multiplier": 1.056,
-      "final_score": 0.43,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
-    },
-    {
-      "player": "Nikita Kucherov",
-      "team": "TBL",
-      "position": "R",
-      "opponent": "OTT",
-      "base_pred": 0.473,
-      "prior_goals_per_game": 0.542,
-      "prior_gp": 83.0,
-      "prior_goals": 45.0,
-      "model_score": 0.428,
-      "live_gp": 25,
-      "live_goals": 10,
-      "live_shots": 76,
-      "live_g_gp": 0.4,
-      "eb_live_weight_pct": 44.8,
-      "def_multiplier": 0.976,
-      "final_score": 0.428,
+      "def_multiplier": 1.058,
+      "final_score": 0.431,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1433,6 +1114,29 @@
       "eb_live_weight_pct": 44.8,
       "def_multiplier": 0.921,
       "final_score": 0.428,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
+      "player": "Nikita Kucherov",
+      "team": "TBL",
+      "position": "R",
+      "opponent": "OTT",
+      "base_pred": 0.473,
+      "prior_goals_per_game": 0.542,
+      "prior_gp": 83.0,
+      "prior_goals": 45.0,
+      "model_score": 0.427,
+      "live_gp": 25,
+      "live_goals": 10,
+      "live_shots": 76,
+      "live_g_gp": 0.4,
+      "eb_live_weight_pct": 44.8,
+      "def_multiplier": 0.976,
+      "final_score": 0.427,
       "mode": "Regular Season",
       "injury_status": null,
       "injury_out": false,
@@ -1509,29 +1213,6 @@
       "injury_note": ""
     },
     {
-      "player": "Roman Kantserov",
-      "team": "CHI",
-      "position": "R",
-      "opponent": "NYR",
-      "base_pred": 0.314,
-      "prior_goals_per_game": null,
-      "prior_gp": 0.0,
-      "prior_goals": 0.0,
-      "model_score": 0.419,
-      "live_gp": 25,
-      "live_goals": 15,
-      "live_shots": 45,
-      "live_g_gp": 0.6,
-      "eb_live_weight_pct": 44.8,
-      "def_multiplier": 0.987,
-      "final_score": 0.419,
-      "mode": "Regular Season",
-      "injury_status": null,
-      "injury_out": false,
-      "injury_dtd": false,
-      "injury_note": ""
-    },
-    {
       "player": "Vasily Podkolzin",
       "team": "EDM",
       "position": "R",
@@ -1570,6 +1251,29 @@
       "live_g_gp": 0.429,
       "eb_live_weight_pct": 47.6,
       "def_multiplier": 0.946,
+      "final_score": 0.418,
+      "mode": "Regular Season",
+      "injury_status": null,
+      "injury_out": false,
+      "injury_dtd": false,
+      "injury_note": ""
+    },
+    {
+      "player": "Roman Kantserov",
+      "team": "CHI",
+      "position": "R",
+      "opponent": "NYR",
+      "base_pred": 0.314,
+      "prior_goals_per_game": null,
+      "prior_gp": 0.0,
+      "prior_goals": 0.0,
+      "model_score": 0.418,
+      "live_gp": 25,
+      "live_goals": 15,
+      "live_shots": 45,
+      "live_g_gp": 0.6,
+      "eb_live_weight_pct": 44.8,
+      "def_multiplier": 0.987,
       "final_score": 0.418,
       "mode": "Regular Season",
       "injury_status": null,
@@ -2502,14 +2206,14 @@
       "is_today": true,
       "start_time_utc": "2026-11-27T22:30:00Z",
       "start_time_et": "5:30 PM ET",
-      "game_state": "LIVE",
+      "game_state": "CRIT",
       "game_type": 2,
       "away": "NYR",
       "home": "CHI",
       "away_score": 1,
       "home_score": 2,
-      "away_prob": 58.6,
-      "home_prob": 41.4,
+      "away_prob": 59.5,
+      "home_prob": 40.5,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
@@ -2517,9 +2221,9 @@
       "away_roster_in": [],
       "away_roster_out": [],
       "favored": "NYR",
-      "fav_prob": 58.6,
-      "away_streak": -2,
-      "home_streak": 3,
+      "fav_prob": 59.5,
+      "away_streak": -3,
+      "home_streak": 4,
       "away_b2b": false,
       "home_b2b": false,
       "away_3in4": false,
@@ -2716,7 +2420,7 @@
       "home_top3_pts": 134,
       "away_goalie": {
         "name": "Philipp Grubauer",
-        "confirmation": "Likely",
+        "confirmation": "Confirmed",
         "sv_pct": 0.894
       },
       "home_goalie": {
@@ -2982,8 +2686,8 @@
       "home": "NYR",
       "away_score": null,
       "home_score": null,
-      "away_prob": 41.6,
-      "home_prob": 58.4,
+      "away_prob": 41.0,
+      "home_prob": 59.0,
       "home_roster_churn": 0.0,
       "away_roster_churn": 0.0,
       "home_roster_in": [],
@@ -2991,9 +2695,9 @@
       "away_roster_in": [],
       "away_roster_out": [],
       "favored": "NYR",
-      "fav_prob": 58.4,
+      "fav_prob": 59.0,
       "away_streak": -1,
-      "home_streak": -2,
+      "home_streak": -3,
       "away_b2b": true,
       "home_b2b": true,
       "away_3in4": true,
@@ -3480,7 +3184,7 @@
       },
       "home_goalie": {
         "name": "Philipp Grubauer",
-        "confirmation": "Likely",
+        "confirmation": "Confirmed",
         "sv_pct": 0.894
       },
       "away_injuries": [
@@ -3517,7 +3221,7 @@
     },
     {
       "team": "MIN",
-      "ai_power": 10.41,
+      "ai_power": 10.42,
       "elo": 1563.6,
       "avg_win_prob": 61.8,
       "gp": 27,
@@ -3534,7 +3238,7 @@
     },
     {
       "team": "COL",
-      "ai_power": 10.33,
+      "ai_power": 10.34,
       "elo": 1574.8,
       "avg_win_prob": 61.1,
       "gp": 24,
@@ -3874,11 +3578,11 @@
     },
     {
       "team": "NYR",
-      "ai_power": 8.6,
+      "ai_power": 8.64,
       "elo": 1496.0,
-      "avg_win_prob": 46.7,
+      "avg_win_prob": 47.0,
       "gp": 24,
-      "streak": -2,
+      "streak": -3,
       "last_won": 0,
       "gsax": 5.3,
       "starter_sv_pct": 0.907,
@@ -3908,7 +3612,7 @@
     },
     {
       "team": "SEA",
-      "ai_power": 8.36,
+      "ai_power": 8.37,
       "elo": 1464.9,
       "avg_win_prob": 44.7,
       "gp": 22,
@@ -3954,7 +3658,7 @@
       "top3_xgoals": 29.6,
       "ga_gp": 3.46,
       "xga_gp": 3.25,
-      "def_multiplier": 1.022,
+      "def_multiplier": 1.021,
       "rank": 27
     },
     {
@@ -4010,11 +3714,11 @@
     },
     {
       "team": "CHI",
-      "ai_power": 7.29,
+      "ai_power": 7.22,
       "elo": 1421.3,
-      "avg_win_prob": 35.8,
+      "avg_win_prob": 35.2,
       "gp": 25,
-      "streak": 3,
+      "streak": 4,
       "last_won": 1,
       "gsax": -5.3,
       "starter_sv_pct": 0.894,
@@ -4022,7 +3726,7 @@
       "top3_xgoals": 22.6,
       "ga_gp": 3.84,
       "xga_gp": 3.56,
-      "def_multiplier": 1.056,
+      "def_multiplier": 1.058,
       "rank": 31
     },
     {
@@ -4104,7 +3808,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020417,
@@ -4123,7 +3827,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020418,
@@ -4142,7 +3846,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020419,
@@ -4157,11 +3861,11 @@
         "kickoff": "2026-11-29T00:00:00Z",
         "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
         "status": "open",
-        "closing_prob": 0.584,
+        "closing_prob": 0.59,
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020420,
@@ -4180,7 +3884,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020421,
@@ -4199,7 +3903,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020422,
@@ -4218,7 +3922,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020423,
@@ -4237,7 +3941,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020424,
@@ -4256,7 +3960,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020425,
@@ -4275,7 +3979,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020426,
@@ -4294,7 +3998,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       },
       {
         "id": 2026020427,
@@ -4313,7 +4017,7 @@
         "result": null,
         "final_score": null,
         "graded_at": null,
-        "closing_at": "2026-11-28T00:46:28.375196+00:00"
+        "closing_at": "2026-11-28T01:04:29.338319+00:00"
       }
     ]
   },
@@ -4335,7 +4039,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020417,
@@ -4354,7 +4058,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020418,
@@ -4373,7 +4077,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020419,
@@ -4388,11 +4092,11 @@
       "kickoff": "2026-11-29T00:00:00Z",
       "snapshot_at": "2026-11-27T05:02:34.916299+00:00",
       "status": "open",
-      "closing_prob": 0.584,
+      "closing_prob": 0.59,
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020420,
@@ -4411,7 +4115,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020421,
@@ -4430,7 +4134,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020422,
@@ -4449,7 +4153,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020423,
@@ -4468,7 +4172,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020424,
@@ -4487,7 +4191,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020425,
@@ -4506,7 +4210,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020426,
@@ -4525,7 +4229,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     },
     {
       "id": 2026020427,
@@ -4544,7 +4248,7 @@
       "result": null,
       "final_score": null,
       "graded_at": null,
-      "closing_at": "2026-11-28T00:46:28.375196+00:00"
+      "closing_at": "2026-11-28T01:04:29.338319+00:00"
     }
   ],
   "tims_board_players": [
